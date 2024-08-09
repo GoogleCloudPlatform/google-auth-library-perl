@@ -37,6 +37,7 @@ WriteMakefile(
         'Crypt::X509' => 0,
         'Crypt::Perl::X509v3' => '0.37',
         'Test::Exception' => '0',
+        'Test::Deep' => '0',
         'Test::LWP::UserAgent' => '0',
         'Test::More' => '0',
 	'Test::Perl::Critic' => '0',
