@@ -18,14 +18,14 @@ use strict;
 use warnings;
 use Test::More;
 use Test::Exception;
-use Test::Deep;
 
 use Test::LWP::UserAgent;
 use Test::More;
 
 use Crypt::PK::ECC;
 use Crypt::PK::RSA;
-use Crypt::OpenSSL::CA;
+use Crypt::Perl::X509v3;
+use Crypt::Perl::RSA::Generate;
 
 use FindBin;
 
@@ -37,7 +37,7 @@ diag(
 
 BEGIN
 {
-    plan tests => 44;
+    plan tests => 43;
     $ENV{TESTING} = 1;
     use_ok('Google::Auth::IDTokens::KeySources') || print "Bail out!\n";
 }
@@ -140,20 +140,12 @@ TODO:
 # X509CertHttpKeySource
 #
 
-my $dn = Crypt::OpenSSL::CA::X509_NAME->new(
-    C  => 'BE',
-    O  => 'Test',
-    OU => 'Test',
-    CN => 'Test'
-);
+$key1 = Crypt::Perl::RSA::Generate::create(256);
 
-ok( defined $dn, 'instance of Crypt::OpenSSL::CA::X509_Name is defined' );
-
-$key1 = Crypt::PK::RSA->new();
-$key1->generate_key( 256, 65537 );
-
-$key2 = Crypt::PK::RSA->new();
-$key2->generate_key( 256, 65537 );
+# https://security.stackexchange.com/questions/185788/where-can-i-find-a-canonical-list-of-elliptic-curve-names-and-their-aliases
+# curve names: (secp256r1, secp384r1, secp521r1, curve25519 (x25519) and curve448 (x448))
+#my $key2 = Crypt::Perl::ECDSA::Generate::by_curve_name('secp521r1');
+$key2 = Crypt::Perl::RSA::Generate::create(256);
 
 my ( $cert1, $cert2 ) = ( generate_cert($key1), generate_cert($key2), );
 
@@ -171,20 +163,31 @@ sub generate_cert
 {
     my ($key) = @_;
 
-    my $k = Crypt::OpenSSL::CA::PrivateKey->parse(
-        $key->export_key_pem('private') );
-    my $pubkey = $k->get_public_key;
+    my $x509 = Crypt::Perl::X509v3->new(
+        key => $key->get_public_key,
+        issuer => [ [ organizationName       => 'Acme Corporation',
+                      organizationalUnitName => 'Operative Personnel',
+                      countryName            => 'United States of America',
+                      description            => 'They have sleek, luxurious coats with bold marbling and spotting in colors like brown, silver, snow, charcoal, blue, and melanistic (solid black). Their coats can also shimmer in the light. They have smallish, round heads, large eyes, round-tipped ears, and striking facial markings. Their long hind legs give them a powerful but graceful stride.',
+                    ] ],
+        subject => [ [ givenName => 'Carl',
+                       surname   => 'Collier',
+                       initials  => 'C.J.',
+                       description => 'Largest of the North American herons with long legs, a sinuous neck, and thick, daggerlike bill. Head, chest, and wing plumes give a shaggy appearance. In flight, the Great Blue Heron curls its neck into a tight “S” shape; its wings are broad and rounded and its legs trail well beyond the tail.',
+                     ] ],
+        not_before    => DateTime->now->epoch,
+        not_after     => DateTime->now->add( days => 365 )->epoch,
+        serial_number => 0xBA27A83C,
+    );
 
-    my $x509 = Crypt::OpenSSL::CA::X509->new($pubkey);
-    $x509->set_subject_DN($dn);
-    $x509->set_issuer_DN($dn);
-    $x509->set_notBefore( DateTime->now->strftime("%Y%m%d%H%M%SZ") );
-    $x509->set_notAfter(
-        DateTime->now->add( days => 365 )->strftime("%Y%m%d%H%M%SZ") );
-    $x509->set_serial("0x0");
+    my($tbs,$digest_length) = $x509->_encode_tbs_certificate($key, "sha256");
+
+    diag( length($tbs) );
+
+#    $x509->sign( $key, "sha256" );
 
     return {
-        pem  => $x509->sign( $k, "sha1" ),
+        pem  => "",#$x509->to_pem(),
         x509 => $x509
     };
 }

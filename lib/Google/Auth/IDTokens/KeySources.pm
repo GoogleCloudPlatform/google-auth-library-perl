@@ -50,7 +50,7 @@ my $coder = JSON::XS->new->ascii->pretty->allow_nonref;
 # Create a public key info structure.
 #
 # @param id [String] The key ID.
-# @param key [Crypt::PK::RSA,Crypt::PK::ECC] The key itself.
+# @param key [Crypt::PK::RSA,Crypt::PK::ECC,Crypt::X509] The key itself.
 # @param algorithm [String] The algorithm (normally `RS256` or `ES256`)
 #
 sub new
