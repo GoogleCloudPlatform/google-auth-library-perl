@@ -18,14 +18,12 @@ use strict;
 use warnings;
 use Test::More;
 use Test::Exception;
-use Test::Deep;
 
 use Test::LWP::UserAgent;
 use Test::More;
 
 use Crypt::PK::ECC;
 use Crypt::PK::RSA;
-use Crypt::OpenSSL::CA;
 
 use FindBin;
 
