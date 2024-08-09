@@ -35,7 +35,7 @@ WriteMakefile(
         'Crypt::PK::ECC' => 0,
         'Crypt::PK::RSA' => 0,
         'Crypt::X509' => 0,
-        'Crypt::OpenSSL::CA' => '0.91',
+        'Crypt::Perl::X509v3' => '0.37',
         'Test::Exception' => '0',
         'Test::LWP::UserAgent' => '0',
         'Test::More' => '0',
