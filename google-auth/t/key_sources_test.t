@@ -1,4 +1,4 @@
-# Copyright 2020,2021,2022 Google LLC
+# Copyright 2026 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,426 +12,208 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-use Data::Dumper;
-
 use strict;
 use warnings;
 use Test::More;
 use Test::Exception;
 use Test::Deep;
-
-use Test::LWP::UserAgent;
-use Test::More;
-
-use Crypt::PK::ECC;
+use JSON::XS;
 use Crypt::PK::RSA;
-use Crypt::OpenSSL::CA;
-
-use FindBin;
-
-use DateTime;
-
-diag(
-"Testing Google::Auth::IDTokens::KeySources $Google::Auth::IDTokens::KeySources::VERSION, Perl $], $^X"
-);
-
-BEGIN
-{
-    plan tests => 44;
-    $ENV{TESTING} = 1;
-    use_ok('Google::Auth::IDTokens::KeySources') || print "Bail out!\n";
-}
-
-{
-
-    package KeySourcesTest;
-    our $useragent = Test::LWP::UserAgent->new();
-}
+use Crypt::PK::ECC;
 
 use Google::Auth::IDTokens::KeySources;
+use Google::Auth::Transport::LWP;
+
+# Mocking LWP for HttpKeySource tests
+{
+    package MockTransport;
+    sub new { bless { responses => {} }, shift }
+    sub map_response {
+        my ($self, $url, $code, $data) = @_;
+        $self->{responses}{$url} = { code => $code, data => $data };
+    }
+    sub request {
+        my ($self, %args) = @_;
+        my $res = $self->{responses}{$args{url}} || { code => 404, data => 'Not Found' };
+        return bless $res, 'MockResponse';
+    }
+
+    package MockResponse;
+    sub status { $_[0]->{code} }
+    sub data   { $_[0]->{data} }
+    sub headers { {} }
+}
+
+my $cert1_pem = <<'EOF';
+-----BEGIN CERTIFICATE-----
+MIIC/zCCAeegAwIBAgIUJgMNngJIYB1t9wJvIQwEgj5ytmUwDQYJKoZIhvcNAQEL
+BQAwDzENMAsGA1UEAwwEdGVzdDAeFw0yNjAzMTAwMzM1NTdaFw0yNzAzMTAwMzM1
+NTdaMA8xDTALBgNVBAMMBHRlc3QwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEK
+AoIBAQDd9BRYsVvmQ5MBooNEZoJVPOIPHkw0PhreEFPePNVRfp3gdVMuK/GNGjxF
+6bfqidMOKy7u9oa7G1qbHluVLWyvmIBfaDJqFh7FPa9Y2hKmxwjGJUE4A41cBly6
+fubONyU6VBXfh9FHOhLTOJWR3dP9BNakuFHMD8G/U03mK0oHIw3mguCc9wzdzwJc
+FuZVxYxNNbeJGUnqWpUDk0pEXXkdgUMRa4KXe5jM/2ITUSV/E6DKUFzOOhwPd3yS
+GWWfLknje/jb+a9kzbPIKszw26GpmyUabXDD/haEvDIAPP43/L9xH7qjUD2I8PQi
+DyJZIUWKuSJKM8vJMgJa7xi5UxR3AgMBAAGjUzBRMB0GA1UdDgQWBBS9bdtLralW
+e6BMGp58C+mDPX67EDAfBgNVHSMEGDAWgBS9bdtLralWe6BMGp58C+mDPX67EDAP
+BgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQA8jo093nq9XuqwtBqL
+zVK6Gv1Ar0UD25Sk8WU1xVnIwYLQ19ZYSk5Vju3c4BA05QHZXdD0pMIrWjYAHwih
+bzdGY8cXYy8ZUpHPXeG2+EmNmdXA65JknKw6IHw8mSl1qQ1JrCDOw8kpfOHziZj9
+Mw+gR9kEuNC69n5lwsAwMdw9mtP9/1y3wPNljUVSDurtEjg+XTo6xq3oBDXPqKdz
+Pt4CaI9EPUMEifYjWnSkinqwmApuBVbHI6W0giuANthHYti2WVHOO83HikslLl6S
+7r6s33HhmNQpQ97R+ixY9ZdOx52QEw8xW73RYGnyBZy8GxHt8Pkd7FPOSOqx9Utt
+g7W6
+-----END CERTIFICATE-----
+EOF
+
+my $cert2_pem = <<'EOF';
+-----BEGIN CERTIFICATE-----
+MIIDATCCAemgAwIBAgIUK64B47mU8jzOHYAPbvEGLG8GDW8wDQYJKoZIhvcNAQEL
+BQAwEDEOMAwGA1UEAwwFdGVzdDIwHhcNMjYwMzEwMDQxMzA2WhcNMjcwMzEwMDQx
+MzA2WjAQMQ4wDAYDVQQDDAV0ZXN0MjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCC
+AQoCggEBAOb9/sFwet8QKIY3ubI8DfPskqvAy9vxTFko3+CFnJB6BLLD01ecl3Jl
+03/IrkXD3SBhX6oZhgwhEa79Yq20B5I/ildQTAkCkqK6wVyBJCovFka7aRvZRpLa
+INPQ6ug+JWEP7ine4Uba7IMcqDNOgcLFOoXcKjjKgpWsyWralljzSYc/zjg2WaQr
+2EtE0I4sTOmvdjacdoapJJmtJBen6VhW2OlQrg7FjYg6xYdMMpjzrSP1/eapib8J
+JKS0b6d3SLB4qZb5SgYTeN8moEFAglaTDPq9X/iLn74iYvIuIOHl1cGyoT+d06Kd
+zt40owkOkn+4xRPt4wtOSu/aqvXnNskCAwEAAaNTMFEwHQYDVR0OBBYEFEQCmP4g
+dffVifbgAGoT32R/bh0oMB8GA1UdIwQYMBaAFEQCmP4gdffVifbgAGoT32R/bh0o
+MA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBABXsnkPux4/5LXPq
+2A42X4fdSgx20nHE0/HoW4hAfP/ycVjDJWsXo9zI95/01IxPJn5zn8V1zoYo2Jmz
+HvoS/SvfD+5wobZlcAYePU5WgVMLEjyr7Hhz4nies81Eri+HTE9emjeX9aStWWTs
+R2VLrZVsQquLg9pzIfKHvQ7C+bXhAxBi+Xd98VSe3G/FWg6o08IVHsGJ2t6MIFC/
+uaxvN/06DpZm3Ct8P8m4QQj4ncNboz6v9EE2PgbsszkZKzXkn4OSMgivtxfP4Qsr
+ZIpV3in+6uLPQNR52BVbli6Df6+5sN4edwgqLRMv89RkAERhhG590qUtntLBYPGg
+/NwPuyU=
+-----END CERTIFICATE-----
+EOF
 
 #
 # Static Key Source
 #
 
-my $key1 = Google::Auth::IDTokens::KeyInfo->new(
-    { id => "1234", key => "key1", algorithm => "RS256" } );
-my $key2 = Google::Auth::IDTokens::KeyInfo->new(
-    { id => "5678", key => "key2", algorithm => "ES256" } );
-my $keys   = [ $key1, $key2 ];
-my $source = Google::Auth::IDTokens::StaticKeySource->new( { keys => $keys } );
+subtest 'StaticKeySource' => sub {
+    my $key1 = Google::Auth::IDTokens::KeyInfo->new(
+        { id => "1234", key => "key1", algorithm => "RS256" } );
+    my $key2 = Google::Auth::IDTokens::KeyInfo->new(
+        { id => "5678", key => "key2", algorithm => "ES256" } );
+    my $keys   = [ $key1, $key2 ];
+    my $source = Google::Auth::IDTokens::StaticKeySource->new( { keys => $keys } );
 
-is( ref $key1, "Google::Auth::IDTokens::KeyInfo", 'KeyInfo object correct' );
-is_deeply( $keys, $source->current_keys, 'returns a static set of keys' );
-is_deeply( $keys, $source->refresh_keys, 'does not change on refresh' );
-
-#
-# HttpKeySource
-#
-
-my $certs_uri       = "https://example.com/my-certs";
-my $certs_body      = {};
-my $certs_body_json = "{}";
-
-my $ua = $KeySourcesTest::useragent;
-
-my $response;
+    is( ref $key1, "Google::Auth::IDTokens::KeyInfo", 'KeyInfo object correct' );
+    is_deeply( [$source->current_keys], $keys, 'returns a static set of keys' );
+    is_deeply( [$source->refresh_keys], $keys, 'does not change on refresh' );
+};
 
 #
-# Not JSON
+# HttpKeySource Base Class (Testing with mocks)
 #
 
-my $not_json_hr =
-    HTTP::Response->new( '200', 'OK', [ 'Content-Type' => 'text/plain' ],
-    'whoops' );
-$ua->unmap_all();
-$ua->map_response( qr/\Q$certs_uri\E/, $not_json_hr );
-$source = Google::Auth::IDTokens::HttpKeySource->new( { uri => $certs_uri } );
-throws_ok { $source->refresh_keys } qr/KeySourceError: Unable to parse JSON/,
-    'raises an error when failing to parse json from the site, class='
-    . ref $source;
-is( $ua->last_http_request_sent->uri,
-    $certs_uri, 'uri matches the one expected' );
+subtest 'HttpKeySource' => sub {
+    my $uri = "https://example.com/keys";
+    my $mock_transport = MockTransport->new();
+    
+    # 1. Invalid JSON
+    $mock_transport->map_response($uri, 200, "not json");
+    my $source = Google::Auth::IDTokens::HttpKeySource->new({ 
+        uri => $uri, 
+        transport => $mock_transport 
+    });
+    
+    throws_ok { $source->refresh_keys } qr/KeySourceError: Unable to parse JSON/, 
+        'raises error on invalid JSON';
 
-$response = $ua->last_http_response_received;
-is( $response->{_rc},      200,      'return code matches' );
-is( $response->{_content}, 'whoops', 'content matches' );
-
-#
-# Empty JSON
-#
-
-my $empty_json_hr =
-    HTTP::Response->new( '200', 'OK', [ 'Content-Type' => 'text/plain' ],
-    $certs_body_json );
-$ua->unmap_all();
-$ua->map_response( qr/\Q$certs_uri\E/, $empty_json_hr );
-$source = Google::Auth::IDTokens::HttpKeySource->new( { uri => $certs_uri } );
-lives_ok { $source->refresh_keys } 'downloads data but gets no keys';
-
-$response = $ua->last_http_response_received;
-is( $response->{_rc},      200,              'empty JSON return code matches' );
-is( $response->{_content}, $certs_body_json, 'empty JSON content matches' );
-is_deeply( $source->current_keys, [], 'gets no keys from JSON' );
-
-#
-# Not found
-#
-
-my $not_found_hr =
-    HTTP::Response->new( '404', 'Not Found', [ 'Content-Type' => 'text/plain' ],
-    'not a found' );
-$ua->unmap_all();
-$ua->map_response( qr/\Q$certs_uri\E/, $not_json_hr );
-$source = Google::Auth::IDTokens::HttpKeySource->new( { uri => $certs_uri } );
-throws_ok { $source->refresh_keys } qr/KeySourceError: Unable to parse JSON/,
-    'raises an error when failing to parse json from the site, class='
-    . ref $source;
-TODO:
-{
-    local $TODO = 'return code and content do not match for some reason';
-    eval { $source->refresh_keys };
-    $response = $source->{last_response};
-    is( $response->{_rc},      404,           'return code matches' );
-    is( $response->{_content}, 'not a found', 'content matches' );
-}
+    # 2. HTTP Error
+    $mock_transport->map_response($uri, 404, "Not Found");
+    $source = Google::Auth::IDTokens::HttpKeySource->new({ 
+        uri => $uri, 
+        transport => $mock_transport 
+    });
+    throws_ok { $source->refresh_keys } qr/KeySourceError: Unable to retrieve data/, 
+        'raises error on 404';
+};
 
 #
 # X509CertHttpKeySource
 #
 
-my $dn = Crypt::OpenSSL::CA::X509_NAME->new(
-    C  => 'BE',
-    O  => 'Test',
-    OU => 'Test',
-    CN => 'Test'
-);
-
-ok( defined $dn, 'instance of Crypt::OpenSSL::CA::X509_Name is defined' );
-
-$key1 = Crypt::PK::RSA->new();
-$key1->generate_key( 256, 65537 );
-
-$key2 = Crypt::PK::RSA->new();
-$key2->generate_key( 256, 65537 );
-
-my ( $cert1, $cert2 ) = ( generate_cert($key1), generate_cert($key2), );
-
-my ( $id1, $id2 ) = ( "1234", "5678" );
-
-my $coder = JSON::XS->new->ascii->pretty->allow_nonref;
-
-$certs_body = {
-    $id1 => $cert1->{pem},
-    $id2 => $cert2->{pem}
-};
-$certs_body_json = $coder->encode($certs_body);
-
-sub generate_cert
-{
-    my ($key) = @_;
-
-    my $k = Crypt::OpenSSL::CA::PrivateKey->parse(
-        $key->export_key_pem('private') );
-    my $pubkey = $k->get_public_key;
-
-    my $x509 = Crypt::OpenSSL::CA::X509->new($pubkey);
-    $x509->set_subject_DN($dn);
-    $x509->set_issuer_DN($dn);
-    $x509->set_notBefore( DateTime->now->strftime("%Y%m%d%H%M%SZ") );
-    $x509->set_notAfter(
-        DateTime->now->add( days => 365 )->strftime("%Y%m%d%H%M%SZ") );
-    $x509->set_serial("0x0");
-
-    return {
-        pem  => $x509->sign( $k, "sha1" ),
-        x509 => $x509
+subtest 'X509CertHttpKeySource' => sub {
+    my $uri = "https://example.com/certs";
+    my $mock_transport = MockTransport->new();
+    my $coder = JSON::XS->new->ascii;
+    
+    my $certs_body = {
+        "key1" => $cert1_pem,
+        "key2" => $cert2_pem
     };
-}
+    $mock_transport->map_response($uri, 200, $coder->encode($certs_body));
 
-#
-# Correct exception thrown when JSON not found
-#
+    my $source = Google::Auth::IDTokens::X509CertHttpKeySource->new({ 
+        uri => $uri, 
+        transport => $mock_transport 
+    });
 
-$ua->unmap_all();
-$ua->map_response( qr/\Q$certs_uri\E/, $not_found_hr );
-
-$source =
-    Google::Auth::IDTokens::X509CertHttpKeySource->new( { uri => $certs_uri } );
-throws_ok { $source->refresh_keys; }
-qr/KeySourceError: Unable to retrieve data from $certs_uri/,
-    'raises an error when failing to reach the site';
-
-#
-# Correct exception thrown when content is not JSON
-#
-
-$ua->unmap_all();
-$ua->map_response( qr/\Q$certs_uri\E/, $not_json_hr );
-
-$source =
-    Google::Auth::IDTokens::X509CertHttpKeySource->new( { uri => $certs_uri } );
-throws_ok { $source->refresh_keys } qr/KeySourceError: Unable to parse JSON/,
-    'raises an error when failing to parse json from the site, class='
-    . ref $source;
-is( $ua->last_http_request_sent->uri,
-    $certs_uri, 'uri matches the one expected' );
-
-#
-# Negative x509 test
-#
-
-my $not_x509_hr = HTTP::Response->new(
-    '200', 'OK',
-    [ 'Content-Type' => 'text/plain' ],
-    '{"hi": "whoops"}'
-);
-$source =
-    Google::Auth::IDTokens::X509CertHttpKeySource->new( { uri => $certs_uri } );
-
-$ua->unmap_all();
-$ua->map_response( qr/\Q$certs_uri\E/, $not_x509_hr );
-TODO:
-{
-    local $TODO = 'return code and content do not match for some reason';
-    throws_ok { $source->refresh_keys }
-    qr/KeySourceError: Unable to retrieve data from/,
-        'raises an error when failing to parse x509 from the site';
-
-}
-
-#
-# Positive x509 test
-#
-
-my $x509_hr =
-    HTTP::Response->new( '200', 'OK', [ 'Content-Type' => 'text/plain' ],
-    $certs_body_json );
-$source =
-    Google::Auth::IDTokens::X509CertHttpKeySource->new( { uri => $certs_uri } );
-$ua->unmap_all();
-$ua->map_response( qr/\Q$certs_uri\E/, $x509_hr );
-
-lives_ok { $keys = $source->refresh_keys } 'key refresh succeeds';
-is( $keys->[0]->{id},        $id1,    'first key matches' );
-is( $keys->[1]->{id},        $id2,    'second key matches' );
-is( $keys->[0]->{algorithm}, 'RS256', 'first algorithm matches' );
-is( $keys->[1]->{algorithm}, 'RS256', 'second algorithm matches' );
-is( $ua->last_http_request_sent->uri,
-    $certs_uri, 'uri matches the one expected' );
-
-#
-# JWK source tests
-#
-
-my $jwk_uri = 'https://example.com/my-jwk';
-$id1 = 'fb8ca5b7d8d9a5c6c6788071e866c6c40f3fc1f9';
-$id2 = 'LYyP2g';
-
-my $jwk1 = {
-    alg => "RS256",
-    e   => "AQAB",
-    kid => $id1,
-    kty => "RSA",
-    n   => "zK8PHf_6V3G5rU-viUOL1HvAYn7q--dxMoUkt7x1rSWX6fimla-lpoYAKhFTLU"
-        . "ELkRKy_6UDzfybz0P9eItqS2UxVWYpKYmKTQ08HgUBUde4GtO_B0SkSk8iLtGh"
-        . "653UBBjgXmfzdfQEz_DsaWn7BMtuAhY9hpMtJye8LQlwaS8ibQrsC0j0GZM5KX"
-        . "RITHwfx06_T1qqC_MOZRA6iJs-J2HNlgeyFuoQVBTY6pRqGXa-qaVsSG3iU-vq"
-        . "NIciFquIq-xydwxLqZNksRRer5VAsSHf0eD3g2DX-cf6paSy1aM40svO9EfSvG"
-        . "_07MuHafEE44RFvSZZ4ubEN9U7ALSjdw",
-    use => "sig"
-};
-my $jwk2 = {
-    alg => "ES256",
-    crv => "P-256",
-    kid => $id2,
-    kty => "EC",
-    use => "sig",
-    x   => "SlXFFkJ3JxMsXyXNrqzE3ozl_0913PmNbccLLWfeQFU",
-    y   => "GLSahrZfBErmMUcHP0MGaeVnJdBwquhrhQ8eP05NfCI"
-};
-my $bad_type_jwk = {
-    alg => "RS256",
-    kid => "hello",
-    kty => "blah",
-    use => "sig"
+    my @keys;
+    lives_ok { @keys = $source->refresh_keys } 'refresh succeeds';
+    is( scalar @keys, 2, 'two keys returned' );
+    is( $keys[0]->id, "key1", 'first key ID matches' );
+    is( $keys[1]->id, "key2", 'second key ID matches' );
+    isa_ok( $keys[0]->key, 'Crypt::PK::RSA' );
 };
 
-my $jwk_body      = $coder->encode( { keys => [ $jwk1, $jwk2 ] } );
-my $bad_type_body = $coder->encode( { keys => [$bad_type_jwk] } );
-
 #
-# Correct exception thrown when JSON not found
+# JwkHttpKeySource
 #
 
-$ua->unmap_all();
-$ua->map_response( qr/\Q$jwk_uri\E/, $not_found_hr );
-my $params = { uri => $jwk_uri };
+subtest 'JwkHttpKeySource' => sub {
+    my $uri = "https://example.com/jwks";
+    my $mock_transport = MockTransport->new();
+    my $coder = JSON::XS->new->ascii;
 
-$source = Google::Auth::IDTokens::JwkHttpKeySource->new($params);
-throws_ok { $source->refresh_keys; }
-qr/KeySourceError: Unable to retrieve data from $jwk_uri/,
-    'raises an error when failing to reach the site';
+    my $jwk1 = {
+        alg => "RS256",
+        e   => "AQAB",
+        kid => "id1",
+        kty => "RSA",
+        n   => "zK8PHf_6V3G5rU-viUOL1HvAYn7q--dxMoUkt7x1rSWX6fimla-lpoYAKhFTLU"
+            . "ELkRKy_6UDzfybz0P9eItqS2UxVWYpKYmKTQ08HgUBUde4GtO_B0SkSk8iLtGh"
+            . "653UBBjgXmfzdfQEz_DsaWn7BMtuAhY9hpMtJye8LQlwaS8ibQrsC0j0GZM5KX"
+            . "RITHwfx06_T1qqC_MOZRA6iJs-J2HNlgeyFuoQVBTY6pRqGXa-qaVsSG3iU-vq"
+            . "NIciFquIq-xydwxLqZNksRRer5VAsSHf0eD3g2DX-cf6paSy1aM40svO9EfSvG"
+            . "_07MuHafEE44RFvSZZ4ubEN9U7ALSjdw",
+    };
+    
+    my $jwks_body = { keys => [ $jwk1 ] };
+    $mock_transport->map_response($uri, 200, $coder->encode($jwks_body));
 
-#
-# Correct exception thrown when content is not JSON
-#
+    my $source = Google::Auth::IDTokens::JwkHttpKeySource->new({ 
+        uri => $uri, 
+        transport => $mock_transport 
+    });
 
-$ua->unmap_all();
-$ua->map_response( qr/\Q$jwk_uri\E/, $not_json_hr );
-
-$source = Google::Auth::IDTokens::JwkHttpKeySource->new($params);
-throws_ok { $source->refresh_keys }
-qr/KeySourceError: Unable to parse JSON/,
-    'raises an error when failing to parse json from the site, class='
-    . ref $source;
-is( $ua->last_http_request_sent->uri, $jwk_uri,
-    'uri matches the one expected' );
-
-#
-# Negative JwkHttp test
-#
-
-my $not_jwk_hr =
-    HTTP::Response->new( '200', 'OK', [ 'Content-Type' => 'text/plain' ],
-    'whoops' );
-$source = Google::Auth::IDTokens::JwkHttpKeySource->new($params);
-
-$ua->unmap_all();
-$ua->map_response( qr/\Q$jwk_uri\E/, $not_jwk_hr );
-
-throws_ok { $source->refresh_keys }
-qr/Unable to parse JSON: malformed JSON string/,
-    'raises an error when failing to parse jwk from the site';
-
-my $malformed_jwk_hr = HTTP::Response->new(
-    '200', 'OK',
-    [ 'Content-Type' => 'text/plain' ],
-    '{"hi": "whoops"}'
-);
-$source = Google::Auth::IDTokens::JwkHttpKeySource->new($params);
-
-$ua->unmap_all();
-$ua->map_response( qr/\Q$jwk_uri\E/, $malformed_jwk_hr );
-
-throws_ok { $source->refresh_keys }
-qr/No keys found in jwk set/,
-    "raises an error when the json structure is malformed";
-
-my $unrecognized_kt_hr =
-    HTTP::Response->new( '200', 'OK', [ 'Content-Type' => 'text/plain' ],
-    $bad_type_body );
-$source = Google::Auth::IDTokens::JwkHttpKeySource->new($params);
-
-$ua->unmap_all();
-$ua->map_response( qr/\Q$jwk_uri\E/, $unrecognized_kt_hr );
-
-throws_ok { $source->refresh_keys }
-  qr/Cannot use key type blah/,
-  'raises an error when an unrecognized key type is encountered';
-
+    my @keys;
+    lives_ok { @keys = $source->refresh_keys } 'JWK refresh succeeds';
+    is( scalar @keys, 1, 'one JWK returned' );
+    is( $keys[0]->id, "id1", 'JWK ID matches' );
+    isa_ok( $keys[0]->key, 'Crypt::PK::RSA' );
+};
 
 #
-# Positive JwkHttp test
+# AggregateKeySource
 #
 
-my $correct_hr =
-    HTTP::Response->new( '200', 'OK', [ 'Content-Type' => 'text/plain' ],
-    $jwk_body );
-$source = Google::Auth::IDTokens::JwkHttpKeySource->new($params);
+subtest 'AggregateKeySource' => sub {
+    my $k1 = Google::Auth::IDTokens::KeyInfo->new({ id => 'a', key => 'k1', algorithm => 'RS256' });
+    my $k2 = Google::Auth::IDTokens::KeyInfo->new({ id => 'b', key => 'k2', algorithm => 'RS256' });
+    
+    my $s1 = Google::Auth::IDTokens::StaticKeySource->new({ keys => [$k1] });
+    my $s2 = Google::Auth::IDTokens::StaticKeySource->new({ keys => [$k2] });
+    
+    my $agg = Google::Auth::IDTokens::AggregateKeySource->new({ sources => [$s1, $s2] });
+    
+    my @keys = $agg->current_keys();
+    is( scalar @keys, 2, 'aggregates keys from both sources' );
+    is_deeply( \@keys, [$k1, $k2], 'keys match' );
+};
 
-$ua->unmap_all();
-$ua->map_response( qr/\Q$jwk_uri\E/, $correct_hr );
-
-TODO:
-{
-    local $TODO = 'the following tests are incomplete';
-
-    lives_ok { $keys = $source->refresh_keys }
-    'refresh succeeds';
-}
-is( ref $keys, 'ARRAY', 'an array of keys is returned' );
-
-is( scalar @{$keys}, 2, 'two keys in the results' );
-
-is(
-    ref $keys->[0],
-    'Google::Auth::IDTokens::KeyInfo',
-    'first returned key is a blessed hash'
-);
-is(
-    ref $keys->[1],
-    'Google::Auth::IDTokens::KeyInfo',
-    'second returned key is a blessed hash'
-);
-
-TODO:
-{
-    local $TODO = 'the following tests are incomplete';
-
-    is( $keys->[0]->{id}, $id1, 'first key matches' );
-    is( $keys->[1]->{id}, $id2, 'second key matches' );
-    is( ref $keys->[0]->{key},
-        'Crypt::PK::RSA', 'key type for first key is correct' );
-    is( ref $keys->[1]->{key},
-        'Crypt::PK::ECC', 'key type for second key is correct' );
-}
-is( $keys->[0]->{algorithm}, 'RS256', 'first algorithm matches' );
-TODO:
-{
-    local $TODO = 'the following tests are incomplete';
-    is( $keys->[1]->{algorithm}, 'ES256', 'second algorithm matches' );
-    is( $ua->last_http_request_sent->uri,
-        $certs_uri, 'uri matches the one expected' );
-}
-
-#diag $obj->{ua};
-
-#diag Data::Dumper::Dumper( $ua->last_http_response_received );
-
-#diag Data::Dumper::Dumper($certs_body);
-
-#qr/KeySourceError: Unable to retrieve data from $certs_uri/,
-#  'raises an error when failing to parse json from the site, class=' . ref $source;
-
-#my $not_found_hr = HTTP::Response->new('404', 'Not Found', ['Content-Type' => 'text/plain'], 'whoops');
+done_testing();

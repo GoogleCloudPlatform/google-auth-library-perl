@@ -1,4 +1,4 @@
-# Copyright 2022 Google, LLC
+# Copyright 2026 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,11 +14,50 @@
 
 package Google::Auth::DefaultCredentials;
 
-use JSON::XS;
 use strict;
+use warnings;
+use JSON::XS;
+use Log::Any qw($log);
 
-my $coder = JSON::XS->new->ascii->pretty->allow_nonref;
+use Google::Auth::ServiceAccountCredentials;
+use Google::Auth::ComputeEngineCredentials;
+use Google::Auth::EnvironmentVars;
 
-our $VERSION = 0.02;
+our $VERSION = '0.02';
+
+my $JSON = JSON::XS->new()->utf8();
+
+sub get_application_default {
+    my ($class, %args) = @_;
+
+    # 1. Environment variable
+    my $env_vars = Google::Auth::EnvironmentVars->new();
+    my $file = $env_vars->CREDENTIALS;
+    if ($file && -f $file) {
+        return $class->_from_file($file, %args);
+    }
+
+    # 2. Well-known file (e.g. Cloud SDK path)
+    # TODO: Implement well-known paths check
+
+    # 3. Compute Engine
+    # We should probably check if we are on GCE first, but often we just try the request.
+    # For now, return a GCE credentials object as fallback.
+    return Google::Auth::ComputeEngineCredentials->new(%args);
+}
+
+sub _from_file {
+    my ($class, $file, %args) = @_;
+    open my $fh, '<', $file or die 'Can\'t open ' . $file . ': ' . $!;
+    my $content = do { local $/; <$fh> };
+    close $fh;
+
+    my $data = $JSON->decode($content);
+    if ($data->{type} eq 'service_account') {
+        return Google::Auth::ServiceAccountCredentials->from_hash($data, %args);
+    }
+    
+    die 'Unsupported credential type: ' . $data->{type};
+}
 
 1;

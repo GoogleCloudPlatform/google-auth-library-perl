@@ -1,4 +1,4 @@
-#!perl -T
+# frozen_string_literal: true
 # Copyright 2022 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,30 +12,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-use 5.006;
+
+package Google::Auth::IDTokens::OpenSSL;
+
 use strict;
 use warnings;
-use Test::More;
 
-BEGIN
-{
-    use_ok('Google::Auth::EnvironmentVars') || print "Bail out!\n";
-}
+use XSLoader;
 
-my $prj_str = 'test-project-string';
+our $VERSION = '0.01';
 
-my $gaev = Google::Auth::EnvironmentVars->new();
+XSLoader::load( __PACKAGE__, $VERSION );
 
-is( $gaev->PROJECT, undef,
-'$gaev->PROJECT undefined when environment variable GOOGLE_CLOUD_PROJECT unset'
-);
-
-$ENV{GOOGLE_CLOUD_PROJECT} = $prj_str;
-
-$gaev = Google::Auth::EnvironmentVars->new();
-
-is( $gaev->PROJECT, $prj_str,
-    '$gaev->PROJECT defined when environment variable GOOGLE_CLOUD_PROJECT set'
-);
-
-done_testing(3);
+1;

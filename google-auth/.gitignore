@@ -1,0 +1,60 @@
+# Editor backup files
+*~
+.#*
+#*#
+
+# Build artifacts & binaries
+/cuda_test
+gemma3_*_patched/
+
+# Log files and outputs
+/logs/
+*.log
+/rescued-console-output-*.txt
+
+# PID files
+/pids/
+*.pid
+
+# Temp files
+piece_*
+
+# Python virtual environment
+/venv/
+
+# Large directories not suitable for Git tracking
+/chatlogs/
+/chatlogs-processed/
+/previous/
+
+# TODO: Rename to CJProc and initialize as a proper submodule
+/cjproc/
+
+# Nested repositories & other directories to be handled separately or ignored
+/huggingface/openapi/
+/huggingface/transformers/
+/gemsh/
+/protobuf/
+/SparkEventTools/
+/TSE-Core/
+/trt_llm_repo/
+
+# and tmp
+tmp
+protobuf/
+*.pdf
+*.epub
+
+# Perl/XS Build Artifacts
+/blib/
+pm_to_blib
+Makefile
+Makefile.old
+MYMETA.json
+MYMETA.yml
+*.o
+*.bs
+*.so
+lib/Google/Auth.c
+lib/Google/Auth/Codec.c
+lib/Google/Auth/IDTokens/OpenSSL.c

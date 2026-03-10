@@ -17,37 +17,61 @@ use 5.006;
 use strict;
 use warnings;
 use ExtUtils::MakeMaker;
+use Config;
+
+my @XS_HELPER_C_FILES = glob('xs/*.c');
+my @XS_HELPER_O_FILES = map { my $o = $_; $o =~ s/\.c$/$Config{obj_ext}/; $o } @XS_HELPER_C_FILES;
+my $XS_HELPER_O_STRING = join(' ', @XS_HELPER_O_FILES);
 
 WriteMakefile(
     NAME             => 'Google::Auth',
     AUTHOR           => q{C.J. Collier <CJCOLLIER@CPAN.ORG>},
     VERSION_FROM     => 'lib/Google/Auth.pm',
-    ABSTRACT_FROM    => 'lib/Google/Auth.pm',
-    LICENSE          => 'Apache 2.0',
+    ABSTRACT         => 'Google Auth Library for Perl',
+    LICENSE          => 'apache_2_0',
     PL_FILES         => {},
     MIN_PERL_VERSION => '5.006',
     CONFIGURE_REQUIRES => {
         'ExtUtils::MakeMaker' => '0',
     },
-    BUILD_REQUIRES => {
-        'DateTime' => '1.54',
-        'LWP::UserAgent' => '0',
-        'Crypt::PK::ECC' => 0,
-        'Crypt::PK::RSA' => 0,
-        'Crypt::X509' => 0,
-        'Crypt::OpenSSL::CA' => '0.91',
-        'Test::Exception' => '0',
-        'Test::LWP::UserAgent' => '0',
-        'Test::More' => '0',
-	'Test::Perl::Critic' => '0',
-	'Throwable::Error' => '0',
-        'JSON::XS' => '0',
-	'Mutex' => '0',
-	},
     PREREQ_PM => {
-        #'ABC'              => '1.6',
-        #'Foo::Bar::Module' => '5.0401',
+        'Moo'                => 0,
+        'Crypt::PK::ECC'     => 0,
+        'Crypt::PK::RSA'     => 0,
+        'Crypt::JWT'         => 0,
+        'JSON::XS'           => 0,
+        'JSON::PP'           => 0,
+        'LWP::UserAgent'     => 0,
+        'LWP::Protocol::https' => 0,
+        'URI'                => 0,
+        'Throwable::Error'   => 0,
+        'Log::Any'           => 0,
     },
+    TEST_REQUIRES => {
+        'Test::More'         => 0,
+        'Test::Deep'         => 0,
+        'Test::Exception'    => 0,
+        'Test::LWP::UserAgent' => 0,
+        'Log::Any::Test'     => 0,
+        'Log::Any::Adapter'  => 0,
+    },
+    XSMULTI          => 1,
+    LIBS             => ['-lcrypto'],
+    INC              => '-I. -Ixs',
+    MYEXTLIB         => $XS_HELPER_O_STRING,
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean => { FILES => 'Google-Auth-Library-Perl-*' },
+    clean => { FILES => "Google-Auth-Library-Perl-* @XS_HELPER_O_FILES" },
 );
+
+package MY;
+
+sub postamble {
+    my $make_frag = '';
+    foreach my $o_file (@XS_HELPER_O_FILES) {
+        my $c_file = $o_file;
+        $c_file =~ s/\.o$/.c/;
+        $make_frag .= "$o_file: $c_file\n";
+        $make_frag .= "\t\$(CCCMD) \$(CCCDLFLAGS) \"-I\$(PERL_INC)\" \$(PASTHRU_DEFINE) \$(DEFINE) $c_file -o $o_file\n\n";
+    }
+    return $make_frag;
+}

@@ -1,18 +1,31 @@
-#requires 'DateTime ';
+# Core dependencies
 requires 'Moo';
 requires 'Crypt::PK::ECC';
 requires 'Crypt::PK::RSA';
-requires 'Crypt::X509';
-requires 'Crypt::OpenSSL::CA';
-requires 'Mutex';
-requires 'Throwable::Error';
-requires 'Perl::Critic';
+requires 'Crypt::JWT';
+requires 'JSON::XS';
 requires 'JSON::PP';
+requires 'LWP::UserAgent';
+requires 'LWP::Protocol::https';
+requires 'URI';
+requires 'Throwable::Error';
+requires 'Log::Any';
 
+# Test dependencies
+on 'test' => sub {
+    requires 'Test::More';
+    requires 'Test::Deep';
+    requires 'Test::Exception';
+    requires 'Test::LWP::UserAgent';
+    requires 'Log::Any::Test';
+    requires 'Log::Any::Adapter';
+};
 
-requires 'Test::Exception';
-requires 'Test::LWP::UserAgent';
-requires 'Test::Perl::Critic';
-requires 'Perl::Critic::Policy::Modules::RequireEndWithOne';
-requires 'Perl::Critic::Policy::Modules::ProhibitMultiplePackages';
-requires 'Perl::Critic::Policy::Subroutines::ProhibitBuiltinHomonyms';
+# Development / Linting
+on 'develop' => sub {
+    requires 'Perl::Critic';
+    requires 'Test::Perl::Critic';
+    requires 'Perl::Critic::Policy::Modules::RequireEndWithOne';
+    requires 'Perl::Critic::Policy::Modules::ProhibitMultiplePackages';
+    requires 'Perl::Critic::Policy::Subroutines::ProhibitBuiltinHomonyms';
+};

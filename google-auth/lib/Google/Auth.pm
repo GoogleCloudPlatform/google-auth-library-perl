@@ -14,26 +14,18 @@
 
 package Google::Auth;
 
-use Google::Auth::EnvironmentVars;
-
 use 5.006;
 use strict;
 use warnings;
+use XSLoader;
+use Log::Any qw($log);
 
-=head1 NAME
-
-Application default credentials.
-
-Google::Auth - Implements application default credentials and project ID detection.
-
-
-=head1 VERSION
-
-Version 0.02
-
-=cut
+use Google::Auth::EnvironmentVars;
+use Google::Auth::DefaultCredentials;
 
 our $VERSION = '0.02';
+
+XSLoader::load( 'Google::Auth', $VERSION );
 
 =head1 SYNOPSIS
 
@@ -43,33 +35,23 @@ Perhaps a little code snippet.
 
     use Google::Auth;
 
-    my $gauth = Google::Auth->new();
-    ...
-
-=head1 EXPORT
-
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
+    my $credentials = Google::Auth->default();
+    $credentials->refresh(Google::Auth::Transport::LWP->new());
+    print $credentials->token;
 
 =head1 SUBROUTINES/METHODS
 
-=head2 default( $scopes, $request )
+=head2 default( %args )
 
 Gets the default credentials for the current environment.
 
 =cut
 
-#[%- Perl::Critic::Policy::Subroutines::ProhibitBuiltinHomonyms %]
-sub default
-{
-    my ( $self, $copes, $request ) = @_;
-    print("Not yet implemented\n");
-    return;
+sub default {
+    my ( $self, %args ) = @_;
+    return Google::Auth::DefaultCredentials->get_application_default(%args);
 }
 
-# I have no idea why my perlcritic throws this
-#[%- Perl::Critic::Policy::Modules::RequireEndWithOne %]
-# End of Google::Auth
 1;
 
 =head1 AUTHOR

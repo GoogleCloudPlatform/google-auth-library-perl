@@ -19,6 +19,7 @@ use strict;
 use warnings;
 
 use Moo;
+use Log::Any qw($log);
 
 =head1 NAME
 
@@ -48,7 +49,7 @@ Library.
 
 has PROJECT => (
     is            => 'ro',
-    builder       => sub { $ENV{GOOGLE_CLOUD_PROJECT} },
+    builder       => sub { return $ENV{GOOGLE_CLOUD_PROJECT} },
     documentation => 'Environment variable defining default project',
 );
 
@@ -61,7 +62,7 @@ situations (such as Google App Engine).
 
 has LEGACY_PROJECT => (
     is            => 'ro',
-    builder       => sub { $ENV{GCLOUD_PROJECT} },
+    builder       => sub { return $ENV{GCLOUD_PROJECT} },
     documentation =>
         'Previously used environment variable defining the default project',
 );
@@ -75,7 +76,7 @@ default credentials
 
 has CREDENTIALS => (
     is            => 'ro',
-    builder       => sub { $ENV{GOOGLE_APPLICATION_CREDENTIALS} },
+    builder       => sub { return $ENV{GOOGLE_APPLICATION_CREDENTIALS} },
     documentation =>
 'Environment variable defining the location of Google application default credentials',
 );
@@ -88,7 +89,7 @@ The environment variable name which can replace ~/.config if set
 
 has CLOUD_SDK_CONFIG_DIR => (
     is            => 'ro',
-    builder       => sub { $ENV{CLOUDSDK_CONFIG} },
+    builder       => sub { return $ENV{CLOUDSDK_CONFIG} },
     documentation =>
 q{Environment variable defines the location of Google Cloud SDK's config files},
 );
@@ -102,7 +103,7 @@ addresses used when contacting the GCE metadata service.
 
 has GCE_METADATA_ROOT => (
     is            => 'ro',
-    builder       => sub { $ENV{GCE_METADATA_ROOT} },
+    builder       => sub { return $ENV{GCE_METADATA_ROOT} },
     documentation =>
 'Environment variable providing an alternate hostname or host:port to be '
         . 'used for GCE metadata requests',
@@ -114,7 +115,7 @@ has GCE_METADATA_ROOT => (
 
 has GCE_METADATA_IP => (
     is            => 'ro',
-    builder       => sub { $ENV{GCE_METADATA_IP} },
+    builder       => sub { return $ENV{GCE_METADATA_IP} },
     documentation =>
 'Environment variable providing an alternate ip:port to be used for ip-only '
         . 'GCE metadata requests',

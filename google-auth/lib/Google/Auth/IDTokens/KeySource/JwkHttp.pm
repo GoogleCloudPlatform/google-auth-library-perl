@@ -1,5 +1,4 @@
-#!perl -T
-# Copyright 2022 Google LLC
+# Copyright 2026 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,18 +11,26 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-use 5.006;
+
+package Google::Auth::IDTokens::KeySource::JwkHttp;
+
 use strict;
 use warnings;
-use Test::More;
-use Test::Exception;
 
-BEGIN
-{
-    use_ok('Google::Auth::Exceptions') || print "Bail out!\n";
+use Google::Auth::IDTokens::KeySource::Http;
+use Google::Auth::IDTokens::KeyInfo;
+
+our @ISA = qw(Google::Auth::IDTokens::KeySource::Http);
+our $VERSION = '0.01';
+
+##
+# A key source that downloads a JWK set.
+#
+
+sub interpret_json {
+    my ( $self, $data ) = @_;
+    my $key_infos = Google::Auth::IDTokens::KeyInfo->from_jwk_set($data);
+    return @$key_infos;
 }
 
-throws_ok { Google::Auth::Error->throw("generic Google Auth Error"); }
-qr/generic/;
-
-done_testing(2);
+1;
