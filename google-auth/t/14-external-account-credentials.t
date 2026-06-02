@@ -168,4 +168,114 @@ subtest 'Load from JSON configuration' => sub {
     is( $creds->service_account_impersonation_url, 'https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/target-sa@google.com:generateAccessToken', 'impersonation url matches' );
 };
 
+subtest 'Initialization and Validation Errors' => sub {
+    my $base_opts = {
+        audience           => '//iam.googleapis.com/projects/123456/locations/global/workloadIdentityPools/my-pool/providers/my-provider',
+        subject_token_type => 'urn:ietf:params:oauth:token-type:jwt',
+        token_url          => 'https://sts.googleapis.com/v1/token',
+    };
+
+    # 1. Missing credential_source
+    eval {
+        Google::Auth::ExternalAccountCredentials->new(
+            %$base_opts,
+        );
+    };
+    like( $@, qr/Missing required arguments: credential_source/, 'throws error on missing credential_source' );
+
+    # 2. Invalid options environment_id
+    eval {
+        Google::Auth::ExternalAccountCredentials->new(
+            %$base_opts,
+            credential_source => {
+                url            => 'http://dummyurl.com',
+                environment_id => 'aws1'
+            }
+        );
+    };
+    like( $@, qr/Invalid Identity Pool credential_source field 'environment_id'/, 'throws error on environment_id' );
+
+    # 3. Ambiguous credential source (file and url conflict)
+    eval {
+        Google::Auth::ExternalAccountCredentials->new(
+            %$base_opts,
+            credential_source => {
+                file => '/tmp/token',
+                url  => 'http://dummyurl.com'
+            }
+        );
+    };
+    like( $@, qr/Ambiguous credential_source. 'file' is mutually exclusive with 'url'/, 'throws error on file/url conflict' );
+
+    # 4. Missing both file and url in credential_source
+    eval {
+        Google::Auth::ExternalAccountCredentials->new(
+            %$base_opts,
+            credential_source => {}
+        );
+    };
+    like( $@, qr/Missing credential_source. A 'file' or 'url' must be provided./, 'throws error on empty credential_source' );
+
+    # 5. Invalid credential source format format type
+    eval {
+        Google::Auth::ExternalAccountCredentials->new(
+            %$base_opts,
+            credential_source => {
+                url    => 'http://dummyurl.com',
+                format => { type => 'invalid_format' }
+            }
+        );
+    };
+    like( $@, qr/Invalid credential_source format invalid_format/, 'throws error on invalid format' );
+
+    # 6. Missing field name for JSON format
+    eval {
+        Google::Auth::ExternalAccountCredentials->new(
+            %$base_opts,
+            credential_source => {
+                url    => 'http://dummyurl.com',
+                format => { type => 'json' }
+            }
+        );
+    };
+    like( $@, qr/Missing subject_token_field_name for JSON credential_source format/, 'throws error on missing json field name' );
+};
+
+subtest 'STS Exchange Failure' => sub {
+    my $mock_ua = Test::LWP::UserAgent->new();
+    my ($fh, $temp_filename) = tempfile( UNLINK => 1 );
+    print $fh 'my-file-subject-token';
+    close($fh);
+
+    my $creds = Google::Auth::ExternalAccountCredentials->new(
+        audience           => '//iam.googleapis.com/projects/123456/locations/global/workloadIdentityPools/my-pool/providers/my-provider',
+        subject_token_type => 'urn:ietf:params:oauth:token-type:jwt',
+        token_url          => 'https://sts.googleapis.com/v1/token',
+        credential_source  => {
+            file => $temp_filename,
+        },
+        ua => $mock_ua,
+    );
+
+    $mock_ua->map_response(
+        sub {
+            my ($request) = @_;
+            return $request->url eq 'https://sts.googleapis.com/v1/token';
+        },
+        HTTP::Response->new(
+            400, 'Bad Request',
+            [ 'Content-Type' => 'application/json' ],
+            encode_json({
+                error             => 'invalid_grant',
+                error_description => 'The subject token is invalid or expired'
+            })
+        )
+    );
+
+    eval {
+        $creds->fetch_access_token();
+    };
+    like( $@, qr/Token exchange failed with status 400/, 'throws detailed error on STS failure' );
+};
+
 done_testing();

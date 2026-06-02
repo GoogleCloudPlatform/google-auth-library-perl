@@ -95,4 +95,75 @@ subtest 'Load from JSON configuration' => sub {
     is( $creds->source_credentials->client_email, 'source-sa@google.com', 'source email matches' );
 };
 
+subtest 'Validation and Configuration Errors' => sub {
+    # 1. Missing base and source credentials
+    eval {
+        Google::Auth::ImpersonatedServiceAccountCredentials->new(
+            impersonation_url => 'https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/test-sa@google.com:generateAccessToken',
+            scope             => 'https://www.googleapis.com/auth/cloud-platform',
+        );
+    };
+    like( $@, qr/either source_credentials or base_credentials must be provided/, 'throws error on missing source/base credentials' );
+
+    # 2. Missing impersonation_url (Moo required validation)
+    eval {
+        Google::Auth::ImpersonatedServiceAccountCredentials->new(
+            source_credentials => MockSource->new(),
+            scope              => 'https://www.googleapis.com/auth/cloud-platform',
+        );
+    };
+    like( $@, qr/Missing required arguments: impersonation_url/, 'throws error on missing impersonation_url' );
+
+    # 3. Nested impersonation check at constructor
+    my $source_creds = MockSource->new();
+    my $impersonated_source = Google::Auth::ImpersonatedServiceAccountCredentials->new(
+        source_credentials => $source_creds,
+        impersonation_url  => 'https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/first-sa@google.com:generateAccessToken',
+        scope              => 'https://www.googleapis.com/auth/cloud-platform',
+    );
+
+    eval {
+        Google::Auth::ImpersonatedServiceAccountCredentials->new(
+            source_credentials => $impersonated_source,
+            impersonation_url  => 'https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/second-sa@google.com:generateAccessToken',
+            scope              => 'https://www.googleapis.com/auth/cloud-platform',
+        );
+    };
+    like( $@, qr/Source credentials can't be of type impersonated_service_account/, 'throws error on nested impersonation' );
+};
+
+subtest 'Impersonation HTTP Exchange Failure' => sub {
+    my $mock_ua = Test::LWP::UserAgent->new();
+    my $source_creds = MockSource->new();
+
+    my $creds = Google::Auth::ImpersonatedServiceAccountCredentials->new(
+        source_credentials => $source_creds,
+        impersonation_url => 'https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/test-sa@google.com:generateAccessToken',
+        scope             => 'https://www.googleapis.com/auth/cloud-platform',
+        ua                => $mock_ua,
+    );
+
+    $mock_ua->map_response(
+        sub {
+            my ($request) = @_;
+            return $request->url eq 'https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/test-sa@google.com:generateAccessToken';
+        },
+        HTTP::Response->new(
+            403, 'Forbidden',
+            [ 'Content-Type' => 'application/json' ],
+            encode_json({
+                error => {
+                    message => 'The caller does not have permission',
+                    status  => 'PERMISSION_DENIED'
+                }
+            })
+        )
+    );
+
+    eval {
+        $creds->fetch_access_token();
+    };
+    like( $@, qr/Service account impersonation failed with status 403/, 'throws detailed error on exchange failure' );
+};
+
 done_testing();

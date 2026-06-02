@@ -65,6 +65,9 @@ around BUILDARGS => sub {
         $args->{impersonation_url} //= $json->{service_account_impersonation_url};
         $args->{scope}             //= $json->{scopes};
         if ( my $source_creds_info = $json->{source_credentials} ) {
+            if ( $source_creds_info->{type} eq 'impersonated_service_account' ) {
+                Google::Auth::Error->throw('Source credentials can\'t be of type impersonated_service_account, use delegates to chain impersonation.');
+            }
             require Google::Auth::DefaultCredentials;
             $args->{source_credentials} //= Google::Auth::DefaultCredentials->make_creds(
                 json_key => $source_creds_info,
@@ -73,13 +76,22 @@ around BUILDARGS => sub {
     }
 
     if ( !defined $args->{source_credentials} && !defined $args->{base_credentials} ) {
-        die 'Missing required option: either source_credentials or base_credentials must be provided';
+        Google::Auth::Error->throw('Missing required option: either source_credentials or base_credentials must be provided');
     }
 
     $args->{source_credentials} //= $args->{base_credentials};
 
     return $args;
 };
+
+sub BUILD {
+    my ($self) = @_;
+
+    my $source_creds = $self->source_credentials;
+    if ( $source_creds->isa('Google::Auth::ImpersonatedServiceAccountCredentials') ) {
+        Google::Auth::Error->throw('Source credentials can\'t be of type impersonated_service_account, use delegates to chain impersonation.');
+    }
+}
 
 sub fetch_access_token {
     my ( $self, %options ) = @_;

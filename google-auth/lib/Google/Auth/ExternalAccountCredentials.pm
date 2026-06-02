@@ -88,18 +88,49 @@ around BUILDARGS => sub {
     return $args;
 };
 
-sub retrieve_subject_token {
+sub BUILD {
     my ($self) = @_;
 
     my $source = $self->credential_source;
     if ( !defined $source ) {
-        Google::Auth::Error->throw('Missing credential_source configuration');
+        Google::Auth::Error->throw('Missing credential_source. A \'file\' or \'url\' must be provided.');
     }
 
+    if ( exists $source->{environment_id} && defined $source->{environment_id} ) {
+        Google::Auth::Error->throw('Invalid Identity Pool credential_source field \'environment_id\'');
+    }
+
+    my $file = $source->{file};
+    my $url  = $source->{url};
+
+    if ( defined $file && defined $url ) {
+        Google::Auth::Error->throw('Ambiguous credential_source. \'file\' is mutually exclusive with \'url\'.');
+    }
+
+    if ( !defined $file && !defined $url ) {
+        Google::Auth::Error->throw('Missing credential_source. A \'file\' or \'url\' must be provided.');
+    }
+
+    my $format = $source->{format} // {};
+    my $format_type = $format->{type} // 'text';
+
+    if ( $format_type ne 'text' && $format_type ne 'json' ) {
+        Google::Auth::Error->throw('Invalid credential_source format ' . $format_type);
+    }
+
+    if ( $format_type eq 'json' && !defined $format->{subject_token_field_name} ) {
+        Google::Auth::Error->throw('Missing subject_token_field_name for JSON credential_source format');
+    }
+}
+
+sub retrieve_subject_token {
+    my ($self) = @_;
+
+    my $source = $self->credential_source;
     my $content;
     my $source_name;
 
-    if ( exists $source->{file} && defined $source->{file} ) {
+    if ( defined $source->{file} ) {
         $source_name = $source->{file};
         if ( ! -f $source_name ) {
             Google::Auth::Error->throw('Credential source file ' . $source_name . ' not found');
@@ -110,7 +141,7 @@ sub retrieve_subject_token {
         $content = <$fh>;
         close($fh);
     }
-    elsif ( exists $source->{url} && defined $source->{url} ) {
+    else {
         $source_name = $source->{url};
         my $headers = $source->{headers} // {};
         my $ua = $self->ua;
@@ -126,9 +157,6 @@ sub retrieve_subject_token {
         }
         $content = $response->decoded_content;
     }
-    else {
-        Google::Auth::Error->throw('credential_source must contain either file or url');
-    }
 
     my $format = $source->{format} // {};
     my $format_type = $format->{type} // 'text';
@@ -136,11 +164,8 @@ sub retrieve_subject_token {
     if ( $format_type eq 'text' ) {
         return $content;
     }
-    elsif ( $format_type eq 'json' ) {
+    else {
         my $field = $format->{subject_token_field_name};
-        if ( !defined $field ) {
-            Google::Auth::Error->throw('Missing subject_token_field_name for JSON credential_source format');
-        }
         my $data = eval { decode_json($content) };
         if ($@) {
             Google::Auth::Error->throw('Failed to parse JSON from credential resource ' . $source_name . ': ' . $@);
@@ -150,9 +175,6 @@ sub retrieve_subject_token {
             Google::Auth::Error->throw('Missing field ' . $field . ' in OIDC JSON response');
         }
         return $token;
-    }
-    else {
-        Google::Auth::Error->throw('Invalid credential_source format: ' . $format_type);
     }
 }
 
