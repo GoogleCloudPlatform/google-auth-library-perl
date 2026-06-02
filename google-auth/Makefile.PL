@@ -45,8 +45,7 @@ WriteMakefile(
 	'Mutex' => '0',
 	},
     PREREQ_PM => {
-        #'ABC'              => '1.6',
-        #'Foo::Bar::Module' => '5.0401',
+        'Capture::Tiny' => '0.48',
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES => 'Google-Auth-Library-Perl-*' },

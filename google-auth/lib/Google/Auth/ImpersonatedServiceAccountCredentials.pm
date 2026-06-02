@@ -18,9 +18,12 @@ use strict;
 use warnings;
 
 use Moo;
+extends 'Google::Auth::Credentials';
+
 use JSON::PP;
 use LWP::UserAgent;
 use Google::Auth::Exceptions;
+use Google::Auth::RetryHelper;
 
 our $VERSION = '0.02';
 
@@ -42,14 +45,6 @@ has impersonation_url => (
 has scope => (
     is       => 'ro',
     required => 1,
-);
-
-has access_token => (
-    is  => 'rw',
-);
-
-has expires_at => (
-    is  => 'rw',
 );
 
 has ua => (
@@ -99,7 +94,10 @@ sub fetch_access_token {
     my $source_creds = $self->source_credentials;
     my $source_token;
 
-    if ( $source_creds->can('access_token') && defined $source_creds->access_token ) {
+    if ( $source_creds->can('get_token') ) {
+        $source_token = $source_creds->get_token(%options);
+    }
+    elsif ( $source_creds->can('access_token') && defined $source_creds->access_token ) {
         $source_token = $source_creds->access_token;
     }
     elsif ( $source_creds->can('fetch_access_token') ) {
@@ -114,18 +112,18 @@ sub fetch_access_token {
     });
 
     my $ua = $self->ua;
-    my $response = $ua->post(
-        $self->impersonation_url,
-        'Content-Type'  => 'application/json',
-        'Authorization' => 'Bearer ' . $source_token,
-        'Content'       => $req_body
-    );
-
-    if ( !$response->is_success ) {
-        Google::Auth::Error->throw(
-            'Service account impersonation failed with status ' . $response->code . ': ' . $response->decoded_content
+    my $response = Google::Auth::RetryHelper->execute_with_retry(sub {
+        my $res = $ua->post(
+            $self->impersonation_url,
+            'Content-Type'  => 'application/json',
+            'Authorization' => 'Bearer ' . $source_token,
+            'Content'       => $req_body
         );
-    }
+        if ( !$res->is_success ) {
+            Google::Auth::Error->throw('Service account impersonation failed with status ' . $res->code . ': ' . $res->decoded_content);
+        }
+        return $res;
+    }, %options);
 
     my $res_data = decode_json($response->decoded_content);
     $self->access_token($res_data->{accessToken});

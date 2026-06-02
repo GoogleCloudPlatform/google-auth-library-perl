@@ -5,6 +5,7 @@ requires 'Mutex';
 requires 'Throwable::Error';
 requires 'Perl::Critic';
 requires 'JSON::PP';
+requires 'Capture::Tiny';
 
 
 requires 'Test::Exception';

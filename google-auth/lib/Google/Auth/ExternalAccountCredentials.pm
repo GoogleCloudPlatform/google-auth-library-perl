@@ -18,9 +18,12 @@ use strict;
 use warnings;
 
 use Moo;
+extends 'Google::Auth::Credentials';
+
 use JSON::PP;
 use LWP::UserAgent;
 use Google::Auth::Exceptions;
+use Google::Auth::RetryHelper;
 
 our $VERSION = '0.02';
 
@@ -54,19 +57,6 @@ has scope => (
     required => 0,
 );
 
-has universe_domain => (
-    is      => 'ro',
-    default => sub { 'googleapis.com' },
-);
-
-has access_token => (
-    is  => 'rw',
-);
-
-has expires_at => (
-    is  => 'rw',
-);
-
 has ua => (
     is      => 'ro',
     default => sub { LWP::UserAgent->new( timeout => 10 ) },
@@ -96,31 +86,57 @@ sub BUILD {
         Google::Auth::Error->throw('Missing credential_source. A \'file\' or \'url\' must be provided.');
     }
 
-    if ( exists $source->{environment_id} && defined $source->{environment_id} ) {
-        Google::Auth::Error->throw('Invalid Identity Pool credential_source field \'environment_id\'');
+    # Only skip environment_id validation if we are in the AWS subclass
+    if ( !$self->isa('Google::Auth::ExternalAccountCredentials::Aws') ) {
+        if ( exists $source->{environment_id} && defined $source->{environment_id} ) {
+            Google::Auth::Error->throw('Invalid Identity Pool credential_source field \'environment_id\'');
+        }
     }
 
-    my $file = $source->{file};
-    my $url  = $source->{url};
+    # Pluggable subclass does not require file or url since it executes command
+    if ( !$self->isa('Google::Auth::ExternalAccountCredentials::Pluggable') 
+      && !$self->isa('Google::Auth::ExternalAccountCredentials::Aws') ) {
+        my $file = $source->{file};
+        my $url  = $source->{url};
 
-    if ( defined $file && defined $url ) {
-        Google::Auth::Error->throw('Ambiguous credential_source. \'file\' is mutually exclusive with \'url\'.');
+        if ( defined $file && defined $url ) {
+            Google::Auth::Error->throw('Ambiguous credential_source. \'file\' is mutually exclusive with \'url\'.');
+        }
+
+        if ( !defined $file && !defined $url ) {
+            Google::Auth::Error->throw('Missing credential_source. A \'file\' or \'url\' must be provided.');
+        }
+
+        my $format = $source->{format} // {};
+        my $format_type = $format->{type} // 'text';
+
+        if ( $format_type ne 'text' && $format_type ne 'json' ) {
+            Google::Auth::Error->throw('Invalid credential_source format ' . $format_type);
+        }
+
+        if ( $format_type eq 'json' && !defined $format->{subject_token_field_name} ) {
+            Google::Auth::Error->throw('Missing subject_token_field_name for JSON credential_source format');
+        }
+    }
+}
+
+sub make_creds {
+    my ( $class, %options ) = @_;
+    my $args = $class->BUILDARGS(%options);
+
+    my $source = $args->{credential_source};
+    my $subject_token_type = $args->{subject_token_type};
+
+    if ( defined $subject_token_type && $subject_token_type eq 'urn:ietf:params:aws:token-type:aws4_request' ) {
+        require Google::Auth::ExternalAccountCredentials::Aws;
+        return Google::Auth::ExternalAccountCredentials::Aws->new($args);
+    }
+    elsif ( defined $source && exists $source->{executable} ) {
+        require Google::Auth::ExternalAccountCredentials::Pluggable;
+        return Google::Auth::ExternalAccountCredentials::Pluggable->new($args);
     }
 
-    if ( !defined $file && !defined $url ) {
-        Google::Auth::Error->throw('Missing credential_source. A \'file\' or \'url\' must be provided.');
-    }
-
-    my $format = $source->{format} // {};
-    my $format_type = $format->{type} // 'text';
-
-    if ( $format_type ne 'text' && $format_type ne 'json' ) {
-        Google::Auth::Error->throw('Invalid credential_source format ' . $format_type);
-    }
-
-    if ( $format_type eq 'json' && !defined $format->{subject_token_field_name} ) {
-        Google::Auth::Error->throw('Missing subject_token_field_name for JSON credential_source format');
-    }
+    return Google::Auth::ExternalAccountCredentials->new($args);
 }
 
 sub retrieve_subject_token {
@@ -196,15 +212,17 @@ sub fetch_access_token {
     };
 
     my $ua = $self->ua;
-    my $response = $ua->post(
-        $self->token_url,
-        'Content-Type' => 'application/x-www-form-urlencoded',
-        'Content'      => $sts_payload
-    );
-
-    if ( !$response->is_success ) {
-        Google::Auth::Error->throw('Token exchange failed with status ' . $response->code . ': ' . $response->decoded_content);
-    }
+    my $response = Google::Auth::RetryHelper->execute_with_retry(sub {
+        my $res = $ua->post(
+            $self->token_url,
+            'Content-Type' => 'application/x-www-form-urlencoded',
+            'Content'      => $sts_payload
+        );
+        if ( !$res->is_success ) {
+            Google::Auth::Error->throw('Token exchange failed with status ' . $res->code . ': ' . $res->decoded_content);
+        }
+        return $res;
+    }, %options);
 
     my $sts_data = decode_json($response->decoded_content);
     my $sts_token = $sts_data->{access_token};
@@ -214,16 +232,18 @@ sub fetch_access_token {
             scope => \@scopes_list
         });
 
-        my $impers_res = $ua->post(
-            $self->service_account_impersonation_url,
-            'Content-Type'  => 'application/json',
-            'Authorization' => 'Bearer ' . $sts_token,
-            'Content'       => $impersonation_body
-        );
-
-        if ( !$impers_res->is_success ) {
-            Google::Auth::Error->throw('Service account impersonation failed with status ' . $impers_res->code . ': ' . $impers_res->decoded_content);
-        }
+        my $impers_res = Google::Auth::RetryHelper->execute_with_retry(sub {
+            my $res = $ua->post(
+                $self->service_account_impersonation_url,
+                'Content-Type'  => 'application/json',
+                'Authorization' => 'Bearer ' . $sts_token,
+                'Content'       => $impersonation_body
+            );
+            if ( !$res->is_success ) {
+                Google::Auth::Error->throw('Service account impersonation failed with status ' . $res->code . ': ' . $res->decoded_content);
+            }
+            return $res;
+        }, %options);
 
         my $impers_data = decode_json($impers_res->decoded_content);
         $self->access_token($impers_data->{accessToken});

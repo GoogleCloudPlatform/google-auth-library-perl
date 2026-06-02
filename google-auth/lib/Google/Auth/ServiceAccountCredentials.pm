@@ -1,4 +1,4 @@
-# Copyright 2022 Google, LLC
+# Copyright 2026 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,7 +18,14 @@ use strict;
 use warnings;
 
 use Moo;
+extends 'Google::Auth::Credentials';
+
 use JSON::PP;
+use MIME::Base64 qw(encode_base64url);
+use LWP::UserAgent;
+use Google::Auth;
+use Google::Auth::Exceptions;
+use Google::Auth::RetryHelper;
 
 our $VERSION = '0.02';
 
@@ -72,6 +79,11 @@ has client_x509_cert_url => (
     required => 0,
 );
 
+has ua => (
+    is      => 'ro',
+    default => sub { LWP::UserAgent->new( timeout => 10 ) },
+);
+
 around BUILDARGS => sub {
     my ( $orig, $class, @args ) = @_;
     my $args = $class->$orig(@args);
@@ -91,5 +103,76 @@ around BUILDARGS => sub {
     return $args;
 };
 
-1;
+sub _encode_base64url {
+    my ($data) = @_;
+    my $s = MIME::Base64::encode_base64url($data);
+    $s =~ s/=+$//;
+    return $s;
+}
 
+sub fetch_access_token {
+    my ( $self, %options ) = @_;
+
+    my $private_key  = $self->private_key;
+    my $client_email = $self->client_email;
+    my $token_uri    = $self->token_uri // 'https://oauth2.googleapis.com/token';
+
+    if ( !defined $private_key || !defined $client_email ) {
+        Google::Auth::Error->throw('Missing private_key or client_email to sign and fetch token');
+    }
+
+    my $now = time();
+    my $header = {
+        alg => 'RS256',
+        typ => 'JWT',
+    };
+    $header->{kid} = $self->private_key_id if defined $self->private_key_id;
+
+    my $payload = {
+        iss => $client_email,
+        sub => $client_email,
+        aud => $token_uri,
+        exp => $now + 3600,
+        iat => $now,
+    };
+
+    my $header_b64  = _encode_base64url(encode_json($header));
+    my $payload_b64 = _encode_base64url(encode_json($payload));
+    my $message     = $header_b64 . '.' . $payload_b64;
+
+    my $signature_raw = Google::Auth::rsa_sign_sha256($private_key, $message);
+    if ( !defined $signature_raw ) {
+        Google::Auth::Error->throw('Failed to sign JWT assertion using private key');
+    }
+    my $signature_b64 = _encode_base64url($signature_raw);
+    my $assertion     = $message . '.' . $signature_b64;
+
+    my $ua = $self->ua;
+    my $post_body = {
+        grant_type => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+        assertion  => $assertion,
+    };
+
+    my $response = Google::Auth::RetryHelper->execute_with_retry(sub {
+        my $res = $ua->post(
+            $token_uri,
+            'Content-Type' => 'application/x-www-form-urlencoded',
+            'Content'      => $post_body
+        );
+        if ( !$res->is_success ) {
+            Google::Auth::Error->throw('HTTP request failed with status ' . $res->code . ': ' . $res->decoded_content);
+        }
+        return $res;
+    }, %options);
+
+    my $res_data = decode_json($response->decoded_content);
+    my $token    = $res_data->{access_token};
+    my $expires  = $res_data->{expires_in} // 3600;
+
+    $self->access_token($token);
+    $self->expires_at($now + $expires);
+
+    return $token;
+}
+
+1;

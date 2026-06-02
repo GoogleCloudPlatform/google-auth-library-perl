@@ -77,6 +77,13 @@ sub make_creds {
         }
 
         my $creds_class = $self->_determine_class_for_type($type);
+        if ( $creds_class->can('make_creds') ) {
+            return $creds_class->make_creds(
+                json_key => $info,
+                scope    => $scopes,
+                %options
+            );
+        }
         return $creds_class->new(
             json_key => $info,
             scope    => $scopes,
