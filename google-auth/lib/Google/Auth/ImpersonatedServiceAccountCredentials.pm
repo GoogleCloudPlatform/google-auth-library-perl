@@ -24,6 +24,7 @@ use JSON::PP;
 use LWP::UserAgent;
 use Google::Auth::Exceptions;
 use Google::Auth::RetryHelper;
+use Log::Any qw($log);
 
 our $VERSION = '0.02';
 
@@ -95,15 +96,19 @@ sub fetch_access_token {
     my $source_token;
 
     if ( $source_creds->can('get_token') ) {
+        $log->tracef('Fetching source credentials token using get_token...');
         $source_token = $source_creds->get_token(%options);
     }
     elsif ( $source_creds->can('access_token') && defined $source_creds->access_token ) {
+        $log->tracef('Using cached access_token from source credentials...');
         $source_token = $source_creds->access_token;
     }
     elsif ( $source_creds->can('fetch_access_token') ) {
+        $log->tracef('Fetching source credentials token using fetch_access_token...');
         $source_token = $source_creds->fetch_access_token(%options);
     }
     else {
+        $log->errorf('Source credentials do not contain a valid token retrieval mechanism');
         Google::Auth::Error->throw('Source credentials do not have a valid access token or fetch_access_token method');
     }
 
@@ -112,6 +117,7 @@ sub fetch_access_token {
     });
 
     my $ua = $self->ua;
+    $log->infof('Requesting impersonated access token from %s...', $self->impersonation_url);
     my $response = Google::Auth::RetryHelper->execute_with_retry(sub {
         my $res = $ua->post(
             $self->impersonation_url,
@@ -120,6 +126,7 @@ sub fetch_access_token {
             'Content'       => $req_body
         );
         if ( !$res->is_success ) {
+            $log->warnf('Impersonated token exchange failed: status %s', $res->code);
             Google::Auth::Error->throw('Service account impersonation failed with status ' . $res->code . ': ' . $res->decoded_content);
         }
         return $res;

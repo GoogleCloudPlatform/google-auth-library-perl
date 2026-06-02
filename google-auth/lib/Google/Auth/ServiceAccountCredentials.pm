@@ -26,6 +26,7 @@ use LWP::UserAgent;
 use Google::Auth;
 use Google::Auth::Exceptions;
 use Google::Auth::RetryHelper;
+use Log::Any qw($log);
 
 our $VERSION = '0.02';
 
@@ -118,6 +119,7 @@ sub fetch_access_token {
     my $token_uri    = $self->token_uri // 'https://oauth2.googleapis.com/token';
 
     if ( !defined $private_key || !defined $client_email ) {
+        $log->errorf('Missing private_key or client_email for ServiceAccountCredentials token exchange');
         Google::Auth::Error->throw('Missing private_key or client_email to sign and fetch token');
     }
 
@@ -140,8 +142,10 @@ sub fetch_access_token {
     my $payload_b64 = _encode_base64url(encode_json($payload));
     my $message     = $header_b64 . '.' . $payload_b64;
 
+    $log->tracef('Signing JWT assertion for service account %s (key ID: %s)...', $client_email, $self->private_key_id // 'N/A');
     my $signature_raw = Google::Auth::rsa_sign_sha256($private_key, $message);
     if ( !defined $signature_raw ) {
+        $log->errorf('Failed to sign JWT assertion for service account %s', $client_email);
         Google::Auth::Error->throw('Failed to sign JWT assertion using private key');
     }
     my $signature_b64 = _encode_base64url($signature_raw);
@@ -153,6 +157,7 @@ sub fetch_access_token {
         assertion  => $assertion,
     };
 
+    $log->infof('Exchanging signed JWT assertion for access token at %s...', $token_uri);
     my $response = Google::Auth::RetryHelper->execute_with_retry(sub {
         my $res = $ua->post(
             $token_uri,
@@ -160,6 +165,7 @@ sub fetch_access_token {
             'Content'      => $post_body
         );
         if ( !$res->is_success ) {
+            $log->warnf('Service account token request failed at %s: status %s', $token_uri, $res->code);
             Google::Auth::Error->throw('HTTP request failed with status ' . $res->code . ': ' . $res->decoded_content);
         }
         return $res;

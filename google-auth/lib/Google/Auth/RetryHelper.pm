@@ -19,6 +19,7 @@ use warnings;
 
 use Google::Auth::Exceptions;
 use Time::HiRes;
+use Log::Any qw($log);
 
 our $VERSION = '0.02';
 
@@ -41,6 +42,7 @@ sub execute_with_retry {
 
         my $err = $@;
         if ( $attempt >= $max_retries ) {
+            $log->errorf('Max retry attempts (%d/%d) reached. Throwing error: %s', $attempt, $max_retries, $err);
             die $err;
         }
 
@@ -48,9 +50,11 @@ sub execute_with_retry {
           || $err =~ /Missing required/i 
           || $err =~ /Ambiguous/i 
           || $err =~ /Invalid credential_source/i ) {
+            $log->errorf('Fatal un-retryable error encountered: %s. Propagating...', $err);
             die $err;
         }
 
+        $log->warnf('Transient error on attempt %d/%d: %s. Retrying in %s seconds...', $attempt, $max_retries, $err, $delay);
         Time::HiRes::sleep($delay);
         $delay *= $backoff_factor;
     }

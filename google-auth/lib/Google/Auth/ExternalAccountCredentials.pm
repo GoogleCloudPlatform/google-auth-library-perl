@@ -24,6 +24,7 @@ use JSON::PP;
 use LWP::UserAgent;
 use Google::Auth::Exceptions;
 use Google::Auth::RetryHelper;
+use Log::Any qw($log);
 
 our $VERSION = '0.02';
 
@@ -167,8 +168,10 @@ sub retrieve_subject_token {
             push @header_list, $k => $v;
         }
 
+        $log->tracef('Retrieving subject token from URL: %s...', $source_name);
         my $response = $ua->get( $source_name, @header_list );
         if ( !$response->is_success ) {
+            $log->errorf('Failed to fetch subject token from URL %s: %s', $source_name, $response->status_line);
             Google::Auth::Error->throw('Failed to retrieve subject token from URL ' . $source_name . ': ' . $response->status_line);
         }
         $content = $response->decoded_content;
@@ -178,18 +181,23 @@ sub retrieve_subject_token {
     my $format_type = $format->{type} // 'text';
 
     if ( $format_type eq 'text' ) {
+        $log->tracef('Subject token retrieved successfully as text.');
         return $content;
     }
     else {
         my $field = $format->{subject_token_field_name};
+        $log->tracef('Parsing OIDC JSON response to extract subject token field: %s', $field);
         my $data = eval { decode_json($content) };
         if ($@) {
+            $log->errorf('OIDC JSON parsing failed: %s', $@);
             Google::Auth::Error->throw('Failed to parse JSON from credential resource ' . $source_name . ': ' . $@);
         }
         my $token = $data->{$field};
         if ( !defined $token ) {
+            $log->errorf('OIDC JSON response missing expected field: %s', $field);
             Google::Auth::Error->throw('Missing field ' . $field . ' in OIDC JSON response');
         }
+        $log->tracef('Subject token parsed successfully from JSON field.');
         return $token;
     }
 }
@@ -212,6 +220,7 @@ sub fetch_access_token {
     };
 
     my $ua = $self->ua;
+    $log->infof('Exchanging subject token for GCP STS access token at %s...', $self->token_url);
     my $response = Google::Auth::RetryHelper->execute_with_retry(sub {
         my $res = $ua->post(
             $self->token_url,
@@ -219,6 +228,7 @@ sub fetch_access_token {
             'Content'      => $sts_payload
         );
         if ( !$res->is_success ) {
+            $log->warnf('STS token exchange request failed: status %s', $res->code);
             Google::Auth::Error->throw('Token exchange failed with status ' . $res->code . ': ' . $res->decoded_content);
         }
         return $res;
@@ -228,6 +238,7 @@ sub fetch_access_token {
     my $sts_token = $sts_data->{access_token};
 
     if ( $self->service_account_impersonation_url ) {
+        $log->infof('Service account impersonation URL set. Requesting delegated credentials via %s...', $self->service_account_impersonation_url);
         my $impersonation_body = encode_json({
             scope => \@scopes_list
         });
@@ -240,6 +251,7 @@ sub fetch_access_token {
                 'Content'       => $impersonation_body
             );
             if ( !$res->is_success ) {
+                $log->warnf('Delegated service account impersonation failed: status %s', $res->code);
                 Google::Auth::Error->throw('Service account impersonation failed with status ' . $res->code . ': ' . $res->decoded_content);
             }
             return $res;
@@ -248,6 +260,7 @@ sub fetch_access_token {
         my $impers_data = decode_json($impers_res->decoded_content);
         $self->access_token($impers_data->{accessToken});
         $self->expires_at($impers_data->{expireTime});
+        $log->infof('Delegated impersonation completed successfully.');
         return $impers_data->{accessToken};
     }
 

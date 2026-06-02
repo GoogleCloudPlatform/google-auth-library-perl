@@ -25,6 +25,7 @@ use Time::Piece;
 use JSON::PP;
 use MIME::Base64 qw(encode_base64);
 use Google::Auth::Exceptions;
+use Log::Any qw($log);
 
 our $VERSION = '0.02';
 
@@ -36,8 +37,11 @@ sub retrieve_subject_token {
     my $session_token = $ENV{AWS_SESSION_TOKEN};
 
     if ( !defined $access_key || !defined $secret_key ) {
+        $log->errorf('Missing AWS_ACCESS_KEY_ID or AWS_SECRET_ACCESS_KEY in environment');
         Google::Auth::Error->throw('Missing AWS_ACCESS_KEY_ID or AWS_SECRET_ACCESS_KEY in environment');
     }
+
+    $log->tracef('Generating AWS Signature V4 request using access key: %s', $access_key);
 
     my $region = $ENV{AWS_DEFAULT_REGION} // 'us-east-1';
     my $host   = 'sts.amazonaws.com';
