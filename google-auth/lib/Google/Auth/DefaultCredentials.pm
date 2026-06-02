@@ -194,6 +194,14 @@ sub _determine_class_for_type {
         require Google::Auth::ComputeEngine;
         return 'Google::Auth::ComputeEngine';
     }
+    elsif ( $type eq 'impersonated_service_account' ) {
+        require Google::Auth::ImpersonatedServiceAccountCredentials;
+        return 'Google::Auth::ImpersonatedServiceAccountCredentials';
+    }
+    elsif ( $type eq 'external_account' ) {
+        require Google::Auth::ExternalAccountCredentials;
+        return 'Google::Auth::ExternalAccountCredentials';
+    }
 
     Google::Auth::DefaultCredentialsError->throw(
         'Unsupported credential type: ' . $type

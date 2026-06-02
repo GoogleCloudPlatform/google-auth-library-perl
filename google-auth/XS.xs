@@ -11,6 +11,7 @@
 #include <openssl/bn.h>
 #include <openssl/rsa.h>
 #include <openssl/ec.h>
+#include <openssl/ecdsa.h>
 #include <openssl/obj_mac.h>
 #include <string.h>
 
@@ -312,6 +313,10 @@ verify_signature(SV *key_obj_sv, SV *message_sv, SV *signature_sv)
         STRLEN msg_len, sig_len;
         EVP_MD_CTX *mdctx = NULL;
         int verify_res = 0;
+        unsigned char *actual_sig = NULL;
+        unsigned int actual_sig_len = 0;
+        unsigned char *der_buf = NULL;
+        ECDSA_SIG *ec_sig = NULL;
     CODE:
         if (sv_derived_from(key_obj_sv, "Google::Auth::PublicKey")) {
             IV tmp = SvIV((SV*)SvRV(key_obj_sv));
@@ -322,15 +327,47 @@ verify_signature(SV *key_obj_sv, SV *message_sv, SV *signature_sv)
         msg_str = SvPV(message_sv, msg_len);
         sig_str = SvPV(signature_sv, sig_len);
 
-        mdctx = EVP_MD_CTX_new();
-        if (!mdctx) XSRETURN_NO;
+        actual_sig = (unsigned char *)sig_str;
+        actual_sig_len = sig_len;
 
-        if (EVP_VerifyInit_ex(mdctx, EVP_sha256(), NULL) > 0 &&
-            EVP_VerifyUpdate(mdctx, msg_str, msg_len) > 0) {
-            verify_res = EVP_VerifyFinal(mdctx, (unsigned char *)sig_str, sig_len, pkey);
+        if (EVP_PKEY_base_id(pkey) == EVP_PKEY_EC) {
+            if (sig_len % 2 == 0) {
+                int half_len = sig_len / 2;
+                BIGNUM *r_bn = BN_bin2bn((unsigned char *)sig_str, half_len, NULL);
+                BIGNUM *s_bn = BN_bin2bn((unsigned char *)sig_str + half_len, half_len, NULL);
+                if (r_bn && s_bn) {
+                    ec_sig = ECDSA_SIG_new();
+                    if (ec_sig) {
+                        ECDSA_SIG_set0(ec_sig, r_bn, s_bn);
+                        int der_len = i2d_ECDSA_SIG(ec_sig, NULL);
+                        if (der_len > 0) {
+                            der_buf = (unsigned char *)malloc(der_len);
+                            if (der_buf) {
+                                unsigned char *p = der_buf;
+                                i2d_ECDSA_SIG(ec_sig, &p);
+                                actual_sig = der_buf;
+                                actual_sig_len = der_len;
+                            }
+                        }
+                    } else {
+                        BN_free(r_bn);
+                        BN_free(s_bn);
+                    }
+                }
+            }
         }
 
-        EVP_MD_CTX_free(mdctx);
+        mdctx = EVP_MD_CTX_new();
+        if (mdctx) {
+            if (EVP_VerifyInit_ex(mdctx, EVP_sha256(), NULL) > 0 &&
+                EVP_VerifyUpdate(mdctx, msg_str, msg_len) > 0) {
+                verify_res = EVP_VerifyFinal(mdctx, actual_sig, actual_sig_len, pkey);
+            }
+            EVP_MD_CTX_free(mdctx);
+        }
+
+        if (ec_sig) ECDSA_SIG_free(ec_sig);
+        if (der_buf) free(der_buf);
 
         if (verify_res > 0) {
             XSRETURN_YES;
