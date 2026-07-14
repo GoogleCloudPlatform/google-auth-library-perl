@@ -85,7 +85,8 @@ subtest 'Pluggable WIF Success Text Output' => sub {
 subtest 'Pluggable WIF Environment Variable Injection' => sub {
     # Command that prints a JSON containing the value of the environment variable MOCK_ENV_VAR
     # We use perl to print it portably
-    my $command = '"' . $^X . '" -e "print q({) . chr(34) . q(id_token) . chr(34) . q(:) . chr(34) . \$ENV{MOCK_ENV_VAR} . chr(34) . q(})"';
+    my $env_sigil = $^O eq 'MSWin32' ? '$' : '\$';
+    my $command = '"' . $^X . '" -e "print q({) . chr(34) . q(id_token) . chr(34) . q(:) . chr(34) . ' . $env_sigil . 'ENV{MOCK_ENV_VAR} . chr(34) . q(})"';
 
     my $creds = Google::Auth::ExternalAccountCredentials->make_creds(
         audience           => '//iam.googleapis.com/projects/123456/locations/global/workloadIdentityPools/my-pool/providers/my-provider',
