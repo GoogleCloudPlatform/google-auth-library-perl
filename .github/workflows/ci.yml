@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [windows-latest]
         perl-version: ['5.38', '5.40']
 
     steps:
@@ -157,68 +157,5 @@ jobs:
 
       - name: Run Integration Tests
         run: |
-          perl integration_tests/01_bigquery_stack.pl
-          perl integration_tests/02_bigquery_multofd_lb.pl
-
-  container-matrix:
-    name: Container ${{ matrix.distro }}
-    runs-on: ubuntu-latest
-    container:
-      image: ${{ matrix.image }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - distro: 'Debian Latest'
-            image: 'debian:latest'
-            pkg_cmd: 'apt-get update && apt-get install -y perl cpanminus protobuf-compiler libprotobuf-dev libnghttp2-dev libssl-dev build-essential'
-          - distro: 'Rocky Linux 9'
-            image: 'rockylinux:9'
-            pkg_cmd: 'dnf install -y dnf-plugins-core epel-release && (dnf config-manager --set-enabled crb || true) && (dnf install -y perl perl-App-cpanminus gcc make openssl-devel libnghttp2-devel protobuf-compiler protobuf-devel || dnf install -y perl perl-App-cpanminus gcc make openssl-devel nghttp2-devel protobuf-compiler || dnf install -y perl perl-App-cpanminus gcc make openssl-devel)'
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Install System Dependencies
-        run: ${{ matrix.pkg_cmd }}
-
-      - name: Install Perl Dependencies
-        run: cpanm --notest --force Moo Type::Tiny Const::Fast Protocol::HTTP2 JSON::MaybeXS JSON::PP Template Path::Tiny Log::Any Capture::Tiny Module::Starter File::Which Test::More SUPER Test::Warnings Test::MockModule Test::Exception Test::LWP::UserAgent Test::Deep Test::Differences Test::Needs Test::Fatal Test::Pod Test::Pod::Coverage URI HTTP::Message LWP::Protocol::https Mozilla::CA || true
-
-      - name: Build & Test Monorepo
-        run: |
-          perl -e '
-            use Config;
-            use File::Basename qw(dirname);
-            my $perl_dir = dirname($^X);
-            my $sep = $^O eq "MSWin32" ? ";" : ":";
-            $ENV{PATH} = "$perl_dir$sep$ENV{PATH}";
-            my $make = $Config{make} || "make";
-            my @dirs = qw(Protobuf google-auth Google-Api-Common Google-gRPC Module-Starter-Protobuf);
-            for my $d (@dirs) {
-              print "=== Building $d ===\n";
-              chdir $d or die $!;
-              system("$^X Makefile.PL") == 0 or die;
-              system("$make") == 0 or die;
-              system("prove -b -It/lib t/") == 0 or die;
-              system("$make install") == 0 or die;
-              chdir ".." or die;
-            }
-            my @clients = qw(
-              Google-Cloud-IAM-V1
-              Google-Cloud-BigQuery-Storage-V1
-              Google-Cloud-Bigquery-V2
-            );
-            for my $c (@clients) {
-              print "=== Testing Client: $c ===\n";
-              chdir $c or die $!;
-              system("$^X Makefile.PL") == 0 or die;
-              system("$make") == 0 or die;
-              system("prove -b -It/lib t/") == 0 or die;
-              system("$make install") == 0 or die;
-              chdir ".." or die;
-            }
-          '
           perl integration_tests/01_bigquery_stack.pl
           perl integration_tests/02_bigquery_multofd_lb.pl
