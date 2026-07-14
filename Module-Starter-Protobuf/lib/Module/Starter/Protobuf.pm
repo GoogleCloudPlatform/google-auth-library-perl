@@ -51,8 +51,28 @@ sub create_modules {
 
         # Execute protoc using native Perl compiler plugin from PATH or ENV
         my $protoc_bin = $ENV{PROTOC} || which('protoc') || 'protoc';
-        my $plugin_exe = $^O eq 'MSWin32' ? 'protoc-gen-perl-pb.exe' : 'protoc-gen-perl-pb';
-        my $plugin_path = $ENV{PROTOC_GEN_PERL_PB} || which($plugin_exe) || which('protoc-gen-perl-pb') || $plugin_exe;
+        my $plugin_path = $ENV{PROTOC_GEN_PERL_PB};
+        if (!defined $plugin_path) {
+            my $perl_dir = File::Basename::dirname($^X);
+            my $found = which('protoc-gen-perl-pb.bat') || which('protoc-gen-perl-pb')
+                || (-f File::Spec->catfile($perl_dir, 'protoc-gen-perl-pb.bat') ? File::Spec->catfile($perl_dir, 'protoc-gen-perl-pb.bat') : undef)
+                || (-f File::Spec->catfile($perl_dir, 'protoc-gen-perl-pb') ? File::Spec->catfile($perl_dir, 'protoc-gen-perl-pb') : undef);
+            if ($found) {
+                $plugin_path = $found;
+            } else {
+                my $dev_bin = File::Spec->catfile(File::Spec->updir(), 'Protobuf', 'bin', 'protoc-gen-perl-pb');
+                $plugin_path = -f $dev_bin ? File::Spec->rel2abs($dev_bin) : 'protoc-gen-perl-pb';
+            }
+        }
+
+        if ($^O eq 'MSWin32' && $plugin_path !~ /\.exe$/i) {
+            my $perl_bin = $^X;
+            if ($plugin_path =~ /\.bat$/i) {
+                $plugin_path = "cmd.exe /c \"$plugin_path\"";
+            } else {
+                $plugin_path = "cmd.exe /c \"\"$perl_bin\" \"$plugin_path\"\"";
+            }
+        }
         
         my @cmd = ($protoc_bin);
         push @cmd, '--plugin=protoc-gen-perl-pb=' . $plugin_path;
