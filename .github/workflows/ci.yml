@@ -63,6 +63,7 @@ jobs:
             my $sep = $^O eq "MSWin32" ? ";" : ":";
             $ENV{PATH} = "$perl_dir$sep$ENV{PATH}";
             my @pkgs = qw(
+              ExtUtils::MakeMaker ExtUtils::ParseXS
               Moo Type::Tiny Const::Fast Protocol::HTTP2 JSON::MaybeXS JSON::PP
               Template Path::Tiny Log::Any Capture::Tiny Module::Starter File::Which
               Test::More SUPER Test::Warnings Test::MockModule Test::Exception
