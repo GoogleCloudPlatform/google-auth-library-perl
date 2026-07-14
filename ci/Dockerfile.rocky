@@ -2,9 +2,6 @@ FROM docker.io/rockylinux:9
 
 RUN dnf install -y dnf-plugins-core epel-release && \
     dnf config-manager --set-enabled crb || true && \
-    rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-9 || true && \
-    dnf install -y perl perl-App-cpanminus gcc make openssl-devel libnghttp2-devel protobuf-compiler abseil-cpp-devel pcre2-devel \
-    perl-libwww-perl perl-LWP-Protocol-https perl-JSON-XS perl-JSON-MaybeXS perl-Moo perl-Path-Tiny perl-URI \
-    perl-Test-Simple perl-Test-Deep perl-Log-Any perl-File-Which perl-Module-Starter && \
-    cpanm --notest Protocol::HTTP2 Type::Tiny Capture::Tiny Test::Exception Test::MockModule Test::LWP::UserAgent Template && \
+    dnf install -y perl perl-App-cpanminus gcc make openssl-devel protobuf-compiler pcre2-devel && \
+    cpanm --notest Protocol::HTTP2 Type::Tiny Capture::Tiny Test::Exception Test::MockModule Test::LWP::UserAgent Template LWP::UserAgent JSON::XS JSON::MaybeXS Moo Path::Tiny URI Test::Simple Test::Deep Log::Any File::Which Module::Starter && \
     rm -rf ~/.cpanm && dnf clean all

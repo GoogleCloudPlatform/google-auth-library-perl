@@ -95,7 +95,7 @@ jobs:
             $ENV{MOO_XS_DISABLE} = "1";
             $ENV{TEMPLATE_STASH} = "Template::Stash";
             my $make = $Config{make} || "make";
-            my @dirs = qw(Protobuf google-auth Google-Api-Common Google-gRPC Module-Starter-Protobuf);
+            my @dirs = qw(Protobuf Google-Auth Google-Api-Common Google-gRPC Module-Starter-Protobuf);
             for my $d (@dirs) {
               print "=== Building $d ===\n";
               chdir $d or die $!;

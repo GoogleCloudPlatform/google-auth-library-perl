@@ -5,7 +5,7 @@ BEGIN { $ENV{PERL_GRPC_OFFLINE} = 1; }
 
 use FindBin qw($Bin);
 use lib "$Bin/../Protobuf/lib",
-        "$Bin/../google-auth/lib",
+        "$Bin/../Google-Auth/lib",
         "$Bin/../Google-Api-Common/lib",
         "$Bin/../Google-gRPC/lib",
         "$Bin/../Google-Cloud-Bigquery-V2/lib",

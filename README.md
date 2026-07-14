@@ -55,7 +55,7 @@ This monorepo supports Google Cloud's core infrastructure, data analytics, netwo
 │ • Google-Api-Common                - google.api.* & google.type.* types  │
 ├──────────────────────────────────────────────────────────────────────────┤
 │ [Layer 2] Authentication & Security                                     │
-│ • google-auth                      - Google::Auth (ADC, Service Account) │
+│ • Google-Auth                       - Google::Auth (ADC, Service Account) │
 ├──────────────────────────────────────────────────────────────────────────┤
 │ [Layer 1] Serialization & Wire Codec                                     │
 │ • Protobuf                         - Native C/XS upb engine + WKTs       │
@@ -69,7 +69,7 @@ This monorepo supports Google Cloud's core infrastructure, data analytics, netwo
 | Directory | CPAN Package | Version | Layer | Description |
 | :--- | :--- | :---: | :--- | :--- |
 | **`Protobuf/`** | `Protobuf` | `0.05` | Codec | C/XS `upb` binary serialization codec and Protocol Buffer WKTs (`google.protobuf.*`). |
-| **`google-auth/`** | `Google::Auth` | `0.02` | Security | Application Default Credentials (ADC), Service Account JSON keyfiles, GCE metadata server, and token caching. |
+| **`Google-Auth/`** | `Google::Auth` | `0.02` | Security | Application Default Credentials (ADC), Service Account JSON keyfiles, GCE metadata server, and token caching. |
 | **`Google-Api-Common/`** | `Google::Api::Common` | `0.01` | Common | Google API common annotations and types (`google.api.http`, `google.rpc.Status`, `google.type.Date`). |
 | **`Google-gRPC/`** | `Google::gRPC` | `0.02` | Transport | `nghttp2` C/XS bindings, 100% Pure-Perl fallback (`Protocol::HTTP2`), DNS `getaddrinfo` load balancing, deadlines, and retries. |
 | **`Module-Starter-Protobuf/`** | `Module::Starter::Protobuf` | `0.01` | Tooling | `protobuf-starter` CLI generator and `protoc-gen-perl-pb` integration. |
@@ -158,7 +158,7 @@ Build and install the distributions in dependency order using `cpanm`:
 ```bash
 # 1. Install Core Infrastructure & Transport Stack
 cpanm ./Protobuf
-cpanm ./google-auth
+cpanm ./Google-Auth
 cpanm ./Google-Api-Common
 cpanm ./Google-gRPC
 cpanm ./Module-Starter-Protobuf
