@@ -97,11 +97,7 @@ sub create_modules {
 
         my $rc = system(@cmd);
         if ($rc != 0) {
-            if ($^O eq 'MSWin32') {
-                warn 'protoc execution failed with code ' . $rc . ' for ' . $proto_file;
-            } else {
-                croak 'protoc execution failed with code ' . $rc . ' for ' . $proto_file;
-            }
+            croak 'protoc execution failed with code ' . $rc . ' for ' . $proto_file;
         }
     }
 

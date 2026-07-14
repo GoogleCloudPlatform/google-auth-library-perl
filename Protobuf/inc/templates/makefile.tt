@@ -121,7 +121,12 @@ test_pureperl :: all t/data/test_descriptor.bin t/data/wkt_descriptor.bin t/data
 
 [% BLOCK protoc_plugin_link %]
 [% exe %]: [% obj %] [% common_o %]
+[% IF is_win32 %]
+	$(MKPATH) bin
+	$(CXX) $(LDFLAGS) -o [% exe %] [% obj %] [% common_o %] -lstdc++ [% absl_libs %] [% sanitizer_flags %]
+[% ELSE %]
 	$(CXX) $(LDFLAGS) -fPIE -pie -o [% exe %] [% obj %] [% common_o %] -lstdc++ [% absl_libs %] [% sanitizer_flags %]
+[% END %]
 
 .PHONY: build_protoc_plugin
 build_protoc_plugin: [% exe %]
