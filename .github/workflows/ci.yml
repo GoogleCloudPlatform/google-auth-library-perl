@@ -47,6 +47,7 @@ jobs:
           choco install openssl --no-progress -y
           $clean_path = ($env:PATH -split ';' | Where-Object { $_ -notmatch 'Strawberry' }) -join ';'
           echo "PATH=$clean_path" >> $env:GITHUB_ENV
+          echo "PERL5LIB=" >> $env:GITHUB_ENV
           echo "INCLUDE=C:\Program Files\OpenSSL-Win64\include;$env:INCLUDE" >> $env:GITHUB_ENV
           echo "LIB=C:\Program Files\OpenSSL-Win64\lib;$env:LIB" >> $env:GITHUB_ENV
           echo "OPENSSL_PREFIX=C:\Program Files\OpenSSL-Win64" >> $env:GITHUB_ENV
@@ -54,6 +55,7 @@ jobs:
       - name: Install Perl Dependencies
         run: |
           perl -e '
+            use Config;
             use File::Basename qw(dirname);
             my $perl_dir = dirname($^X);
             my $sep = $^O eq "MSWin32" ? ";" : ":";
@@ -160,7 +162,7 @@ jobs:
         run: ${{ matrix.pkg_cmd }}
 
       - name: Install Perl Dependencies
-        run: cpanm --notest --force Moo Type::Tiny Const::Fast Protocol::HTTP2 JSON::MaybeXS JSON::PP Template Path::Tiny Log::Any Capture::Tiny Module::Starter File::Which Test::More SUPER Test::Warnings Test::MockModule Test::Exception Test::LWP::UserAgent Test::Deep Test::Differences Test::Needs Test::Fatal Test::Pod Test::Pod::Coverage URI HTTP::Message LWP::Protocol::https Mozilla::CA || true
+        run: cpanm --notest --force Moo Type::Tiny Const::Fast Protocol::HTTP2 JSON::MaybeXS JSON::PP Template Path::Tiny Log::Any Capture::Tiny Module::Starter File::Which Test::More SUPER Test::Warnings Test::MockModule Test::Exception Test::LWP::UserAgent Test::Deep Test::Differences Test::Needs Test::Fatal Test::Pod Test::Pod::Coverage URI HTTP::Message LWP::Protocol::https Mozilla::CA
 
       - name: Build & Test Monorepo
         run: |
