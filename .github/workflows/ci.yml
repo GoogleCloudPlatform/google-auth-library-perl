@@ -36,7 +36,7 @@ jobs:
 
       - name: Install Perl Dependencies
         run: |
-          cpanm --notest --force Moo Type::Tiny Const::Fast Protocol::HTTP2 JSON::MaybeXS Template Path::Tiny Log::Any Capture::Tiny Module::Starter Test::More SUPER Test::Warnings Test::MockModule Test::Exception Test::LWP::UserAgent Test::Deep Test::Differences Test::Needs Test::Fatal Test::Pod Test::Pod::Coverage URI HTTP::Message Crypt::OpenSSL::RSA Crypt::OpenSSL::Bignum
+          cpanm --notest --force Moo Type::Tiny Const::Fast Protocol::HTTP2 JSON::MaybeXS Template Path::Tiny Log::Any Capture::Tiny Module::Starter File::Which Test::More SUPER Test::Warnings Test::MockModule Test::Exception Test::LWP::UserAgent Test::Deep Test::Differences Test::Needs Test::Fatal Test::Pod Test::Pod::Coverage URI HTTP::Message Crypt::OpenSSL::RSA Crypt::OpenSSL::Bignum
 
       - name: Build & Test Core Stack
         run: |
@@ -117,7 +117,7 @@ jobs:
         run: ${{ matrix.pkg_cmd }}
 
       - name: Install Perl Dependencies
-        run: cpanm --notest --force Moo Type::Tiny Const::Fast Protocol::HTTP2 JSON::MaybeXS Template Path::Tiny Log::Any Capture::Tiny Module::Starter Test::More SUPER Test::Warnings Test::MockModule Test::Exception Test::LWP::UserAgent Test::Deep Test::Differences Test::Needs Test::Fatal Test::Pod Test::Pod::Coverage URI HTTP::Message Crypt::OpenSSL::RSA Crypt::OpenSSL::Bignum
+        run: cpanm --notest --force Moo Type::Tiny Const::Fast Protocol::HTTP2 JSON::MaybeXS Template Path::Tiny Log::Any Capture::Tiny Module::Starter File::Which Test::More SUPER Test::Warnings Test::MockModule Test::Exception Test::LWP::UserAgent Test::Deep Test::Differences Test::Needs Test::Fatal Test::Pod Test::Pod::Coverage URI HTTP::Message Crypt::OpenSSL::RSA Crypt::OpenSSL::Bignum
 
       - name: Build & Test Monorepo
         run: |
