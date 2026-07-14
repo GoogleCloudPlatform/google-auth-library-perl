@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Perl
-        uses: shogo8000/setup-perl@v1
+        uses: shogo84148/actions-setup-perl@v1
         with:
           perl-version: ${{ matrix.perl-version }}
 
@@ -29,14 +29,14 @@ jobs:
         if: runner.os != 'Windows'
         run: |
           if [ "${{ runner.os }}" = "Linux" ]; then
-            sudo apt-get update && sudo apt-get install -y libnghttp2-dev libssl-dev build-essential
+            sudo apt-get update && sudo apt-get install -y protobuf-compiler libprotobuf-dev libnghttp2-dev libssl-dev build-essential
           elif [ "${{ runner.os }}" = "macOS" ]; then
-            brew install nghttp2 openssl
+            brew install protobuf nghttp2 openssl
           fi
 
       - name: Install Perl Dependencies
         run: |
-          cpanm --notest Moo Type::Tiny Const::Fast Protocol::HTTP2 JSON::MaybeXS Template Path::Tiny Log::Any Capture::Tiny Test::More Test::Pod Test::Pod::Coverage
+          cpanm --notest Moo Type::Tiny Const::Fast Protocol::HTTP2 JSON::MaybeXS Template Path::Tiny Log::Any Capture::Tiny Test::More Test::MockModule Test::Pod Test::Pod::Coverage
 
       - name: Build & Test Core Stack
         run: |
@@ -104,10 +104,10 @@ jobs:
         include:
           - distro: 'Debian Latest'
             image: 'debian:latest'
-            pkg_cmd: 'apt-get update && apt-get install -y perl cpanminus libnghttp2-dev libssl-dev build-essential'
+            pkg_cmd: 'apt-get update && apt-get install -y perl cpanminus protobuf-compiler libprotobuf-dev libnghttp2-dev libssl-dev build-essential'
           - distro: 'Rocky Linux 9'
             image: 'rockylinux:9'
-            pkg_cmd: 'dnf install -y dnf-plugins-core epel-release && (dnf config-manager --set-enabled crb || true) && (dnf install -y perl perl-App-cpanminus gcc make openssl-devel libnghttp2-devel || dnf install -y perl perl-App-cpanminus gcc make openssl-devel nghttp2-devel || dnf install -y perl perl-App-cpanminus gcc make openssl-devel)'
+            pkg_cmd: 'dnf install -y dnf-plugins-core epel-release && (dnf config-manager --set-enabled crb || true) && (dnf install -y perl perl-App-cpanminus gcc make openssl-devel libnghttp2-devel protobuf-compiler protobuf-devel || dnf install -y perl perl-App-cpanminus gcc make openssl-devel nghttp2-devel protobuf-compiler || dnf install -y perl perl-App-cpanminus gcc make openssl-devel)'
 
     steps:
       - name: Checkout Repository
