@@ -51,6 +51,8 @@ jobs:
           echo "PATH=$perl_bin;$clean_path" >> $env:GITHUB_ENV
           echo "PERL5LIB=" >> $env:GITHUB_ENV
           echo "PERL_CPANM_OPT=--global" >> $env:GITHUB_ENV
+          echo "PACKAGE_STASH_IMPLEMENTATION=PP" >> $env:GITHUB_ENV
+          echo "MOO_XS_DISABLE=1" >> $env:GITHUB_ENV
           echo "INCLUDE=$perl_core;C:\Program Files\OpenSSL-Win64\include;$env:INCLUDE" >> $env:GITHUB_ENV
           echo "LIB=C:\Program Files\OpenSSL-Win64\lib;$env:LIB" >> $env:GITHUB_ENV
           echo "OPENSSL_PREFIX=C:\Program Files\OpenSSL-Win64" >> $env:GITHUB_ENV
@@ -73,7 +75,7 @@ jobs:
               Test::Fatal Test::Pod Test::Pod::Coverage URI HTTP::Message
               LWP::Protocol::https Mozilla::CA
             );
-            system($^X, "-S", "cpanm", "-g", "--notest", "--force", @pkgs);
+            system($^X, "-S", "cpanm", "-g", "--notest", @pkgs);
           '
 
       - name: Build & Test Core Stack
