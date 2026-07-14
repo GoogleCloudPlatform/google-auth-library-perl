@@ -42,7 +42,7 @@ subtest 'Pluggable WIF Initialization and Factory' => sub {
 };
 
 subtest 'Pluggable WIF Success JSON Output' => sub {
-    my $command = sprintf( '"%s" -e "print qq({\x22my_token_field\x22:\x22mock_pluggable_token\x22})"', $^X );
+    my $command = sprintf( '"%s" -e "print qq({\\x22my_token_field\\x22:\\x22mock_pluggable_token\\x22})"', $^X );
     my $creds = Google::Auth::ExternalAccountCredentials->make_creds(
         audience           => '//iam.googleapis.com/projects/123456/locations/global/workloadIdentityPools/my-pool/providers/my-provider',
         subject_token_type => 'urn:ietf:params:oauth:token-type:jwt',
@@ -85,7 +85,7 @@ subtest 'Pluggable WIF Success Text Output' => sub {
 subtest 'Pluggable WIF Environment Variable Injection' => sub {
     # Command that prints a JSON containing the value of the environment variable MOCK_ENV_VAR
     # We use perl to print it portably
-    my $command = sprintf( '"%s" -e "print qq({\x22id_token\x22:\x22) . $ENV{MOCK_ENV_VAR} . qq(\x22})"', $^X );
+    my $command = sprintf( '"%s" -e "print qq({\\x22id_token\\x22:\\x22) . $ENV{MOCK_ENV_VAR} . qq(\\x22})"', $^X );
 
     my $creds = Google::Auth::ExternalAccountCredentials->make_creds(
         audience           => '//iam.googleapis.com/projects/123456/locations/global/workloadIdentityPools/my-pool/providers/my-provider',
@@ -107,7 +107,7 @@ subtest 'Pluggable WIF Environment Variable Injection' => sub {
 
 subtest 'Pluggable WIF Error Handling' => sub {
     # Command that produces invalid JSON
-    my $bad_json_command = sprintf( '"%s" -e "print qq({\x22invalid_json:)"', $^X );
+    my $bad_json_command = sprintf( '"%s" -e "print qq({\\x22invalid_json:)"', $^X );
     my $creds_bad_json = Google::Auth::ExternalAccountCredentials->make_creds(
         audience           => '//iam.googleapis.com/projects/123456/locations/global/workloadIdentityPools/my-pool/providers/my-provider',
         subject_token_type => 'urn:ietf:params:oauth:token-type:jwt',
