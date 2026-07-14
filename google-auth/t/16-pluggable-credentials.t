@@ -42,7 +42,9 @@ subtest 'Pluggable WIF Initialization and Factory' => sub {
 };
 
 subtest 'Pluggable WIF Success JSON Output' => sub {
-    my $command = 'echo \'{"my_token_field":"mock_pluggable_token"}\'';
+    my $command = $^O eq 'MSWin32'
+        ? sprintf('"%s" -e "print \"{\\\"my_token_field\\\":\\\"mock_pluggable_token\\\"}\""', $^X)
+        : 'echo \'{"my_token_field":"mock_pluggable_token"}\'';
     my $creds = Google::Auth::ExternalAccountCredentials->make_creds(
         audience           => '//iam.googleapis.com/projects/123456/locations/global/workloadIdentityPools/my-pool/providers/my-provider',
         subject_token_type => 'urn:ietf:params:oauth:token-type:jwt',
@@ -63,7 +65,9 @@ subtest 'Pluggable WIF Success JSON Output' => sub {
 };
 
 subtest 'Pluggable WIF Success Text Output' => sub {
-    my $command = 'echo \'raw-plain-text-token\'';
+    my $command = $^O eq 'MSWin32'
+        ? sprintf('"%s" -e "print \"raw-plain-text-token\""', $^X)
+        : 'echo \'raw-plain-text-token\'';
     my $creds = Google::Auth::ExternalAccountCredentials->make_creds(
         audience           => '//iam.googleapis.com/projects/123456/locations/global/workloadIdentityPools/my-pool/providers/my-provider',
         subject_token_type => 'urn:ietf:params:oauth:token-type:jwt',
@@ -85,7 +89,9 @@ subtest 'Pluggable WIF Success Text Output' => sub {
 subtest 'Pluggable WIF Environment Variable Injection' => sub {
     # Command that prints a JSON containing the value of the environment variable MOCK_ENV_VAR
     # We use perl to print it portably
-    my $command = 'perl -e \'print "{\\"id_token\\":\\"" . $ENV{MOCK_ENV_VAR} . "\\"}"\'';
+    my $command = $^O eq 'MSWin32'
+        ? sprintf('"%s" -e "print \"{\\\"id_token\\\":\\\"\" . $ENV{MOCK_ENV_VAR} . \"\\\"}\""', $^X)
+        : 'perl -e \'print "{\\"id_token\\":\\"" . $ENV{MOCK_ENV_VAR} . "\\"}"\'';
 
     my $creds = Google::Auth::ExternalAccountCredentials->make_creds(
         audience           => '//iam.googleapis.com/projects/123456/locations/global/workloadIdentityPools/my-pool/providers/my-provider',
@@ -107,7 +113,9 @@ subtest 'Pluggable WIF Environment Variable Injection' => sub {
 
 subtest 'Pluggable WIF Error Handling' => sub {
     # Command that produces invalid JSON
-    my $bad_json_command = 'echo \'{"invalid_json:\'';
+    my $bad_json_command = $^O eq 'MSWin32'
+        ? sprintf('"%s" -e "print \"{\\\"invalid_json:\""', $^X)
+        : 'echo \'{"invalid_json:\'';
     my $creds_bad_json = Google::Auth::ExternalAccountCredentials->make_creds(
         audience           => '//iam.googleapis.com/projects/123456/locations/global/workloadIdentityPools/my-pool/providers/my-provider',
         subject_token_type => 'urn:ietf:params:oauth:token-type:jwt',
