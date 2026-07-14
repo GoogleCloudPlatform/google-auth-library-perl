@@ -32,11 +32,20 @@ jobs:
             sudo apt-get update && sudo apt-get install -y protobuf-compiler libprotobuf-dev libnghttp2-dev libssl-dev build-essential
           elif [ "${{ runner.os }}" = "macOS" ]; then
             brew install protobuf nghttp2 openssl
+            echo "OPENSSL_PREFIX=$(brew --prefix openssl)" >> $GITHUB_ENV
+            echo "LDFLAGS=-L$(brew --prefix openssl)/lib" >> $GITHUB_ENV
+            echo "CPPFLAGS=-I$(brew --prefix openssl)/include" >> $GITHUB_ENV
+            echo "PKG_CONFIG_PATH=$(brew --prefix openssl)/lib/pkgconfig" >> $GITHUB_ENV
           fi
+
+      - name: Install System Dependencies (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          choco install openssl --no-progress -y
 
       - name: Install Perl Dependencies
         run: |
-          cpanm --notest --force Moo Type::Tiny Const::Fast Protocol::HTTP2 JSON::MaybeXS Template Path::Tiny Log::Any Capture::Tiny Module::Starter File::Which Test::More SUPER Test::Warnings Test::MockModule Test::Exception Test::LWP::UserAgent Test::Deep Test::Differences Test::Needs Test::Fatal Test::Pod Test::Pod::Coverage URI HTTP::Message Crypt::OpenSSL::RSA Crypt::OpenSSL::Bignum
+          cpanm --notest --force Moo Type::Tiny Const::Fast Protocol::HTTP2 JSON::MaybeXS JSON::XS Template Path::Tiny Log::Any Capture::Tiny Module::Starter File::Which Test::More SUPER Test::Warnings Test::MockModule Test::Exception Test::LWP::UserAgent Test::Deep Test::Differences Test::Needs Test::Fatal Test::Pod Test::Pod::Coverage URI HTTP::Message Crypt::OpenSSL::RSA Crypt::OpenSSL::Bignum LWP::Protocol::https Mozilla::CA || true
 
       - name: Build & Test Core Stack
         run: |
@@ -117,7 +126,7 @@ jobs:
         run: ${{ matrix.pkg_cmd }}
 
       - name: Install Perl Dependencies
-        run: cpanm --notest --force Moo Type::Tiny Const::Fast Protocol::HTTP2 JSON::MaybeXS Template Path::Tiny Log::Any Capture::Tiny Module::Starter File::Which Test::More SUPER Test::Warnings Test::MockModule Test::Exception Test::LWP::UserAgent Test::Deep Test::Differences Test::Needs Test::Fatal Test::Pod Test::Pod::Coverage URI HTTP::Message Crypt::OpenSSL::RSA Crypt::OpenSSL::Bignum
+        run: cpanm --notest --force Moo Type::Tiny Const::Fast Protocol::HTTP2 JSON::MaybeXS JSON::XS Template Path::Tiny Log::Any Capture::Tiny Module::Starter File::Which Test::More SUPER Test::Warnings Test::MockModule Test::Exception Test::LWP::UserAgent Test::Deep Test::Differences Test::Needs Test::Fatal Test::Pod Test::Pod::Coverage URI HTTP::Message Crypt::OpenSSL::RSA Crypt::OpenSSL::Bignum LWP::Protocol::https Mozilla::CA
 
       - name: Build & Test Monorepo
         run: |
