@@ -1,4 +1,5 @@
 # Google Cloud Client Libraries for Perl
+<!-- Google Cloud Client Libraries for Perl -->
 
 [![Multi-OS Monorepo CI](https://github.com/LLC-Technologies-Collier/google-auth-library-perl/actions/workflows/ci.yml/badge.svg)](https://github.com/LLC-Technologies-Collier/google-auth-library-perl/actions/workflows/ci.yml)
 
