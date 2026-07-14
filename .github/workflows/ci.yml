@@ -58,6 +58,7 @@ jobs:
           echo "LIB=C:\Program Files\OpenSSL-Win64\lib;$env:LIB" >> $env:GITHUB_ENV
           echo "OPENSSL_PREFIX=C:\Program Files\OpenSSL-Win64" >> $env:GITHUB_ENV
           if (Test-Path local) { Remove-Item -Recurse -Force local }
+          perl -e 'use File::Find; use File::Path qw(rmtree); find(sub { rmtree($_) if -d $_ && $_ =~ /(Package[\\\/]Stash[\\\/]XS|Class[\\\/]XSAccessor|Template[\\\/]Stash[\\\/]XS)/i; unlink $_ if -f $_ && $_ =~ /(Package[\\\/]Stash[\\\/]XS\.pm|Class[\\\/]XSAccessor\.pm)/i }, $ARGV[0])' "$perl_bin\.."
 
       - name: Install Perl Dependencies
         run: |
