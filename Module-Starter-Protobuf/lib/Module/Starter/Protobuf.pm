@@ -51,18 +51,35 @@ sub create_modules {
 
         # Execute protoc using native Perl compiler plugin from PATH or ENV
         my $protoc_bin = $ENV{PROTOC} || which('protoc') || 'protoc';
-        my $plugin_exe = $^O eq 'MSWin32' ? 'protoc-gen-perl-pb.exe' : 'protoc-gen-perl-pb';
         my $plugin_path = $ENV{PROTOC_GEN_PERL_PB};
         if (!defined $plugin_path) {
             my $perl_dir = File::Basename::dirname($^X);
-            my $found = which($plugin_exe) || which('protoc-gen-perl-pb')
-                || (-f File::Spec->catfile($perl_dir, $plugin_exe) ? File::Spec->catfile($perl_dir, $plugin_exe) : undef)
-                || (-f File::Spec->catfile($perl_dir, 'protoc-gen-perl-pb') ? File::Spec->catfile($perl_dir, 'protoc-gen-perl-pb') : undef);
-            if ($found) {
-                $plugin_path = $found;
+            if ($^O eq 'MSWin32') {
+                my $found = which('protoc-gen-perl-pb.exe') || which('protoc-gen-perl-pb.bat')
+                    || (-f File::Spec->catfile($perl_dir, 'protoc-gen-perl-pb.exe') ? File::Spec->catfile($perl_dir, 'protoc-gen-perl-pb.exe') : undef)
+                    || (-f File::Spec->catfile($perl_dir, 'protoc-gen-perl-pb.bat') ? File::Spec->catfile($perl_dir, 'protoc-gen-perl-pb.bat') : undef);
+                if ($found) {
+                    $plugin_path = $found;
+                } else {
+                    my $dev_exe = File::Spec->catfile(File::Spec->updir(), 'Protobuf', 'bin', 'protoc-gen-perl-pb.exe');
+                    my $dev_bat = File::Spec->catfile(File::Spec->updir(), 'Protobuf', 'bin', 'protoc-gen-perl-pb.bat');
+                    if (-f $dev_exe) {
+                        $plugin_path = File::Spec->rel2abs($dev_exe);
+                    } elsif (-f $dev_bat) {
+                        $plugin_path = File::Spec->rel2abs($dev_bat);
+                    } else {
+                        $plugin_path = 'protoc-gen-perl-pb.exe';
+                    }
+                }
             } else {
-                my $dev_bin = File::Spec->catfile(File::Spec->updir(), 'Protobuf', 'bin', $plugin_exe);
-                $plugin_path = -f $dev_bin ? File::Spec->rel2abs($dev_bin) : $plugin_exe;
+                my $found = which('protoc-gen-perl-pb')
+                    || (-f File::Spec->catfile($perl_dir, 'protoc-gen-perl-pb') ? File::Spec->catfile($perl_dir, 'protoc-gen-perl-pb') : undef);
+                if ($found) {
+                    $plugin_path = $found;
+                } else {
+                    my $dev_bin = File::Spec->catfile(File::Spec->updir(), 'Protobuf', 'bin', 'protoc-gen-perl-pb');
+                    $plugin_path = -f $dev_bin ? File::Spec->rel2abs($dev_bin) : 'protoc-gen-perl-pb';
+                }
             }
         }
         
