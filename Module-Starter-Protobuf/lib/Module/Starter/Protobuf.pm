@@ -51,29 +51,19 @@ sub create_modules {
 
         # Execute protoc using native Perl compiler plugin from PATH or ENV
         my $protoc_bin = $ENV{PROTOC} || which('protoc') || 'protoc';
+        my $plugin_exe = $^O eq 'MSWin32' ? 'protoc-gen-perl-pb.exe' : 'protoc-gen-perl-pb';
         my $plugin_path = $ENV{PROTOC_GEN_PERL_PB};
         if (!defined $plugin_path) {
             my $perl_dir = File::Basename::dirname($^X);
-            my $found = which('protoc-gen-perl-pb.bat') || which('protoc-gen-perl-pb')
-                || (-f File::Spec->catfile($perl_dir, 'protoc-gen-perl-pb.bat') ? File::Spec->catfile($perl_dir, 'protoc-gen-perl-pb.bat') : undef)
+            my $found = which($plugin_exe) || which('protoc-gen-perl-pb')
+                || (-f File::Spec->catfile($perl_dir, $plugin_exe) ? File::Spec->catfile($perl_dir, $plugin_exe) : undef)
                 || (-f File::Spec->catfile($perl_dir, 'protoc-gen-perl-pb') ? File::Spec->catfile($perl_dir, 'protoc-gen-perl-pb') : undef);
             if ($found) {
                 $plugin_path = $found;
             } else {
-                my $dev_bin = File::Spec->catfile(File::Spec->updir(), 'Protobuf', 'bin', 'protoc-gen-perl-pb');
-                $plugin_path = -f $dev_bin ? File::Spec->rel2abs($dev_bin) : 'protoc-gen-perl-pb';
+                my $dev_bin = File::Spec->catfile(File::Spec->updir(), 'Protobuf', 'bin', $plugin_exe);
+                $plugin_path = -f $dev_bin ? File::Spec->rel2abs($dev_bin) : $plugin_exe;
             }
-        }
-
-        if ($^O eq 'MSWin32' && $plugin_path !~ /\.(exe|bat|cmd)$/i) {
-            my $bat_path = $plugin_path . '.bat';
-            if (! -f $bat_path && -f $plugin_path) {
-                eval {
-                    require ExtUtils::MY;
-                    ExtUtils::MY->pl2bat(in => $plugin_path, out => $bat_path);
-                };
-            }
-            $plugin_path = $bat_path if -f $bat_path;
         }
         
         my @cmd = ($protoc_bin);
