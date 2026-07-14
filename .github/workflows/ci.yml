@@ -37,6 +37,8 @@ jobs:
             echo "CPPFLAGS=-I$(brew --prefix openssl)/include" >> $GITHUB_ENV
             echo "PKG_CONFIG_PATH=$(brew --prefix openssl)/lib/pkgconfig" >> $GITHUB_ENV
             echo "DYLD_LIBRARY_PATH=$(brew --prefix openssl)/lib:$DYLD_LIBRARY_PATH" >> $GITHUB_ENV
+            echo "CPATH=$(brew --prefix openssl)/include:$CPATH" >> $GITHUB_ENV
+            echo "LIBRARY_PATH=$(brew --prefix openssl)/lib:$LIBRARY_PATH" >> $GITHUB_ENV
           fi
 
       - name: Install System Dependencies (Windows)
@@ -57,7 +59,7 @@ jobs:
             for my $d (@dirs) {
               print "=== Building $d ===\n";
               chdir $d or die $!;
-              system("perl Makefile.PL") == 0 or die;
+              system("$^X Makefile.PL") == 0 or die;
               system("$make") == 0 or die;
               system("prove -b -It/lib t/") == 0 or die;
               system("$make install") == 0 or die;
@@ -94,7 +96,7 @@ jobs:
             for my $c (@clients) {
               print "=== Testing Client: $c ===\n";
               chdir $c or die $!;
-              system("perl Makefile.PL") == 0 or die;
+              system("$^X Makefile.PL") == 0 or die;
               system("$make") == 0 or die;
               system("prove -b -It/lib t/") == 0 or die;
               system("$make install") == 0 or die;
@@ -142,7 +144,7 @@ jobs:
             for my $d (@dirs) {
               print "=== Building $d ===\n";
               chdir $d or die $!;
-              system("perl Makefile.PL") == 0 or die;
+              system("$^X Makefile.PL") == 0 or die;
               system("$make") == 0 or die;
               system("prove -b -It/lib t/") == 0 or die;
               system("$make install") == 0 or die;
@@ -155,7 +157,7 @@ jobs:
             for my $c (@clients) {
               print "=== Testing Client: $c ===\n";
               chdir $c or die $!;
-              system("perl Makefile.PL") == 0 or die;
+              system("$^X Makefile.PL") == 0 or die;
               system("$make") == 0 or die;
               system("prove -b -It/lib t/") == 0 or die;
               system("$make install") == 0 or die;
