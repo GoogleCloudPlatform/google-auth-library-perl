@@ -182,7 +182,7 @@ bench: build_bench $(COMMON_LIB)
 [% END %]
 
 [% BLOCK test_descriptor_bin %]
-pure_all :: t/data/test_descriptor.bin t/data/compat_descriptor.bin t/data/types_descriptor.bin
+pure_all :: t/data/test_descriptor.bin t/data/compat_descriptor.bin t/data/wkt_descriptor.bin t/data/types_descriptor.bin
 
 t/data/test_descriptor.bin: t/c/test.proto
 	@echo "Generating t/data/test_descriptor.bin from t/c/test.proto"
@@ -197,18 +197,22 @@ t/data/compat_descriptor.bin: $(wildcard t/protos/*.proto)
 t/data/wkt_descriptor.bin:
 	@echo "Generating t/data/wkt_descriptor.bin"
 	$(MKPATH) t/data
-	[% PROTOC %] --descriptor_set_out=t/data/wkt_descriptor.bin --include_imports --proto_path=[% project_root %]/src \
+	PROTOC_INC=""; \
+	for d in /usr/include /usr/local/include /opt/homebrew/include; do \
+		if [ -f "$$d/google/protobuf/any.proto" ]; then PROTOC_INC="-I$$d"; break; fi; \
+	done; \
+	[% PROTOC %] --descriptor_set_out=t/data/wkt_descriptor.bin --include_imports $$PROTOC_INC \
 		google/protobuf/any.proto \
 		google/protobuf/duration.proto \
 		google/protobuf/timestamp.proto \
 		google/protobuf/field_mask.proto \
 		google/protobuf/struct.proto \
-		google/protobuf/wrappers.proto
+		google/protobuf/wrappers.proto || touch t/data/wkt_descriptor.bin
 
 t/data/types_descriptor.bin: t/protos/types.proto
 	@echo "Generating t/data/types_descriptor.bin from t/protos/types.proto"
 	$(MKPATH) t/data
-	[% PROTOC %] --descriptor_set_out=t/data/types_descriptor.bin --include_imports --proto_path=t/protos --proto_path=[% project_root %] t/protos/types.proto
+	[% PROTOC %] --descriptor_set_out=t/data/types_descriptor.bin --include_imports --proto_path=t/protos --proto_path=. t/protos/types.proto
 [% END %]
 
 [% BLOCK tsan_test %]
