@@ -36,7 +36,7 @@ jobs:
 
       - name: Install Perl Dependencies
         run: |
-          cpanm --notest Moo Type::Tiny Const::Fast Protocol::HTTP2 JSON::MaybeXS Template Path::Tiny Log::Any Capture::Tiny Test::More Test::MockModule Test::Pod Test::Pod::Coverage
+          cpanm --notest --force Moo Type::Tiny Const::Fast Protocol::HTTP2 JSON::MaybeXS Template Path::Tiny Log::Any Capture::Tiny Test::More SUPER Test::Warnings Test::MockModule Test::Pod Test::Pod::Coverage
 
       - name: Build & Test Core Stack
         run: |
@@ -117,7 +117,7 @@ jobs:
         run: ${{ matrix.pkg_cmd }}
 
       - name: Install Perl Dependencies
-        run: cpanm --notest Moo Type::Tiny Const::Fast Protocol::HTTP2 JSON::MaybeXS Template Path::Tiny Log::Any Capture::Tiny Test::More Test::Pod Test::Pod::Coverage
+        run: cpanm --notest --force Moo Type::Tiny Const::Fast Protocol::HTTP2 JSON::MaybeXS Template Path::Tiny Log::Any Capture::Tiny Test::More SUPER Test::Warnings Test::MockModule Test::Pod Test::Pod::Coverage
 
       - name: Build & Test Monorepo
         run: |
