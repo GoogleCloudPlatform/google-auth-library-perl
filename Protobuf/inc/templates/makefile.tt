@@ -197,17 +197,18 @@ t/data/compat_descriptor.bin: $(wildcard t/protos/*.proto)
 t/data/wkt_descriptor.bin:
 	@echo "Generating t/data/wkt_descriptor.bin"
 	$(MKPATH) t/data
-	PROTOC_INC=""; \
-	for d in /usr/include /usr/local/include /opt/homebrew/include; do \
-		if [ -f "$$d/google/protobuf/any.proto" ]; then PROTOC_INC="-I$$d"; break; fi; \
-	done; \
-	[% PROTOC %] --descriptor_set_out=t/data/wkt_descriptor.bin --include_imports $$PROTOC_INC \
+	INC_FLAG=""; \
+	if [ -f /usr/include/google/protobuf/any.proto ]; then INC_FLAG="-I/usr/include"; \
+	elif [ -f /usr/local/include/google/protobuf/any.proto ]; then INC_FLAG="-I/usr/local/include"; \
+	elif [ -f /opt/homebrew/include/google/protobuf/any.proto ]; then INC_FLAG="-I/opt/homebrew/include"; \
+	fi; \
+	[% PROTOC %] $$INC_FLAG --descriptor_set_out=t/data/wkt_descriptor.bin --include_imports \
 		google/protobuf/any.proto \
 		google/protobuf/duration.proto \
 		google/protobuf/timestamp.proto \
 		google/protobuf/field_mask.proto \
 		google/protobuf/struct.proto \
-		google/protobuf/wrappers.proto || touch t/data/wkt_descriptor.bin
+		google/protobuf/wrappers.proto
 
 t/data/types_descriptor.bin: t/protos/types.proto
 	@echo "Generating t/data/types_descriptor.bin from t/protos/types.proto"
