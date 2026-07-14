@@ -36,6 +36,7 @@ jobs:
             echo "LDFLAGS=-L$(brew --prefix openssl)/lib" >> $GITHUB_ENV
             echo "CPPFLAGS=-I$(brew --prefix openssl)/include" >> $GITHUB_ENV
             echo "PKG_CONFIG_PATH=$(brew --prefix openssl)/lib/pkgconfig" >> $GITHUB_ENV
+            echo "DYLD_LIBRARY_PATH=$(brew --prefix openssl)/lib:$DYLD_LIBRARY_PATH" >> $GITHUB_ENV
           fi
 
       - name: Install System Dependencies (Windows)
@@ -50,14 +51,16 @@ jobs:
       - name: Build & Test Core Stack
         run: |
           perl -e '
+            use Config;
+            my $make = $Config{make} || "make";
             my @dirs = qw(Protobuf google-auth Google-Api-Common Google-gRPC Module-Starter-Protobuf);
             for my $d (@dirs) {
               print "=== Building $d ===\n";
               chdir $d or die $!;
               system("perl Makefile.PL") == 0 or die;
-              system("make") == 0 or die;
+              system("$make") == 0 or die;
               system("prove -b -It/lib t/") == 0 or die;
-              system("make install") == 0 or die;
+              system("$make install") == 0 or die;
               chdir ".." or die;
             }
           '
@@ -65,6 +68,8 @@ jobs:
       - name: Build & Test GCP Client Distributions
         run: |
           perl -e '
+            use Config;
+            my $make = $Config{make} || "make";
             my @clients = qw(
               Google-Cloud-IAM-V1
               Google-Cloud-SecretManager-V1
@@ -90,9 +95,9 @@ jobs:
               print "=== Testing Client: $c ===\n";
               chdir $c or die $!;
               system("perl Makefile.PL") == 0 or die;
-              system("make") == 0 or die;
+              system("$make") == 0 or die;
               system("prove -b -It/lib t/") == 0 or die;
-              system("make install") == 0 or die;
+              system("$make install") == 0 or die;
               chdir ".." or die;
             }
           '
@@ -131,14 +136,29 @@ jobs:
       - name: Build & Test Monorepo
         run: |
           perl -e '
+            use Config;
+            my $make = $Config{make} || "make";
             my @dirs = qw(Protobuf google-auth Google-Api-Common Google-gRPC Module-Starter-Protobuf);
             for my $d (@dirs) {
               print "=== Building $d ===\n";
               chdir $d or die $!;
               system("perl Makefile.PL") == 0 or die;
-              system("make") == 0 or die;
+              system("$make") == 0 or die;
               system("prove -b -It/lib t/") == 0 or die;
-              system("make install") == 0 or die;
+              system("$make install") == 0 or die;
+              chdir ".." or die;
+            }
+            my @clients = qw(
+              Google-Cloud-BigQuery-Storage-V1
+              Google-Cloud-Bigquery-V2
+            );
+            for my $c (@clients) {
+              print "=== Testing Client: $c ===\n";
+              chdir $c or die $!;
+              system("perl Makefile.PL") == 0 or die;
+              system("$make") == 0 or die;
+              system("prove -b -It/lib t/") == 0 or die;
+              system("$make install") == 0 or die;
               chdir ".." or die;
             }
           '
