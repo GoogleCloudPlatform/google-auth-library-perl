@@ -5,7 +5,7 @@ use Google::gRPC::Engine::NGHTTP2;
 
 BEGIN {
     eval {
-        Google::gRPC::Engine::NGHTTP2->can('new') or die 'not built';
+        Google::gRPC::Engine::NGHTTP2->can('_xs_new') or die 'not built';
         1;
     } or plan skip_all => 'nghttp2 C/XS module not built or available';
 }

@@ -32,6 +32,7 @@ subtest 'Client integration with Pure-Perl and NGHTTP2 engines' => sub {
 
     eval {
         require Google::gRPC::Engine::NGHTTP2;
+        Google::gRPC::Engine::NGHTTP2->can('_xs_new') or die 'not built';
         my $client_xs = Google::gRPC::Client->new(
             target      => 'localhost:8000',
             engine_type => 'NGHTTP2',
