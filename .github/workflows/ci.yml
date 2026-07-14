@@ -87,7 +87,7 @@ jobs:
               print "=== Building $d ===\n";
               chdir $d or die $!;
               system("$make realclean") if -f "Makefile";
-              unlink glob("*.c"), glob("*.o"), glob("*.so"), glob("*.dll"), glob("*.def");
+              unlink glob("*.[cC]"), glob("*.[oO]"), glob("*.so"), glob("*.dll"), glob("*.def"), "XS.c";
               eval { use File::Path qw(rmtree); rmtree("blib"); };
               system("$^X Makefile.PL") == 0 or die;
               system("$make") == 0 or die;
