@@ -45,11 +45,13 @@ jobs:
         if: runner.os == 'Windows'
         run: |
           choco install protoc openssl --no-progress -y
-          $clean_path = ($env:PATH -split ';' | Where-Object { $_ -notmatch 'Strawberry' }) -join ';'
-          echo "PATH=$clean_path" >> $env:GITHUB_ENV
+          $perl_bin = (Get-Command perl).Source | Split-Path
+          $perl_core = Join-Path (Split-Path $perl_bin) "lib\CORE"
+          $clean_path = ($env:PATH -split ';' | Where-Object { $_ -notmatch 'Strawberry' -and $_ -notmatch 'Git\\usr\\bin' -and $_ -notmatch 'mingw' }) -join ';'
+          echo "PATH=$perl_bin;$clean_path" >> $env:GITHUB_ENV
           echo "PERL5LIB=" >> $env:GITHUB_ENV
           echo "PERL_CPANM_OPT=--global" >> $env:GITHUB_ENV
-          echo "INCLUDE=C:\Program Files\OpenSSL-Win64\include;$env:INCLUDE" >> $env:GITHUB_ENV
+          echo "INCLUDE=$perl_core;C:\Program Files\OpenSSL-Win64\include;$env:INCLUDE" >> $env:GITHUB_ENV
           echo "LIB=C:\Program Files\OpenSSL-Win64\lib;$env:LIB" >> $env:GITHUB_ENV
           echo "OPENSSL_PREFIX=C:\Program Files\OpenSSL-Win64" >> $env:GITHUB_ENV
           if (Test-Path local) { Remove-Item -Recurse -Force local }
