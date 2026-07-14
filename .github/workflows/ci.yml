@@ -48,7 +48,21 @@ jobs:
 
       - name: Install Perl Dependencies
         run: |
-          cpanm --notest --force Moo Type::Tiny Const::Fast Protocol::HTTP2 JSON::MaybeXS JSON::XS Template Path::Tiny Log::Any Capture::Tiny Module::Starter File::Which Test::More SUPER Test::Warnings Test::MockModule Test::Exception Test::LWP::UserAgent Test::Deep Test::Differences Test::Needs Test::Fatal Test::Pod Test::Pod::Coverage URI HTTP::Message Crypt::OpenSSL::RSA Crypt::OpenSSL::Bignum LWP::Protocol::https Mozilla::CA || true
+          perl -e '
+            use File::Basename qw(dirname);
+            my $perl_dir = dirname($^X);
+            my $sep = $^O eq "MSWin32" ? ";" : ":";
+            $ENV{PATH} = "$perl_dir$sep$ENV{PATH}";
+            my @pkgs = qw(
+              Moo Type::Tiny Const::Fast Protocol::HTTP2 JSON::MaybeXS JSON::XS
+              Template Path::Tiny Log::Any Capture::Tiny Module::Starter File::Which
+              Test::More SUPER Test::Warnings Test::MockModule Test::Exception
+              Test::LWP::UserAgent Test::Deep Test::Differences Test::Needs
+              Test::Fatal Test::Pod Test::Pod::Coverage URI HTTP::Message
+              Crypt::OpenSSL::RSA Crypt::OpenSSL::Bignum LWP::Protocol::https Mozilla::CA
+            );
+            system("cpanm", "--notest", "--force", @pkgs) == 0 or warn "cpanm exited with status $?";
+          '
 
       - name: Build & Test Core Stack
         run: |
