@@ -17,6 +17,7 @@ eval {
 
 sub new {
     my ($class, %args) = @_;
+    croak 'C/XS engine (nghttp2) is not available on this system' unless defined &_xs_new;
     my $self = _xs_new($class);
 
     my $on_headers = $args{on_headers};

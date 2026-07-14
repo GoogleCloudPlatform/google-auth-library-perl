@@ -1,0 +1,26 @@
+# escape=`
+
+FROM mcr.microsoft.com/windows/servercore:ltsc2022
+
+SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+
+# Install Chocolatey Package Manager
+RUN Set-ExecutionPolicy Bypass -Scope Process -Force; \
+    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; \
+    iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+# Install Strawberry Perl, protoc, and OpenSSL
+RUN choco install strawberryperl protoc openssl --no-progress -y
+
+# Set Environment Variables for Perl & System Tools
+ENV PATH="C:\Strawberry\perl\site\bin;C:\Strawberry\perl\bin;C:\Strawberry\c\bin;C:\Program Files\Git\cmd;C:\Windows\system32;C:\Windows"
+ENV PACKAGE_STASH_IMPLEMENTATION="PP"
+ENV MOO_XS_DISABLE="1"
+ENV TEMPLATE_STASH="Template::Stash"
+
+# Pre-install all required Perl CPAN module dependencies
+RUN cpanm Log::Any Test::MockModule Const::Fast Sub::Identify SUPER Guard Env::Sanctify Test::Valgrind Template Moo Package::Stash
+
+WORKDIR C:/workspace
+
+CMD ["powershell"]

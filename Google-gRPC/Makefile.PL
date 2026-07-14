@@ -34,6 +34,8 @@ if ($has_nghttp2) {
 }
 else {
     print 'libnghttp2 headers not found. Falling back to Pure-Perl HTTP/2 engine.', "\n";
+    $extra_params{C} = [];
+    $extra_params{OBJECT} = '';
 }
 
 WriteMakefile(

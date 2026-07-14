@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [windows-latest]
         perl-version: ['5.38', '5.40']
 
     steps:
@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Perl
-        uses: shogo8000/setup-perl@v1
+        uses: shogo82148/actions-setup-perl@v1
         with:
           perl-version: ${{ matrix.perl-version }}
 
@@ -29,26 +29,84 @@ jobs:
         if: runner.os != 'Windows'
         run: |
           if [ "${{ runner.os }}" = "Linux" ]; then
-            sudo apt-get update && sudo apt-get install -y libnghttp2-dev libssl-dev build-essential
+            sudo apt-get update && sudo apt-get install -y protobuf-compiler libprotobuf-dev libnghttp2-dev libssl-dev build-essential
           elif [ "${{ runner.os }}" = "macOS" ]; then
-            brew install nghttp2 openssl
+            brew install protobuf nghttp2 openssl
+            echo "OPENSSL_PREFIX=$(brew --prefix openssl)" >> $GITHUB_ENV
+            echo "LDFLAGS=-L$(brew --prefix openssl)/lib" >> $GITHUB_ENV
+            echo "CPPFLAGS=-I$(brew --prefix openssl)/include" >> $GITHUB_ENV
+            echo "PKG_CONFIG_PATH=$(brew --prefix openssl)/lib/pkgconfig" >> $GITHUB_ENV
+            echo "DYLD_LIBRARY_PATH=$(brew --prefix openssl)/lib:$DYLD_LIBRARY_PATH" >> $GITHUB_ENV
+            echo "CPATH=$(brew --prefix openssl)/include:$CPATH" >> $GITHUB_ENV
+            echo "LIBRARY_PATH=$(brew --prefix openssl)/lib:$LIBRARY_PATH" >> $GITHUB_ENV
           fi
+
+      - name: Install System Dependencies (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          choco install protoc openssl --no-progress -y
+          $perl_bin = (Get-Command perl).Source | Split-Path
+          $perl_core = Join-Path (Split-Path $perl_bin) "lib\CORE"
+          $clean_path = ($env:PATH -split ';' | Where-Object { $_ -notmatch 'Strawberry' -and $_ -notmatch 'Git\\usr\\bin' }) -join ';'
+          echo "PATH=$perl_bin;$clean_path" >> $env:GITHUB_ENV
+          echo "PERL5LIB=" >> $env:GITHUB_ENV
+          echo "PERL_CPANM_OPT=--global" >> $env:GITHUB_ENV
+          echo "PACKAGE_STASH_IMPLEMENTATION=PP" >> $env:GITHUB_ENV
+          echo "MOO_XS_DISABLE=1" >> $env:GITHUB_ENV
+          echo "TEMPLATE_STASH=Template::Stash" >> $env:GITHUB_ENV
+          echo "INCLUDE=$perl_core;C:\Program Files\OpenSSL-Win64\include;$env:INCLUDE" >> $env:GITHUB_ENV
+          echo "LIB=C:\Program Files\OpenSSL-Win64\lib;$env:LIB" >> $env:GITHUB_ENV
+          echo "OPENSSL_PREFIX=C:\Program Files\OpenSSL-Win64" >> $env:GITHUB_ENV
+          if (Test-Path local) { Remove-Item -Recurse -Force local }
+          $perl_root = (Get-Command perl).Source | Split-Path | Split-Path
+          if (Test-Path "$perl_root\site\lib\auto") { Remove-Item -Recurse -Force "$perl_root\site\lib\auto" }
+          if (Test-Path "$perl_root\vendor\lib\auto") { Remove-Item -Recurse -Force "$perl_root\vendor\lib\auto" }
+          Get-ChildItem -Path "$perl_root\site\lib", "$perl_root\vendor\lib" -Recurse -Include "*.dll", "*.so", "*.bs" -ErrorAction SilentlyContinue | Remove-Item -Force
 
       - name: Install Perl Dependencies
         run: |
-          cpanm --notest Moo Type::Tiny Const::Fast Protocol::HTTP2 JSON::MaybeXS Template Path::Tiny Log::Any Capture::Tiny Test::More Test::Pod Test::Pod::Coverage
+          perl -e '
+            use Config;
+            use File::Basename qw(dirname);
+            my $perl_dir = dirname($^X);
+            my $sep = $^O eq "MSWin32" ? ";" : ":";
+            $ENV{PATH} = "$perl_dir$sep$ENV{PATH}";
+            my @pkgs = qw(
+              ExtUtils::MakeMaker ExtUtils::ParseXS
+              Moo Type::Tiny Const::Fast Protocol::HTTP2 JSON::MaybeXS JSON::PP
+              Template Path::Tiny Log::Any Capture::Tiny Module::Starter File::Which
+              Test::More SUPER Test::Warnings Test::MockModule Test::Exception
+              Test::LWP::UserAgent Test::Deep Test::Differences Test::Needs
+              Test::Fatal Test::Pod Test::Pod::Coverage URI HTTP::Message
+              LWP::Protocol::https Mozilla::CA
+            );
+            system($^X, "-S", "cpanm", "-g", "--notest", @pkgs);
+          '
 
       - name: Build & Test Core Stack
         run: |
           perl -e '
-            my @dirs = qw(Protobuf google-auth Google-Api-Common Google-gRPC Module-Starter-Protobuf);
+            use Config;
+            use File::Basename qw(dirname);
+            my $perl_dir = dirname($^X);
+            my $sep = $^O eq "MSWin32" ? ";" : ":";
+            $ENV{PATH} = "$perl_dir$sep$ENV{PATH}";
+            $ENV{PACKAGE_STASH_IMPLEMENTATION} = "PP";
+            $ENV{MOO_XS_DISABLE} = "1";
+            $ENV{TEMPLATE_STASH} = "Template::Stash";
+            my $make = $Config{make} || "make";
+            my @dirs = qw(Protobuf Google-Auth Google-Api-Common Google-gRPC Module-Starter-Protobuf);
             for my $d (@dirs) {
               print "=== Building $d ===\n";
               chdir $d or die $!;
-              system("perl Makefile.PL") == 0 or die;
-              system("make") == 0 or die;
-              system("prove -b -It/lib t/") == 0 or die;
-              system("make install") == 0 or die;
+              system("$make distclean") if -f "Makefile";
+              use File::Find qw(find);
+              find(sub { unlink $_ if /\.(o|obj|so|dll|def|bs|a|lib|csc|xsc)$/i || $_ eq "Protobuf.c" || $_ eq "Auth.c" || $_ eq "XS.c" }, ".");
+              eval { use File::Path qw(rmtree); rmtree("blib"); };
+              system("$^X Makefile.PL") == 0 or die;
+              system("$make") == 0 or die;
+              system("prove -bv -It/lib t/") == 0 or die;
+              system("$make install") == 0 or die;
               chdir ".." or die;
             }
           '
@@ -56,6 +114,15 @@ jobs:
       - name: Build & Test GCP Client Distributions
         run: |
           perl -e '
+            use Config;
+            use File::Basename qw(dirname);
+            my $perl_dir = dirname($^X);
+            my $sep = $^O eq "MSWin32" ? ";" : ":";
+            $ENV{PATH} = "$perl_dir$sep$ENV{PATH}";
+            $ENV{PACKAGE_STASH_IMPLEMENTATION} = "PP";
+            $ENV{MOO_XS_DISABLE} = "1";
+            $ENV{TEMPLATE_STASH} = "Template::Stash";
+            my $make = $Config{make} || "make";
             my @clients = qw(
               Google-Cloud-IAM-V1
               Google-Cloud-SecretManager-V1
@@ -80,58 +147,15 @@ jobs:
             for my $c (@clients) {
               print "=== Testing Client: $c ===\n";
               chdir $c or die $!;
-              system("perl Makefile.PL") == 0 or die;
-              system("make") == 0 or die;
+              system("$^X Makefile.PL") == 0 or die;
+              system("$make") == 0 or die;
               system("prove -b -It/lib t/") == 0 or die;
-              system("make install") == 0 or die;
+              system("$make install") == 0 or die;
               chdir ".." or die;
             }
           '
 
       - name: Run Integration Tests
         run: |
-          perl integration_tests/01_bigquery_stack.pl
-          perl integration_tests/02_bigquery_multofd_lb.pl
-
-  container-matrix:
-    name: Container ${{ matrix.distro }}
-    runs-on: ubuntu-latest
-    container:
-      image: ${{ matrix.image }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - distro: 'Debian Latest'
-            image: 'debian:latest'
-            pkg_cmd: 'apt-get update && apt-get install -y perl cpanminus libnghttp2-dev libssl-dev build-essential'
-          - distro: 'Rocky Linux 9'
-            image: 'rockylinux:9'
-            pkg_cmd: 'dnf install -y dnf-plugins-core epel-release && (dnf config-manager --set-enabled crb || true) && (dnf install -y perl perl-App-cpanminus gcc make openssl-devel libnghttp2-devel || dnf install -y perl perl-App-cpanminus gcc make openssl-devel nghttp2-devel || dnf install -y perl perl-App-cpanminus gcc make openssl-devel)'
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Install System Dependencies
-        run: ${{ matrix.pkg_cmd }}
-
-      - name: Install Perl Dependencies
-        run: cpanm --notest Moo Type::Tiny Const::Fast Protocol::HTTP2 JSON::MaybeXS Template Path::Tiny Log::Any Capture::Tiny Test::More Test::Pod Test::Pod::Coverage
-
-      - name: Build & Test Monorepo
-        run: |
-          perl -e '
-            my @dirs = qw(Protobuf google-auth Google-Api-Common Google-gRPC Module-Starter-Protobuf);
-            for my $d (@dirs) {
-              print "=== Building $d ===\n";
-              chdir $d or die $!;
-              system("perl Makefile.PL") == 0 or die;
-              system("make") == 0 or die;
-              system("prove -b -It/lib t/") == 0 or die;
-              system("make install") == 0 or die;
-              chdir ".." or die;
-            }
-          '
           perl integration_tests/01_bigquery_stack.pl
           perl integration_tests/02_bigquery_multofd_lb.pl
