@@ -182,6 +182,8 @@ bench: build_bench $(COMMON_LIB)
 [% END %]
 
 [% BLOCK test_descriptor_bin %]
+pure_all :: t/data/test_descriptor.bin t/data/compat_descriptor.bin t/data/types_descriptor.bin
+
 t/data/test_descriptor.bin: t/c/test.proto
 	@echo "Generating t/data/test_descriptor.bin from t/c/test.proto"
 	$(MKPATH) t/data
