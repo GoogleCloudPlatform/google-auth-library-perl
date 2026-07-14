@@ -182,6 +182,7 @@ jobs:
               chdir ".." or die;
             }
             my @clients = qw(
+              Google-Cloud-IAM-V1
               Google-Cloud-BigQuery-Storage-V1
               Google-Cloud-Bigquery-V2
             );
