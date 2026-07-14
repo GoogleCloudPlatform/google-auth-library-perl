@@ -85,7 +85,7 @@ subtest 'Pluggable WIF Success Text Output' => sub {
 subtest 'Pluggable WIF Environment Variable Injection' => sub {
     # Command that prints a JSON containing the value of the environment variable MOCK_ENV_VAR
     # We use perl to print it portably
-    my $command = sprintf( '"%s" -e "print qq({\\x22id_token\\x22:\\x22) . $ENV{MOCK_ENV_VAR} . qq(\\x22})"', $^X );
+    my $command = sprintf( '"%s" -e "print qq({\\x22id_token\\x22:\\x22) . \$ENV{MOCK_ENV_VAR} . qq(\\x22})"', $^X );
 
     my $creds = Google::Auth::ExternalAccountCredentials->make_creds(
         audience           => '//iam.googleapis.com/projects/123456/locations/global/workloadIdentityPools/my-pool/providers/my-provider',
