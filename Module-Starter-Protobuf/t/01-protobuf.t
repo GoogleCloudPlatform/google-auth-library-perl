@@ -30,11 +30,14 @@ ok(-f $proto_file, 'Official test service proto exists');
 # We must pass the plugin path and proto configuration in the environment via PERL5LIB
 # Do NOT use -I on the command line, as per SOP guidelines.
 my $plugin_lib = File::Spec->catdir('lib');
+my $sep = $^O eq 'MSWin32' ? ';' : ':';
+local $ENV{PROTOBUF_FILES}       = $proto_file;
+local $ENV{PROTOBUF_IMPORT_PATH}  = $import_path;
+local $ENV{PROTOBUF_GRPC_TARGET} = 'test.googleapis.com';
+local $ENV{PERL5LIB}            = defined $ENV{PERL5LIB} ? "$plugin_lib$sep$ENV{PERL5LIB}" : $plugin_lib;
+
 my $module_starter_cmd = sprintf(
-    'PROTOBUF_FILES=%s PROTOBUF_IMPORT_PATH=%s PROTOBUF_GRPC_TARGET=test.googleapis.com PERL5LIB=%s:$PERL5LIB module-starter --module=Google::Cloud::Test --plugin=Module::Starter::Protobuf --dir=%s --author="C.J. Collier <cjac@google.com>" --force',
-    $proto_file,
-    $import_path,
-    $plugin_lib,
+    'module-starter --module=Google::Cloud::Test --plugin=Module::Starter::Protobuf --dir=%s --author="C.J. Collier <cjac@google.com>" --force',
     $tmp_dir
 );
 
@@ -139,9 +142,10 @@ ok(-f $runner_file, 'Created integration test runner script');
 my $gen_lib = File::Spec->catdir($tmp_dir, 'lib');
 File::Path::make_path('tmp');
 my $log_file = File::Spec->catfile('tmp', 'integration-test.log');
+local $ENV{PERL5LIB} = defined $ENV{PERL5LIB} ? "$gen_lib$sep$ENV{PERL5LIB}" : $gen_lib;
 my $test_runner_cmd = sprintf(
-    'PERL5LIB=%s:$PERL5LIB perl %s > %s 2>&1',
-    $gen_lib,
+    '"%s" "%s" > "%s" 2>&1',
+    $^X,
     $runner_file,
     $log_file
 );
