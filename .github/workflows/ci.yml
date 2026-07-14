@@ -2,19 +2,57 @@ name: Multi-OS Monorepo CI (Linux, macOS, Windows, Debian, Rocky Linux)
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, 'feature/*', 'refactor/*' ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, 'feature/*', 'refactor/*' ]
 
 jobs:
-  native-matrix:
-    name: Native Perl ${{ matrix.perl-version }} on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+  container-matrix:
+    name: Container Matrix (${{ matrix.name }})
+    runs-on: ubuntu-latest
+    env:
+      HAS_GCP_SECRET: ${{ secrets.GCP_SA_KEY != '' }}
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest]
-        perl-version: ['5.38', '5.40']
+        include:
+          - name: Perl 5.40 (GCR)
+            image: gcr.io/perl-cloud-ci/google-cloud-perl-ci-540:latest
+          - name: Ubuntu 24.04 (GCR)
+            image: gcr.io/perl-cloud-ci/google-cloud-perl-ci-ubuntu:latest
+          - name: Rocky Linux 9 (GCR)
+            image: gcr.io/perl-cloud-ci/google-cloud-perl-ci-rocky:latest
+          - name: Debian 12 (GCR)
+            image: gcr.io/perl-cloud-ci/google-cloud-perl-ci-debian:latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        if: ${{ env.HAS_GCP_SECRET == 'true' }}
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Configure Docker authentication for GCR
+        if: ${{ env.HAS_GCP_SECRET == 'true' }}
+        run: |
+          gcloud auth configure-docker gcr.io --quiet
+          gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://gcr.io
+
+      - name: Build & Test Sub-Distributions inside GCR Container
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/repo ${{ matrix.image }} bash -c \
+            "cp -a /repo /tmp/work && cd /tmp/work && for d in Protobuf Google-Auth Google-gRPC Google-Api-Common Module-Starter-Protobuf Google-Cloud-Bigquery-V2; do (cd \$d && perl Makefile.PL && make -j\$(nproc) && make test && make install) || exit 1; done"
+
+  native-matrix:
+    name: Native Perl ${{ matrix.perl-version }} on Windows
+    runs-on: [self-hosted, windows]
+    strategy:
+      fail-fast: false
+      matrix:
+        perl-version: ['5.38', '5.40', '5.42']
 
     steps:
       - name: Checkout Repository
@@ -45,18 +83,17 @@ jobs:
         if: runner.os == 'Windows'
         run: |
           choco install protoc openssl --no-progress -y
-          $perl_bin = (Get-Command perl).Source | Split-Path
-          $perl_core = Join-Path (Split-Path $perl_bin) "lib\CORE"
-          $clean_path = ($env:PATH -split ';' | Where-Object { $_ -notmatch 'Strawberry' -and $_ -notmatch 'Git\\usr\\bin' }) -join ';'
-          echo "PATH=$perl_bin;$clean_path" >> $env:GITHUB_ENV
-          echo "PERL5LIB=" >> $env:GITHUB_ENV
-          echo "PERL_CPANM_OPT=--global" >> $env:GITHUB_ENV
-          echo "PACKAGE_STASH_IMPLEMENTATION=PP" >> $env:GITHUB_ENV
-          echo "MOO_XS_DISABLE=1" >> $env:GITHUB_ENV
-          echo "TEMPLATE_STASH=Template::Stash" >> $env:GITHUB_ENV
-          echo "INCLUDE=$perl_core;C:\Program Files\OpenSSL-Win64\include;$env:INCLUDE" >> $env:GITHUB_ENV
-          echo "LIB=C:\Program Files\OpenSSL-Win64\lib;$env:LIB" >> $env:GITHUB_ENV
-          echo "OPENSSL_PREFIX=C:\Program Files\OpenSSL-Win64" >> $env:GITHUB_ENV
+          $strawberry_site = "C:\Strawberry\perl\site\bin"
+          $strawberry_bin = "C:\Strawberry\perl\bin"
+          $strawberry_c = "C:\Strawberry\c\bin"
+          "PATH=$strawberry_site;$strawberry_bin;$strawberry_c;$env:PATH" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "PERL_CPANM_OPT=--global" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "PACKAGE_STASH_IMPLEMENTATION=PP" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "MOO_XS_DISABLE=1" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "TEMPLATE_STASH=Template::Stash::PurePerl" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "INCLUDE=$perl_core;C:\Program Files\OpenSSL-Win64\include;$env:INCLUDE" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "LIB=C:\Program Files\OpenSSL-Win64\lib;$env:LIB" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "OPENSSL_PREFIX=C:\Program Files\OpenSSL-Win64" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
           if (Test-Path local) { Remove-Item -Recurse -Force local }
           $perl_root = (Get-Command perl).Source | Split-Path | Split-Path
           if (Test-Path "$perl_root\site\lib\auto") { Remove-Item -Recurse -Force "$perl_root\site\lib\auto" }
@@ -95,6 +132,14 @@ jobs:
             $ENV{MOO_XS_DISABLE} = "1";
             $ENV{TEMPLATE_STASH} = "Template::Stash";
             my $make = $Config{make} || "make";
+            # Remove any pre-installed Package::Stash::XS DLLs that cause Perl ABI handshake key mismatch
+            for my $lib_dir (@INC) {
+              my $xs_dir = "$lib_dir/auto/Package/Stash/XS";
+              if (-d $xs_dir) {
+                use File::Path qw(rmtree);
+                eval { rmtree($xs_dir); };
+              }
+            }
             my @dirs = qw(Protobuf Google-Auth Google-Api-Common Google-gRPC Module-Starter-Protobuf);
             for my $d (@dirs) {
               print "=== Building $d ===\n";
@@ -105,7 +150,7 @@ jobs:
               eval { use File::Path qw(rmtree); rmtree("blib"); };
               system("$^X Makefile.PL") == 0 or die;
               system("$make") == 0 or die;
-              system("prove -bv -It/lib t/") == 0 or die;
+              system("prove -b -It/lib t/") == 0 or die;
               system("$make install") == 0 or die;
               chdir ".." or die;
             }

@@ -209,6 +209,8 @@ t/data/wkt_descriptor.bin:
 	if [ -f /usr/include/google/protobuf/any.proto ]; then INC_FLAG="-I/usr/include"; \
 	elif [ -f /usr/local/include/google/protobuf/any.proto ]; then INC_FLAG="-I/usr/local/include"; \
 	elif [ -f /opt/homebrew/include/google/protobuf/any.proto ]; then INC_FLAG="-I/opt/homebrew/include"; \
+	elif [ -f vendor/src/google/protobuf/any.proto ]; then INC_FLAG="-Ivendor/src"; \
+	elif [ -f vendor/third_party/protobuf/src/google/protobuf/any.proto ]; then INC_FLAG="-Ivendor/third_party/protobuf/src"; \
 	fi; \
 	[% PROTOC %] $$INC_FLAG --descriptor_set_out=t/data/wkt_descriptor.bin --include_imports \
 		google/protobuf/any.proto \

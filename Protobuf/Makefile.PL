@@ -201,6 +201,9 @@ sub _render_tt {
             POST_CHOMP   => 0,
             TRIM         => 0,
         });
+        if (!$tt) {
+            die "Failed to instantiate Template Toolkit: " . (Template->error() || 'unknown error');
+        }
     }
     my $output = '';
     my $template_string = "[% PROCESS $block_name %]";
@@ -279,15 +282,25 @@ sub _get_adjusted_embed_flags {
     chomp $embed_cflags;
     chomp $embed_ldflags;
 
-    # Replace -lperl with the actual path to libperl
     my $archlib = $Config{archlib};
     my $libperl = $Config{libperl};
-    my $perl_lib_path = File::Spec->catfile($Config{archlibexp}, 'CORE', $libperl);
-    if (!-f $perl_lib_path) {
-        my ($lib_base) = $archlib =~ m{^(.+)/perl/};
-        $perl_lib_path = File::Spec->catfile($lib_base, $libperl);
+    my @candidate_paths = (
+        File::Spec->catfile($Config{archlibexp}, 'CORE', $libperl),
+        File::Spec->catfile('/usr/lib/x86_64-linux-gnu', $libperl),
+        File::Spec->catfile('/usr/lib', $libperl),
+    );
+    my $found_libperl;
+    for my $p (@candidate_paths) {
+        if (-f $p) {
+            $found_libperl = $p;
+            last;
+        }
     }
-    $embed_ldflags =~ s{-lperl}{$perl_lib_path}g;
+    if ($found_libperl) {
+        $embed_ldflags =~ s{-lperl}{$found_libperl}g;
+    } else {
+        $embed_ldflags =~ s{-lperl}{}g;
+    }
 
     return ($embed_cflags, $embed_ldflags);
 }
