@@ -10,9 +10,6 @@ jobs:
   native-matrix:
     name: Native Perl ${{ matrix.perl-version }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: bash
     strategy:
       fail-fast: false
       matrix:
@@ -57,6 +54,10 @@ jobs:
         run: |
           perl -e '
             use Config;
+            use File::Basename qw(dirname);
+            my $perl_dir = dirname($^X);
+            my $sep = $^O eq "MSWin32" ? ";" : ":";
+            $ENV{PATH} = "$perl_dir$sep$ENV{PATH}";
             my $make = $Config{make} || "make";
             my @dirs = qw(Protobuf google-auth Google-Api-Common Google-gRPC Module-Starter-Protobuf);
             for my $d (@dirs) {
@@ -74,6 +75,10 @@ jobs:
         run: |
           perl -e '
             use Config;
+            use File::Basename qw(dirname);
+            my $perl_dir = dirname($^X);
+            my $sep = $^O eq "MSWin32" ? ";" : ":";
+            $ENV{PATH} = "$perl_dir$sep$ENV{PATH}";
             my $make = $Config{make} || "make";
             my @clients = qw(
               Google-Cloud-IAM-V1
@@ -142,6 +147,10 @@ jobs:
         run: |
           perl -e '
             use Config;
+            use File::Basename qw(dirname);
+            my $perl_dir = dirname($^X);
+            my $sep = $^O eq "MSWin32" ? ";" : ":";
+            $ENV{PATH} = "$perl_dir$sep$ENV{PATH}";
             my $make = $Config{make} || "make";
             my @dirs = qw(Protobuf google-auth Google-Api-Common Google-gRPC Module-Starter-Protobuf);
             for my $d (@dirs) {
