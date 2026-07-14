@@ -1,6 +1,11 @@
 use strict;
 use warnings;
 our $VERSION = '0.05';
+BEGIN {
+    $ENV{PACKAGE_STASH_IMPLEMENTATION} ||= 'PP';
+    $ENV{MOO_XS_DISABLE} ||= '1';
+    $ENV{TEMPLATE_STASH} ||= 'Template::Stash';
+}
 use lib 'local/lib';
 use lib 'xlib';
 use ExtUtils::MakeMaker;

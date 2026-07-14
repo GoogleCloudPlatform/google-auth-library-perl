@@ -53,6 +53,7 @@ jobs:
           echo "PERL_CPANM_OPT=--global" >> $env:GITHUB_ENV
           echo "PACKAGE_STASH_IMPLEMENTATION=PP" >> $env:GITHUB_ENV
           echo "MOO_XS_DISABLE=1" >> $env:GITHUB_ENV
+          echo "TEMPLATE_STASH=Template::Stash" >> $env:GITHUB_ENV
           echo "INCLUDE=$perl_core;C:\Program Files\OpenSSL-Win64\include;$env:INCLUDE" >> $env:GITHUB_ENV
           echo "LIB=C:\Program Files\OpenSSL-Win64\lib;$env:LIB" >> $env:GITHUB_ENV
           echo "OPENSSL_PREFIX=C:\Program Files\OpenSSL-Win64" >> $env:GITHUB_ENV
@@ -88,6 +89,7 @@ jobs:
             $ENV{PATH} = "$perl_dir$sep$ENV{PATH}";
             $ENV{PACKAGE_STASH_IMPLEMENTATION} = "PP";
             $ENV{MOO_XS_DISABLE} = "1";
+            $ENV{TEMPLATE_STASH} = "Template::Stash";
             my $make = $Config{make} || "make";
             my @dirs = qw(Protobuf google-auth Google-Api-Common Google-gRPC Module-Starter-Protobuf);
             for my $d (@dirs) {
@@ -113,6 +115,9 @@ jobs:
             my $perl_dir = dirname($^X);
             my $sep = $^O eq "MSWin32" ? ";" : ":";
             $ENV{PATH} = "$perl_dir$sep$ENV{PATH}";
+            $ENV{PACKAGE_STASH_IMPLEMENTATION} = "PP";
+            $ENV{MOO_XS_DISABLE} = "1";
+            $ENV{TEMPLATE_STASH} = "Template::Stash";
             my $make = $Config{make} || "make";
             my @clients = qw(
               Google-Cloud-IAM-V1
