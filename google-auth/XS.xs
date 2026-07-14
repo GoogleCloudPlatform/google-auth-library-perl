@@ -15,7 +15,7 @@
 #include <openssl/obj_mac.h>
 #include <string.h>
 
-static int generate_mock_cert(char **cert_pem_out, char **key_pem_out) {
+static int generate_mock_cert(pTHX_ char **cert_pem_out, char **key_pem_out) {
     EVP_PKEY *pkey = NULL;
     EVP_PKEY_CTX *pctx = NULL;
     X509 *x509 = NULL;
@@ -97,7 +97,7 @@ generate_self_signed_cert()
         HV *hv = NULL;
         SV *result = NULL;
     CODE:
-        if (generate_mock_cert(&cert_pem, &key_pem)) {
+        if (generate_mock_cert(aTHX_ &cert_pem, &key_pem)) {
             hv = newHV();
             hv_stores(hv, "cert", newSVpv(cert_pem, 0));
             hv_stores(hv, "key", newSVpv(key_pem, 0));
