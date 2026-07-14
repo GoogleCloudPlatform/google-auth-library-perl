@@ -197,6 +197,9 @@ t/data/compat_descriptor.bin: $(wildcard t/protos/*.proto)
 t/data/wkt_descriptor.bin:
 	@echo "Generating t/data/wkt_descriptor.bin"
 	$(MKPATH) t/data
+[% IF is_win32 %]
+	[% PROTOC %] -Ivendor/src -Ivendor/third_party -Ivendor --descriptor_set_out=t/data/wkt_descriptor.bin --include_imports google/protobuf/any.proto google/protobuf/duration.proto google/protobuf/timestamp.proto google/protobuf/field_mask.proto google/protobuf/struct.proto google/protobuf/wrappers.proto
+[% ELSE %]
 	INC_FLAG=""; \
 	if [ -f /usr/include/google/protobuf/any.proto ]; then INC_FLAG="-I/usr/include"; \
 	elif [ -f /usr/local/include/google/protobuf/any.proto ]; then INC_FLAG="-I/usr/local/include"; \
@@ -209,6 +212,7 @@ t/data/wkt_descriptor.bin:
 		google/protobuf/field_mask.proto \
 		google/protobuf/struct.proto \
 		google/protobuf/wrappers.proto
+[% END %]
 
 t/data/types_descriptor.bin: t/protos/types.proto
 	@echo "Generating t/data/types_descriptor.bin from t/protos/types.proto"
