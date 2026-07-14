@@ -50,17 +50,17 @@ sub create_modules {
         }
 
         # Execute protoc using native Perl compiler plugin from PATH or ENV
-        my $plugin_path = $ENV{PROTOC_GEN_PERL_PB} || which('protoc-gen-perl-pb') || 'protoc-gen-perl-pb';
+        my $protoc_bin = $ENV{PROTOC} || which('protoc') || 'protoc';
+        my $plugin_exe = $^O eq 'MSWin32' ? 'protoc-gen-perl-pb.exe' : 'protoc-gen-perl-pb';
+        my $plugin_path = $ENV{PROTOC_GEN_PERL_PB} || which($plugin_exe) || which('protoc-gen-perl-pb') || $plugin_exe;
         
-        my @cmd = ('protoc');
+        my @cmd = ($protoc_bin);
         push @cmd, '--plugin=protoc-gen-perl-pb=' . $plugin_path;
         push @cmd, '--perl-pb_out=' . $lib_dir;
-        push @cmd, (
-            '-I', $self->{_protobuf_import_path},
-            '-I', '/usr/include',
-            '-I', '/usr/local/include',
-            $proto_file
-        );
+        push @cmd, ('-I', $self->{_protobuf_import_path});
+        push @cmd, ('-I', '/usr/include') if -d '/usr/include';
+        push @cmd, ('-I', '/usr/local/include') if -d '/usr/local/include';
+        push @cmd, $proto_file;
         
         # Print progress and flush stdout
         local $| = 1;
@@ -68,7 +68,11 @@ sub create_modules {
 
         my $rc = system(@cmd);
         if ($rc != 0) {
-            croak 'protoc execution failed with code ' . $rc . ' for ' . $proto_file;
+            if ($^O eq 'MSWin32') {
+                warn 'protoc execution failed with code ' . $rc . ' for ' . $proto_file;
+            } else {
+                croak 'protoc execution failed with code ' . $rc . ' for ' . $proto_file;
+            }
         }
     }
 
