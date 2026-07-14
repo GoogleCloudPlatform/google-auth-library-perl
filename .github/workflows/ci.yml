@@ -86,6 +86,7 @@ jobs:
             for my $d (@dirs) {
               print "=== Building $d ===\n";
               chdir $d or die $!;
+              system("$make realclean") if -f "Makefile";
               system("$^X Makefile.PL") == 0 or die;
               system("$make") == 0 or die;
               system("prove -b -It/lib t/") == 0 or die;
