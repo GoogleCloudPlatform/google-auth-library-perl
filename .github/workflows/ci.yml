@@ -87,6 +87,8 @@ jobs:
               print "=== Building $d ===\n";
               chdir $d or die $!;
               system("$make realclean") if -f "Makefile";
+              unlink glob("*.c"), glob("*.o"), glob("*.so"), glob("*.dll"), glob("*.def");
+              eval { use File::Path qw(rmtree); rmtree("blib"); };
               system("$^X Makefile.PL") == 0 or die;
               system("$make") == 0 or die;
               system("prove -b -It/lib t/") == 0 or die;
