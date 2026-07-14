@@ -1,6 +1,8 @@
 use strict;
 use warnings;
 
+BEGIN { $ENV{PERL_GRPC_OFFLINE} = 1; }
+
 use FindBin qw($Bin);
 use lib "$Bin/../Protobuf/lib",
         "$Bin/../google-auth/lib",
