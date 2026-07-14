@@ -86,6 +86,8 @@ jobs:
             my $perl_dir = dirname($^X);
             my $sep = $^O eq "MSWin32" ? ";" : ":";
             $ENV{PATH} = "$perl_dir$sep$ENV{PATH}";
+            $ENV{PACKAGE_STASH_IMPLEMENTATION} = "PP";
+            $ENV{MOO_XS_DISABLE} = "1";
             my $make = $Config{make} || "make";
             my @dirs = qw(Protobuf google-auth Google-Api-Common Google-gRPC Module-Starter-Protobuf);
             for my $d (@dirs) {
@@ -97,7 +99,7 @@ jobs:
               eval { use File::Path qw(rmtree); rmtree("blib"); };
               system("$^X Makefile.PL") == 0 or die;
               system("$make") == 0 or die;
-              system("prove -b -It/lib t/") == 0 or die;
+              system("prove -bv -It/lib t/") == 0 or die;
               system("$make install") == 0 or die;
               chdir ".." or die;
             }
