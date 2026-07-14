@@ -47,7 +47,7 @@ jobs:
           choco install openssl --no-progress -y
           $clean_path = ($env:PATH -split ';' | Where-Object { $_ -notmatch 'Strawberry' }) -join ';'
           echo "PATH=$clean_path" >> $env:GITHUB_ENV
-          echo "PERL5LIB=" >> $env:GITHUB_ENV
+          echo "PERL_CPANM_OPT=--global" >> $env:GITHUB_ENV
           echo "INCLUDE=C:\Program Files\OpenSSL-Win64\include;$env:INCLUDE" >> $env:GITHUB_ENV
           echo "LIB=C:\Program Files\OpenSSL-Win64\lib;$env:LIB" >> $env:GITHUB_ENV
           echo "OPENSSL_PREFIX=C:\Program Files\OpenSSL-Win64" >> $env:GITHUB_ENV
@@ -68,7 +68,7 @@ jobs:
               Test::Fatal Test::Pod Test::Pod::Coverage URI HTTP::Message
               LWP::Protocol::https Mozilla::CA
             );
-            system($^X, "-S", "cpanm", "--notest", "--force", @pkgs);
+            system($^X, "-S", "cpanm", "-g", "--notest", "--force", @pkgs);
           '
 
       - name: Build & Test Core Stack
