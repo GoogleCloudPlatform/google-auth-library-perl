@@ -86,8 +86,9 @@ jobs:
             for my $d (@dirs) {
               print "=== Building $d ===\n";
               chdir $d or die $!;
-              system("$make realclean") if -f "Makefile";
-              unlink glob("*.[cC]"), glob("*.[oO]"), glob("*.so"), glob("*.dll"), glob("*.def"), "XS.c";
+              system("$make distclean") if -f "Makefile";
+              use File::Find qw(find);
+              find(sub { unlink $_ if /\.(o|obj|so|dll|def|bs|a|lib)$/i || $_ eq "Protobuf.c" || $_ eq "Auth.c" }, ".");
               eval { use File::Path qw(rmtree); rmtree("blib"); };
               system("$^X Makefile.PL") == 0 or die;
               system("$make") == 0 or die;
