@@ -1,12 +1,13 @@
 use strict;
 use warnings;
 
-use lib '/usr/local/google/home/cjac/notes/cjac-promo-2026/google-auth-library-perl/Protobuf/lib';
-use lib '/usr/local/google/home/cjac/notes/cjac-promo-2026/google-auth-library-perl/google-auth/lib';
-use lib '/usr/local/google/home/cjac/notes/cjac-promo-2026/google-auth-library-perl/Google-Api-Common/lib';
-use lib '/usr/local/google/home/cjac/notes/cjac-promo-2026/google-auth-library-perl/Google-gRPC/lib';
-use lib '/usr/local/google/home/cjac/notes/cjac-promo-2026/google-auth-library-perl/Google-Cloud-Bigquery-V2/lib';
-use lib '/usr/local/google/home/cjac/notes/cjac-promo-2026/google-auth-library-perl/Google-Cloud-BigQuery-Storage-V1/lib';
+use FindBin qw($Bin);
+use lib "$Bin/../Protobuf/lib",
+        "$Bin/../google-auth/lib",
+        "$Bin/../Google-Api-Common/lib",
+        "$Bin/../Google-gRPC/lib",
+        "$Bin/../Google-Cloud-Bigquery-V2/lib",
+        "$Bin/../Google-Cloud-BigQuery-Storage-V1/lib";
 
 use Test::More tests => 10;
 use Google::Api::Common;
