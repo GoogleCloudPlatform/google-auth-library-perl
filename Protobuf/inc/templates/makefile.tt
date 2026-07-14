@@ -124,6 +124,8 @@ test_pureperl :: all t/data/test_descriptor.bin t/data/wkt_descriptor.bin t/data
 [% IF is_win32 %]
 	$(MKPATH) bin
 	$(CXX) $(LDFLAGS) -o [% exe %] [% obj %] [% common_o %] -lstdc++ [% absl_libs %] [% sanitizer_flags %]
+	$(MKPATH) blib\script
+	$(CP) [% exe %] blib\script\protoc-gen-perl-pb.exe
 [% ELSE %]
 	$(CXX) $(LDFLAGS) -fPIE -pie -o [% exe %] [% obj %] [% common_o %] -lstdc++ [% absl_libs %] [% sanitizer_flags %]
 [% END %]
