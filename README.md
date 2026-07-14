@@ -1,14 +1,24 @@
 # Google Cloud Client Libraries for Perl
 
-This repository is the official monorepo containing first-party Google Cloud client libraries, gRPC transport engines, Protocol Buffer serialization codecs, authentication mechanisms, and code generation tooling for Perl.
+[![Multi-OS Monorepo CI](https://github.com/LLC-Technologies-Collier/google-auth-library-perl/actions/workflows/ci.yml/badge.svg)](https://github.com/LLC-Technologies-Collier/google-auth-library-perl/actions/workflows/ci.yml)
 
-It provides complete coverage for Google Cloud's Data Analytics, Security, Networking, Private CA, and Infrastructure suite: **Secure Web Proxy (SWP), Network Security Policies, Private CA (Certificate Authority Service), Cloud SQL, Dataproc Metastore (DPMS), Secret Manager, Cloud Build, IAM, Dataproc, Data Fusion, Dataflow, Pub/Sub, Composer, BigQuery, BigQuery Storage, Spanner, Dataplex, Google Cloud Storage (GCS), and Google Compute Engine (GCE)**.
+The official client library monorepo providing Google Cloud Platform (GCP) SDKs, high-performance gRPC transport engines, native C/XS Protocol Buffer codecs, authentication mechanisms, and code generation tooling for Perl.
+
+This monorepo supports Google Cloud's core infrastructure, data analytics, networking, security, and machine learning services: **BigQuery, BigQuery Storage, Spanner, Dataproc, Dataflow, Pub/Sub, Storage (GCS), Compute Engine (GCE), IAM, Secret Manager, Cloud Build, Certificate Authority Service (Private CA), Secure Web Proxy (SWP), Cloud SQL, and Dataproc Metastore**.
 
 ---
 
-## Architecture & Distribution Overview
+## Key Features
 
-The monorepo contains 24 modular CPAN distributions that form the complete end-to-end Google Cloud client stack:
+- **Dual-Engine gRPC Transport (`Google::gRPC`)**: High-performance C/XS `nghttp2` bindings with automatic 100% Pure-Perl fallback (`Protocol::HTTP2`). Supports 5-byte gRPC wire framing, HTTP/2 multiplexed streams, deadlines, and exponential backoff retries.
+- **Client-Side Connection Pooling & Load Balancing (`Google::gRPC::ChannelPool`)**: Round-robin subchannel distribution across resolved DNS IP addresses with per-socket request/byte metrics tracking.
+- **Native Protobuf Serialization (`Protobuf`)**: Accelerated C/XS `upb` engine supporting Protocol Buffer Well-Known Types (WKTs: `Any`, `Duration`, `Timestamp`, `FieldMask`, `Struct`, `Wrappers`).
+- **Unified GCP Authentication (`Google::Auth`)**: Application Default Credentials (ADC), Service Account JSON JWT signing, and Compute Engine Metadata Server integration with automatic token refresh.
+- **Code Generation Tooling (`Module::Starter::Protobuf`)**: Automated `protobuf-starter` CLI tool for generating Type::Tiny-backed Perl SDKs from Google API proto definitions.
+
+---
+
+## Stack Architecture
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
@@ -16,7 +26,7 @@ The monorepo contains 24 modular CPAN distributions that form the complete end-t
 │ • Google-Cloud-NetworkServices-V1  - Secure Web Proxy (SWP) Gateways     │
 │ • Google-Cloud-NetworkSecurity-V1  - Gateway Security Policies & Rules   │
 │ • Google-Cloud-PrivateCA-V1        - Certificate Authority Service (CAS) │
-│ • Google-Cloud-SQL-V1              - Cloud SQL Admin (Hive Metastore DB) │
+│ • Google-Cloud-SQL-V1              - Cloud SQL Admin                     │
 │ • Google-Cloud-Metastore-V1        - Dataproc Metastore (DPMS)           │
 │ • Google-Cloud-SecretManager-V1    - Secret Manager                      │
 │ • Google-Cloud-Build-V1            - Cloud Build CI/CD Triggers          │
@@ -55,32 +65,88 @@ The monorepo contains 24 modular CPAN distributions that form the complete end-t
 
 ## Monorepo Distributions
 
-| Directory | CPAN Package | Version | Product Pod | Description |
+| Directory | CPAN Package | Version | Layer | Description |
 | :--- | :--- | :---: | :--- | :--- |
-| **`Protobuf/`** | `Protobuf` | `0.05` | Core Codec | Native C/XS `upb` binary serialization engine and standard Protocol Buffer Well-Known Types (`google.protobuf.*`). |
-| **`google-auth/`** | `Google::Auth` | `0.02` | Security | Authentication library supporting Application Default Credentials (ADC), Service Account JSON keyfiles, GCE metadata server, and OAuth2 token caching. |
-| **`Google-Api-Common/`** | `Google::Api::Common` | `0.01` | Common Metadata | Common Google API annotations and type descriptors (`google.api.http`, `google.rpc.Status`, `google.type.Date`, etc.). |
-| **`Google-gRPC/`** | `Google::gRPC` | `0.02` | Transport | High-performance `nghttp2` C/XS bindings, 100% Pure-Perl fallback (`Protocol::HTTP2`), DNS `getaddrinfo` load balancing, deadlines, exponential backoff retries, and keepalive heartbeats. |
-| **`Module-Starter-Protobuf/`** | `Module::Starter::Protobuf` | `0.01` | Tooling | Code generator tooling providing `protobuf-starter` CLI and integration with `protoc-gen-perl-pb`. |
-| **`Google-Cloud-NetworkServices-V1/`** | `Google::Cloud::NetworkServices::V1` | `0.01` | Networking | Client library for Secure Web Proxy (SWP) Gateways. |
-| **`Google-Cloud-NetworkSecurity-V1/`** | `Google::Cloud::NetworkSecurity::V1` | `0.01` | Security | Client library for Gateway Security Policies and Rules. |
-| **`Google-Cloud-PrivateCA-V1/`** | `Google::Cloud::PrivateCA::V1` | `0.01` | Security / PKI | Client library for Certificate Authority Service (Private CA) for Secure Boot & NVIDIA driver signing. |
-| **`Google-Cloud-SQL-V1/`** | `Google::Cloud::SQL::V1` | `0.01` | Data Analytics | Client library for Cloud SQL Admin V1 API. |
-| **`Google-Cloud-Metastore-V1/`** | `Google::Cloud::Metastore::V1` | `0.01` | Dataproc Pod | Client library for Dataproc Metastore (DPMS) V1 API. |
-| **`Google-Cloud-SecretManager-V1/`** | `Google::Cloud::SecretManager::V1` | `0.01` | Security | Client library for Secret Manager V1 API. |
-| **`Google-Cloud-Build-V1/`** | `Google::Cloud::Build::V1` | `0.01` | CI/CD | Client library for Cloud Build V1 API. |
-| **`Google-Cloud-IAM-V1/`** | `Google::Cloud::IAM::V1` | `0.01` | Security / IAM | Client library for Identity and Access Management (IAM) V1 API. |
-| **`Google-Cloud-Compute-V1/`** | `Google::Cloud::Compute::V1` | `0.01` | Compute | Client library for Google Compute Engine (GCE) V1 API. |
-| **`Google-Cloud-Storage-V2/`** | `Google::Cloud::Storage::V2` | `0.01` | Storage | Client library for Google Cloud Storage (GCS) V2 API. |
-| **`Google-Cloud-Dataproc-V1/`** | `Google::Cloud::Dataproc::V1` | `0.01` | Dataproc Pod | Client library for Cloud Dataproc (GCE & Serverless Spark). |
-| **`Google-Cloud-DataFusion-V1/`** | `Google::Cloud::DataFusion::V1` | `0.01` | Dataproc Pod | Client library for Cloud Data Fusion ETL pipelines. |
-| **`Google-Cloud-Dataflow-V1Beta3/`** | `Google::Cloud::Dataflow::V1Beta3` | `0.01` | Dataflow Pod | Client library for Cloud Dataflow (Apache Beam). |
-| **`Google-Cloud-PubSub-V1/`** | `Google::Cloud::PubSub::V1` | `0.01` | Dataflow Pod | Client library for Cloud Pub/Sub Messaging. |
-| **`Google-Cloud-Composer-V1/`** | `Google::Cloud::Composer::V1` | `0.01` | Composer Pod | Client library for Cloud Composer (Managed Apache Airflow). |
-| **`Google-Cloud-BigQuery-Storage-V1/`** | `Google::Cloud::BigQuery::Storage::V1` | `0.01` | Data Analytics | Client library for Cloud BigQuery Storage API (high-throughput Arrow read/write). |
-| **`Google-Cloud-Bigquery-V2/`** | `Google::Cloud::Bigquery::V2` | `0.01` | Data Analytics | Client library for Cloud BigQuery V2 API. |
-| **`Google-Cloud-Spanner-V1/`** | `Google::Cloud::Spanner::V1` | `0.01` | Data Analytics | Client library for Cloud Spanner V1 relational database. |
-| **`Google-Cloud-Dataplex-V1/`** | `Google::Cloud::Dataplex::V1` | `0.01` | Data Analytics | Client library for Cloud Dataplex Data Governance. |
+| **`Protobuf/`** | `Protobuf` | `0.05` | Codec | C/XS `upb` binary serialization codec and Protocol Buffer WKTs (`google.protobuf.*`). |
+| **`google-auth/`** | `Google::Auth` | `0.02` | Security | Application Default Credentials (ADC), Service Account JSON keyfiles, GCE metadata server, and token caching. |
+| **`Google-Api-Common/`** | `Google::Api::Common` | `0.01` | Common | Google API common annotations and types (`google.api.http`, `google.rpc.Status`, `google.type.Date`). |
+| **`Google-gRPC/`** | `Google::gRPC` | `0.02` | Transport | `nghttp2` C/XS bindings, 100% Pure-Perl fallback (`Protocol::HTTP2`), DNS `getaddrinfo` load balancing, deadlines, and retries. |
+| **`Module-Starter-Protobuf/`** | `Module::Starter::Protobuf` | `0.01` | Tooling | `protobuf-starter` CLI generator and `protoc-gen-perl-pb` integration. |
+| **`Google-Cloud-Bigquery-V2/`** | `Google::Cloud::Bigquery::V2` | `0.01` | Service Client | Cloud BigQuery V2 Data Warehouse API client. |
+| **`Google-Cloud-BigQuery-Storage-V1/`** | `Google::Cloud::BigQuery::Storage::V1` | `0.01` | Service Client | Cloud BigQuery Storage API client for high-throughput Arrow streaming. |
+| **`Google-Cloud-Spanner-V1/`** | `Google::Cloud::Spanner::V1` | `0.01` | Service Client | Cloud Spanner V1 relational database client. |
+| **`Google-Cloud-Dataproc-V1/`** | `Google::Cloud::Dataproc::V1` | `0.01` | Service Client | Cloud Dataproc V1 API client (GCE clusters & Serverless Spark). |
+| **`Google-Cloud-PubSub-V1/`** | `Google::Cloud::PubSub::V1` | `0.01` | Service Client | Cloud Pub/Sub V1 messaging API client. |
+| **`Google-Cloud-Storage-V2/`** | `Google::Cloud::Storage::V2` | `0.01` | Service Client | Cloud Storage V2 API client. |
+| **`Google-Cloud-Compute-V1/`** | `Google::Cloud::Compute::V1` | `0.01` | Service Client | Compute Engine V1 API client. |
+| **`Google-Cloud-IAM-V1/`** | `Google::Cloud::IAM::V1` | `0.01` | Service Client | Identity & Access Management (IAM) V1 API client. |
+| **`Google-Cloud-Build-V1/`** | `Google::Cloud::Build::V1` | `0.01` | Service Client | Cloud Build V1 API client. |
+| **`Google-Cloud-SecretManager-V1/`** | `Google::Cloud::SecretManager::V1` | `0.01` | Service Client | Secret Manager V1 API client. |
+| **`Google-Cloud-Metastore-V1/`** | `Google::Cloud::Metastore::V1` | `0.01` | Service Client | Dataproc Metastore (DPMS) V1 API client. |
+| **`Google-Cloud-SQL-V1/`** | `Google::Cloud::SQL::V1` | `0.01` | Service Client | Cloud SQL Admin V1 API client. |
+| **`Google-Cloud-PrivateCA-V1/`** | `Google::Cloud::PrivateCA::V1` | `0.01` | Service Client | Certificate Authority Service (Private CA) V1 API client. |
+| **`Google-Cloud-NetworkSecurity-V1/`** | `Google::Cloud::NetworkSecurity::V1` | `0.01` | Service Client | Gateway Security Policies & Rules V1 API client. |
+| **`Google-Cloud-NetworkServices-V1/`** | `Google::Cloud::NetworkServices::V1` | `0.01` | Service Client | Secure Web Proxy (SWP) Gateways V1 API client. |
+| **`Google-Cloud-Composer-V1/`** | `Google::Cloud::Composer::V1` | `0.01` | Service Client | Cloud Composer V1 API client (Managed Airflow). |
+| **`Google-Cloud-Dataflow-V1Beta3/`** | `Google::Cloud::Dataflow::V1Beta3` | `0.01` | Service Client | Cloud Dataflow V1Beta3 API client (Apache Beam). |
+| **`Google-Cloud-DataFusion-V1/`** | `Google::Cloud::DataFusion::V1` | `0.01` | Service Client | Cloud Data Fusion V1 API client. |
+| **`Google-Cloud-Dataplex-V1/`** | `Google::Cloud::Dataplex::V1` | `0.01` | Service Client | Cloud Dataplex V1 API client. |
+
+---
+
+## Code Examples
+
+### 1. BigQuery Query Execution
+
+```perl
+use strict;
+use warnings;
+use Google::Auth;
+use Google::Cloud::Bigquery::V2;
+use Google::Cloud::Bigquery::V2::Job::QueryRequest;
+use Google::Protobuf::Wrappers;
+
+my $auth = Google::Auth->default();
+my $bq   = Google::Cloud::Bigquery::V2->new( credentials => $auth );
+
+my $request = Google::Cloud::Bigquery::V2::Job::QueryRequest->new(
+    query          => 'SELECT COUNT(*) as total FROM `perl-cloud-ci.samples.users`',
+    use_legacy_sql => Google::Protobuf::Wrappers::BoolValue->new( value => 0 ),
+);
+
+my $response = $bq->query(
+    project_id    => 'perl-cloud-ci',
+    query_request => $request,
+);
+
+print "Query executed successfully. Result rows: " . scalar(@{$response->rows()}) . "\n";
+```
+
+### 2. Spanner Round-Robin Load Balancing
+
+```perl
+use strict;
+use warnings;
+use Google::gRPC::ChannelPool;
+use Google::gRPC::Client;
+
+# Create subchannel pool across resolved DNS endpoints
+my $pool = Google::gRPC::ChannelPool->new(
+    target       => 'spanner.googleapis.com:443',
+    resolved_ips => ['10.0.0.1', '10.0.0.2', '10.0.0.3'],
+);
+
+my $client = Google::gRPC::Client->new( channel_pool => $pool );
+
+# Dispatch streaming RPC across round-robin channels
+my $stream = $client->stream(
+    service => 'google.spanner.v1.Spanner',
+    method  => 'ExecuteSql',
+    type    => 'unary',
+);
+
+print "Dispatched stream to target: " . $stream->channel->target . "\n";
+```
 
 ---
 
@@ -97,24 +163,24 @@ cpanm ./Google-gRPC
 cpanm ./Module-Starter-Protobuf
 
 # 2. Install Service Clients
-cpanm ./Google-Cloud-NetworkServices-V1
-cpanm ./Google-Cloud-NetworkSecurity-V1
-cpanm ./Google-Cloud-PrivateCA-V1
-cpanm ./Google-Cloud-SQL-V1
-cpanm ./Google-Cloud-Metastore-V1
-cpanm ./Google-Cloud-SecretManager-V1
-cpanm ./Google-Cloud-Build-V1
-cpanm ./Google-Cloud-IAM-V1
-cpanm ./Google-Cloud-Compute-V1
-cpanm ./Google-Cloud-Storage-V2
-cpanm ./Google-Cloud-Dataproc-V1
-cpanm ./Google-Cloud-DataFusion-V1
-cpanm ./Google-Cloud-Dataflow-V1Beta3
-cpanm ./Google-Cloud-PubSub-V1
-cpanm ./Google-Cloud-Composer-V1
-cpanm ./Google-Cloud-BigQuery-Storage-V1
 cpanm ./Google-Cloud-Bigquery-V2
+cpanm ./Google-Cloud-BigQuery-Storage-V1
 cpanm ./Google-Cloud-Spanner-V1
+cpanm ./Google-Cloud-Dataproc-V1
+cpanm ./Google-Cloud-PubSub-V1
+cpanm ./Google-Cloud-Storage-V2
+cpanm ./Google-Cloud-Compute-V1
+cpanm ./Google-Cloud-IAM-V1
+cpanm ./Google-Cloud-Build-V1
+cpanm ./Google-Cloud-SecretManager-V1
+cpanm ./Google-Cloud-Metastore-V1
+cpanm ./Google-Cloud-SQL-V1
+cpanm ./Google-Cloud-PrivateCA-V1
+cpanm ./Google-Cloud-NetworkSecurity-V1
+cpanm ./Google-Cloud-NetworkServices-V1
+cpanm ./Google-Cloud-Composer-V1
+cpanm ./Google-Cloud-Dataflow-V1Beta3
+cpanm ./Google-Cloud-DataFusion-V1
 cpanm ./Google-Cloud-Dataplex-V1
 ```
 

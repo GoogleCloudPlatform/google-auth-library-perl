@@ -745,7 +745,7 @@ WriteMakefile(
     realclean         => { FILES => 'vendor upb Protobuf-*.tar.gz lua ruby perl local MANIFEST MANIFEST.bak make.log test_c.log Protobuf.xs BUILD.bazel META.json META.yml' },
 
     dist              => {
-        PREOP => '$(PERL) maint/vendor_upb.pl && $(PERL) -MExtUtils::Manifest=mkmanifest -e "mkmanifest"',
+        PREOP => '$(PERL) -MExtUtils::Manifest=mkmanifest -e "mkmanifest"',
     },
 );
 
