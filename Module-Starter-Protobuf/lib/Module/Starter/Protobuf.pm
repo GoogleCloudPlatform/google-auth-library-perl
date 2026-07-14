@@ -65,13 +65,15 @@ sub create_modules {
             }
         }
 
-        if ($^O eq 'MSWin32' && $plugin_path !~ /\.exe$/i) {
-            my $perl_bin = $^X;
-            if ($plugin_path =~ /\.bat$/i) {
-                $plugin_path = "cmd.exe /c \"$plugin_path\"";
-            } else {
-                $plugin_path = "cmd.exe /c \"\"$perl_bin\" \"$plugin_path\"\"";
+        if ($^O eq 'MSWin32' && $plugin_path !~ /\.(exe|bat|cmd)$/i) {
+            my $bat_path = $plugin_path . '.bat';
+            if (! -f $bat_path && -f $plugin_path) {
+                eval {
+                    require ExtUtils::MY;
+                    ExtUtils::MY->pl2bat(in => $plugin_path, out => $bat_path);
+                };
             }
+            $plugin_path = $bat_path if -f $bat_path;
         }
         
         my @cmd = ($protoc_bin);
