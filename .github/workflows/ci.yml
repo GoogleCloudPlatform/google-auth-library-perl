@@ -45,6 +45,8 @@ jobs:
         if: runner.os == 'Windows'
         run: |
           choco install openssl --no-progress -y
+          $clean_path = ($env:PATH -split ';' | Where-Object { $_ -notmatch 'Strawberry' }) -join ';'
+          echo "PATH=$clean_path" >> $env:GITHUB_ENV
 
       - name: Install Perl Dependencies
         run: |
@@ -61,7 +63,7 @@ jobs:
               Test::Fatal Test::Pod Test::Pod::Coverage URI HTTP::Message
               Crypt::OpenSSL::RSA Crypt::OpenSSL::Bignum LWP::Protocol::https Mozilla::CA
             );
-            system("cpanm", "--notest", "--force", @pkgs) == 0 or warn "cpanm exited with status $?";
+            system($^X, "-S", "cpanm", "--notest", "--force", @pkgs) == 0 or warn "cpanm exited with status $?";
           '
 
       - name: Build & Test Core Stack
