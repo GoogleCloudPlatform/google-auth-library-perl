@@ -683,11 +683,17 @@ if (!-f 'Protobuf.xs' && -f 'maint/generate_xs.pl') {
     system($perl, 'maint/generate_xs.pl') == 0 or die "Failed to generate Protobuf.xs: $!";
 }
 
+sub MY::fixin {
+    my $self = shift;
+    return '' if $is_win32;
+    return $self->SUPER::fixin(@_);
+}
+
 WriteMakefile(
     NAME              => 'Protobuf',
     VERSION           => $VERSION,
     MIN_PERL_VERSION  => '5.014',
-    EXE_FILES         => ($is_win32 ? [] : ['bin/protoc-gen-perl-pb']),
+    EXE_FILES         => ($is_win32 ? ['bin/protoc-gen-perl-pb.exe'] : ['bin/protoc-gen-perl-pb']),
     ABSTRACT          => 'High-performance Protocol Buffers implementation using upb',
     PREREQ_PM         => {
       'Moo'             => 0,
