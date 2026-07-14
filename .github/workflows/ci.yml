@@ -47,7 +47,7 @@ jobs:
           choco install protoc openssl --no-progress -y
           $perl_bin = (Get-Command perl).Source | Split-Path
           $perl_core = Join-Path (Split-Path $perl_bin) "lib\CORE"
-          $clean_path = ($env:PATH -split ';' | Where-Object { $_ -notmatch 'Strawberry' -and $_ -notmatch 'Git\\usr\\bin' -and $_ -notmatch 'mingw' }) -join ';'
+          $clean_path = ($env:PATH -split ';' | Where-Object { $_ -notmatch 'Strawberry' -and $_ -notmatch 'Git\\usr\\bin' }) -join ';'
           echo "PATH=$perl_bin;$clean_path" >> $env:GITHUB_ENV
           echo "PERL5LIB=" >> $env:GITHUB_ENV
           echo "PERL_CPANM_OPT=--global" >> $env:GITHUB_ENV
@@ -91,7 +91,7 @@ jobs:
               chdir $d or die $!;
               system("$make distclean") if -f "Makefile";
               use File::Find qw(find);
-              find(sub { unlink $_ if /\.(o|obj|so|dll|def|bs|a|lib)$/i || $_ eq "Protobuf.c" || $_ eq "Auth.c" }, ".");
+              find(sub { unlink $_ if /\.(o|obj|so|dll|def|bs|a|lib|csc|xsc)$/i || $_ eq "Protobuf.c" || $_ eq "Auth.c" || $_ eq "XS.c" }, ".");
               eval { use File::Path qw(rmtree); rmtree("blib"); };
               system("$^X Makefile.PL") == 0 or die;
               system("$make") == 0 or die;
