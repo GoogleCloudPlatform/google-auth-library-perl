@@ -8,7 +8,7 @@ use Config;
 use File::Spec;
 use File::Find;
 use ExtUtils::Embed;
-use JSON::MaybeXS;
+use JSON::PP qw(decode_json);
 use Template;
 use Sideload::Build::FileLists qw(
     get_upb_c_files
@@ -292,7 +292,7 @@ sub MY::postamble {
     my $self = shift;
     use Config;
     use File::Spec;
-    use JSON::MaybeXS;
+    use JSON::PP qw(decode_json);
     use Path::Tiny;
 
     my ($embed_cflags, $embed_ldflags) = main::_get_adjusted_embed_flags();
@@ -636,9 +636,9 @@ my %clean_files_map = map { $_ => 1 } @clean_targets;
 
 # Add C test binaries and their objects
 if (-f 't/c/c_test_config.json') {
-    require JSON::MaybeXS;
+    require JSON::PP;
     require Path::Tiny;
-    my $c_test_config = JSON::MaybeXS::decode_json(Path::Tiny::path('t/c/c_test_config.json')->slurp_utf8);
+    my $c_test_config = JSON::PP::decode_json(Path::Tiny::path('t/c/c_test_config.json')->slurp_utf8);
     foreach my $test_key (keys %$c_test_config) {
         $clean_files_map{"t/c/$test_key"} = 1;
         $clean_files_map{"t/c/$test_key.o"} = 1;
