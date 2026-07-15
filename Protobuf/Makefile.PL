@@ -194,7 +194,9 @@ sub _render_tt {
     $vars->{is_win32} = $is_win32;
     $vars->{is_darwin} = $is_darwin;
     if (!$tt) {
+        require Template::Stash::PurePerl;
         $tt = Template->new({
+            STASH        => Template::Stash::PurePerl->new(),
             INCLUDE_PATH => [ 'inc/templates' ],
             PRE_PROCESS  => 'makefile.tt',
             PRE_CHOMP    => 0,
