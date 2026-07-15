@@ -4,7 +4,7 @@ our $VERSION = '0.05';
 BEGIN {
     $ENV{PACKAGE_STASH_IMPLEMENTATION} ||= 'PP';
     $ENV{MOO_XS_DISABLE} ||= '1';
-    $ENV{TEMPLATE_STASH} ||= 'Template::Stash';
+    $ENV{TEMPLATE_STASH} ||= 'Template::Stash::PurePerl';
 }
 use lib 'local/lib';
 use lib 'xlib';

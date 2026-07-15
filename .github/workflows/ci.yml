@@ -39,7 +39,7 @@ jobs:
         if: ${{ env.HAS_GCP_SECRET == 'true' }}
         run: |
           gcloud auth configure-docker gcr.io --quiet
-          gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://gcr.io
+          gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin gcr.io
 
       - name: Build & Test Sub-Distributions inside GCR Container
         run: |
@@ -130,7 +130,7 @@ jobs:
             $ENV{PATH} = "$perl_dir$sep$ENV{PATH}";
             $ENV{PACKAGE_STASH_IMPLEMENTATION} = "PP";
             $ENV{MOO_XS_DISABLE} = "1";
-            $ENV{TEMPLATE_STASH} = "Template::Stash";
+            $ENV{TEMPLATE_STASH} = "Template::Stash::PurePerl";
             my $make = $Config{make} || "make";
             # Remove any pre-installed Package::Stash::XS DLLs that cause Perl ABI handshake key mismatch
             for my $lib_dir (@INC) {
@@ -166,7 +166,7 @@ jobs:
             $ENV{PATH} = "$perl_dir$sep$ENV{PATH}";
             $ENV{PACKAGE_STASH_IMPLEMENTATION} = "PP";
             $ENV{MOO_XS_DISABLE} = "1";
-            $ENV{TEMPLATE_STASH} = "Template::Stash";
+            $ENV{TEMPLATE_STASH} = "Template::Stash::PurePerl";
             my $make = $Config{make} || "make";
             my @clients = qw(
               Google-Cloud-IAM-V1
