@@ -149,7 +149,7 @@ my $log_file = File::Spec->catfile('tmp', 'integration-test.log');
 local $ENV{PERL5LIB} = defined $ENV{PERL5LIB} ? "$gen_lib$sep$ENV{PERL5LIB}" : $gen_lib;
 local $ENV{PACKAGE_STASH_IMPLEMENTATION} = 'PP';
 local $ENV{MOO_XS_DISABLE} = 1;
-local $ENV{TEMPLATE_STASH} = $ENV{TEMPLATE_STASH} || 'Template::Stash::PurePerl';
+local $ENV{TEMPLATE_STASH} = 'pureperl';
 my $test_runner_cmd = sprintf(
     '"%s" "%s" > "%s" 2>&1',
     $^X,

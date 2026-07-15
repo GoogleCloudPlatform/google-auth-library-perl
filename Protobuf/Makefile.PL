@@ -4,7 +4,11 @@ our $VERSION = '0.05';
 BEGIN {
     $ENV{PACKAGE_STASH_IMPLEMENTATION} ||= 'PP';
     $ENV{MOO_XS_DISABLE} ||= '1';
-    $ENV{TEMPLATE_STASH} ||= 'Template::Stash::PurePerl';
+    $ENV{TEMPLATE_STASH} ||= 'pureperl';
+    eval {
+        require Template::Config;
+        $Template::Config::STASH = 'Template::Stash';
+    };
 }
 use lib 'local/lib';
 use lib 'xlib';
@@ -159,8 +163,24 @@ if (!$is_google3_dev) {
     my $abs_protoc_dir = File::Spec->rel2abs('protoc');
     eval { symlink($abs_protoc_dir, $symlink_target) }
         or do {
-            warn "WARNING: Failed to create symlink $symlink_target -> $abs_protoc_dir: $!\n" .
-                 "C++ plugin compilation might fail due to missing Google3-style headers.\n";
+            print "Symlink failed ($!); copying directory 'protoc' -> '$symlink_target'...\n";
+            require File::Copy;
+            File::Path::make_path($symlink_target) unless -d $symlink_target;
+            use File::Find qw(find);
+            find({
+                wanted => sub {
+                    my $src = $File::Find::name;
+                    my $rel = File::Spec->abs2rel($src, 'protoc');
+                    return if $rel eq '.';
+                    my $dest = File::Spec->catfile($symlink_target, $rel);
+                    if (-d $src) {
+                        File::Path::make_path($dest) unless -d $dest;
+                    } elsif (-f $src) {
+                        File::Copy::copy($src, $dest);
+                    }
+                },
+                no_chdir => 1
+            }, 'protoc');
         };
 }
 
@@ -194,9 +214,8 @@ sub _render_tt {
     $vars->{is_win32} = $is_win32;
     $vars->{is_darwin} = $is_darwin;
     if (!$tt) {
-        require Template::Stash::PurePerl;
+        $ENV{TEMPLATE_STASH} = 'pureperl';
         $tt = Template->new({
-            STASH        => Template::Stash::PurePerl->new(),
             INCLUDE_PATH => [ 'inc/templates' ],
             PRE_PROCESS  => 'makefile.tt',
             PRE_CHOMP    => 0,

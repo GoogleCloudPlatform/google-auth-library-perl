@@ -18,6 +18,7 @@ use warnings;
 use Test::More;
 use Test::Exception;
 use File::Temp qw(tempfile);
+use File::Spec;
 use JSON::PP;
 
 use Google::Auth;
@@ -50,7 +51,13 @@ subtest 'from_env loading valid service account credentials' => sub {
     };
     my $sa_json = encode_json($sa_data);
 
-    my ( $fh, $filename ) = tempfile( UNLINK => 1 );
+    my $tmpdir = File::Spec->tmpdir();
+    if ($^O eq 'MSWin32' && ($tmpdir eq '\\' || $tmpdir eq '/' || $tmpdir =~ /^[a-zA-Z]:\\?$/)) {
+        $tmpdir = $ENV{RUNNER_TEMP} || $ENV{TEMP} || $ENV{TMP} || '.';
+    }
+    ($tmpdir) = $tmpdir =~ /^(.*)$/;
+    my ( $fh, $filename ) = tempfile( UNLINK => 1, DIR => $tmpdir );
+    ($filename) = $filename =~ /^(.*)$/;
     print $fh $sa_json;
     close($fh);
 
@@ -69,7 +76,7 @@ subtest 'from_env loading valid service account credentials' => sub {
 };
 
 subtest 'from_env loading invalid JSON' => sub {
-    my ( $fh, $filename ) = tempfile( UNLINK => 1 );
+    my ( $fh, $filename ) = tempfile( UNLINK => 1, DIR => File::Spec->tmpdir() );
     print $fh 'not a valid json string';
     close($fh);
 
@@ -87,7 +94,7 @@ subtest 'from_env loading JSON missing type' => sub {
     };
     my $sa_json = encode_json($sa_data);
 
-    my ( $fh, $filename ) = tempfile( UNLINK => 1 );
+    my ( $fh, $filename ) = tempfile( UNLINK => 1, DIR => File::Spec->tmpdir() );
     print $fh $sa_json;
     close($fh);
 

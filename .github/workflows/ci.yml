@@ -10,41 +10,42 @@ jobs:
   container-matrix:
     name: Container Matrix (${{ matrix.name }})
     runs-on: ubuntu-latest
-    env:
-      HAS_GCP_SECRET: ${{ secrets.GCP_SA_KEY != '' }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          - name: Perl 5.40 (GCR)
-            image: gcr.io/perl-cloud-ci/google-cloud-perl-ci-540:latest
-          - name: Ubuntu 24.04 (GCR)
-            image: gcr.io/perl-cloud-ci/google-cloud-perl-ci-ubuntu:latest
-          - name: Rocky Linux 9 (GCR)
-            image: gcr.io/perl-cloud-ci/google-cloud-perl-ci-rocky:latest
-          - name: Debian 12 (GCR)
-            image: gcr.io/perl-cloud-ci/google-cloud-perl-ci-debian:latest
-
+          - name: Perl 5.40 (Artifact Registry)
+            image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-540:latest
+          - name: Ubuntu 24.04 (Artifact Registry)
+            image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-ubuntu:latest
+          - name: Rocky Linux 9 (Artifact Registry)
+            image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-rocky:latest
+          - name: Debian 12 (Artifact Registry)
+            image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-debian:latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Authenticate to Google Cloud
-        if: ${{ env.HAS_GCP_SECRET == 'true' }}
+        env:
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+        if: ${{ env.GCP_SA_KEY != '' }}
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      - name: Configure Docker authentication for GCR
-        if: ${{ env.HAS_GCP_SECRET == 'true' }}
+      - name: Configure Docker authentication for Artifact Registry
+        env:
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+        if: ${{ env.GCP_SA_KEY != '' }}
         run: |
-          gcloud auth configure-docker gcr.io --quiet
-          gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin gcr.io
+          gcloud auth configure-docker us-docker.pkg.dev --quiet
+          gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin us-docker.pkg.dev
 
-      - name: Build & Test Sub-Distributions inside GCR Container
+      - name: Build & Test Sub-Distributions inside AR Container
         run: |
           docker run --rm -v ${{ github.workspace }}:/repo ${{ matrix.image }} bash -c \
-            "cp -a /repo /tmp/work && cd /tmp/work && for d in Protobuf Google-Auth Google-gRPC Google-Api-Common Module-Starter-Protobuf Google-Cloud-Bigquery-V2; do (cd \$d && perl Makefile.PL && make -j\$(nproc) && make test && make install) || exit 1; done"
+            "cp -a /repo /tmp/work && cd /tmp/work && perl .github/scripts/build_and_test.pl Protobuf Google-Auth Google-gRPC Google-Api-Common Module-Starter-Protobuf"
 
   native-matrix:
     name: Native Perl ${{ matrix.perl-version }} on Windows
@@ -83,14 +84,13 @@ jobs:
         if: runner.os == 'Windows'
         run: |
           choco install protoc openssl --no-progress -y
-          $strawberry_site = "C:\Strawberry\perl\site\bin"
-          $strawberry_bin = "C:\Strawberry\perl\bin"
+          $perl_bin = (Get-Command perl).Source | Split-Path
           $strawberry_c = "C:\Strawberry\c\bin"
-          "PATH=$strawberry_site;$strawberry_bin;$strawberry_c;$env:PATH" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "$perl_bin;$strawberry_c" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
           "PERL_CPANM_OPT=--global" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
           "PACKAGE_STASH_IMPLEMENTATION=PP" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
           "MOO_XS_DISABLE=1" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          "TEMPLATE_STASH=Template::Stash::PurePerl" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "TEMPLATE_STASH=pureperl" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
           "INCLUDE=$perl_core;C:\Program Files\OpenSSL-Win64\include;$env:INCLUDE" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
           "LIB=C:\Program Files\OpenSSL-Win64\lib;$env:LIB" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
           "OPENSSL_PREFIX=C:\Program Files\OpenSSL-Win64" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
@@ -121,84 +121,30 @@ jobs:
           '
 
       - name: Build & Test Core Stack
-        run: |
-          perl -e '
-            use Config;
-            use File::Basename qw(dirname);
-            my $perl_dir = dirname($^X);
-            my $sep = $^O eq "MSWin32" ? ";" : ":";
-            $ENV{PATH} = "$perl_dir$sep$ENV{PATH}";
-            $ENV{PACKAGE_STASH_IMPLEMENTATION} = "PP";
-            $ENV{MOO_XS_DISABLE} = "1";
-            $ENV{TEMPLATE_STASH} = "Template::Stash::PurePerl";
-            my $make = $Config{make} || "make";
-            # Remove any pre-installed Package::Stash::XS DLLs that cause Perl ABI handshake key mismatch
-            for my $lib_dir (@INC) {
-              my $xs_dir = "$lib_dir/auto/Package/Stash/XS";
-              if (-d $xs_dir) {
-                use File::Path qw(rmtree);
-                eval { rmtree($xs_dir); };
-              }
-            }
-            my @dirs = qw(Protobuf Google-Auth Google-Api-Common Google-gRPC Module-Starter-Protobuf);
-            for my $d (@dirs) {
-              print "=== Building $d ===\n";
-              chdir $d or die $!;
-              system("$make distclean") if -f "Makefile";
-              use File::Find qw(find);
-              find(sub { unlink $_ if /\.(o|obj|so|dll|def|bs|a|lib|csc|xsc)$/i || $_ eq "Protobuf.c" || $_ eq "Auth.c" || $_ eq "XS.c" }, ".");
-              eval { use File::Path qw(rmtree); rmtree("blib"); };
-              system("$^X Makefile.PL") == 0 or die;
-              system("$make") == 0 or die;
-              system("prove -b -It/lib t/") == 0 or die;
-              system("$make install") == 0 or die;
-              chdir ".." or die;
-            }
-          '
+        run: perl .github/scripts/build_and_test.pl Protobuf Google-Auth Google-Api-Common Google-gRPC Module-Starter-Protobuf
 
       - name: Build & Test GCP Client Distributions
         run: |
-          perl -e '
-            use Config;
-            use File::Basename qw(dirname);
-            my $perl_dir = dirname($^X);
-            my $sep = $^O eq "MSWin32" ? ";" : ":";
-            $ENV{PATH} = "$perl_dir$sep$ENV{PATH}";
-            $ENV{PACKAGE_STASH_IMPLEMENTATION} = "PP";
-            $ENV{MOO_XS_DISABLE} = "1";
-            $ENV{TEMPLATE_STASH} = "Template::Stash::PurePerl";
-            my $make = $Config{make} || "make";
-            my @clients = qw(
-              Google-Cloud-IAM-V1
-              Google-Cloud-SecretManager-V1
-              Google-Cloud-PrivateCA-V1
-              Google-Cloud-NetworkSecurity-V1
-              Google-Cloud-NetworkServices-V1
-              Google-Cloud-Build-V1
-              Google-Cloud-Dataproc-V1
-              Google-Cloud-DataFusion-V1
-              Google-Cloud-Dataflow-V1Beta3
-              Google-Cloud-PubSub-V1
-              Google-Cloud-Composer-V1
-              Google-Cloud-BigQuery-Storage-V1
-              Google-Cloud-Bigquery-V2
-              Google-Cloud-Spanner-V1
-              Google-Cloud-Dataplex-V1
-              Google-Cloud-Storage-V2
-              Google-Cloud-Compute-V1
-              Google-Cloud-SQL-V1
-              Google-Cloud-Metastore-V1
-            );
-            for my $c (@clients) {
-              print "=== Testing Client: $c ===\n";
-              chdir $c or die $!;
-              system("$^X Makefile.PL") == 0 or die;
-              system("$make") == 0 or die;
-              system("prove -b -It/lib t/") == 0 or die;
-              system("$make install") == 0 or die;
-              chdir ".." or die;
-            }
-          '
+          perl .github/scripts/build_and_test.pl \
+            Google-Cloud-IAM-V1 \
+            Google-Cloud-SecretManager-V1 \
+            Google-Cloud-PrivateCA-V1 \
+            Google-Cloud-NetworkSecurity-V1 \
+            Google-Cloud-NetworkServices-V1 \
+            Google-Cloud-Build-V1 \
+            Google-Cloud-Dataproc-V1 \
+            Google-Cloud-DataFusion-V1 \
+            Google-Cloud-Dataflow-V1Beta3 \
+            Google-Cloud-PubSub-V1 \
+            Google-Cloud-Composer-V1 \
+            Google-Cloud-BigQuery-Storage-V1 \
+            Google-Cloud-Bigquery-V2 \
+            Google-Cloud-Spanner-V1 \
+            Google-Cloud-Dataplex-V1 \
+            Google-Cloud-Storage-V2 \
+            Google-Cloud-Compute-V1 \
+            Google-Cloud-SQL-V1 \
+            Google-Cloud-Metastore-V1
 
       - name: Run Integration Tests
         run: |
