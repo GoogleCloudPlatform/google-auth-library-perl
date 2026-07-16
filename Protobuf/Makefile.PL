@@ -647,6 +647,9 @@ all :: $protoc_plugin_exe
 
 EOF
 
+    if ($main::is_win32) {
+        $make_frag .= "\nconfig ::\n\t\$(NOECHO) \$(MKPATH) \$(INST_AUTODIR) \$(INST_LIBDIR)\n";
+    }
     return $make_frag;
 
     }
@@ -796,6 +799,7 @@ WriteMakefile(
 package MY;
 
 # Modify the MY::test subroutine
+
 sub test {
     my $self = shift;
     return main::_render_tt('my_test', {
