@@ -32,7 +32,7 @@ $versions | ForEach-Object {
     Start-Job -ScriptBlock {
         param($v)
         $tag = $v -replace '\.',''
-        docker build -t "us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-windows:$v" -f "ci/Dockerfile.windows.perl$tag" .
+        docker build --no-cache -t "us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-windows:$v" -f "ci/Dockerfile.windows.perl$tag" .
     } -ArgumentList $_
 } | Wait-Job | Receive-Job
 

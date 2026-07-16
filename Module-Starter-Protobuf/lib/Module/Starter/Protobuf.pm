@@ -58,7 +58,12 @@ sub create_modules {
         }
 
         # Execute protoc using native Perl compiler plugin from PATH or ENV
-        my $protoc_bin = $ENV{PROTOC} || which('protoc') || 'protoc';
+        my $protoc_bin = $ENV{PROTOC} 
+            || which('protoc') 
+            || which('protoc.exe') 
+            || (-f 'C:\ProgramData\chocolatey\bin\protoc.exe' ? 'C:\ProgramData\chocolatey\bin\protoc.exe' : undef)
+            || (-f 'C:\tools\protoc\bin\protoc.exe' ? 'C:\tools\protoc\bin\protoc.exe' : undef)
+            || 'protoc';
         my $plugin_path = $ENV{PROTOC_GEN_PERL_PB};
         if (!defined $plugin_path) {
             my $perl_dir = File::Basename::dirname($^X);
