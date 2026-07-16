@@ -22,8 +22,7 @@ cpanm CryptX \
       Test::Exception \
       Test::LWP::UserAgent \
       Test::More \
-      JSON::XS \
-      Mutex
+      JSON::XS
 perl Makefile.PL
 make
 make test
