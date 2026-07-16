@@ -17,6 +17,7 @@
 *.x
 *.xsc
 *.bin
+!t/data/*.bin
 lib/**/*.c
 *.BUILD
 BUILD.bazel
