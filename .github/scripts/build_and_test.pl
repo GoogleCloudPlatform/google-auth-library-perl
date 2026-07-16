@@ -66,7 +66,14 @@ for my $d (@dirs) {
 
     my $old_path = $ENV{PATH};
     $ENV{PATH} = join($sep, $abs_arch, $abs_cur, @dll_dirs, $old_path);
-    my $res = system("$^X -S prove -b -It/lib t/");
+    my $res;
+    if ($^O eq 'MSWin32') {
+        local $ENV{PERL5LIB} = join($sep, File::Spec->rel2abs('blib/lib'), File::Spec->rel2abs('blib/arch'), File::Spec->rel2abs('t/lib'), $ENV{PERL5LIB} || ());
+        my $quoted_perl = '"' . $^X . '"';
+        $res = system("$^X -S prove --exec $quoted_perl -b t/");
+    } else {
+        $res = system("$^X -S prove -b -It/lib t/");
+    }
     $ENV{PATH} = $old_path;
     die "prove failed in $d with exit code $res" if $res != 0;
 
