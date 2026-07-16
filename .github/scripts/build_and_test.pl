@@ -34,32 +34,23 @@ for my $d (@dirs) {
     unlink "Makefile", "MYMETA.yml", "MYMETA.json", "pm_to_blib";
     eval { rmtree("blib"); };
     find(sub { unlink $_ if /\.(o|obj|so|dll|def|bs|a|lib|csc|xsc)$/i || $_ eq "Protobuf.c" || $_ eq "Auth.c" || $_ eq "XS.c" }, ".");
-    my @cpanm_cmd = ($^O eq 'MSWin32') ? ($^X, '-S', 'cpanm') : ('cpanm');
-    system(@cpanm_cmd, '--notest', '--installdeps', '.');
+    unless ($ENV{CI_SKIP_DEPS}) {
+        my @cpanm_cmd = ($^O eq 'MSWin32') ? ($^X, '-S', 'cpanm') : ('cpanm');
+        system(@cpanm_cmd, '--notest', '--installdeps', '.');
+    }
     system("$^X Makefile.PL") == 0 or die "Makefile.PL failed in $d";
     system("$make") == 0 or die "$make failed in $d";
 
     my $top_dir = File::Spec->rel2abs("..");
     my %seen;
     my @dll_dirs;
-    my @search_dirs = ($top_dir);
-    for my $inc (@INC) {
-        my $auto = File::Spec->catdir($inc, "auto");
-        push @search_dirs, $auto if -d $auto;
+    for my $dir ($top_dir, map { File::Spec->catdir($_, "auto") } @INC) {
+        if (-d $dir && !$seen{$dir}++) {
+            my $canon = File::Spec->canonpath(File::Spec->rel2abs($dir));
+            $canon =~ s/\//\\/g if $^O eq 'MSWin32';
+            push @dll_dirs, $canon;
+        }
     }
-    File::Find::find({
-        wanted => sub {
-            if (-f $_ && /\.(?:dll|so|dylib)$/i) {
-                my $dir = File::Spec->rel2abs($File::Find::dir);
-                $dir = File::Spec->canonpath($dir);
-                if (!$seen{$dir}++) {
-                    $dir =~ s/\//\\/g if $^O eq 'MSWin32';
-                    push @dll_dirs, $dir;
-                }
-            }
-        },
-        no_chdir => 1
-    }, @search_dirs);
 
     my $abs_arch = File::Spec->rel2abs("blib/arch/auto");
     my $abs_cur = File::Spec->rel2abs(".");
