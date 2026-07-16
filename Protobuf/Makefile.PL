@@ -192,16 +192,11 @@ our $cmake_gen_include = $is_google3_dev
 
 our $our_protoc_path = 'protoc';
 if ($is_win32) {
-    my $found;
-    for my $dir (split /;/ => ($ENV{PATH} // '')) {
-        next unless length $dir;
-        $dir =~ s{\\}{/}g;
-        if (-f "$dir/protoc.exe") {
-            $found = "$dir/protoc.exe";
-            last;
-        }
+    if (system('protoc --version >NUL 2>&1') == 0) {
+        $our_protoc_path = 'protoc';
+    } else {
+        $our_protoc_path = '$(PERL) -e 1 --';
     }
-    $our_protoc_path = $found // '$(PERL) -e 1 --';
 } elsif ($is_darwin) {
     if (-x '/opt/homebrew/bin/protoc') {
         $our_protoc_path = '/opt/homebrew/bin/protoc';
