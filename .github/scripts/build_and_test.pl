@@ -33,6 +33,7 @@ for my $d (@dirs) {
     chdir $d or die "Cannot chdir to $d: $!";
     system("$make distclean") if -f "Makefile";
     find(sub { unlink $_ if /\.(o|obj|so|dll|def|bs|a|lib|csc|xsc)$/i || $_ eq "Protobuf.c" || $_ eq "Auth.c" || $_ eq "XS.c" }, ".");
+    eval { unlink "Makefile", "MYMETA.yml", "MYMETA.json", "pm_to_blib"; };
     eval { rmtree("blib"); };
     system("$^X Makefile.PL") == 0 or die "Makefile.PL failed in $d";
     system("$make") == 0 or die "$make failed in $d";
