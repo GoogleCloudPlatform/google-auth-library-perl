@@ -17,8 +17,8 @@ ENV PACKAGE_STASH_IMPLEMENTATION="PP"
 ENV MOO_XS_DISABLE="1"
 ENV TEMPLATE_STASH="Template::Stash"
 
-# Pre-install all required Perl CPAN module dependencies using explicit path
-RUN C:\Strawberry\perl\bin\cpanm Log::Any Const::Fast Sub::Identify SUPER Guard Env::Sanctify Test::Valgrind Template Moo Package::Stash Type::Tiny Protocol::HTTP2 JSON::MaybeXS Path::Tiny Capture::Tiny Module::Starter File::Which Test::Warnings Test::Exception Test::LWP::UserAgent Test::Differences Test::Needs Test::Fatal Test::Pod Test::Pod::Coverage URI HTTP::Message LWP::Protocol::https Mozilla::CA HTTP::Daemon IO::Socket::SSL
+# Pre-install all required Perl CPAN module dependencies using perl executable explicitly
+RUN C:\Strawberry\perl\bin\perl.exe C:\Strawberry\perl\bin\cpanm Log::Any Const::Fast Sub::Identify SUPER Guard Env::Sanctify Test::Valgrind Template Moo Package::Stash Type::Tiny Protocol::HTTP2 JSON::MaybeXS Path::Tiny Capture::Tiny Module::Starter File::Which Test::Warnings Test::Exception Test::LWP::UserAgent Test::Differences Test::Needs Test::Fatal Test::Pod Test::Pod::Coverage URI HTTP::Message LWP::Protocol::https Mozilla::CA HTTP::Daemon IO::Socket::SSL
 
 WORKDIR C:/workspace
 
