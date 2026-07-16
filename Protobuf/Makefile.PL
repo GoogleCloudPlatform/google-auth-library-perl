@@ -780,7 +780,11 @@ WriteMakefile(
     AUTHOR            => 'C.J. Collier <cjac@colliertech.org>',
     LICENSE           => 'apache_2_0',
     DEFINE            => '-DUPB_BOOTSTRAP_STAGE=0' . ($is_google3_dev ? ' -DGOOGLE3' : ''),
-    INC               => "-I. -I$project_root -I$upb_dir -I$src_dir -I$third_party_dir -I$libcoro_dir -I" . File::Spec->catdir($third_party_dir, 'utf8_range') . " -I$bazel_gen_include -I$cmake_gen_include -I\$(PERL_INC)$mac_inc",
+    INC               => do {
+        my $inc = "-I. -I$project_root -I$upb_dir -I$src_dir -I$third_party_dir -I$libcoro_dir -I" . File::Spec->catdir($third_party_dir, 'utf8_range') . " -I$bazel_gen_include -I$cmake_gen_include -I\$(PERL_INC)$mac_inc";
+        $inc =~ s{\\}{/}g if $is_win32;
+        $inc;
+    },
     MYEXTLIB          => "libprotobufperl.$extlib_ext",
     CCFLAGS           => "-g $Config{ccflags} -fPIC $sanitizer_flags",
     LIBS              => ['-L$(CURDIR) -lprotobufperl' . $mac_libs],
