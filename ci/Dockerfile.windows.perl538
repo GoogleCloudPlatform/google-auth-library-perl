@@ -12,7 +12,7 @@ RUN choco install strawberryperl --version=5.38.2.1 --no-progress -y
 RUN choco install protoc openssl git --no-progress -y
 
 # Set Environment Variables for Perl & System Tools
-ENV PATH="C:\Strawberry\perl\site\bin;C:\Strawberry\perl\bin;C:\Strawberry\c\bin;C:\Program Files\Git\cmd;C:\Windows\system32;C:\Windows"
+ENV PATH="C:\ProgramData\chocolatey\bin;C:\Strawberry\perl\site\bin;C:\Strawberry\perl\bin;C:\Strawberry\c\bin;C:\Program Files\Git\cmd;C:\Windows\system32;C:\Windows"
 ENV PACKAGE_STASH_IMPLEMENTATION="PP"
 ENV MOO_XS_DISABLE="1"
 ENV TEMPLATE_STASH="Template::Stash"
