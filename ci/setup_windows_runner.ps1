@@ -23,6 +23,9 @@ if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
     choco install git --no-progress -y
 }
 
+Write-Host "2b. Configuring Windows Defender Exclusions for Docker and Runners..."
+Add-MpPreference -ExclusionPath 'C:\ProgramData\docker', 'C:\actions-runner-1', 'C:\actions-runner-2', 'C:\actions-runner-3' -ErrorAction SilentlyContinue
+
 Write-Host "3. Building Windows Base Docker Container Images in Parallel..."
 $versions = @('5.38', '5.40', '5.42')
 $versions | ForEach-Object {
