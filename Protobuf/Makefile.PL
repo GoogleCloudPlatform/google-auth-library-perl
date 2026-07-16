@@ -191,7 +191,15 @@ our $cmake_gen_include = $is_google3_dev
     : File::Spec->catdir($upb_dir, "reflection", "cmake");
 
 our $our_protoc_path = 'protoc';
-if ($is_darwin) {
+if ($is_win32) {
+    require File::Which;
+    my $w = File::Which::which('protoc');
+    if ($w) {
+        $our_protoc_path = $w;
+    } else {
+        $our_protoc_path = "$^X -e 1 --";
+    }
+} elsif ($is_darwin) {
     if (-x '/opt/homebrew/bin/protoc') {
         $our_protoc_path = '/opt/homebrew/bin/protoc';
     } elsif (-x '/usr/local/bin/protoc') {
