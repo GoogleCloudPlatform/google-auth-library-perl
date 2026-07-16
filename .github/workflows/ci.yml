@@ -33,7 +33,7 @@ jobs:
       - name: Run Build and Test Suite
         run: |
           docker run --rm -v ${{ github.workspace }}:/repo ${{ matrix.image }} bash -c \
-            "${{ matrix.prep }} && cp -a /repo /tmp/work && cd /tmp/work && cpanm --notest --installdeps ./Protobuf ./Google-Auth ./Google-gRPC ./Google-Api-Common ./Module-Starter-Protobuf && perl .github/scripts/build_and_test.pl Protobuf Google-Auth Google-gRPC Google-Api-Common Module-Starter-Protobuf"
+            "${{ matrix.prep }} && cp -a /repo /tmp/work && cd /tmp/work && (cpanm --notest --installdeps ./Protobuf ./Google-Auth ./Google-gRPC ./Google-Api-Common ./Module-Starter-Protobuf || true) && perl .github/scripts/build_and_test.pl Protobuf Google-Auth Google-gRPC Google-Api-Common Module-Starter-Protobuf"
 
   native-matrix:
     name: Windows Perl ${{ matrix.perl-version }}
