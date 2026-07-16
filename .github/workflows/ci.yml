@@ -46,7 +46,7 @@ jobs:
           docker run --rm -v ${{ github.workspace }}:/repo ${{ matrix.image }} bash -c \
             "cp -a /repo /tmp/work && cd /tmp/work && perl .github/scripts/build_and_test.pl Protobuf Google-Auth Google-gRPC Google-Api-Common Module-Starter-Protobuf"
 
-  native-matrix:
+  windows-matrix:
     name: Windows Perl ${{ matrix.perl-version }}
     runs-on: [self-hosted, Windows]
     strategy:
@@ -58,7 +58,9 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Run Build and Test Suite
+      - name: Run Build and Test Suite inside Windows Base Container
         shell: powershell
         run: |
-          perl .github/scripts/build_and_test.pl Protobuf Google-Auth Google-gRPC Google-Api-Common Module-Starter-Protobuf
+          $token = gcloud auth print-access-token
+          $token | docker login -u oauth2accesstoken --password-stdin us-docker.pkg.dev
+          docker run --rm -v ${{ github.workspace }}:C:\workspace us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-windows:${{ matrix.perl-version }} powershell -Command "cd C:\workspace; perl .github\scripts\build_and_test.pl Protobuf Google-Auth Google-gRPC Google-Api-Common Module-Starter-Protobuf"
