@@ -1,4 +1,4 @@
-# Provisioning Script for Windows CI Runner (win-ci-dev)
+# Provisioning Script for Windows CI Container Host (win-ci-dev)
 # Run inside Windows PowerShell (As Administrator)
 
 $ErrorActionPreference = 'Stop'
@@ -10,7 +10,7 @@ if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
     Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 }
 
-Write-Host "1.5. Installing Windows Containers Feature & Docker Engine..."
+Write-Host "2. Installing Windows Containers Feature, Docker Engine, and Git..."
 if ((Get-WindowsFeature Containers).InstallState -ne 'Installed') {
     Install-WindowsFeature -Name Containers
 }
@@ -19,20 +19,11 @@ if (-not (Get-Service docker -ErrorAction SilentlyContinue)) {
     Install-Package -ProviderName DockerMsftProvider -Name Docker -Force
     Start-Service docker
 }
+if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
+    choco install git --no-progress -y
+}
 
-Write-Host "2. Installing Core Dependencies (Strawberry Perl, protoc, OpenSSL, Git)..."
-choco install strawberryperl protoc openssl git --no-progress -y
-
-Write-Host "3. Setting System Environment Variables..."
-[Environment]::SetEnvironmentVariable("PATH", "C:\Strawberry\perl\site\bin;C:\Strawberry\perl\bin;C:\Strawberry\c\bin;C:\Program Files\Git\cmd;" + [Environment]::GetEnvironmentVariable("PATH", "Machine"), "Machine")
-[Environment]::SetEnvironmentVariable("PACKAGE_STASH_IMPLEMENTATION", "PP", "Machine")
-[Environment]::SetEnvironmentVariable("MOO_XS_DISABLE", "1", "Machine")
-[Environment]::SetEnvironmentVariable("TEMPLATE_STASH", "Template::Stash", "Machine")
-
-Write-Host "4. Pre-installing Perl CPAN Module Dependencies..."
-cpanm Log::Any Const::Fast Sub::Identify SUPER Guard Env::Sanctify Test::Valgrind Template Moo Package::Stash Type::Tiny Protocol::HTTP2 JSON::MaybeXS Path::Tiny Capture::Tiny Module::Starter File::Which Test::Warnings Test::Exception Test::LWP::UserAgent Test::Differences Test::Needs Test::Fatal Test::Pod Test::Pod::Coverage URI HTTP::Message LWP::Protocol::https Mozilla::CA HTTP::Daemon IO::Socket::SSL
-
-Write-Host "5. Building Windows Base Docker Container Images in Parallel..."
+Write-Host "3. Building Windows Base Docker Container Images in Parallel..."
 $versions = @('5.38', '5.40', '5.42')
 $versions | ForEach-Object {
     Start-Job -ScriptBlock {
@@ -42,7 +33,7 @@ $versions | ForEach-Object {
     } -ArgumentList $_
 } | Wait-Job | Receive-Job
 
-Write-Host "6. Setting up 3 Multi-Runner Instances for Parallel CI Execution..."
+Write-Host "4. Setting up 3 Multi-Runner Instances for Parallel Container Execution..."
 1..3 | ForEach-Object {
     $rDir = "C:\actions-runner-$_"
     if (-not (Test-Path $rDir)) {
@@ -56,4 +47,4 @@ Write-Host "6. Setting up 3 Multi-Runner Instances for Parallel CI Execution..."
     }
 }
 
-Write-Host "Automated runner setup complete. Register instances using C:\actions-runner-1\config.cmd --url <REPO_URL> --token <TOKEN> --name win-ci-dev-1."
+Write-Host "Container host runner setup complete."
