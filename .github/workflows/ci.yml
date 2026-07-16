@@ -1,4 +1,4 @@
-name: Multi-OS Monorepo CI (Linux, macOS, Windows, Debian, Rocky Linux)
+name: CI
 
 on:
   push:
@@ -10,41 +10,30 @@ jobs:
   container-matrix:
     name: ${{ matrix.name }}
     runs-on: ubuntu-latest
-    env:
-      GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
     strategy:
       fail-fast: false
       matrix:
         include:
           - name: Debian 12
-            image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-debian:latest
+            image: debian:12-slim
+            prep: "apt-get update && apt-get install -y perl cpanminus build-essential protobuf-compiler libssl-dev git"
           - name: Ubuntu 24.04
-            image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-ubuntu:latest
+            image: ubuntu:24.04
+            prep: "apt-get update && apt-get install -y perl cpanminus build-essential protobuf-compiler libssl-dev git"
           - name: Rocky Linux 9
-            image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-rocky:latest
+            image: rockylinux:9
+            prep: "dnf install -y perl perl-App-cpanminus gcc make protobuf-compiler openssl-devel git"
           - name: Perl 5.40
-            image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-540:latest
+            image: perl:5.40-slim
+            prep: "apt-get update && apt-get install -y build-essential protobuf-compiler libssl-dev git"
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Authenticate to Google Cloud
-        if: ${{ env.GCP_SA_KEY != '' }}
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
-
-      - name: Configure Docker authentication for Artifact Registry
-        if: ${{ env.GCP_SA_KEY != '' }}
-        run: |
-          gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
-          gcloud auth configure-docker us-docker.pkg.dev --quiet
-          gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin us-docker.pkg.dev
-
-      - name: Build & Test Sub-Distributions inside AR Container
+      - name: Run Build and Test Suite
         run: |
           docker run --rm -v ${{ github.workspace }}:/repo ${{ matrix.image }} bash -c \
-            "cp -a /repo /tmp/work && cd /tmp/work && perl .github/scripts/build_and_test.pl Protobuf Google-Auth Google-gRPC Google-Api-Common Module-Starter-Protobuf"
+            "${{ matrix.prep }} && cp -a /repo /tmp/work && cd /tmp/work && perl .github/scripts/build_and_test.pl Protobuf Google-Auth Google-gRPC Google-Api-Common Module-Starter-Protobuf"
 
   native-matrix:
     name: Windows Perl ${{ matrix.perl-version }}
@@ -62,90 +51,3 @@ jobs:
         shell: powershell
         run: |
           perl .github/scripts/build_and_test.pl Protobuf Google-Auth Google-gRPC Google-Api-Common Module-Starter-Protobuf
-
-      - name: Install System Dependencies (Linux/macOS)
-        if: runner.os != 'Windows'
-        run: |
-          if [ "${{ runner.os }}" = "Linux" ]; then
-            sudo apt-get update && sudo apt-get install -y protobuf-compiler libprotobuf-dev libnghttp2-dev libssl-dev build-essential
-          elif [ "${{ runner.os }}" = "macOS" ]; then
-            brew install protobuf nghttp2 openssl
-            echo "OPENSSL_PREFIX=$(brew --prefix openssl)" >> $GITHUB_ENV
-            echo "LDFLAGS=-L$(brew --prefix openssl)/lib" >> $GITHUB_ENV
-            echo "CPPFLAGS=-I$(brew --prefix openssl)/include" >> $GITHUB_ENV
-            echo "PKG_CONFIG_PATH=$(brew --prefix openssl)/lib/pkgconfig" >> $GITHUB_ENV
-            echo "DYLD_LIBRARY_PATH=$(brew --prefix openssl)/lib:$DYLD_LIBRARY_PATH" >> $GITHUB_ENV
-            echo "CPATH=$(brew --prefix openssl)/include:$CPATH" >> $GITHUB_ENV
-            echo "LIBRARY_PATH=$(brew --prefix openssl)/lib:$LIBRARY_PATH" >> $GITHUB_ENV
-          fi
-
-      - name: Install System Dependencies (Windows)
-        if: runner.os == 'Windows'
-        run: |
-          choco install protoc openssl --no-progress -y
-          $perl_bin = (Get-Command perl).Source | Split-Path
-          $strawberry_c = "C:\Strawberry\c\bin"
-          "$perl_bin;$strawberry_c" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-          "PERL_CPANM_OPT=--global" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          "PACKAGE_STASH_IMPLEMENTATION=PP" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          "MOO_XS_DISABLE=1" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          "TEMPLATE_STASH=pureperl" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          "INCLUDE=$perl_core;C:\Program Files\OpenSSL-Win64\include;$env:INCLUDE" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          "LIB=C:\Program Files\OpenSSL-Win64\lib;$env:LIB" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          "OPENSSL_PREFIX=C:\Program Files\OpenSSL-Win64" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          if (Test-Path local) { Remove-Item -Recurse -Force local }
-          $perl_root = (Get-Command perl).Source | Split-Path | Split-Path
-          if (Test-Path "$perl_root\site\lib\auto") { Remove-Item -Recurse -Force "$perl_root\site\lib\auto" }
-          if (Test-Path "$perl_root\vendor\lib\auto") { Remove-Item -Recurse -Force "$perl_root\vendor\lib\auto" }
-          Get-ChildItem -Path "$perl_root\site\lib", "$perl_root\vendor\lib" -Recurse -Include "*.dll", "*.so", "*.bs" -ErrorAction SilentlyContinue | Remove-Item -Force
-
-      - name: Install Perl Dependencies
-        run: |
-          perl -e '
-            use Config;
-            use File::Basename qw(dirname);
-            my $perl_dir = dirname($^X);
-            my $sep = $^O eq "MSWin32" ? ";" : ":";
-            $ENV{PATH} = "$perl_dir$sep$ENV{PATH}";
-            my @pkgs = qw(
-              ExtUtils::MakeMaker ExtUtils::ParseXS
-              Moo Type::Tiny Const::Fast Protocol::HTTP2 JSON::MaybeXS JSON::PP
-              Template Path::Tiny Log::Any Capture::Tiny Module::Starter File::Which
-              Test::More SUPER Test::Warnings Test::MockModule Test::Exception
-              Test::LWP::UserAgent Test::Deep Test::Differences Test::Needs
-              Test::Fatal Test::Pod Test::Pod::Coverage URI HTTP::Message
-              LWP::Protocol::https Mozilla::CA
-            );
-            system($^X, "-S", "cpanm", "-g", "--notest", @pkgs);
-          '
-
-      - name: Build & Test Core Stack
-        run: perl .github/scripts/build_and_test.pl Protobuf Google-Auth Google-Api-Common Google-gRPC Module-Starter-Protobuf
-
-      - name: Build & Test GCP Client Distributions
-        run: |
-          perl .github/scripts/build_and_test.pl \
-            Google-Cloud-IAM-V1 \
-            Google-Cloud-SecretManager-V1 \
-            Google-Cloud-PrivateCA-V1 \
-            Google-Cloud-NetworkSecurity-V1 \
-            Google-Cloud-NetworkServices-V1 \
-            Google-Cloud-Build-V1 \
-            Google-Cloud-Dataproc-V1 \
-            Google-Cloud-DataFusion-V1 \
-            Google-Cloud-Dataflow-V1Beta3 \
-            Google-Cloud-PubSub-V1 \
-            Google-Cloud-Composer-V1 \
-            Google-Cloud-BigQuery-Storage-V1 \
-            Google-Cloud-Bigquery-V2 \
-            Google-Cloud-Spanner-V1 \
-            Google-Cloud-Dataplex-V1 \
-            Google-Cloud-Storage-V2 \
-            Google-Cloud-Compute-V1 \
-            Google-Cloud-SQL-V1 \
-            Google-Cloud-Metastore-V1
-
-      - name: Run Integration Tests
-        run: |
-          perl integration_tests/01_bigquery_stack.pl
-          perl integration_tests/02_bigquery_multofd_lb.pl
