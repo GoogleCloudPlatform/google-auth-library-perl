@@ -36,6 +36,11 @@ $versions | ForEach-Object {
     } -ArgumentList $_
 } | Wait-Job | Receive-Job
 
+Write-Host "3b. Pushing Windows Base Docker Container Images to Google Artifact Registry..."
+$versions | ForEach-Object {
+    docker push "us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-windows:$_"
+}
+
 Write-Host "4. Setting up 3 Multi-Runner Instances for Parallel Container Execution..."
 1..3 | ForEach-Object {
     $rDir = "C:\actions-runner-$_"
