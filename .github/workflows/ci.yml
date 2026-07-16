@@ -63,4 +63,4 @@ jobs:
         run: |
           $token = gcloud auth print-access-token
           $token | docker login -u oauth2accesstoken --password-stdin us-docker.pkg.dev
-          docker run --rm -v ${{ github.workspace }}:C:\workspace us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-windows:${{ matrix.perl-version }} cmd /c "xcopy /E /I /H /Y C:\workspace C:\tmp\work && cd C:\tmp\work && perl .github\scripts\build_and_test.pl Protobuf Google-Auth Google-gRPC Google-Api-Common Module-Starter-Protobuf"
+          docker run --rm -v ${{ github.workspace }}:C:\workspace us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-windows:${{ matrix.perl-version }} cmd /c "rmdir /S /Q C:\tmp\work 2>nul & xcopy /E /I /H /Y C:\workspace C:\tmp\work && cd C:\tmp\work && perl .github\scripts\build_and_test.pl Protobuf Google-Auth Google-gRPC Google-Api-Common Module-Starter-Protobuf"
