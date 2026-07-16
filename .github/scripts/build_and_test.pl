@@ -62,9 +62,7 @@ for my $d (@dirs) {
     my $res;
     if ($^O eq 'MSWin32') {
         local $ENV{PERL5LIB} = join($sep, File::Spec->rel2abs('blib/lib'), File::Spec->rel2abs('blib/arch'), File::Spec->rel2abs('t/lib'), $ENV{PERL5LIB} || ());
-        my $perl_bin = $^X;
-        $perl_bin =~ s{\\}{/}g;
-        $res = system($^X, '-S', 'prove', '--exec', $perl_bin, '-b', 't/');
+        $res = system($^X, '-S', 'prove', '-b', 't/');
     } else {
         $res = system("$^X -S prove -b -It/lib t/");
     }
