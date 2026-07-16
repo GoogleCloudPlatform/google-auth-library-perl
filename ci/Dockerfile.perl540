@@ -2,5 +2,5 @@ FROM docker.io/library/perl:5.40
 
 RUN apt-get update && apt-get install -y \
     libnghttp2-dev libssl-dev build-essential protobuf-compiler libabsl-dev libpcre2-dev && \
-    cpanm --notest Moo Type::Tiny Protocol::HTTP2 JSON::MaybeXS JSON::XS Template Path::Tiny Log::Any Capture::Tiny URI File::Which Module::Starter LWP::Protocol::https Test::More Test::Pod Test::Pod::Coverage Test::Exception Test::Deep Test::MockModule Test::LWP::UserAgent && \
+    cpanm --notest Moo Type::Tiny Protocol::HTTP2 JSON::MaybeXS JSON::XS Template Path::Tiny Log::Any Capture::Tiny URI File::Which Module::Starter LWP::Protocol::https Test::More Test::Pod Test::Pod::Coverage Test::Exception Test::Deep Test::MockModule Test::LWP::UserAgent Perl::Tidy Perl::Critic Test::Perl::Critic && \
     rm -rf ~/.cpanm /var/lib/apt/lists/*

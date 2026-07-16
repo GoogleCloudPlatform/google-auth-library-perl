@@ -5,6 +5,7 @@ RUN apt-get update && apt-get install -y \
     libwww-perl libjson-xs-perl libjson-maybexs-perl libmoo-perl libtype-tiny-perl \
     libpath-tiny-perl liblog-any-perl libcapture-tiny-perl liburi-perl libfile-which-perl libmodule-starter-perl \
     libtest-exception-perl libtest-deep-perl libtest-mockmodule-perl \
+    libperlcritic-perl libperl-tidy-perl \
     libtemplate-perl && \
     cpanm --notest Protocol::HTTP2 Test::LWP::UserAgent && \
     rm -rf ~/.cpanm /var/lib/apt/lists/*
