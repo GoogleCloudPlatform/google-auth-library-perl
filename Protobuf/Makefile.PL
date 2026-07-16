@@ -200,7 +200,7 @@ if ($is_win32) {
             last;
         }
     }
-    $our_protoc_path = $found // "$^X -e 1 --";
+    $our_protoc_path = $found // '$(PERL) -e 1 --';
 } elsif ($is_darwin) {
     if (-x '/opt/homebrew/bin/protoc') {
         $our_protoc_path = '/opt/homebrew/bin/protoc';
