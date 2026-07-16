@@ -10,30 +10,41 @@ jobs:
   container-matrix:
     name: ${{ matrix.name }}
     runs-on: ubuntu-latest
+    env:
+      GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
     strategy:
       fail-fast: false
       matrix:
         include:
           - name: Debian 12
-            image: debian:12-slim
-            prep: "apt-get update && apt-get install -y perl cpanminus build-essential protobuf-compiler libssl-dev git libtemplate-perl libpath-tiny-perl"
+            image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-debian:latest
           - name: Ubuntu 24.04
-            image: ubuntu:24.04
-            prep: "apt-get update && apt-get install -y perl cpanminus build-essential protobuf-compiler libssl-dev git libtemplate-perl libpath-tiny-perl"
+            image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-ubuntu:latest
           - name: Rocky Linux 9
-            image: rockylinux:9
-            prep: "dnf install -y epel-release dnf-plugins-core && dnf config-manager --set-enabled crb && dnf install -y perl perl-App-cpanminus gcc make protobuf-compiler openssl-devel git && cpanm --notest Template Path::Tiny"
+            image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-rocky:latest
           - name: Perl 5.40
-            image: perl:5.40-slim
-            prep: "apt-get update && apt-get install -y build-essential protobuf-compiler libssl-dev git cpanminus && cpanm --notest Template Path::Tiny"
+            image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-540:latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Run Build and Test Suite
+      - name: Authenticate to Google Cloud
+        if: ${{ env.GCP_SA_KEY != '' }}
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Configure Docker authentication for Artifact Registry
+        if: ${{ env.GCP_SA_KEY != '' }}
+        run: |
+          gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
+          gcloud auth configure-docker us-docker.pkg.dev --quiet
+          gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin us-docker.pkg.dev
+
+      - name: Run Build and Test Suite inside Base Container
         run: |
           docker run --rm -v ${{ github.workspace }}:/repo ${{ matrix.image }} bash -c \
-            "${{ matrix.prep }} && cp -a /repo /tmp/work && cd /tmp/work && (cpanm --notest --installdeps --with-configure --with-build --with-develop ./Protobuf ./Google-Auth ./Google-gRPC ./Google-Api-Common ./Module-Starter-Protobuf || true) && perl .github/scripts/build_and_test.pl Protobuf Google-Auth Google-gRPC Google-Api-Common Module-Starter-Protobuf"
+            "cp -a /repo /tmp/work && cd /tmp/work && perl .github/scripts/build_and_test.pl Protobuf Google-Auth Google-gRPC Google-Api-Common Module-Starter-Protobuf"
 
   native-matrix:
     name: Windows Perl ${{ matrix.perl-version }}
