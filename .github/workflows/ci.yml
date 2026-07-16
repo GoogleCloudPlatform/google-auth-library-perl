@@ -16,16 +16,16 @@ jobs:
         include:
           - name: Debian 12
             image: debian:12-slim
-            prep: "apt-get update && apt-get install -y perl cpanminus build-essential protobuf-compiler libssl-dev git"
+            prep: "apt-get update && apt-get install -y perl cpanminus build-essential protobuf-compiler libssl-dev git libtemplate-perl"
           - name: Ubuntu 24.04
             image: ubuntu:24.04
-            prep: "apt-get update && apt-get install -y perl cpanminus build-essential protobuf-compiler libssl-dev git"
+            prep: "apt-get update && apt-get install -y perl cpanminus build-essential protobuf-compiler libssl-dev git libtemplate-perl"
           - name: Rocky Linux 9
             image: rockylinux:9
-            prep: "dnf install -y perl perl-App-cpanminus gcc make protobuf-compiler openssl-devel git"
+            prep: "dnf install -y perl perl-App-cpanminus gcc make protobuf-compiler openssl-devel git perl-Template-Toolkit"
           - name: Perl 5.40
             image: perl:5.40-slim
-            prep: "apt-get update && apt-get install -y build-essential protobuf-compiler libssl-dev git"
+            prep: "apt-get update && apt-get install -y build-essential protobuf-compiler libssl-dev git && cpanm --notest Template"
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
