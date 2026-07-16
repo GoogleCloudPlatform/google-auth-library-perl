@@ -758,7 +758,6 @@ WriteMakefile(
     },
     TEST_REQUIRES => {
       'Test::More'       => 0,
-      'Test::MockModule' => 0,
       'File::Spec'       => 0,
       'Path::Tiny'       => 0,
       'Capture::Tiny'    => 0,
