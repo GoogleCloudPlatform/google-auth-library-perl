@@ -106,9 +106,8 @@ if ($is_dev) {
 # or because we just generated it above), we ALWAYS define the project root as 'vendor'
 # for the build phase. This ensures we compile entirely against clean, stripped headers
 # and avoid any header shadowing (e.g., endian.h) or Google3 include prefix issues.
-my $raw_root = -d 'vendor' ? 'vendor' : '..';
-our $project_root = File::Spec->abs2rel(abs_path($raw_root), $cwd);
-our $using_vendor = ($raw_root eq 'vendor');
+our $project_root = -d 'vendor' ? 'vendor' : '.';
+our $using_vendor = ($project_root eq 'vendor');
 
 our $upb_dir = File::Spec->catdir($project_root, 'upb');
 our $upb_generator_dir = File::Spec->catdir($project_root, 'upb_generator');
@@ -362,6 +361,7 @@ sub MY::postamble {
         # Using global $bazel_gen_include and $cmake_gen_include
         my $bootstrap_define = "-DUPB_BOOTSTRAP_STAGE=0";
         my $base_flags = "-I. -I$project_root -I$upb_dir -I$src_dir -I$third_party_dir -I" . File::Spec->catdir($third_party_dir, 'utf8_range') . " -I$bazel_gen_include -I$cmake_gen_include $bootstrap_define";
+        $base_flags =~ s{\\}{/}g if $main::is_win32;
 
         my $cflags = "";
         if ($c_file =~ /\.cc$/) {
