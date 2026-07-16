@@ -26,7 +26,9 @@ requires 'Const::Fast', '0';
 on 'test' => sub {
   requires 'Test::More', '0';
   requires 'Test::MockModule', '0';
-  requires 'Test::Valgrind', '0'; # Optional
-  requires 'Coro',           '0'; # Optional
+  if ($^O ne 'MSWin32') {
+      requires 'Test::Valgrind', '0'; # Optional
+      requires 'Coro',           '0'; # Optional
+  }
   requires 'Capture::Tiny',  '0';
 };
