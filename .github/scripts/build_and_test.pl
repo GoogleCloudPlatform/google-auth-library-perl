@@ -34,11 +34,8 @@ for my $d (@dirs) {
     unlink "Makefile", "MYMETA.yml", "MYMETA.json", "pm_to_blib";
     eval { rmtree("blib"); };
     find(sub { unlink $_ if /\.(o|obj|so|dll|def|bs|a|lib|csc|xsc)$/i || $_ eq "Protobuf.c" || $_ eq "Auth.c" || $_ eq "XS.c" }, ".");
-    eval { require Log::Any; require Moo; require Type::Tiny; };
-    if ($@) {
-        my @cpanm_cmd = ($^O eq 'MSWin32') ? ($^X, '-S', 'cpanm') : ('cpanm');
-        system(@cpanm_cmd, '--installdeps', '.');
-    }
+    my @cpanm_cmd = ($^O eq 'MSWin32') ? ($^X, '-S', 'cpanm') : ('cpanm');
+    system(@cpanm_cmd, '--installdeps', '.');
     system("$^X Makefile.PL") == 0 or die "Makefile.PL failed in $d";
     system("$make") == 0 or die "$make failed in $d";
 
