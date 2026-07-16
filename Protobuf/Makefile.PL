@@ -195,8 +195,9 @@ if ($is_win32) {
     my $found;
     for my $dir (split /;/ => ($ENV{PATH} // '')) {
         next unless length $dir;
-        if (-f "$dir/protoc.exe" || -f "$dir/protoc") {
-            $found = "$dir/protoc";
+        $dir =~ s{\\}{/}g;
+        if (-f "$dir/protoc.exe") {
+            $found = "$dir/protoc.exe";
             last;
         }
     }
