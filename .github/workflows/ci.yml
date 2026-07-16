@@ -16,16 +16,16 @@ jobs:
         include:
           - name: Debian 12
             image: debian:12-slim
-            prep: "apt-get update && apt-get install -y perl cpanminus build-essential protobuf-compiler libssl-dev git libtemplate-perl"
+            prep: "apt-get update && apt-get install -y perl cpanminus build-essential protobuf-compiler libssl-dev git libtemplate-perl libpath-tiny-perl"
           - name: Ubuntu 24.04
             image: ubuntu:24.04
-            prep: "apt-get update && apt-get install -y perl cpanminus build-essential protobuf-compiler libssl-dev git libtemplate-perl"
+            prep: "apt-get update && apt-get install -y perl cpanminus build-essential protobuf-compiler libssl-dev git libtemplate-perl libpath-tiny-perl"
           - name: Rocky Linux 9
             image: rockylinux:9
-            prep: "dnf install -y epel-release && dnf install -y perl perl-App-cpanminus gcc make protobuf-compiler openssl-devel git && cpanm --notest Template"
+            prep: "dnf install -y epel-release dnf-plugins-core && dnf config-manager --set-enabled crb && dnf install -y perl perl-App-cpanminus gcc make protobuf-compiler openssl-devel git && cpanm --notest Template Path::Tiny"
           - name: Perl 5.40
             image: perl:5.40-slim
-            prep: "apt-get update && apt-get install -y build-essential protobuf-compiler libssl-dev git cpanminus && cpanm --notest Template"
+            prep: "apt-get update && apt-get install -y build-essential protobuf-compiler libssl-dev git cpanminus && cpanm --notest Template Path::Tiny"
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
