@@ -30,20 +30,30 @@ Write-Host "3. Setting System Environment Variables..."
 [Environment]::SetEnvironmentVariable("TEMPLATE_STASH", "Template::Stash", "Machine")
 
 Write-Host "4. Pre-installing Perl CPAN Module Dependencies..."
-cpanm Log::Any Test::MockModule Const::Fast Sub::Identify SUPER Guard Env::Sanctify Test::Valgrind Template Moo Package::Stash Type::Tiny Protocol::HTTP2 JSON::MaybeXS Path::Tiny Capture::Tiny Module::Starter File::Which Test::Warnings Test::Exception Test::LWP::UserAgent Test::Deep Test::Differences Test::Needs Test::Fatal Test::Pod Test::Pod::Coverage URI HTTP::Message LWP::Protocol::https Mozilla::CA HTTP::Daemon IO::Socket::SSL
+cpanm Log::Any Const::Fast Sub::Identify SUPER Guard Env::Sanctify Test::Valgrind Template Moo Package::Stash Type::Tiny Protocol::HTTP2 JSON::MaybeXS Path::Tiny Capture::Tiny Module::Starter File::Which Test::Warnings Test::Exception Test::LWP::UserAgent Test::Differences Test::Needs Test::Fatal Test::Pod Test::Pod::Coverage URI HTTP::Message LWP::Protocol::https Mozilla::CA HTTP::Daemon IO::Socket::SSL
 
-Write-Host "5. Setting up GitHub Actions Self-Hosted Runner..."
-if (-not (Test-Path "C:\actions-runner")) {
-    New-Item -ItemType Directory -Path "C:\actions-runner" | Out-Null
+Write-Host "5. Building Windows Base Docker Container Images in Parallel..."
+$versions = @('5.38', '5.40', '5.42')
+$versions | ForEach-Object {
+    Start-Job -ScriptBlock {
+        param($v)
+        $tag = $v -replace '\.',''
+        docker build -t "us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-windows:$v" -f "ci/Dockerfile.windows.perl$tag" .
+    } -ArgumentList $_
+} | Wait-Job | Receive-Job
+
+Write-Host "6. Setting up 3 Multi-Runner Instances for Parallel CI Execution..."
+1..3 | ForEach-Object {
+    $rDir = "C:\actions-runner-$_"
+    if (-not (Test-Path $rDir)) {
+        New-Item -ItemType Directory -Path $rDir | Out-Null
+    }
+    if (-not (Test-Path "$rDir\config.cmd")) {
+        Write-Host "Downloading Actions Runner package into $rDir..."
+        Invoke-WebRequest -Uri "https://github.com/actions/runner/releases/download/v2.322.0/actions-runner-win-x64-2.322.0.zip" -OutFile "$rDir\runner.zip"
+        Expand-Archive -Path "$rDir\runner.zip" -DestinationPath $rDir -Force
+        Remove-Item "$rDir\runner.zip"
+    }
 }
 
-Set-Location "C:\actions-runner"
-
-if (-not (Test-Path "C:\actions-runner\config.cmd")) {
-    Write-Host "Downloading Actions Runner package..."
-    Invoke-WebRequest -Uri "https://github.com/actions/runner/releases/download/v2.322.0/actions-runner-win-x64-2.322.0.zip" -OutFile "runner.zip"
-    Expand-Archive -Path "runner.zip" -DestinationPath "C:\actions-runner" -Force
-    Remove-Item "runner.zip"
-}
-
-Write-Host "Automated runner setup complete. Register using config.cmd --url <REPO_URL> --token <REGISTRATION_TOKEN>."
+Write-Host "Automated runner setup complete. Register instances using C:\actions-runner-1\config.cmd --url <REPO_URL> --token <TOKEN> --name win-ci-dev-1."

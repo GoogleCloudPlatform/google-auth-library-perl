@@ -14,7 +14,7 @@ echo "=== [1/4] Provisioning Private Windows GCE VM: ${VM_NAME} ==="
 gcloud compute instances create "${VM_NAME}" \
     --project="${PROJECT_ID}" \
     --zone="${ZONE}" \
-    --machine-type="e2-standard-4" \
+    --machine-type="e2-standard-8" \
     --image-family="windows-2022" \
     --image-project="windows-cloud" \
     --boot-disk-size="100GB" \
