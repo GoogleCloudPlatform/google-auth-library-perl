@@ -8,37 +8,36 @@ on:
 
 jobs:
   container-matrix:
-    name: Container Matrix (${{ matrix.name }})
+    name: ${{ matrix.name }}
     runs-on: ubuntu-latest
+    env:
+      GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          - name: Perl 5.40 (Artifact Registry)
-            image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-540:latest
-          - name: Ubuntu 24.04 (Artifact Registry)
-            image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-ubuntu:latest
-          - name: Rocky Linux 9 (Artifact Registry)
-            image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-rocky:latest
-          - name: Debian 12 (Artifact Registry)
+          - name: Debian 12
             image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-debian:latest
+          - name: Ubuntu 24.04
+            image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-ubuntu:latest
+          - name: Rocky Linux 9
+            image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-rocky:latest
+          - name: Perl 5.40
+            image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-540:latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Authenticate to Google Cloud
-        env:
-          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
         if: ${{ env.GCP_SA_KEY != '' }}
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
       - name: Configure Docker authentication for Artifact Registry
-        env:
-          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
         if: ${{ env.GCP_SA_KEY != '' }}
         run: |
+          gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
           gcloud auth configure-docker us-docker.pkg.dev --quiet
           gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin us-docker.pkg.dev
 
@@ -48,8 +47,8 @@ jobs:
             "cp -a /repo /tmp/work && cd /tmp/work && perl .github/scripts/build_and_test.pl Protobuf Google-Auth Google-gRPC Google-Api-Common Module-Starter-Protobuf"
 
   native-matrix:
-    name: Native Perl ${{ matrix.perl-version }} on Windows
-    runs-on: [self-hosted, windows]
+    name: Windows Perl ${{ matrix.perl-version }}
+    runs-on: [self-hosted, Windows]
     strategy:
       fail-fast: false
       matrix:

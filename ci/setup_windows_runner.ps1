@@ -10,6 +10,16 @@ if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
     Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 }
 
+Write-Host "1.5. Installing Windows Containers Feature & Docker Engine..."
+if ((Get-WindowsFeature Containers).InstallState -ne 'Installed') {
+    Install-WindowsFeature -Name Containers
+}
+if (-not (Get-Service docker -ErrorAction SilentlyContinue)) {
+    Install-Module -Name DockerMsftProvider -Repository PSGallery -Force
+    Install-Package -ProviderName DockerMsftProvider -Name Docker -Force
+    Start-Service docker
+}
+
 Write-Host "2. Installing Core Dependencies (Strawberry Perl, protoc, OpenSSL, Git)..."
 choco install strawberryperl protoc openssl git --no-progress -y
 
@@ -20,7 +30,7 @@ Write-Host "3. Setting System Environment Variables..."
 [Environment]::SetEnvironmentVariable("TEMPLATE_STASH", "Template::Stash", "Machine")
 
 Write-Host "4. Pre-installing Perl CPAN Module Dependencies..."
-cpanm Log::Any Test::MockModule Const::Fast Sub::Identify SUPER Guard Env::Sanctify Test::Valgrind Template Moo Package::Stash
+cpanm Log::Any Test::MockModule Const::Fast Sub::Identify SUPER Guard Env::Sanctify Test::Valgrind Template Moo Package::Stash Type::Tiny Protocol::HTTP2 JSON::MaybeXS Path::Tiny Capture::Tiny Module::Starter File::Which Test::Warnings Test::Exception Test::LWP::UserAgent Test::Deep Test::Differences Test::Needs Test::Fatal Test::Pod Test::Pod::Coverage URI HTTP::Message LWP::Protocol::https Mozilla::CA HTTP::Daemon IO::Socket::SSL
 
 Write-Host "5. Setting up GitHub Actions Self-Hosted Runner..."
 if (-not (Test-Path "C:\actions-runner")) {
