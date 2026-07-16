@@ -28,12 +28,14 @@ Add-MpPreference -ExclusionPath 'C:\ProgramData\docker', 'C:\actions-runner-1', 
 
 Write-Host "3. Building Windows Base Docker Container Images in Parallel..."
 $versions = @('5.38', '5.40', '5.42')
+$repoDir = $PWD.Path
 $versions | ForEach-Object {
     Start-Job -ScriptBlock {
-        param($v)
+        param($v, $dir)
+        Set-Location $dir
         $tag = $v -replace '\.',''
         docker build --no-cache -t "us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-windows:$v" -f "ci/Dockerfile.windows.perl$tag" .
-    } -ArgumentList $_
+    } -ArgumentList $_, $repoDir
 } | Wait-Job | Receive-Job
 
 Write-Host "3b. Pushing Windows Base Docker Container Images to Google Artifact Registry..."
