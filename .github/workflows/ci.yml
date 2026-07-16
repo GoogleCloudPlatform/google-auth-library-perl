@@ -58,10 +58,10 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set up Perl
-        uses: shogo82148/actions-setup-perl@v1
-        with:
-          perl-version: ${{ matrix.perl-version }}
+      - name: Run Build and Test Suite
+        shell: powershell
+        run: |
+          perl .github/scripts/build_and_test.pl Protobuf Google-Auth Google-gRPC Google-Api-Common Module-Starter-Protobuf
 
       - name: Install System Dependencies (Linux/macOS)
         if: runner.os != 'Windows'

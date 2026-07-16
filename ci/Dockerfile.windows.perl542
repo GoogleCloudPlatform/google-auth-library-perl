@@ -8,7 +8,8 @@ SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPref
 RUN Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
 # Install Strawberry Perl 5.42, protoc, and OpenSSL
-RUN choco install strawberryperl --version=5.42.2.1 protoc openssl git --no-progress -y
+RUN choco install strawberryperl --version=5.42.2.1 --no-progress -y
+RUN choco install protoc openssl git --no-progress -y
 
 # Set Environment Variables for Perl & System Tools
 ENV PATH="C:\Strawberry\perl\site\bin;C:\Strawberry\perl\bin;C:\Strawberry\c\bin;C:\Program Files\Git\cmd;C:\Windows\system32;C:\Windows"
