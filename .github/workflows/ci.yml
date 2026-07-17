@@ -11,11 +11,6 @@ jobs:
   container-matrix:
     name: ${{ matrix.name }}
     runs-on: ubuntu-latest
-    container:
-      image: ${{ matrix.image }}
-      credentials:
-        username: _json_key
-        password: ${{ secrets.GCP_SA_KEY }}
     strategy:
       fail-fast: false
       matrix:
@@ -28,13 +23,22 @@ jobs:
             image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-rocky:latest
           - name: Perl 5.40
             image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-540:latest
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Docker login to Artifact Registry
+        run: |
+          echo "${{ secrets.GCP_SA_KEY }}" | docker login -u _json_key --password-stdin us-docker.pkg.dev
+
       - name: Run Build and Test Suite inside Base Container
         run: |
-          cp -a "$GITHUB_WORKSPACE" /tmp/work && cd /tmp/work && perl .github/scripts/build_and_test.pl Protobuf Google-Auth Google-gRPC Google-Api-Common Module-Starter-Protobuf
+          docker run --rm \
+            -v "${{ github.workspace }}:/workspace:cached" \
+            -w /workspace \
+            ${{ matrix.image }} \
+            bash -lc 'cp -a "$GITHUB_WORKSPACE" /tmp/work && cd /tmp/work && perl .github/scripts/build_and_test.pl Protobuf Google-Auth Google-gRPC Google-Api-Common Module-Starter-Protobuf'
 
   windows-matrix:
     name: Windows Perl ${{ matrix.perl-version }}
