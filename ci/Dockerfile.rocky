@@ -1,10 +1,15 @@
 FROM docker.io/rockylinux:9
 
 RUN dnf install -y dnf-plugins-core epel-release && \
+    rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-9 2>/dev/null || true && \
     dnf config-manager --set-enabled crb || true && \
-    rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-9 || true && \
-    dnf install -y perl perl-App-cpanminus gcc make openssl-devel libnghttp2-devel protobuf-compiler abseil-cpp-devel pcre2-devel \
-    perl-libwww-perl perl-LWP-Protocol-https perl-JSON-XS perl-JSON-MaybeXS perl-Moo perl-Path-Tiny perl-URI \
-    perl-Test-Simple perl-Test-Deep perl-Log-Any perl-File-Which perl-Module-Starter && \
-    cpanm --notest Protocol::HTTP2 Type::Tiny Capture::Tiny Test::Exception Test::MockModule Test::LWP::UserAgent Template && \
+    dnf install --enablerepo=epel,crb -y \
+    perl perl-core perl-App-cpanminus perl-local-lib perl-Template-Toolkit perl-LWP-Protocol-https perl-IO-Socket-SSL \
+    perl-Path-Tiny perl-Log-Any perl-Capture-Tiny perl-URI perl-File-Which \
+    perl-JSON-XS perl-JSON-MaybeXS perl-Moo perl-Type-Tiny perl-Test-Exception perl-Test-Deep perl-Test-MockModule \
+    gcc gcc-c++ make openssl-devel libnghttp2-devel pcre2-devel pkgconfig which protobuf-compiler && \
+    cpanm --notest Protocol::HTTP2 Module::Starter Test::LWP::UserAgent LWP::UserAgent Perl::Tidy Perl::Critic Test::Perl::Critic && \
+    ln -sf /usr/local/bin/cpanm /usr/bin/cpanm 2>/dev/null || true && \
     rm -rf ~/.cpanm && dnf clean all
+
+

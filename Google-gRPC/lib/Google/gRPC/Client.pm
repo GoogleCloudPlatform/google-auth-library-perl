@@ -32,6 +32,7 @@ has max_retries         => ( is => 'ro', default => sub { 3 } );
 has initial_backoff_sec => ( is => 'ro', default => sub { 0.1 } );
 has max_backoff_sec     => ( is => 'ro', default => sub { 1.0 } );
 has backoff_factor     => ( is => 'ro', default => sub { 2.0 } );
+has offline             => ( is => 'ro', default => sub { $ENV{PERL_GRPC_OFFLINE} ? 1 : 0 } );
 
 has channel => ( is => 'ro', lazy => 1, builder => '_build_channel' );
 
@@ -73,7 +74,7 @@ sub call {
         Net::Curl::Easy->import(qw(:constants));
     };
 
-    if ($@) {
+    if ($@ || $self->offline) {
         my $stream = $self->channel->create_stream(
             service        => $service,
             method         => $method,

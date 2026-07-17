@@ -1,137 +1,76 @@
-name: Multi-OS Monorepo CI (Linux, macOS, Windows, Debian, Rocky Linux)
+name: CI
 
 on:
+  workflow_dispatch:
   push:
     branches: [ main ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, 'feature/*', 'refactor/*' ]
 
 jobs:
-  native-matrix:
-    name: Native Perl ${{ matrix.perl-version }} on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        perl-version: ['5.38', '5.40']
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Set up Perl
-        uses: shogo8000/setup-perl@v1
-        with:
-          perl-version: ${{ matrix.perl-version }}
-
-      - name: Install System Dependencies (Linux/macOS)
-        if: runner.os != 'Windows'
-        run: |
-          if [ "${{ runner.os }}" = "Linux" ]; then
-            sudo apt-get update && sudo apt-get install -y libnghttp2-dev libssl-dev build-essential
-          elif [ "${{ runner.os }}" = "macOS" ]; then
-            brew install nghttp2 openssl
-          fi
-
-      - name: Install Perl Dependencies
-        run: |
-          cpanm --notest Moo Type::Tiny Const::Fast Protocol::HTTP2 JSON::MaybeXS Template Path::Tiny Log::Any Capture::Tiny Test::More Test::Pod Test::Pod::Coverage
-
-      - name: Build & Test Core Stack
-        run: |
-          perl -e '
-            my @dirs = qw(Protobuf google-auth Google-Api-Common Google-gRPC Module-Starter-Protobuf);
-            for my $d (@dirs) {
-              print "=== Building $d ===\n";
-              chdir $d or die $!;
-              system("perl Makefile.PL") == 0 or die;
-              system("make") == 0 or die;
-              system("prove -b -It/lib t/") == 0 or die;
-              system("make install") == 0 or die;
-              chdir ".." or die;
-            }
-          '
-
-      - name: Build & Test GCP Client Distributions
-        run: |
-          perl -e '
-            my @clients = qw(
-              Google-Cloud-IAM-V1
-              Google-Cloud-SecretManager-V1
-              Google-Cloud-PrivateCA-V1
-              Google-Cloud-NetworkSecurity-V1
-              Google-Cloud-NetworkServices-V1
-              Google-Cloud-Build-V1
-              Google-Cloud-Dataproc-V1
-              Google-Cloud-DataFusion-V1
-              Google-Cloud-Dataflow-V1Beta3
-              Google-Cloud-PubSub-V1
-              Google-Cloud-Composer-V1
-              Google-Cloud-BigQuery-Storage-V1
-              Google-Cloud-Bigquery-V2
-              Google-Cloud-Spanner-V1
-              Google-Cloud-Dataplex-V1
-              Google-Cloud-Storage-V2
-              Google-Cloud-Compute-V1
-              Google-Cloud-SQL-V1
-              Google-Cloud-Metastore-V1
-            );
-            for my $c (@clients) {
-              print "=== Testing Client: $c ===\n";
-              chdir $c or die $!;
-              system("perl Makefile.PL") == 0 or die;
-              system("make") == 0 or die;
-              system("prove -b -It/lib t/") == 0 or die;
-              system("make install") == 0 or die;
-              chdir ".." or die;
-            }
-          '
-
-      - name: Run Integration Tests
-        run: |
-          perl integration_tests/01_bigquery_stack.pl
-          perl integration_tests/02_bigquery_multofd_lb.pl
-
   container-matrix:
-    name: Container ${{ matrix.distro }}
+    name: ${{ matrix.name }}
     runs-on: ubuntu-latest
-    container:
-      image: ${{ matrix.image }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          - distro: 'Debian Latest'
-            image: 'debian:latest'
-            pkg_cmd: 'apt-get update && apt-get install -y perl cpanminus libnghttp2-dev libssl-dev build-essential'
-          - distro: 'Rocky Linux 9'
-            image: 'rockylinux:9'
-            pkg_cmd: 'dnf install -y dnf-plugins-core epel-release && (dnf config-manager --set-enabled crb || true) && (dnf install -y perl perl-App-cpanminus gcc make openssl-devel libnghttp2-devel || dnf install -y perl perl-App-cpanminus gcc make openssl-devel nghttp2-devel || dnf install -y perl perl-App-cpanminus gcc make openssl-devel)'
+          - name: Debian 12
+            image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-debian:latest
+            setup-cmd: sudo apt-get update && sudo apt-get install -y perl cpanminus libssl-dev libcrypt-dev libnghttp2-dev libpcre2-dev libabsl-dev pkg-config protobuf-compiler libtemplate-perl liblocal-lib-perl liblog-any-perl libwww-perl libjson-xs-perl libjson-maybexs-perl libmoo-perl libtype-tiny-perl libpath-tiny-perl libcapture-tiny-perl liburi-perl libfile-which-perl libmodule-starter-perl libtest-exception-perl libtest-deep-perl libtest-mockmodule-perl && sudo cpanm --notest Protocol::HTTP2 Test::LWP::UserAgent Perl::Tidy Perl::Critic Test::Perl::Critic
+          - name: Ubuntu 24.04
+            image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-ubuntu:latest
+            setup-cmd: sudo apt-get update && sudo apt-get install -y perl cpanminus libssl-dev libcrypt-dev libnghttp2-dev libpcre2-dev libabsl-dev pkg-config protobuf-compiler libtemplate-perl liblocal-lib-perl liblog-any-perl libwww-perl libjson-xs-perl libjson-maybexs-perl libmoo-perl libtype-tiny-perl libpath-tiny-perl libcapture-tiny-perl liburi-perl libfile-which-perl libmodule-starter-perl libtest-exception-perl libtest-deep-perl libtest-mockmodule-perl && sudo cpanm --notest Protocol::HTTP2 Test::LWP::UserAgent Perl::Tidy Perl::Critic Test::Perl::Critic
+          - name: Rocky Linux 9
+            image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-rocky:latest
+            setup-cmd: sudo apt-get update && sudo apt-get install -y perl cpanminus libssl-dev libcrypt-dev libnghttp2-dev libpcre2-dev libabsl-dev pkg-config protobuf-compiler libtemplate-perl liblocal-lib-perl liblog-any-perl libwww-perl libjson-xs-perl libjson-maybexs-perl libmoo-perl libtype-tiny-perl libpath-tiny-perl libcapture-tiny-perl liburi-perl libfile-which-perl libmodule-starter-perl libtest-exception-perl libtest-deep-perl libtest-mockmodule-perl && sudo cpanm --notest Protocol::HTTP2 Test::LWP::UserAgent Perl::Tidy Perl::Critic Test::Perl::Critic
+          - name: Perl 5.40
+            image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-540:latest
+            setup-cmd: sudo apt-get update && sudo apt-get install -y perl cpanminus libssl-dev libcrypt-dev libnghttp2-dev libpcre2-dev libabsl-dev pkg-config protobuf-compiler libtemplate-perl liblocal-lib-perl liblog-any-perl libwww-perl libjson-xs-perl libjson-maybexs-perl libmoo-perl libtype-tiny-perl libpath-tiny-perl libcapture-tiny-perl liburi-perl libfile-which-perl libmodule-starter-perl libtest-exception-perl libtest-deep-perl libtest-mockmodule-perl && sudo cpanm --notest Protocol::HTTP2 Test::LWP::UserAgent Perl::Tidy Perl::Critic Test::Perl::Critic
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Install System Dependencies
-        run: ${{ matrix.pkg_cmd }}
-
-      - name: Install Perl Dependencies
-        run: cpanm --notest Moo Type::Tiny Const::Fast Protocol::HTTP2 JSON::MaybeXS Template Path::Tiny Log::Any Capture::Tiny Test::More Test::Pod Test::Pod::Coverage
-
-      - name: Build & Test Monorepo
+      - name: Docker login to Artifact Registry
+        id: docker_login
+        env:
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
         run: |
-          perl -e '
-            my @dirs = qw(Protobuf google-auth Google-Api-Common Google-gRPC Module-Starter-Protobuf);
-            for my $d (@dirs) {
-              print "=== Building $d ===\n";
-              chdir $d or die $!;
-              system("perl Makefile.PL") == 0 or die;
-              system("make") == 0 or die;
-              system("prove -b -It/lib t/") == 0 or die;
-              system("make install") == 0 or die;
-              chdir ".." or die;
-            }
-          '
-          perl integration_tests/01_bigquery_stack.pl
-          perl integration_tests/02_bigquery_multofd_lb.pl
+          if [ -n "$GCP_SA_KEY" ]; then
+            printf '%s' "$GCP_SA_KEY" | docker login -u _json_key --password-stdin us-docker.pkg.dev
+            echo "authenticated=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::GCP_SA_KEY secret not available (forked PR). Skipping Artifact Registry and executing on runner host."
+            echo "authenticated=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run Build and Test Suite
+        env:
+          AUTHENTICATED: ${{ steps.docker_login.outputs.authenticated }}
+          MATRIX_IMAGE: ${{ matrix.image }}
+          SETUP_CMD: ${{ matrix.setup-cmd }}
+        run: bash .github/scripts/run_ci.sh
+
+#  windows-matrix:
+#    name: Windows Perl ${{ matrix.perl-version }}
+#    runs-on: windows-latest
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        perl-version: ['5.38', '5.40', '5.42']
+#
+#    steps:
+#      - name: Checkout Repository
+#        uses: actions/checkout@v4
+#
+#      - name: Setup Perl
+#        uses: shogo82148/actions-setup-perl@v1
+#        with:
+#          perl-version: ${{ matrix.perl-version }}
+#
+#      - name: Run Build and Test Suite
+#        shell: powershell
+#        run: |
+#          perl .github/scripts/build_and_test.pl Protobuf Google-Auth Google-gRPC Google-Api-Common Module-Starter-Protobuf
+

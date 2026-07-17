@@ -31,7 +31,7 @@ We actively welcome your pull requests.
 4.  **Add tests!** Your patch won't be accepted if it doesn't have tests.
 5.  Ensure all tests pass. For the `Google::Auth` library itself:
     ```bash
-    # From the google-auth-library-perl/google-auth directory
+    # From the google-auth-library-perl/Google-Auth directory
     perl Makefile.PL
     make
     make test
@@ -57,7 +57,7 @@ To set up your development environment:
     ```
 3.  Install dependencies for the `Google::Auth` library:
     ```bash
-    # From the google-auth-library-perl/google-auth directory
+    # From the google-auth-library-perl/Google-Auth directory
     cpanm --installdeps .
     ```
 4.  Install dependencies for the `Protobuf` library:
@@ -71,7 +71,7 @@ To set up your development environment:
 Please adhere to the existing code style. We use `perlcritic` to help enforce this. Run `perlcritic` before submitting:
 
 ```bash
-# From the google-auth-library-perl/google-auth directory
+# From the google-auth-library-perl/Google-Auth directory
 perlcritic lib/ t/
 
 # From the google-auth-library-perl/protobuf/perl directory
