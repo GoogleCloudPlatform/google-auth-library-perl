@@ -7,7 +7,7 @@ use Google::gRPC::Client;
 use Google::Auth;
 use Carp qw(croak);
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 has credentials => ( is => 'ro', required => 0 );
 has transport   => ( is => 'rw' );

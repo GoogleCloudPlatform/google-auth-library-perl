@@ -6,7 +6,7 @@ use File::Spec;
 use Protobuf;
 use Protobuf::DescriptorPool;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 my ($vol, $dir, $file) = File::Spec->splitpath(__FILE__);
 my $pb_path = File::Spec->catfile($dir, 'descriptors.pb');
