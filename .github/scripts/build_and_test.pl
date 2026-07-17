@@ -26,7 +26,7 @@ for my $lib_dir (@INC) {
         eval { rmtree($xs_dir); };
     }
 }
-for my $mod ('Template', 'Log::Any', 'Test::LWP::UserAgent', 'Protocol::HTTP2', 'Module::Starter') {
+for my $mod ('Template', 'Path::Tiny', 'Log::Any', 'Test::LWP::UserAgent', 'Protocol::HTTP2', 'Module::Starter') {
     eval "require $mod; 1" or system(($^O eq 'MSWin32' ? ($^X, '-S', 'cpanm') : ('cpanm')), '--notest', $mod);
 }
 
