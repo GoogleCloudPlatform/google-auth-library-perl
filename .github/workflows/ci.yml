@@ -34,7 +34,7 @@ jobs:
 
       - name: Run Build and Test Suite inside Base Container
         run: |
-          cp -a $GITHUB_WORKSPACE /tmp/work && cd /tmp/work && perl .github/scripts/build_and_test.pl Protobuf Google-Auth Google-gRPC Google-Api-Common Module-Starter-Protobuf
+          cp -a "$GITHUB_WORKSPACE" /tmp/work && cd /tmp/work && perl .github/scripts/build_and_test.pl Protobuf Google-Auth Google-gRPC Google-Api-Common Module-Starter-Protobuf
 
   windows-matrix:
     name: Windows Perl ${{ matrix.perl-version }}
