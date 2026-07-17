@@ -50,8 +50,13 @@ sub build_package {
     my ($d) = @_;
     print "=== Building $d ===\n";
     chdir $d or die "Cannot chdir to $d: $!";
-    unlink "Makefile", "MYMETA.yml", "MYMETA.json", "pm_to_blib";
+    if (-f "Makefile") {
+        eval { system("$make clean"); };
+        unlink "Makefile";
+    }
+    unlink "MYMETA.yml", "MYMETA.json", "pm_to_blib";
     eval { rmtree("blib"); };
+    eval { rmtree("_inline"); };
     find(sub { unlink $_ if /\.(o|obj|so|dll|def|bs|a|lib|csc|xsc)$/i || $_ eq "Protobuf.c" || $_ eq "Auth.c" || $_ eq "XS.c" }, ".");
     unless ($ENV{CI_SKIP_DEPS}) {
         my @cpanm_cmd = ($^O eq 'MSWin32') ? ($^X, '-S', 'cpanm') : ('cpanm');
@@ -80,7 +85,13 @@ sub build_package {
     $ENV{PATH} = join($sep, $abs_arch, $abs_cur, @dll_dirs, $old_path);
     my $res;
     if ($^O eq 'MSWin32') {
-        my @libs = (File::Spec->rel2abs('blib/lib'), File::Spec->rel2abs('blib/arch'), File::Spec->rel2abs('t/lib'));
+        my @libs = (
+            File::Spec->rel2abs('blib/lib'),
+            File::Spec->rel2abs('blib/arch'),
+            File::Spec->rel2abs('t/lib'),
+            File::Spec->rel2abs('local/lib/perl5'),
+            File::Spec->rel2abs('../local/lib/perl5')
+        );
         s{\\}{/}g for @libs;
         local $ENV{PERL5LIB} = join($sep, @libs, $ENV{PERL5LIB} || ());
         $res = system($^X, '-S', 'prove', '-b', '-It/lib', 't/');
