@@ -2,9 +2,6 @@ package Google::Cloud::Bigquery::V2::BiglakeConfig;
 
 use strict;
 use warnings;
-
-our $VERSION = '0.05';
-
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
 use Protobuf::Internal qw(:all);

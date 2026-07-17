@@ -1,5 +1,10 @@
 Revision history for Google-Cloud-Spanner-V1
 
+0.02    Fri Jul 17 2026
+        [CI & Code Generation]
+        - Upgraded package version to 0.02.
+        - Pruned redundant sub-module $VERSION declarations.
+
 0.01    Date/time
         First version, released on an unsuspecting world.
 

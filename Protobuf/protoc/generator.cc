@@ -229,13 +229,22 @@ static std::string FieldTypeToString(int type) {
 std::string PerlCodeGenerator::GenerateModule(
     const proto2_FileDescriptorProto* file_proto) {
   std::stringstream ss;
+  ss << "# Copyright (C) 2026 Google LLC\n";
+  ss << "#\n";
+  ss << "# Licensed under the Apache License, Version 2.0 (the \"License\");\n";
+  ss << "# you may not use this file except in compliance with the License.\n";
+  ss << "# You may obtain a copy of the License at\n";
+  ss << "#\n";
+  ss << "#     http://www.apache.org/licenses/LICENSE-2.0\n";
+  ss << "#\n";
+  ss << "# Unless required by applicable law or agreed to in writing, software\n";
+  ss << "# distributed under the License is distributed on an \"AS IS\" BASIS,\n";
+  ss << "# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n";
+  ss << "# See the License for the specific language governing permissions and\n";
+  ss << "# limitations under the License.\n\n";
   ss << "package " << package_name_ << ";\n\n";
   ss << "use strict;\n";
   ss << "use warnings;\n\n";
-#ifndef PROTOBUF_PERL_VERSION
-#define PROTOBUF_PERL_VERSION "0.05"
-#endif
-  ss << "our $VERSION = '" << PROTOBUF_PERL_VERSION << "';\n\n";
 
   ss << "use Protobuf::Message;\n";
   ss << "use Protobuf::DescriptorPool;\n";
