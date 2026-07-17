@@ -1,6 +1,6 @@
 steps:
   # Container Target 1: Official Perl 5.40 (Pre-baked)
-  - name: 'gcr.io/perl-cloud-ci/google-cloud-perl-ci-540:latest'
+  - name: 'gcr.io/$PROJECT_ID/google-cloud-perl-ci-540:latest'
     id: 'test-debian-perl540'
     entrypoint: 'sh'
     args:
@@ -9,8 +9,8 @@ steps:
         set -e
         echo "=== Testing on Debian Perl 5.40 Pre-baked Container ==="
         mkdir -p /tmp/build1 && cp -a . /tmp/build1 && cd /tmp/build1
-        (cd Protobuf && rm -f Makefile && perl Makefile.PL && make -j$(nproc) && cp -f libprotobufperl.so blib/arch/auto/Protobuf/ && export LD_LIBRARY_PATH=$$(pwd)/blib/arch/auto/Protobuf:$$(pwd):$$LD_LIBRARY_PATH && prove -b -It/lib t/ && make install)
-        (cd google-auth && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
+        (cd Protobuf && rm -f Makefile && perl Makefile.PL && make && cp -f libprotobufperl.so blib/arch/auto/Protobuf/ && export LD_LIBRARY_PATH=$$(pwd)/blib/arch/auto/Protobuf:$$(pwd):$$LD_LIBRARY_PATH && prove -b -It/lib t/ && make install)
+        (cd Google-Auth && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
         (cd Google-Api-Common && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
         (cd Google-gRPC && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
         (cd Module-Starter-Protobuf && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
@@ -25,7 +25,7 @@ steps:
         perl integration_tests/02_bigquery_multofd_lb.pl
 
   # Container Target 2: Debian Latest (Pre-baked)
-  - name: 'gcr.io/perl-cloud-ci/google-cloud-perl-ci-debian:latest'
+  - name: 'gcr.io/$PROJECT_ID/google-cloud-perl-ci-debian:latest'
     id: 'test-debian-latest'
     waitFor: ['-']
     entrypoint: 'sh'
@@ -35,8 +35,8 @@ steps:
         set -e
         echo "=== Testing on Debian Latest Pre-baked Container ==="
         mkdir -p /tmp/build2 && cp -a . /tmp/build2 && cd /tmp/build2
-        (cd Protobuf && rm -f Makefile && perl Makefile.PL && make -j$(nproc) && cp -f libprotobufperl.so blib/arch/auto/Protobuf/ && export LD_LIBRARY_PATH=$$(pwd)/blib/arch/auto/Protobuf:$$(pwd):$$LD_LIBRARY_PATH && prove -b -It/lib t/ && make install)
-        (cd google-auth && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
+        (cd Protobuf && rm -f Makefile && perl Makefile.PL && make && cp -f libprotobufperl.so blib/arch/auto/Protobuf/ && export LD_LIBRARY_PATH=$$(pwd)/blib/arch/auto/Protobuf:$$(pwd):$$LD_LIBRARY_PATH && prove -b -It/lib t/ && make install)
+        (cd Google-Auth && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
         (cd Google-Api-Common && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
         (cd Google-gRPC && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
         (cd Module-Starter-Protobuf && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
@@ -51,7 +51,7 @@ steps:
         perl integration_tests/02_bigquery_multofd_lb.pl
 
   # Container Target 3: Ubuntu Latest (Pre-baked)
-  - name: 'gcr.io/perl-cloud-ci/google-cloud-perl-ci-ubuntu:latest'
+  - name: 'gcr.io/$PROJECT_ID/google-cloud-perl-ci-ubuntu:latest'
     id: 'test-ubuntu-latest'
     waitFor: ['-']
     entrypoint: 'sh'
@@ -61,8 +61,8 @@ steps:
         set -e
         echo "=== Testing on Ubuntu Latest Pre-baked Container ==="
         mkdir -p /tmp/build3 && cp -a . /tmp/build3 && cd /tmp/build3
-        (cd Protobuf && rm -f Makefile && perl Makefile.PL && make -j$(nproc) && cp -f libprotobufperl.so blib/arch/auto/Protobuf/ && export LD_LIBRARY_PATH=$$(pwd)/blib/arch/auto/Protobuf:$$(pwd):$$LD_LIBRARY_PATH && prove -b -It/lib t/ && make install)
-        (cd google-auth && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
+        (cd Protobuf && rm -f Makefile && perl Makefile.PL && make && cp -f libprotobufperl.so blib/arch/auto/Protobuf/ && export LD_LIBRARY_PATH=$$(pwd)/blib/arch/auto/Protobuf:$$(pwd):$$LD_LIBRARY_PATH && prove -b -It/lib t/ && make install)
+        (cd Google-Auth && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
         (cd Google-Api-Common && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
         (cd Google-gRPC && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
         (cd Module-Starter-Protobuf && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
@@ -77,7 +77,7 @@ steps:
         perl integration_tests/02_bigquery_multofd_lb.pl
 
   # Container Target 4: Rocky Linux 9 (Pre-baked)
-  - name: 'gcr.io/perl-cloud-ci/google-cloud-perl-ci-rocky:latest'
+  - name: 'gcr.io/$PROJECT_ID/google-cloud-perl-ci-rocky:latest'
     id: 'test-rockylinux-9'
     waitFor: ['-']
     entrypoint: 'sh'
@@ -87,8 +87,8 @@ steps:
         set -e
         echo "=== Testing on Rocky Linux 9 Pre-baked Container ==="
         mkdir -p /tmp/build4 && cp -a . /tmp/build4 && cd /tmp/build4
-        (cd Protobuf && rm -f Makefile && perl Makefile.PL && make -j$(nproc) && cp -f libprotobufperl.so blib/arch/auto/Protobuf/ && export LD_LIBRARY_PATH=$$(pwd)/blib/arch/auto/Protobuf:$$(pwd):$$LD_LIBRARY_PATH && prove -b -It/lib t/ && make install)
-        (cd google-auth && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
+        (cd Protobuf && rm -f Makefile && perl Makefile.PL && make && cp -f libprotobufperl.so blib/arch/auto/Protobuf/ && export LD_LIBRARY_PATH=$$(pwd)/blib/arch/auto/Protobuf:$$(pwd):$$LD_LIBRARY_PATH && prove -b -It/lib t/ && make install)
+        (cd Google-Auth && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
         (cd Google-Api-Common && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
         (cd Google-gRPC && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
         (cd Module-Starter-Protobuf && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)

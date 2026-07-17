@@ -565,9 +565,17 @@ sub _get_type_tiny_code {
     } elsif ($type == 11) { # MESSAGE
         my $subm = $fdef->message_type;
         if (!defined $subm) {
-            croak('Message type not resolved in _get_type_tiny_code for field \'' . $fdef->name . '\' of type \'' . ($fdef->{_data}{_type_name} || 'unknown') . '\'');
+            my $type_name = $fdef->{_data}{_type_name} || '';
+            $type_name =~ s/^\.//;
+            if ($type_name) {
+                my $fallback_class = join('::', map { _capitalize_segment($_) } split(/\./, $type_name));
+                $base_type = "(InstanceOf['$fallback_class'] | Any)";
+            } else {
+                $base_type = "Any";
+            }
+        } else {
+            $base_type = "InstanceOf['" . _get_perl_class_for_mdef($subm) . "']";
         }
-        $base_type = "InstanceOf['" . _get_perl_class_for_mdef($subm) . "']";
     } else {
         return "Any";
     }

@@ -1,10 +1,11 @@
 FROM docker.io/library/debian:latest
 
 RUN apt-get update && apt-get install -y \
-    perl cpanminus libnghttp2-dev libssl-dev build-essential protobuf-compiler libabsl-dev libpcre2-dev \
+    perl perl-modules cpanminus liblocal-lib-perl libtemplate-perl \
+    gcc g++ make libssl-dev libcrypt-dev libnghttp2-dev libpcre2-dev libabsl-dev pkg-config protobuf-compiler \
     libwww-perl libjson-xs-perl libjson-maybexs-perl libmoo-perl libtype-tiny-perl \
     libpath-tiny-perl liblog-any-perl libcapture-tiny-perl liburi-perl libfile-which-perl libmodule-starter-perl \
-    libtest-exception-perl libtest-deep-perl libtest-mockmodule-perl \
-    libtemplate-perl && \
-    cpanm --notest Protocol::HTTP2 Test::LWP::UserAgent && \
+    libtest-exception-perl libtest-deep-perl libtest-mockmodule-perl && \
+    cpanm --notest Protocol::HTTP2 Test::LWP::UserAgent Perl::Tidy Perl::Critic Test::Perl::Critic && \
     rm -rf ~/.cpanm /var/lib/apt/lists/*
+
