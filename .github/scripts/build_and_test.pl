@@ -65,6 +65,9 @@ sub build_package {
     eval { rmtree("blib"); };
     eval { rmtree("_inline"); };
     find(sub { unlink $_ if /\.(o|obj|so|dll|def|bs|a|lib|csc|xsc)$/i || $_ eq "Protobuf.c" || $_ eq "Auth.c" || $_ eq "XS.c" }, ".");
+    my $top_dir = File::Spec->rel2abs("..");
+    find(sub { unlink $_ if /\.(so|dll)$/i }, $top_dir);
+
     unless ($ENV{CI_SKIP_DEPS}) {
         my @cpanm_cmd = ($^O eq 'MSWin32') ? ($^X, '-S', 'cpanm') : ('cpanm');
         system(@cpanm_cmd, '--notest', '--installdeps', '.');
@@ -72,10 +75,9 @@ sub build_package {
     system("$^X Makefile.PL") == 0 or die "Makefile.PL failed in $d";
     system("$make") == 0 or die "$make failed in $d";
 
-    my $top_dir = File::Spec->rel2abs("..");
     my %seen;
     my @dll_dirs;
-    for my $dir ($top_dir, map { File::Spec->catdir($_, "auto") } @INC) {
+    for my $dir (map { File::Spec->catdir($_, "auto") } @INC) {
         if (-d $dir && !$seen{$dir}++) {
             my $canon = File::Spec->canonpath(File::Spec->rel2abs($dir));
             $canon =~ s/\//\\/g if $^O eq 'MSWin32';
