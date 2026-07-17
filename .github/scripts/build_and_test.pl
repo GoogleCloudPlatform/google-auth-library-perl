@@ -26,8 +26,8 @@ for my $lib_dir (@INC) {
         eval { rmtree($xs_dir); };
     }
 }
-for my $mod ('Log::Any', 'Test::LWP::UserAgent', 'Protocol::HTTP2', 'Module::Starter') {
-    eval "require $mod; 1" or system(($^O eq 'MSWin32' ? ('cmd', '/c', 'cpanm') : ('cpanm')), '--notest', $mod);
+for my $mod ('Template', 'Log::Any', 'Test::LWP::UserAgent', 'Protocol::HTTP2', 'Module::Starter') {
+    eval "require $mod; 1" or system(($^O eq 'MSWin32' ? ($^X, '-S', 'cpanm') : ('cpanm')), '--notest', $mod);
 }
 
 my $root_dir = File::Spec->rel2abs(".");
