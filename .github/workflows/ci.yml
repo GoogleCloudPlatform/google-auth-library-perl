@@ -19,29 +19,28 @@ jobs:
         include:
           - name: Debian 12
             image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-debian:latest
+            public-image: debian:bookworm-slim
           - name: Ubuntu 24.04
             image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-ubuntu:latest
+            public-image: ubuntu:24.04
           - name: Rocky Linux 9
             image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-rocky:latest
+            public-image: rockylinux:9
           - name: Perl 5.40
             image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-540:latest
+            public-image: perl:5.40-slim
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Verify GCP_SA_KEY Secret Presence
-        run: |
-          if [ -z "${{ secrets.GCP_SA_KEY }}" ]; then
-            echo "::error::GCP_SA_KEY repository secret is empty or missing. Set GCP_SA_KEY in GitHub Repository Secrets to authenticate with us-docker.pkg.dev."
-            exit 1
-          fi
-
       - name: Authenticate to Google Cloud
+        if: ${{ secrets.GCP_SA_KEY != '' }}
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
       - name: Configure Docker authentication for Artifact Registry
+        if: ${{ secrets.GCP_SA_KEY != '' }}
         run: |
           gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
           gcloud auth configure-docker us-docker.pkg.dev --quiet
@@ -49,8 +48,13 @@ jobs:
 
       - name: Run Build and Test Suite inside Base Container
         run: |
-          docker run --rm -v ${{ github.workspace }}:/repo ${{ matrix.image }} bash -c \
-            "cp -a /repo /tmp/work && cd /tmp/work && perl .github/scripts/build_and_test.pl Protobuf Google-Auth Google-gRPC Google-Api-Common Module-Starter-Protobuf"
+          TARGET_IMAGE="${{ matrix.image }}"
+          if [ -z "${{ secrets.GCP_SA_KEY }}" ]; then
+            echo "::notice::GCP_SA_KEY secret absent. Falling back to public image: ${{ matrix.public-image }}"
+            TARGET_IMAGE="${{ matrix.public-image }}"
+          fi
+          docker run --rm -v ${{ github.workspace }}:/repo "$TARGET_IMAGE" bash -c \
+            "apt-get update -qq 2>/dev/null || yum install -y gcc make perl 2>/dev/null || true; cp -a /repo /tmp/work && cd /tmp/work && perl .github/scripts/build_and_test.pl Protobuf Google-Auth Google-gRPC Google-Api-Common Module-Starter-Protobuf"
 
   windows-matrix:
     name: Windows Perl ${{ matrix.perl-version }}
