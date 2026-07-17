@@ -26,9 +26,28 @@ for my $lib_dir (@INC) {
         eval { rmtree($xs_dir); };
     }
 }
+for my $mod ('Log::Any', 'Test::LWP::UserAgent', 'Protocol::HTTP2', 'Module::Starter') {
+    eval "require $mod; 1" or system(($^O eq 'MSWin32' ? ('cmd', '/c', 'cpanm') : ('cpanm')), '--notest', $mod);
+}
 
-my @dirs = @ARGV ? @ARGV : qw(Protobuf Google-Auth Google-Api-Common Google-gRPC Module-Starter-Protobuf);
+my $root_dir = File::Spec->rel2abs(".");
+my @dirs = @ARGV ? @ARGV : qw(
+    Protobuf Google-Auth Google-Api-Common Google-gRPC Module-Starter-Protobuf
+    Google-Cloud-BigQuery-Storage-V1 Google-Cloud-Bigquery-V2 Google-Cloud-Build-V1
+    Google-Cloud-Composer-V1 Google-Cloud-Compute-V1 Google-Cloud-Dataflow-V1Beta3
+    Google-Cloud-DataFusion-V1 Google-Cloud-Dataplex-V1 Google-Cloud-Dataproc-V1
+    Google-Cloud-IAM-V1 Google-Cloud-Metastore-V1 Google-Cloud-NetworkSecurity-V1
+    Google-Cloud-NetworkServices-V1 Google-Cloud-PrivateCA-V1 Google-Cloud-PubSub-V1
+    Google-Cloud-SecretManager-V1 Google-Cloud-Spanner-V1 Google-Cloud-SQL-V1
+    Google-Cloud-Storage-V2
+);
 for my $d (@dirs) {
+    chdir $root_dir or die "Cannot chdir to $root_dir: $!";
+    build_package($d);
+}
+
+sub build_package {
+    my ($d) = @_;
     print "=== Building $d ===\n";
     chdir $d or die "Cannot chdir to $d: $!";
     unlink "Makefile", "MYMETA.yml", "MYMETA.json", "pm_to_blib";
@@ -61,8 +80,10 @@ for my $d (@dirs) {
     $ENV{PATH} = join($sep, $abs_arch, $abs_cur, @dll_dirs, $old_path);
     my $res;
     if ($^O eq 'MSWin32') {
-        local $ENV{PERL5LIB} = join($sep, File::Spec->rel2abs('blib/lib'), File::Spec->rel2abs('blib/arch'), File::Spec->rel2abs('t/lib'), $ENV{PERL5LIB} || ());
-        $res = system($^X, '-S', 'prove', '-b', 't/');
+        my @libs = (File::Spec->rel2abs('blib/lib'), File::Spec->rel2abs('blib/arch'), File::Spec->rel2abs('t/lib'));
+        s{\\}{/}g for @libs;
+        local $ENV{PERL5LIB} = join($sep, @libs, $ENV{PERL5LIB} || ());
+        $res = system($^X, '-S', 'prove', '-b', '-It/lib', 't/');
     } else {
         $res = system("$^X -S prove -b -It/lib t/");
     }
