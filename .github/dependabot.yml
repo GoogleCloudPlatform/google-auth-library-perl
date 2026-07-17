@@ -1,0 +1,31 @@
+# Dependabot configuration for google-auth-library-perl
+# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuring-dependabot-version-updates
+
+version: 2
+updates:
+  # Maintain dependencies for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "github-actions"
+
+  # Maintain Docker container base images
+  - package-ecosystem: "docker"
+    directory: "/ci"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "docker"
+
+  # Maintain CPAN / Perl dependencies
+  - package-ecosystem: "cpanfile"
+    directory: "/Google-Auth"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "perl"
