@@ -8,10 +8,17 @@ use File::Spec;
 use File::Find qw(find);
 use File::Path qw(rmtree);
 
-my $perl_dir = dirname($^X);
-my $c_bin = File::Spec->catdir(dirname($perl_dir), "c", "bin");
 my $sep = $^O eq 'MSWin32' ? ';' : ':';
-$ENV{PATH} = join($sep, $perl_dir, $c_bin, $ENV{PATH});
+if ($^O eq 'MSWin32') {
+    my $perl_dir = dirname($^X);
+    my $c_bin = File::Spec->catdir(dirname($perl_dir), "c", "bin");
+    my @path_parts = split(/;/, $ENV{PATH} || '');
+    @path_parts = grep { $_ !~ /msys/i && $_ !~ /Git\\usr\\bin/i } @path_parts;
+    $ENV{PATH} = join(';', $perl_dir, $c_bin, @path_parts);
+} else {
+    my $perl_dir = dirname($^X);
+    $ENV{PATH} = join(':', $perl_dir, $ENV{PATH} || '');
+}
 $ENV{PACKAGE_STASH_IMPLEMENTATION} = "PP";
 $ENV{MOO_XS_DISABLE} = "1";
 $ENV{TEMPLATE_STASH} = "pureperl";
