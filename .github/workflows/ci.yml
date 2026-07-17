@@ -30,7 +30,11 @@ jobs:
 
       - name: Docker login to Artifact Registry
         run: |
-          echo "${{ secrets.GCP_SA_KEY }}" | docker login -u _json_key --password-stdin us-docker.pkg.dev
+          if [ -z "${{ secrets.GCP_SA_KEY }}" ]; then
+            echo "::notice::GCP_SA_KEY secret not available (possibly a forked PR). Skipping docker login."
+          else
+            printf '%s' "${{ secrets.GCP_SA_KEY }}" | docker login -u _json_key --password-stdin us-docker.pkg.dev
+          fi
 
       - name: Run Build and Test Suite inside Base Container
         run: |
