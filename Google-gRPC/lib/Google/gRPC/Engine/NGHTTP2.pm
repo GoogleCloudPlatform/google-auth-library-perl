@@ -5,7 +5,7 @@ use warnings;
 use Carp qw(croak);
 use XSLoader;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 eval {
     XSLoader::load('Google::gRPC', $VERSION);

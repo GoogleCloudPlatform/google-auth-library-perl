@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 BEGIN {
     $ENV{PACKAGE_STASH_IMPLEMENTATION} ||= 'PP';
     $ENV{MOO_XS_DISABLE} ||= '1';
@@ -709,8 +709,8 @@ our $extra_ldflags = '';
 our $mac_inc = '';
 our $mac_libs = '';
 if ($is_linux) {
-    $common_lib_link_flags = '-Wl,--version-script=libprotobufperl.map';
-    $extra_ldflags = " -Wl,-rpath,'\$\$ORIGIN:\$\$ORIGIN/../../..'";
+    $common_lib_link_flags = '-Wl,-z,origin -Wl,-soname,libprotobufperl.so -Wl,--version-script=libprotobufperl.map';
+    $extra_ldflags = ' -Wl,-z,origin -Wl,-rpath,$$ORIGIN:$$ORIGIN/../../..';
 } elsif ($is_darwin) {
     $common_lib_link_flags = "-Wl,-install_name,\@rpath/libprotobufperl.$extlib_ext -Wl,-undefined,dynamic_lookup";
     $extra_ldflags = ' -Wl,-rpath,@loader_path';
