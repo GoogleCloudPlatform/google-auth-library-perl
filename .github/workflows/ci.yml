@@ -17,33 +17,48 @@ jobs:
         include:
           - name: Debian 12
             image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-debian:latest
+            public-image: debian:bookworm-slim
           - name: Ubuntu 24.04
             image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-ubuntu:latest
+            public-image: ubuntu:24.04
           - name: Rocky Linux 9
             image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-rocky:latest
+            public-image: rockylinux:9
           - name: Perl 5.40
             image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-540:latest
+            public-image: perl:5.40-slim
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Docker login to Artifact Registry
-        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+        id: docker_login
+        env:
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
         run: |
-          if [ -z "${{ secrets.GCP_SA_KEY }}" ]; then
-            echo "GCP_SA_KEY secret is not set or not available in this workflow. Aborting docker login." >&2
-            exit 1
+          if [ -n "$GCP_SA_KEY" ]; then
+            printf '%s' "$GCP_SA_KEY" | docker login -u _json_key --password-stdin us-docker.pkg.dev
+            echo "authenticated=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::GCP_SA_KEY secret not available (forked PR). Skipping docker login and falling back to public image."
+            echo "authenticated=false" >> "$GITHUB_OUTPUT"
           fi
-          printf '%s' "${{ secrets.GCP_SA_KEY }}" | docker login -u _json_key --password-stdin us-docker.pkg.dev
 
       - name: Run Build and Test Suite inside Base Container
         run: |
+          if [ "${{ steps.docker_login.outputs.authenticated }}" = "true" ]; then
+            TARGET_IMAGE="${{ matrix.image }}"
+            SETUP_CMD="cp -a /workspace /tmp/work && cd /tmp/work && perl .github/scripts/build_and_test.pl Protobuf Google-Auth Google-gRPC Google-Api-Common Module-Starter-Protobuf"
+          else
+            TARGET_IMAGE="${{ matrix.public-image }}"
+            SETUP_CMD="apt-get update -qq 2>/dev/null || yum install -y gcc make perl 2>/dev/null || true; cp -a /workspace /tmp/work && cd /tmp/work && perl .github/scripts/build_and_test.pl Protobuf Google-Auth Google-gRPC Google-Api-Common Module-Starter-Protobuf"
+          fi
           docker run --rm \
             -v "${{ github.workspace }}:/workspace:cached" \
             -w /workspace \
-            ${{ matrix.image }} \
-            bash -lc 'cp -a "$GITHUB_WORKSPACE" /tmp/work && cd /tmp/work && perl .github/scripts/build_and_test.pl Protobuf Google-Auth Google-gRPC Google-Api-Common Module-Starter-Protobuf'
+            "$TARGET_IMAGE" \
+            bash -lc "$SETUP_CMD"
 
   windows-matrix:
     name: Windows Perl ${{ matrix.perl-version }}
