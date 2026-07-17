@@ -62,7 +62,9 @@ jobs:
 
   windows-matrix:
     name: Windows Perl ${{ matrix.perl-version }}
-    runs-on: [self-hosted, Windows]
+    runs-on: windows-latest
+    env:
+      GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
     strategy:
       fail-fast: false
       matrix:
@@ -72,9 +74,12 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Run Build and Test Suite inside Windows Base Container
+      - name: Run Build and Test Suite
         shell: powershell
         run: |
-          $token = gcloud auth print-access-token
-          $token | docker login -u oauth2accesstoken --password-stdin us-docker.pkg.dev
-          docker run --rm -v ${{ github.workspace }}:C:\workspace us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-windows:${{ matrix.perl-version }} cmd /c "rmdir /S /Q C:\tmp\work 2>nul & xcopy /E /I /H /Y C:\workspace C:\tmp\work && cd C:\tmp\work && perl .github\scripts\build_and_test.pl Protobuf Google-Auth Google-gRPC Google-Api-Common Module-Starter-Protobuf"
+          if ($env:GCP_SA_KEY -ne "") {
+            $env:GCP_SA_KEY | docker login -u _json_key --password-stdin us-docker.pkg.dev
+            docker run --rm -v "${env:GITHUB_WORKSPACE}:C:\workspace" us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-windows:${{ matrix.perl-version }} cmd /c "rmdir /S /Q C:\tmp\work 2>nul & xcopy /E /I /H /Y C:\workspace C:\tmp\work && cd C:\tmp\work && perl .github\scripts\build_and_test.pl Protobuf Google-Auth Google-gRPC Google-Api-Common Module-Starter-Protobuf"
+          } else {
+            perl .github\scripts\build_and_test.pl Protobuf Google-Auth Google-gRPC Google-Api-Common Module-Starter-Protobuf
+          }
