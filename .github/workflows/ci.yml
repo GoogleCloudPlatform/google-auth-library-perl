@@ -11,50 +11,30 @@ jobs:
   container-matrix:
     name: ${{ matrix.name }}
     runs-on: ubuntu-latest
-    env:
-      GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+    container:
+      image: ${{ matrix.image }}
+      credentials:
+        username: _json_key
+        password: ${{ secrets.GCP_SA_KEY }}
     strategy:
       fail-fast: false
       matrix:
         include:
           - name: Debian 12
             image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-debian:latest
-            public-image: debian:bookworm-slim
           - name: Ubuntu 24.04
             image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-ubuntu:latest
-            public-image: ubuntu:24.04
           - name: Rocky Linux 9
             image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-rocky:latest
-            public-image: rockylinux:9
           - name: Perl 5.40
             image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-540:latest
-            public-image: perl:5.40-slim
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Authenticate to Google Cloud
-        if: ${{ env.GCP_SA_KEY != '' }}
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
-
-      - name: Configure Docker authentication for Artifact Registry
-        if: ${{ env.GCP_SA_KEY != '' }}
-        run: |
-          gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
-          gcloud auth configure-docker us-docker.pkg.dev --quiet
-          gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin us-docker.pkg.dev
-
       - name: Run Build and Test Suite inside Base Container
         run: |
-          TARGET_IMAGE="${{ matrix.image }}"
-          if [ -z "$GCP_SA_KEY" ]; then
-            echo "::notice::GCP_SA_KEY secret absent. Falling back to public image: ${{ matrix.public-image }}"
-            TARGET_IMAGE="${{ matrix.public-image }}"
-          fi
-          docker run --rm -v ${{ github.workspace }}:/repo "$TARGET_IMAGE" bash -c \
-            "apt-get update -qq 2>/dev/null || yum install -y gcc make perl 2>/dev/null || true; cp -a /repo /tmp/work && cd /tmp/work && perl .github/scripts/build_and_test.pl Protobuf Google-Auth Google-gRPC Google-Api-Common Module-Starter-Protobuf"
+          cp -a $GITHUB_WORKSPACE /tmp/work && cd /tmp/work && perl .github/scripts/build_and_test.pl Protobuf Google-Auth Google-gRPC Google-Api-Common Module-Starter-Protobuf
 
   windows-matrix:
     name: Windows Perl ${{ matrix.perl-version }}
