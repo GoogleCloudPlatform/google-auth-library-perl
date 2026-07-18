@@ -50,9 +50,14 @@ $num_cores = int($num_cores) || 1;
 
 my $perl = $ENV{PERL} || $^X;
 
-if (!-d 'vendor' && (-d '../upb' || -d '../../upb')) {
-    print "vendor/ directory is missing. Bootstrapping upb...\n";
-    system($^X, 'maint/vendor_upb.pl') == 0 or die "Failed to bootstrap upb: $!";
+if (!-d 'vendor') {
+    if (-d '../upb' || -d '../../upb') {
+        print "vendor/ directory is missing. Bootstrapping upb...\n";
+        system($^X, 'maint/vendor_upb.pl') == 0 or die "Failed to bootstrap upb: $!";
+    } elsif (-d '.git' || -d '../.git') {
+        print "vendor/ directory missing. Restoring from git...\n";
+        system('git', 'checkout', '--', 'vendor/');
+    }
 }
 
 if ($is_dev) {
@@ -800,7 +805,7 @@ WriteMakefile(
 
     # Clean the generated object files and the static library
     clean             => { FILES => join(' ', sort @clean_files) },
-    realclean         => { FILES => 'vendor upb Protobuf-*.tar.gz lua ruby perl local MANIFEST MANIFEST.bak make.log test_c.log Protobuf.xs BUILD.bazel META.json META.yml' },
+    realclean         => { FILES => 'Protobuf-*.tar.gz lua ruby perl local MANIFEST MANIFEST.bak make.log test_c.log Protobuf.xs BUILD.bazel META.json META.yml' },
 
     dist              => {
         PREOP => '$(PERL) -MExtUtils::Manifest=mkmanifest -e "mkmanifest"',
