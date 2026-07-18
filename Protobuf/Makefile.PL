@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-our $VERSION = '0.06';
+our $VERSION = '0.08';
 BEGIN {
     $ENV{PACKAGE_STASH_IMPLEMENTATION} ||= 'PP';
     $ENV{MOO_XS_DISABLE} ||= '1';

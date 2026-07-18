@@ -3,7 +3,7 @@ package Google::Protobuf::FieldMask;
 use strict;
 use warnings;
 
-our $VERSION = '0.06';
+our $VERSION = '0.08';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
