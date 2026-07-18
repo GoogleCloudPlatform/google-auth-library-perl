@@ -110,4 +110,27 @@ sub from_trailer {
     return $class->parse_status_details($raw);
 }
 
+
+=head1 NAME
+
+Google::gRPC::Status - gRPC Status Codes and Details
+
+=head1 SYNOPSIS
+
+    use Google::gRPC::Status;
+
+=head1 DESCRIPTION
+
+This module provides grpc status codes and details functionality for the Google gRPC Perl client SDK.
+
+=head1 AUTHOR
+
+C.J. Collier E<lt>cjac@google.comE<gt>
+
+=head1 LICENSE
+
+Apache License 2.0
+
+=cut
+
 1;

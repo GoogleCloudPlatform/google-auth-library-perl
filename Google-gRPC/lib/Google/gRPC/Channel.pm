@@ -214,4 +214,27 @@ sub _on_engine_close {
     $self->last_activity_time(time());
 }
 
+
+=head1 NAME
+
+Google::gRPC::Channel - gRPC Channel Abstraction
+
+=head1 SYNOPSIS
+
+    use Google::gRPC::Channel;
+
+=head1 DESCRIPTION
+
+This module provides grpc channel abstraction functionality for the Google gRPC Perl client SDK.
+
+=head1 AUTHOR
+
+C.J. Collier E<lt>cjac@google.comE<gt>
+
+=head1 LICENSE
+
+Apache License 2.0
+
+=cut
+
 1;

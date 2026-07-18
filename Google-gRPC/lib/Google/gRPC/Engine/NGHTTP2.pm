@@ -53,4 +53,27 @@ sub submit_request {
     return _xs_submit_request($self, $headers, $data, $end_stream);
 }
 
+
+=head1 NAME
+
+Google::gRPC::Engine::NGHTTP2 - gRPC C/XS nghttp2 Transport Engine
+
+=head1 SYNOPSIS
+
+    use Google::gRPC::Engine::NGHTTP2;
+
+=head1 DESCRIPTION
+
+This module provides grpc c/xs nghttp2 transport engine functionality for the Google gRPC Perl client SDK.
+
+=head1 AUTHOR
+
+C.J. Collier E<lt>cjac@google.comE<gt>
+
+=head1 LICENSE
+
+Apache License 2.0
+
+=cut
+
 1;

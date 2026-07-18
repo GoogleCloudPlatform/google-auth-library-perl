@@ -212,4 +212,27 @@ sub reset_metrics {
     }
 }
 
+
+=head1 NAME
+
+Google::gRPC::ChannelPool - gRPC Channel Pool Management
+
+=head1 SYNOPSIS
+
+    use Google::gRPC::ChannelPool;
+
+=head1 DESCRIPTION
+
+This module provides grpc channel pool management functionality for the Google gRPC Perl client SDK.
+
+=head1 AUTHOR
+
+C.J. Collier E<lt>cjac@google.comE<gt>
+
+=head1 LICENSE
+
+Apache License 2.0
+
+=cut
+
 1;

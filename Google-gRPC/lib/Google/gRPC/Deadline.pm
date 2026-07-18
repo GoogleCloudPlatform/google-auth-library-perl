@@ -52,4 +52,27 @@ sub format_grpc_timeout {
     }
 }
 
+
+=head1 NAME
+
+Google::gRPC::Deadline - gRPC Deadline Support
+
+=head1 SYNOPSIS
+
+    use Google::gRPC::Deadline;
+
+=head1 DESCRIPTION
+
+This module provides grpc deadline support functionality for the Google gRPC Perl client SDK.
+
+=head1 AUTHOR
+
+C.J. Collier E<lt>cjac@google.comE<gt>
+
+=head1 LICENSE
+
+Apache License 2.0
+
+=cut
+
 1;

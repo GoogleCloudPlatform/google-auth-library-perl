@@ -107,4 +107,27 @@ sub get_output {
     return $out;
 }
 
+
+=head1 NAME
+
+Google::gRPC::Engine::PP - gRPC Pure-Perl Transport Engine
+
+=head1 SYNOPSIS
+
+    use Google::gRPC::Engine::PP;
+
+=head1 DESCRIPTION
+
+This module provides grpc pure-perl transport engine functionality for the Google gRPC Perl client SDK.
+
+=head1 AUTHOR
+
+C.J. Collier E<lt>cjac@google.comE<gt>
+
+=head1 LICENSE
+
+Apache License 2.0
+
+=cut
+
 1;

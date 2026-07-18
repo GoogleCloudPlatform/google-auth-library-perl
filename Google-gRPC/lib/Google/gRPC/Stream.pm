@@ -149,4 +149,27 @@ sub abort_stream {
     $self->handle_close($status_code);
 }
 
+
+=head1 NAME
+
+Google::gRPC::Stream - gRPC Stream Interface
+
+=head1 SYNOPSIS
+
+    use Google::gRPC::Stream;
+
+=head1 DESCRIPTION
+
+This module provides grpc stream interface functionality for the Google gRPC Perl client SDK.
+
+=head1 AUTHOR
+
+C.J. Collier E<lt>cjac@google.comE<gt>
+
+=head1 LICENSE
+
+Apache License 2.0
+
+=cut
+
 1;

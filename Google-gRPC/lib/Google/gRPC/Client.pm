@@ -216,4 +216,27 @@ sub stream {
     return $self->channel->create_stream(%args);
 }
 
+
+=head1 NAME
+
+Google::gRPC::Client - gRPC Client Interface
+
+=head1 SYNOPSIS
+
+    use Google::gRPC::Client;
+
+=head1 DESCRIPTION
+
+This module provides grpc client interface functionality for the Google gRPC Perl client SDK.
+
+=head1 AUTHOR
+
+C.J. Collier E<lt>cjac@google.comE<gt>
+
+=head1 LICENSE
+
+Apache License 2.0
+
+=cut
+
 1;

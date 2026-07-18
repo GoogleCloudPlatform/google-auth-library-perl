@@ -78,4 +78,27 @@ sub parse_trailers {
     return \%res;
 }
 
+
+=head1 NAME
+
+Google::gRPC::Framing - gRPC Wire Framing Utilities
+
+=head1 SYNOPSIS
+
+    use Google::gRPC::Framing;
+
+=head1 DESCRIPTION
+
+This module provides grpc wire framing utilities functionality for the Google gRPC Perl client SDK.
+
+=head1 AUTHOR
+
+C.J. Collier E<lt>cjac@google.comE<gt>
+
+=head1 LICENSE
+
+Apache License 2.0
+
+=cut
+
 1;

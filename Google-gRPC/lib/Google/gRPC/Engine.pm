@@ -29,4 +29,27 @@ sub create {
     return Google::gRPC::Engine::PP->new(%args);
 }
 
+
+=head1 NAME
+
+Google::gRPC::Engine - gRPC Transport Engine Base
+
+=head1 SYNOPSIS
+
+    use Google::gRPC::Engine;
+
+=head1 DESCRIPTION
+
+This module provides grpc transport engine base functionality for the Google gRPC Perl client SDK.
+
+=head1 AUTHOR
+
+C.J. Collier E<lt>cjac@google.comE<gt>
+
+=head1 LICENSE
+
+Apache License 2.0
+
+=cut
+
 1;
