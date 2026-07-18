@@ -1,5 +1,17 @@
 Revision history for Protobuf
 
+0.08    Sat Jul 18 2026
+        [Compatibility & API Layer]
+        - Added Google::ProtocolBuffers::Dynamic compatibility API shim (Google::ProtocolBuffers::Dynamic) to support legacy codebases migrating from Google::ProtocolBuffers::Dynamic to Protobuf upb backend.
+        - Refactored App::EvalServerAdvanced::Protocol to utilize the new compatibility layer.
+
+        [Build Systems & Clean Target Hardening]
+        - Enhanced Makefile.PL to automatically include bin/protoc-gen-perl-pb in standard Makefile 'all' and 'install' targets via EXE_FILES.
+        - Removed tracked ELF 64-bit binary bin/protoc-gen-perl-pb from Git tracking and added to .gitignore.
+        - Hardened Makefile.PL realclean target to preserve vendor/ C source headers and output object directory paths (preventing post-realclean cpanm build failures).
+        - Added git vendor auto-restoration fallback (git checkout -- vendor/) to Makefile.PL when vendor/ directory is missing in a Git workspace.
+
+
 0.06    Fri Jul 17 2026
         [Windows & Multi-Platform Build Hardening]
         - Enhanced Makefile.PL to search system library paths for libperl across Debian, Ubuntu, Fedora, and Arch layouts.
