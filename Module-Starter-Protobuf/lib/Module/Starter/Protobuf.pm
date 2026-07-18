@@ -460,7 +460,6 @@ sub Makefile_PL_guts {
             # Full service client dependencies
             $deps = <<'EOF';
         'Moo'                     => '0',
-        'Net::Curl'               => '0',
         'Log::Any'                => '0',
         'Google::Auth'            => '0.01',
         'Google::gRPC::Client'    => '0.01',
@@ -823,7 +822,7 @@ Generates the dynamic service integration tests (C<t/01-service.t>) under the ta
 
 =head2 Makefile_PL_guts
 
-Injects the required dependencies (C<Moo>, C<Net::Curl>, C<Google::Auth>, C<Google::gRPC::Client>, C<Protobuf>) into the generated C<Makefile.PL>.
+Injects the required dependencies (C<Moo>, C<Log::Any>, C<Google::Auth>, C<Google::gRPC::Client>, C<Protobuf>) into the generated C<Makefile.PL>.
 
 =head1 AUTHOR
 
