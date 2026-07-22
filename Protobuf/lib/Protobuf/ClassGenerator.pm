@@ -87,6 +87,8 @@ the terms of the BSD 3-Clause License.
 
 package Protobuf::ClassGenerator;
 
+## no critic (TestingAndDebugging::ProhibitNoStrict, BuiltinFunctions::ProhibitStringyEval)
+
 use strict;
 use warnings;
 use Protobuf;

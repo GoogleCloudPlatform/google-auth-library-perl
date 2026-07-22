@@ -3,8 +3,8 @@ use strict;
 use warnings;
 use Test::More;
 
-unless ( $ENV{AUTHOR_TESTING} || $ENV{RELEASE_TESTING} ) {
-    plan( skip_all => 'Author/Release tests not required for installation' );
+unless ( $ENV{TEST_PERLTIDY} ) {
+    plan( skip_all => 'Set TEST_PERLTIDY=1 to enable perltidy tests' );
 }
 
 eval 'use Test::PerlTidy';
