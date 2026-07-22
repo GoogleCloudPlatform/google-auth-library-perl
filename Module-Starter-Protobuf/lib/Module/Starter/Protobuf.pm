@@ -322,7 +322,7 @@ EOF
 
         # Generate full gRPC service client wrapper
         my $version = $self->{version} || '0.02';
-        $client_code = sprintf(<<"EOF", $module_name, $bridge_code, $use_statements, $version, $grpc_target, $methods_code, $module_name, $module_name, $module_name, $module_name, $module_name, $methods_pod);
+        $client_code = sprintf(<<"EOF", $module_name, $bridge_code, $use_statements, $version, $grpc_target, $methods_code, $module_name, $module_name, $module_name, $module_name, $module_name, $module_name, $module_name, $methods_pod);
 package %s;
 
 use strict;
@@ -376,33 +376,43 @@ __END__
 
 ${EQ}head1 NAME
 
-%s - Auto-generated client library for Google Cloud Services
+%s - Client library for Google Cloud Services
 
 ${EQ}head1 SYNOPSIS
 
     use %s;
     use Google::Auth;
 
-    # Initialize Application Default Credentials (ADC) or explicit Google Auth
     my \$auth = Google::Auth->default();
-    my \$client = %s->new( credentials => \$auth );
+
+    # 1. High-performance gRPC Transport (Default)
+    my \$grpc_client = %s->new(
+        credentials => \$auth,
+        transport   => 'grpc', # Optional: 'grpc' is default
+    );
+
+    # 2. HTTP/REST Transport
+    my \$rest_client = %s->new(
+        credentials => \$auth,
+        transport   => 'rest',
+    );
 
     # Execute service methods
-    my \$res = \$client->some_method( %%params );
+    my \$res = \$grpc_client->some_method( %%params );
 
 ${EQ}head1 DESCRIPTION
 
-This is an auto-generated Protocol Buffers client library for Google Cloud Services, built on top of high-performance gRPC and Protocol Buffers!
+C<%s> is an auto-generated client library for Google Cloud Services.
 
-It provides seamless integration with Google Cloud Application Default Credentials (ADC), support for both HTTP/2 gRPC and REST transports, and fully typed RPC method dispatching.
+It provides a unified client interface supporting both high-performance HTTP/2 gRPC and HTTP/REST transports, with automatic Google Cloud Application Default Credentials (ADC) resolution and typed Protocol Buffers message handling.
 
 ${EQ}head1 CONSTRUCTOR
 
 ${EQ}head2 new
 
     my \$client = %s->new(
-        credentials => \$auth,       # Optional: Google::Auth object (defaults to ADC)
-        transport   => 'grpc',     # Optional: 'grpc' (default) or 'rest'
+        credentials => \$auth,   # Optional: Google::Auth object (defaults to ADC)
+        transport   => 'grpc', # Optional: 'grpc' (default) or 'rest'
     );
 
 ${EQ}head1 ATTRIBUTES
@@ -413,7 +423,7 @@ Returns or accepts the L<Google::Auth> credentials object.
 
 ${EQ}head2 transport
 
-Returns or accepts the transport instance (L<Google::gRPC::Client> or L<Google::Cloud::REST::Client>).
+Returns or accepts the active transport object (L<Google::gRPC::Client> or L<Google::Cloud::REST::Client>).
 
 ${EQ}head1 METHODS
 

@@ -101,33 +101,43 @@ __END__
 
 =head1 NAME
 
-Google::Cloud::NetworkServices::V1::NetworkServicesClient - Auto-generated client library for Google Cloud Services
+Google::Cloud::NetworkServices::V1::NetworkServicesClient - Client library for Google Cloud Services
 
 =head1 SYNOPSIS
 
     use Google::Cloud::NetworkServices::V1::NetworkServicesClient;
     use Google::Auth;
 
-    # Initialize Application Default Credentials (ADC) or explicit Google Auth
     my $auth = Google::Auth->default();
-    my $client = Google::Cloud::NetworkServices::V1::NetworkServicesClient->new( credentials => $auth );
+
+    # 1. High-performance gRPC Transport (Default)
+    my $grpc_client = Google::Cloud::NetworkServices::V1::NetworkServicesClient->new(
+        credentials => $auth,
+        transport   => 'grpc', # Optional: 'grpc' is default
+    );
+
+    # 2. HTTP/REST Transport
+    my $rest_client = Google::Cloud::NetworkServices::V1::NetworkServicesClient->new(
+        credentials => $auth,
+        transport   => 'rest',
+    );
 
     # Execute service methods
-    my $res = $client->some_method( %params );
+    my $res = $grpc_client->some_method( %params );
 
 =head1 DESCRIPTION
 
-This is an auto-generated Protocol Buffers client library for Google Cloud Services, built on top of high-performance gRPC and Protocol Buffers!
+C<Google::Cloud::NetworkServices::V1::NetworkServicesClient> is an auto-generated client library for Google Cloud Services.
 
-It provides seamless integration with Google Cloud Application Default Credentials (ADC), support for both HTTP/2 gRPC and REST transports, and fully typed RPC method dispatching.
+It provides a unified client interface supporting both high-performance HTTP/2 gRPC and HTTP/REST transports, with automatic Google Cloud Application Default Credentials (ADC) resolution and typed Protocol Buffers message handling.
 
 =head1 CONSTRUCTOR
 
 =head2 new
 
     my $client = Google::Cloud::NetworkServices::V1::NetworkServicesClient->new(
-        credentials => $auth,       # Optional: Google::Auth object (defaults to ADC)
-        transport   => 'grpc',     # Optional: 'grpc' (default) or 'rest'
+        credentials => $auth,   # Optional: Google::Auth object (defaults to ADC)
+        transport   => 'grpc', # Optional: 'grpc' (default) or 'rest'
     );
 
 =head1 ATTRIBUTES
@@ -138,7 +148,7 @@ Returns or accepts the L<Google::Auth> credentials object.
 
 =head2 transport
 
-Returns or accepts the transport instance (L<Google::gRPC::Client> or L<Google::Cloud::REST::Client>).
+Returns or accepts the active transport object (L<Google::gRPC::Client> or L<Google::Cloud::REST::Client>).
 
 =head1 METHODS
 
