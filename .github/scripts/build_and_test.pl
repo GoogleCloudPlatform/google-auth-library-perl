@@ -46,7 +46,7 @@ eval {
     local::lib->import($local_dir);
 };
 
-my @dirs = @ARGV ? @ARGV : qw(
+my @all_known_dirs = qw(
     Protobuf Google-Auth Google-Api-Common Google-gRPC Module-Starter-Protobuf
     Google-Cloud-BigQuery-Storage-V1 Google-Cloud-Bigquery-V2 Google-Cloud-Build-V1
     Google-Cloud-Composer-V1 Google-Cloud-Compute-V1 Google-Cloud-Dataflow-V1Beta3
@@ -56,6 +56,48 @@ my @dirs = @ARGV ? @ARGV : qw(
     Google-Cloud-SecretManager-V1 Google-Cloud-Spanner-V1 Google-Cloud-SQL-V1
     Google-Cloud-Storage-V2
 );
+
+my @dirs;
+if (@ARGV) {
+    @dirs = @ARGV;
+}
+elsif ($ENV{CI_TEST_ALL}) {
+    @dirs = @all_known_dirs;
+}
+else {
+    my $target_ref = $ENV{PRE_PUSH_TARGET_REF} || $ENV{PRE_PUSH_REMOTE_REF};
+    if (!$target_ref) {
+        my $upstream = `git rev-parse --verify \@{u} 2>/dev/null`;
+        chomp $upstream;
+        if ($upstream) {
+            $target_ref = $upstream;
+        }
+        else {
+            my $base = `git merge-base HEAD origin/main 2>/dev/null || git merge-base HEAD origin/master 2>/dev/null`;
+            chomp $base;
+            $target_ref = $base || 'HEAD~1';
+        }
+    }
+    print "=== Pre-push Delta Detection: Comparing HEAD against last pushed ref [$target_ref] ===\n";
+    my @diff_files = `git diff --name-only $target_ref...HEAD 2>/dev/null`;
+    chomp @diff_files;
+    
+    my %changed_dirs;
+    for my $f (@diff_files) {
+        my ($top) = split(/\//, $f);
+        if ($top && grep { $_ eq $top } @all_known_dirs) {
+            $changed_dirs{$top} = 1;
+        }
+    }
+    
+    if (!%changed_dirs || grep { $_ =~ /^\.github|^\.perlcriticrc|^Makefile/ } @diff_files) {
+        @dirs = @all_known_dirs;
+    }
+    else {
+        @dirs = sort keys %changed_dirs;
+        print "=== Pre-push Delta Filtering: Testing changed package(s): " . join(", ", @dirs) . " ===\n";
+    }
+}
 for my $d (@dirs) {
     chdir $root_dir or die "Cannot chdir to $root_dir: $!";
     build_package($d);
@@ -127,8 +169,12 @@ sub build_package {
         s{\\}{/}g for @libs;
     }
     local $ENV{PROTOBUF_DEBUG} = 1;
+    local $ENV{RELEASE_TESTING} = 1;
+    local $ENV{AUTHOR_TESTING} = 1;
     local $ENV{PERL5LIB} = join($sep, @libs, $ENV{PERL5LIB} || ());
-    my $res = system($^X, '-S', 'prove', '-b', '-It/lib', 't/');
+    my @test_dirs = ('t/');
+    push @test_dirs, 'xt/' if -d 'xt';
+    my $res = system($^X, '-S', 'prove', '-b', '-It/lib', @test_dirs);
     $ENV{PATH} = $old_path;
     die "prove failed in $d with exit code $res" if $res != 0;
 
