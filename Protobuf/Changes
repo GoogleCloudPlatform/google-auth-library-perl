@@ -6,7 +6,7 @@ Revision history for Protobuf
 
 0.10    Wed Jul 22 2026
         [Core Runtime & Multi-Platform Alignment]
-        - Synchronized $VERSION = '0.10' across all 45 sub-module .pm files to resolve DynaLoader version mismatch errors during XS bootstrapping.
+        - Synchronized $VERSION = '0.11' across all 45 sub-module .pm files to resolve DynaLoader version mismatch errors during XS bootstrapping.
         - Process ID Tracking: Added getpid() check in xs/descriptor_pool/pool.c to reinitialize generated_pool_ptr across fork() calls, eliminating segfaults and use-after-free conditions in multi-process/forking servers.
         - RPATH Linker Fix: Single-quoted \$$ORIGIN in Makefile.PL extra_ldflags so make/ld passes literal $ORIGIN to ld.so.
         - Template Toolkit Integration: Refactored blib_libprotobufperl_copy Makefile rule out of Makefile.PL and into makefile.tt template block.

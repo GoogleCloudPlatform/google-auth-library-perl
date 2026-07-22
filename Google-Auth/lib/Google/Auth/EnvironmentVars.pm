@@ -26,11 +26,11 @@ Google::Auth::EnvironmentVars - Environment variables used by Google::Auth
 
 =head1 VERSION
 
-Version 0.02
+Version 0.05
 
 =cut
 
-our $VERSION = '0.02';
+our $VERSION = '0.05';
 
 =head1 SYNOPSIS
 

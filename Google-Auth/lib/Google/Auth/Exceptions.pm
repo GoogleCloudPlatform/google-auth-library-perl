@@ -24,11 +24,11 @@ Google::Auth::Exceptions - Exceptions used in the Google::Auth package
 
 =head1 VERSION
 
-Version 0.02
+Version 0.05
 
 =cut
 
-our $VERSION = '0.02';
+our $VERSION = '0.05';
 
 # Base class for all google.auth errors
 

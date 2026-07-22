@@ -24,7 +24,7 @@ use Google::Auth::ComputeEngine;
 use Google::Auth::Exceptions;
 use XSLoader;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 XSLoader::load( 'Google::Auth', $VERSION );
 
 
@@ -37,7 +37,7 @@ Google::Auth - Implements application default credentials and project ID detecti
 
 =head1 VERSION
 
-Version 0.02
+Version 0.05
 
 =cut
 

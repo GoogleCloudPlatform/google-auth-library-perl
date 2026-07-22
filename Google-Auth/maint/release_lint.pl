@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use File::Find;
 
+use blib;
 require Google::Auth;
 my $v = $Google::Auth::VERSION;
 if (!defined $v || !length $v) {

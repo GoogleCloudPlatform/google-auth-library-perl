@@ -6,7 +6,7 @@ Protobuf::DescriptorPool - Manages a collection of Protocol Buffer descriptors
 
 =head1 VERSION
 
-version 0.10
+version 0.11
 
 =head1 SYNOPSIS
 
@@ -139,7 +139,7 @@ use warnings;
 use Carp qw(croak);
 use Log::Any qw($log);
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 use Protobuf::Descriptor::File;
 use Protobuf::Descriptor::MessageDef;
