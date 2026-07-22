@@ -1,5 +1,7 @@
 Changes
 cpanfile
+gRPC.bs
+lib/Google/gRPC.pm
 lib/Google/gRPC/Channel.pm
 lib/Google/gRPC/ChannelPool.pm
 lib/Google/gRPC/Client.pm
@@ -12,6 +14,8 @@ lib/Google/gRPC/Status.pm
 lib/Google/gRPC/Stream.pm
 Makefile.PL
 MANIFEST			This list of files
+NGHTTP2.c
+NGHTTP2.o
 NGHTTP2.xs
 project/plan/001-engine-architecture.md
 README.md
@@ -25,6 +29,7 @@ t/06-channel-pool.t
 t/07-deadlines.t
 t/08-retries.t
 t/09-keepalive.t
+t/99-pod-coverage.t
 tmp/arbitrary.sh
 tmp/check_env.sh
 tmp/cpanm_final.log

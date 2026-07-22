@@ -382,13 +382,7 @@ It provides seamless integration with Google Cloud Application Default Credentia
 
 =head1 METHODS
 
-The following RPC methods are available in this client:
-
-=over 4
-
 %s
-
-=back
 
 =head1 LICENSE AND COPYRIGHT
 
@@ -790,7 +784,7 @@ Module::Starter::Protobuf - A Module::Starter plugin for generating Protocol Buf
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =head1 SYNOPSIS
 
