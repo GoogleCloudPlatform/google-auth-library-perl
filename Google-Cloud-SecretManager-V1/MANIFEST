@@ -1,6 +1,15 @@
 Changes
-lib/Google/Cloud/SecretManager/V1.pm
+lib/Google/Cloud/Secretmanager/V1/Resources.pm
+lib/Google/Cloud/Secretmanager/V1/Resources/Types.pm
+lib/Google/Cloud/SecretManager/V1/SecretManagerServiceClient.pm
+lib/Google/Cloud/Secretmanager/V1/Service.pm
+lib/Google/Cloud/Secretmanager/V1/Service/Types.pm
 Makefile.PL
 MANIFEST			This list of files
 README
 t/00-load.t
+t/01-service.t
+t/02-rest-transport.t
+t/manifest.t
+t/pod-coverage.t
+t/pod.t

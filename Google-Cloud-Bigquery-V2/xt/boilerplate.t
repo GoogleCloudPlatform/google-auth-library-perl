@@ -50,7 +50,7 @@ TODO: {
     "placeholder date/time"       => qr(Date/time)
   );
 
-  module_boilerplate_ok('lib/Google/Cloud/Bigquery/V2.pm');
+  module_boilerplate_ok('lib/Google/Cloud/Bigquery/V2/ModelClient.pm');
 
 
 }

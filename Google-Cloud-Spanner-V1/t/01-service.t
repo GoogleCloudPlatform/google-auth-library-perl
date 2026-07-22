@@ -33,24 +33,26 @@ sub call {
 
 # C. Main test execution
 package main;
-use Google::Spanner::V1::Spanner;
-use Google::Cloud::Spanner::V1;
+use Google::Cloud::Spanner::V1::SpannerClient;
 
-my $client = Google::Cloud::Spanner::V1->new( credentials => 'dummy' );
+my $client = Google::Cloud::Spanner::V1::SpannerClient->new( credentials => 'dummy' );
 ok($client, 'Instantiated generated client');
 isa_ok($client->transport, 'Google::gRPC::Client', 'Client transport');
 
-subtest 'codec methods' => sub {
-    my $bytes = Google::Cloud::Spanner::V1->new_execute_sql_request({ sql => 'SELECT 1' });
-    ok($bytes, 'Method returned encoded bytes');
+subtest 'create_session method' => sub {
+    $client->transport->{mock_call} = sub {
+        my ($args) = @_;
+        is($args->{service}, 'google.spanner.v1.Spanner', 'Correct service path');
+        is($args->{method}, 'CreateSession', 'Correct RPC method');
+        isa_ok($args->{request}, 'Google::Spanner::V1::Spanner::CreateSessionRequest', 'Request object');
+        
+        my $response = 'Google::Spanner::V1::Spanner::Session'->new();
+        return $response;
+    };
     
-    my $res_msg = Google::Spanner::V1::ResultSet::PartialResultSet->new({
-        values => [ { string_value => "101" } ],
-    });
-    my $res_bytes = $res_msg->serialize();
-    my $res = Google::Cloud::Spanner::V1->parse_partial_result_set($res_bytes);
-    ok($res, 'Method returned a parsed response');
-    is($res->values->[0]->string_value, '101', 'Response value matches');
+    my $res = $client->create_session();
+    ok($res, 'Method returned a response');
+    isa_ok($res, 'Google::Spanner::V1::Spanner::Session', 'Response object class');
     done_testing();
 };
 

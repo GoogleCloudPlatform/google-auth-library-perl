@@ -1,10 +1,13 @@
+#!perl
+use 5.008003;
 use strict;
 use warnings;
-use Test::More tests => 1;
+use Test::More;
+
+plan tests => 1;
 
 BEGIN {
-    use_ok('Google::Cloud::Compute::V1') || print "Bail out!
-";
+    use_ok( 'Google::Cloud::Compute::V1::InstancesClient' ) || print "Bail out!\n";
 }
 
-diag( "Google::Cloud::Compute::V1 $Google::Cloud::Compute::V1::VERSION, Perl $], $^X" );
+diag( "Testing Google::Cloud::Compute::V1::InstancesClient $Google::Cloud::Compute::V1::InstancesClient::VERSION, Perl $], $^X" );

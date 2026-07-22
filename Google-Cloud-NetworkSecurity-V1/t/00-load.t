@@ -1,10 +1,13 @@
+#!perl
+use 5.008003;
 use strict;
 use warnings;
-use Test::More tests => 1;
+use Test::More;
+
+plan tests => 1;
 
 BEGIN {
-    use_ok('Google::Cloud::NetworkSecurity::V1') || print "Bail out!
-";
+    use_ok( 'Google::Cloud::NetworkSecurity::V1::NetworkSecurityClient' ) || print "Bail out!\n";
 }
 
-diag( "Google::Cloud::NetworkSecurity::V1 $Google::Cloud::NetworkSecurity::V1::VERSION, Perl $], $^X" );
+diag( "Testing Google::Cloud::NetworkSecurity::V1::NetworkSecurityClient $Google::Cloud::NetworkSecurity::V1::NetworkSecurityClient::VERSION, Perl $], $^X" );

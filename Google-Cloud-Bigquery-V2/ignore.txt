@@ -14,5 +14,5 @@ inc/
 nytprof.out
 pod2htm*.tmp
 pm_to_blib
-Google-Cloud-Bigquery-V2-*
-Google-Cloud-Bigquery-V2-*.tar.gz
+Google-Cloud-Bigquery-V2-ModelClient-*
+Google-Cloud-Bigquery-V2-ModelClient-*.tar.gz

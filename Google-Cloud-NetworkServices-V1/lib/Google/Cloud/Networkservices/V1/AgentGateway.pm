@@ -1,0 +1,653 @@
+package Google::Cloud::Networkservices::V1::AgentGateway;
+
+use strict;
+use warnings;
+
+our $VERSION = '0.10';
+
+use Protobuf::Message;
+use Protobuf::DescriptorPool;
+use Protobuf::Internal qw(:all);
+use MIME::Base64;
+
+BEGIN {
+    eval { require Google::Api::FieldBehavior };
+    eval { require Google::Api::Resource };
+    eval { require Google::Protobuf::FieldMask };
+    eval { require Google::Protobuf::Timestamp };
+    my $descriptor_b64 = <<'EOF';
+CjNnb29nbGUvY2xvdWQvbmV0d29ya3NlcnZpY2VzL3YxL2FnZW50X2dhdGV3YXkucHJvdG8S
+H2dvb2dsZS5jbG91ZC5uZXR3b3Jrc2VydmljZXMudjEaH2dvb2dsZS9hcGkvZmllbGRfYmVo
+YXZpb3IucHJvdG8aGWdvb2dsZS9hcGkvcmVzb3VyY2UucHJvdG8aIGdvb2dsZS9wcm90b2J1
+Zi9maWVsZF9tYXNrLnByb3RvGh9nb29nbGUvcHJvdG9idWYvdGltZXN0YW1wLnByb3RvIq0S
+CgxBZ2VudEdhdGV3YXkSaQoOZ29vZ2xlX21hbmFnZWQYCCABKAsyOy5nb29nbGUuY2xvdWQu
+bmV0d29ya3NlcnZpY2VzLnYxLkFnZW50R2F0ZXdheS5Hb29nbGVNYW5hZ2VkQgPgQQFIAFIN
+Z29vZ2xlTWFuYWdlZBJjCgxzZWxmX21hbmFnZWQYCSABKAsyOS5nb29nbGUuY2xvdWQubmV0
+d29ya3NlcnZpY2VzLnYxLkFnZW50R2F0ZXdheS5TZWxmTWFuYWdlZEID4EEBSABSC3NlbGZN
+YW5hZ2VkEhcKBG5hbWUYASABKAlCA+BBCFIEbmFtZRJACgtjcmVhdGVfdGltZRgCIAEoCzIa
+Lmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXBCA+BBA1IKY3JlYXRlVGltZRJACgt1cGRhdGVf
+dGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXBCA+BBA1IKdXBkYXRlVGlt
+ZRJWCgZsYWJlbHMYBCADKAsyOS5nb29nbGUuY2xvdWQubmV0d29ya3NlcnZpY2VzLnYxLkFn
+ZW50R2F0ZXdheS5MYWJlbHNFbnRyeUID4EEBUgZsYWJlbHMSJQoLZGVzY3JpcHRpb24YBSAB
+KAlCA+BBAVILZGVzY3JpcHRpb24SFwoEZXRhZxgGIAEoCUID4EEBUgRldGFnElsKCXByb3Rv
+Y29scxgMIAMoDjI2Lmdvb2dsZS5jbG91ZC5uZXR3b3Jrc2VydmljZXMudjEuQWdlbnRHYXRl
+d2F5LlByb3RvY29sQgUYAeBBAVIJcHJvdG9jb2xzEiMKCnJlZ2lzdHJpZXMYDSADKAlCA+BB
+AVIKcmVnaXN0cmllcxJnCg5uZXR3b3JrX2NvbmZpZxgKIAEoCzI7Lmdvb2dsZS5jbG91ZC5u
+ZXR3b3Jrc2VydmljZXMudjEuQWdlbnRHYXRld2F5Lk5ldHdvcmtDb25maWdCA+BBAVINbmV0
+d29ya0NvbmZpZxJ3ChJhZ2VudF9nYXRld2F5X2NhcmQYCyABKAsyRC5nb29nbGUuY2xvdWQu
+bmV0d29ya3NlcnZpY2VzLnYxLkFnZW50R2F0ZXdheS5BZ2VudEdhdGV3YXlPdXRwdXRDYXJk
+QgPgQQNSEGFnZW50R2F0ZXdheUNhcmQa/wEKDUdvb2dsZU1hbmFnZWQShQEKFGdvdmVybmVk
+X2FjY2Vzc19wYXRoGAEgASgOMk4uZ29vZ2xlLmNsb3VkLm5ldHdvcmtzZXJ2aWNlcy52MS5B
+Z2VudEdhdGV3YXkuR29vZ2xlTWFuYWdlZC5Hb3Zlcm5lZEFjY2Vzc1BhdGhCA+BBAVISZ292
+ZXJuZWRBY2Nlc3NQYXRoImYKEkdvdmVybmVkQWNjZXNzUGF0aBIkCiBHT1ZFUk5FRF9BQ0NF
+U1NfUEFUSF9VTlNQRUNJRklFRBAAEhUKEUFHRU5UX1RPX0FOWVdIRVJFEAESEwoPQ0xJRU5U
+X1RPX0FHRU5UEAIaOwoLU2VsZk1hbmFnZWQSLAoMcmVzb3VyY2VfdXJpGAEgASgJQgngQQH6
+QQMKASpSC3Jlc291cmNlVXJpGpYFCg1OZXR3b3JrQ29uZmlnEl8KBmVncmVzcxgBIAEoCzJC
+Lmdvb2dsZS5jbG91ZC5uZXR3b3Jrc2VydmljZXMudjEuQWdlbnRHYXRld2F5Lk5ldHdvcmtD
+b25maWcuRWdyZXNzQgPgQQFSBmVncmVzcxJ/ChJkbnNfcGVlcmluZ19jb25maWcYAiABKAsy
+TC5nb29nbGUuY2xvdWQubmV0d29ya3NlcnZpY2VzLnYxLkFnZW50R2F0ZXdheS5OZXR3b3Jr
+Q29uZmlnLkRuc1BlZXJpbmdDb25maWdCA+BBAVIQZG5zUGVlcmluZ0NvbmZpZxrzAQoGRWdy
+ZXNzEjIKEm5ldHdvcmtfYXR0YWNobWVudBgBIAEoCUID4EEBUhFuZXR3b3JrQXR0YWNobWVu
+dBJ2Cgx0cnVzdF9jb25maWcYAiABKAsyTi5nb29nbGUuY2xvdWQubmV0d29ya3NlcnZpY2Vz
+LnYxLkFnZW50R2F0ZXdheS5OZXR3b3JrQ29uZmlnLkVncmVzcy5UcnVzdENvbmZpZ0ID4EEB
+Ugt0cnVzdENvbmZpZxo9CgtUcnVzdENvbmZpZxIuChBwZW1fY2VydGlmaWNhdGVzGAEgAygJ
+QgPgQQJSD3BlbUNlcnRpZmljYXRlcxqsAQoQRG5zUGVlcmluZ0NvbmZpZxIdCgdkb21haW5z
+GAEgAygJQgPgQQJSB2RvbWFpbnMSKgoOdGFyZ2V0X3Byb2plY3QYAiABKAlCA+BBAlINdGFy
+Z2V0UHJvamVjdBJNCg50YXJnZXRfbmV0d29yaxgDIAEoCUIm4EEC+kEgCh5jb21wdXRlLmdv
+b2dsZWFwaXMuY29tL05ldHdvcmtSDXRhcmdldE5ldHdvcmsaxgEKFkFnZW50R2F0ZXdheU91
+dHB1dENhcmQSKAoNbXRsc19lbmRwb2ludBgBIAEoCUID4EEDUgxtdGxzRW5kcG9pbnQSMAoR
+cm9vdF9jZXJ0aWZpY2F0ZXMYBSADKAlCA+BBA1IQcm9vdENlcnRpZmljYXRlcxJQCiJzZXJ2
+aWNlX2V4dGVuc2lvbnNfc2VydmljZV9hY2NvdW50GAQgASgJQgPgQQNSH3NlcnZpY2VFeHRl
+bnNpb25zU2VydmljZUFjY291bnQaOQoLTGFiZWxzRW50cnkSEAoDa2V5GAEgASgJUgNrZXkS
+FAoFdmFsdWUYAiABKAlSBXZhbHVlOgI4ASItCghQcm90b2NvbBIYChRQUk9UT0NPTF9VTlNQ
+RUNJRklFRBAAEgcKA01DUBABOpUB6kGRAQorbmV0d29ya3NlcnZpY2VzLmdvb2dsZWFwaXMu
+Y29tL0FnZW50R2F0ZXdheRJFcHJvamVjdHMve3Byb2plY3R9L2xvY2F0aW9ucy97bG9jYXRp
+b259L2FnZW50R2F0ZXdheXMve2FnZW50X2dhdGV3YXl9Kg1hZ2VudEdhdGV3YXlzMgxhZ2Vu
+dEdhdGV3YXlCEQoPZGVwbG95bWVudF9tb2RlIugBChhMaXN0QWdlbnRHYXRld2F5c1JlcXVl
+c3QSSwoGcGFyZW50GAEgASgJQjPgQQL6QS0SK25ldHdvcmtzZXJ2aWNlcy5nb29nbGVhcGlz
+LmNvbS9BZ2VudEdhdGV3YXlSBnBhcmVudBIgCglwYWdlX3NpemUYAiABKAVCA+BBAVIIcGFn
+ZVNpemUSIgoKcGFnZV90b2tlbhgDIAEoCUID4EEBUglwYWdlVG9rZW4SOQoWcmV0dXJuX3Bh
+cnRpYWxfc3VjY2VzcxgEIAEoCEID4EEBUhRyZXR1cm5QYXJ0aWFsU3VjY2VzcyK7AQoZTGlz
+dEFnZW50R2F0ZXdheXNSZXNwb25zZRJUCg5hZ2VudF9nYXRld2F5cxgBIAMoCzItLmdvb2ds
+ZS5jbG91ZC5uZXR3b3Jrc2VydmljZXMudjEuQWdlbnRHYXRld2F5Ug1hZ2VudEdhdGV3YXlz
+EiYKD25leHRfcGFnZV90b2tlbhgCIAEoCVINbmV4dFBhZ2VUb2tlbhIgCgt1bnJlYWNoYWJs
+ZRgDIAMoCVILdW5yZWFjaGFibGUiYQoWR2V0QWdlbnRHYXRld2F5UmVxdWVzdBJHCgRuYW1l
+GAEgASgJQjPgQQL6QS0KK25ldHdvcmtzZXJ2aWNlcy5nb29nbGVhcGlzLmNvbS9BZ2VudEdh
+dGV3YXlSBG5hbWUi8AEKGUNyZWF0ZUFnZW50R2F0ZXdheVJlcXVlc3QSSwoGcGFyZW50GAEg
+ASgJQjPgQQL6QS0SK25ldHdvcmtzZXJ2aWNlcy5nb29nbGVhcGlzLmNvbS9BZ2VudEdhdGV3
+YXlSBnBhcmVudBItChBhZ2VudF9nYXRld2F5X2lkGAIgASgJQgPgQQJSDmFnZW50R2F0ZXdh
+eUlkElcKDWFnZW50X2dhdGV3YXkYAyABKAsyLS5nb29nbGUuY2xvdWQubmV0d29ya3NlcnZp
+Y2VzLnYxLkFnZW50R2F0ZXdheUID4EECUgxhZ2VudEdhdGV3YXkitgEKGVVwZGF0ZUFnZW50
+R2F0ZXdheVJlcXVlc3QSQAoLdXBkYXRlX21hc2sYASABKAsyGi5nb29nbGUucHJvdG9idWYu
+RmllbGRNYXNrQgPgQQFSCnVwZGF0ZU1hc2sSVwoNYWdlbnRfZ2F0ZXdheRgCIAEoCzItLmdv
+b2dsZS5jbG91ZC5uZXR3b3Jrc2VydmljZXMudjEuQWdlbnRHYXRld2F5QgPgQQJSDGFnZW50
+R2F0ZXdheSJ9ChlEZWxldGVBZ2VudEdhdGV3YXlSZXF1ZXN0EkcKBG5hbWUYASABKAlCM+BB
+AvpBLQorbmV0d29ya3NlcnZpY2VzLmdvb2dsZWFwaXMuY29tL0FnZW50R2F0ZXdheVIEbmFt
+ZRIXCgRldGFnGAIgASgJQgPgQQFSBGV0YWdC8gEKI2NvbS5nb29nbGUuY2xvdWQubmV0d29y
+a3NlcnZpY2VzLnYxQhFBZ2VudEdhdGV3YXlQcm90b1ABWk1jbG91ZC5nb29nbGUuY29tL2dv
+L25ldHdvcmtzZXJ2aWNlcy9hcGl2MS9uZXR3b3Jrc2VydmljZXNwYjtuZXR3b3Jrc2Vydmlj
+ZXNwYqoCH0dvb2dsZS5DbG91ZC5OZXR3b3JrU2VydmljZXMuVjHKAh9Hb29nbGVcQ2xvdWRc
+TmV0d29ya1NlcnZpY2VzXFYx6gIiR29vZ2xlOjpDbG91ZDo6TmV0d29ya1NlcnZpY2VzOjpW
+MUqoVwoHEgUOAKoCAQq8BAoBDBIDDgASMrEEIENvcHlyaWdodCAyMDI2IEdvb2dsZSBMTEMK
+CiBMaWNlbnNlZCB1bmRlciB0aGUgQXBhY2hlIExpY2Vuc2UsIFZlcnNpb24gMi4wICh0aGUg
+IkxpY2Vuc2UiKTsKIHlvdSBtYXkgbm90IHVzZSB0aGlzIGZpbGUgZXhjZXB0IGluIGNvbXBs
+aWFuY2Ugd2l0aCB0aGUgTGljZW5zZS4KIFlvdSBtYXkgb2J0YWluIGEgY29weSBvZiB0aGUg
+TGljZW5zZSBhdAoKICAgICBodHRwOi8vd3d3LmFwYWNoZS5vcmcvbGljZW5zZXMvTElDRU5T
+RS0yLjAKCiBVbmxlc3MgcmVxdWlyZWQgYnkgYXBwbGljYWJsZSBsYXcgb3IgYWdyZWVkIHRv
+IGluIHdyaXRpbmcsIHNvZnR3YXJlCiBkaXN0cmlidXRlZCB1bmRlciB0aGUgTGljZW5zZSBp
+cyBkaXN0cmlidXRlZCBvbiBhbiAiQVMgSVMiIEJBU0lTLAogV0lUSE9VVCBXQVJSQU5USUVT
+IE9SIENPTkRJVElPTlMgT0YgQU5ZIEtJTkQsIGVpdGhlciBleHByZXNzIG9yIGltcGxpZWQu
+CiBTZWUgdGhlIExpY2Vuc2UgZm9yIHRoZSBzcGVjaWZpYyBsYW5ndWFnZSBnb3Zlcm5pbmcg
+cGVybWlzc2lvbnMgYW5kCiBsaW1pdGF0aW9ucyB1bmRlciB0aGUgTGljZW5zZS4KCggKAQIS
+AxAAKAoJCgIDABIDEgApCgkKAgMBEgMTACMKCQoCAwISAxQAKgoJCgIDAxIDFQApCggKAQgS
+AxcAPAoJCgIIJRIDFwA8CggKAQgSAxgAZAoJCgIICxIDGABkCggKAQgSAxkAIgoJCgIIChID
+GQAiCggKAQgSAxoAMgoJCgIICBIDGgAyCggKAQgSAxsAPAoJCgIIARIDGwA8CggKAQgSAxwA
+PAoJCgIIKRIDHAA8CggKAQgSAx0AOwoJCgIILRIDHQA7CkIKAgQAEgUgAMYBARo1IEFnZW50
+R2F0ZXdheSByZXByZXNlbnRzIHRoZSBhZ2VudCBnYXRld2F5IHJlc291cmNlLgoKCgoDBAAB
+EgMgCBQKCwoDBAAHEgQhAiYECg0KBQQAB50IEgQhAiYECogBCgQEAAMAEgQqAjoDGnogQ29u
+ZmlndXJhdGlvbiBmb3IgR29vZ2xlIE1hbmFnZWQgZGVwbG95bWVudCBtb2RlLgogUHJveHkg
+aXMgb3JjaGVzdHJhdGVkIGFuZCBtYW5hZ2VkIGJ5IEdvb2dsZUNsb3VkIGluIGEgdGVuYW50
+IHByb2plY3QuCgoMCgUEAAMAARIDKgoXCksKBgQAAwAEABIELAQ1BRo7IEdvdmVybmVkQWNj
+ZXNzUGF0aCBkZWZpbmVzIHRoZSB0eXBlIG9mIGFjY2VzcyB0byBwcm90ZWN0LgoKDgoHBAAD
+AAQAARIDLAkbCjkKCAQAAwAEAAIAEgMuBisaKCBHb3Zlcm5lZCBhY2Nlc3MgcGF0aCBpcyBu
+b3Qgc3BlY2lmaWVkLgoKEAoJBAADAAQAAgABEgMuBiYKEAoJBAADAAQAAgACEgMuKSoKOwoI
+BAADAAQAAgESAzEGHBoqIEdvdmVybiBhZ2VudCBjb25lY3Rpb25zIHRvIGRlc3RpbmF0aW9u
+cy4KChAKCQQAAwAEAAIBARIDMQYXChAKCQQAAwAEAAIBAhIDMRobCjcKCAQAAwAEAAICEgM0
+BhoaJiBQcm90ZWN0IGNvbm5lY3Rpb24gdG8gQWdlbnQgb3IgVG9vbC4KChAKCQQAAwAEAAIC
+ARIDNAYVChAKCQQAAwAEAAICAhIDNBgZCjwKBgQAAwACABIEOAQ5MRosIE9wdGlvbmFsLiBP
+cGVyYXRpbmcgTW9kZSBvZiBBZ2VudCBHYXRld2F5LgoKDgoHBAADAAIABhIDOAQWCg4KBwQA
+AwACAAESAzgXKwoOCgcEAAMAAgADEgM4Li8KDgoHBAADAAIACBIDOQgwChEKCgQAAwACAAic
+CAASAzkJLwqFAQoEBAADARIEPgJFAxp3IENvbmZpZ3VyYXRpb24gZm9yIFNlbGYgTWFuYWdl
+ZCBkZXBsb3ltZW50IG1vZGUuCiBBdHRhY2ggdG8gZXhpc3RpbmcgQXBwbGljYXRpb24gTG9h
+ZCBCYWxhbmNlcnMgb3IgU2VjdXJlIFdlYiBQcm94aWVzLgoKDAoFBAADAQESAz4KFQpiCgYE
+AAMBAgASBEEERAYaUiBPcHRpb25hbC4gQSBzdXBwb3J0ZWQgR29vZ2xlIENsb3VkIG5ldHdv
+cmtpbmcgcHJveHkgaW4gdGhlIFByb2plY3QgYW5kCiBMb2NhdGlvbgoKDgoHBAADAQIABRID
+QQQKCg4KBwQAAwECAAESA0ELFwoOCgcEAAMBAgADEgNBGhsKDwoHBAADAQIACBIEQRxEBQoR
+CgoEAAMBAgAInAgAEgNCBiwKEAoJBAADAQIACJ8IEgNDBjUKUwoEBAADAhIESAJ4AxpFIE5l
+dHdvcmtDb25maWcgY29udGFpbnMgbmV0d29yayBjb25maWd1cmF0aW9ucyBmb3IgdGhlIEFn
+ZW50R2F0ZXdheS4KCgwKBQQAAwIBEgNIChcKKgoGBAADAgMAEgRKBFgFGhogQ29uZmlndXJh
+dGlvbiBmb3IgRWdyZXNzCgoOCgcEAAMCAwABEgNKDBIKSwoIBAADAgMAAwASBEwGUQcaOSBU
+cnVzdENvbmZpZyBkZWZpbmVzIHRoZSB0cnVzdCBjb25maWd1cmF0aW9uIGZvciBlZ3Jlc3Mu
+CgoQCgkEAAMCAwADAAESA0wOGQqdAQoKBAADAgMAAwACABIETwhQNRqIASBSZXF1aXJlZC4g
+UEVNIGVuY29kZWQgcm9vdCBjZXJ0aWZpY2F0ZXMgdXNlZCB0byB2YWxpZGF0ZSB0aGUgaWRl
+bnRpdHkKIG9mIHRoZSB1cHN0cmVhbSBzZXJ2ZXJzL2Rlc3RpbmF0aW9ucyBkdXJpbmcgZWdy
+ZXNzIGNvbm5lY3Rpb25zLgoKEgoLBAADAgMAAwACAAQSA08IEAoSCgsEAAMCAwADAAIABRID
+TxEXChIKCwQAAwIDAAMAAgABEgNPGCgKEgoLBAADAgMAAwACAAMSA08rLAoSCgsEAAMCAwAD
+AAIACBIDUAw0ChUKDgQAAwIDAAMAAgAInAgAEgNQDTMKSAoIBAADAgMAAgASA1QGTRo3IE9w
+dGlvbmFsLiBUaGUgVVJJIG9mIHRoZSBOZXR3b3JrIEF0dGFjaG1lbnQgcmVzb3VyY2UuCgoQ
+CgkEAAMCAwACAAUSA1QGDAoQCgkEAAMCAwACAAESA1QNHwoQCgkEAAMCAwACAAMSA1QiIwoQ
+CgkEAAMCAwACAAgSA1QkTAoTCgwEAAMCAwACAAicCAASA1QlSwpUCggEAAMCAwACARIDVwZM
+GkMgT3B0aW9uYWwuIFRydXN0Q29uZmlnIGRlZmluZXMgdGhlIHRydXN0IGNvbmZpZ3VyYXRp
+b24gZm9yIGVncmVzcy4KChAKCQQAAwIDAAIBBhIDVwYRChAKCQQAAwIDAAIBARIDVxIeChAK
+CQQAAwIDAAIBAxIDVyEiChAKCQQAAwIDAAIBCBIDVyNLChMKDAQAAwIDAAIBCJwIABIDVyRK
+Cj4KBgQAAwIDARIEWwRuBRouIEROUyBwZWVyaW5nIGNvbmZpZyBmb3IgdGhlIHVzZXIgVlBD
+IG5ldHdvcmsuCgoOCgcEAAMCAwEBEgNbDBwKawoIBAADAgMBAgASA14GSxpaIFJlcXVpcmVk
+LiBEb21haW4gbmFtZXMgZm9yIHdoaWNoIEROUyBxdWVyaWVzIHNob3VsZCBiZSBmb3J3YXJk
+ZWQgdG8gdGhlCiB0YXJnZXQgbmV0d29yay4KChAKCQQAAwIDAQIABBIDXgYOChAKCQQAAwID
+AQIABRIDXg8VChAKCQQAAwIDAQIAARIDXhYdChAKCQQAAwIDAQIAAxIDXiAhChAKCQQAAwID
+AQIACBIDXiJKChMKDAQAAwIDAQIACJwIABIDXiNJCrIBCggEAAMCAwECARIDYwZJGqABIFJl
+cXVpcmVkLiBUYXJnZXQgcHJvamVjdCBJRCB0byB3aGljaCBETlMgcXVlcmllcyBzaG91bGQg
+YmUgZm9yd2FyZGVkCiB0by4gVGhpcyBjYW4gYmUgdGhlIHNhbWUgcHJvamVjdCB0aGF0IGNv
+bnRhaW5zIHRoZSBBZ2VudEdhdGV3YXkgb3IgYQogZGlmZmVyZW50IHByb2plY3QuCgoQCgkE
+AAMCAwECAQUSA2MGDAoQCgkEAAMCAwECAQESA2MNGwoQCgkEAAMCAwECAQMSA2MeHwoQCgkE
+AAMCAwECAQgSA2MgSAoTCgwEAAMCAwECAQicCAASA2MhRwq1AQoIBAADAgMBAgISBGgGbQga
+ogEgUmVxdWlyZWQuIFRhcmdldCBuZXR3b3JrIGluICd0YXJnZXQgcHJvamVjdCcgdG8gd2hp
+Y2ggRE5TIHF1ZXJpZXMKIHNob3VsZCBiZSBmb3J3YXJkZWQgdG8uIE11c3QgYmUgaW4gZm9y
+bWF0IG9mCiBgcHJvamVjdHMve3Byb2plY3R9L2dsb2JhbC9uZXR3b3Jrcy97bmV0d29ya31g
+LgoKEAoJBAADAgMBAgIFEgNoBgwKEAoJBAADAgMBAgIBEgNoDRsKEAoJBAADAgMBAgIDEgNo
+Hh8KEQoJBAADAgMBAgIIEgRoIG0HChMKDAQAAwIDAQICCJwIABIDaQguChMKCwQAAwIDAQIC
+CJ8IEgRqCGwJCnQKBgQAAwICABIDcgQ/GmUgT3B0aW9uYWwuIE9wdGlvbmFsIFBTQy1JbnRl
+cmZhY2UgbmV0d29yayBhdHRhY2htZW50IGZvciBjb25uZWN0aXZpdHkgdG8KIHlvdXIgcHJp
+dmF0ZSBWUENzIG5ldHdvcmsuCgoOCgcEAAMCAgAGEgNyBAoKDgoHBAADAgIAARIDcgsRCg4K
+BwQAAwICAAMSA3IUFQoOCgcEAAMCAgAIEgNyFj4KEQoKBAADAgIACJwIABIDchc9Cm0KBgQA
+AwICARIEdgR3MRpdIE9wdGlvbmFsLiBPcHRpb25hbCBETlMgcGVlcmluZyBjb25maWd1cmF0
+aW9uIGZvciBjb25uZWN0aXZpdHkgdG8geW91cgogcHJpdmF0ZSBWUEMgbmV0d29yay4KCg4K
+BwQAAwICAQYSA3YEFAoOCgcEAAMCAgEBEgN2FScKDgoHBAADAgIBAxIDdiorCg4KBwQAAwIC
+AQgSA3cIMAoRCgoEAAMCAgEInAgAEgN3CS8KUQoEBAADAxIFewKGAQMaQiBBZ2VudEdhdGV3
+YXlPdXRwdXRDYXJkIGNvbnRhaW5zIGluZm9ybWF0aW9uYWwgb3V0cHV0LW9ubHkgZmllbGRz
+CgoMCgUEAAMDARIDewogCk0KBgQAAwMCABIDfQRJGj4gT3V0cHV0IG9ubHkuIG1UTFMgRW5k
+cG9pbnQgYXNzb2NpYXRlZCB3aXRoIHRoaXMgQWdlbnRHYXRld2F5CgoOCgcEAAMDAgAFEgN9
+BAoKDgoHBAADAwIAARIDfQsYCg4KBwQAAwMCAAMSA30bHAoOCgcEAAMDAgAIEgN9HUgKEQoK
+BAADAwIACJwIABIDfR5HClsKBgQAAwMCARIGgAEEgQE0GkkgT3V0cHV0IG9ubHkuIFJvb3Qg
+Q2VydGlmaWNhdGVzIGZvciBBZ2VudHMgdG8gdmFsaWRhdGUgdGhpcyBBZ2VudEdhdGV3YXkK
+Cg8KBwQAAwMCAQQSBIABBAwKDwoHBAADAwIBBRIEgAENEwoPCgcEAAMDAgEBEgSAARQlCg8K
+BwQAAwMCAQMSBIABKCkKDwoHBAADAwIBCBIEgQEIMwoSCgoEAAMDAgEInAgAEgSBAQkyClcK
+BgQAAwMCAhIGhAEEhQE0GkUgT3V0cHV0IG9ubHkuIFNlcnZpY2UgQWNjb3VudCB1c2VkIGJ5
+IFNlcnZpY2UgRXh0ZW5zaW9ucyB0byBvcGVyYXRlLgoKDwoHBAADAwICBRIEhAEECgoPCgcE
+AAMDAgIBEgSEAQstCg8KBwQAAwMCAgMSBIQBMDEKDwoHBAADAwICCBIEhQEIMwoSCgoEAAMD
+AgIInAgAEgSFAQkyCjIKBAQABAASBokBAo8BAxoiIEVudW1zIG9mIGFsbCBzdXBwb3J0ZWQg
+cHJvdG9jb2xzCgoNCgUEAAQAARIEiQEHDwonCgYEAAQAAgASBIsBBB0aFyBVbnNwZWNpZmll
+ZCBwcm90b2NvbC4KCg8KBwQABAACAAESBIsBBBgKDwoHBAAEAAIAAhIEiwEbHAoxCgYEAAQA
+AgESBI4BBAwaISBNZXNzYWdlIENvbnRyb2wgUGxhbmUgcHJvdG9jb2wuCgoPCgcEAAQAAgEB
+EgSOAQQHCg8KBwQABAACAQISBI4BCgsKbwoEBAAIABIGkwECmwEDGl8gRGVwbG95bWVudCBt
+b2RlIG9mIHRoZSBuZXR3b3JrIHByb3h5LiBFeGFjdGx5IG9uZSBvZiB0aGUgZmllbGRzIGlu
+IHRoaXMKIGBvbmVvZmAgbXVzdCBiZSBzZXQuCgoNCgUEAAgAARIEkwEIFwpgCgQEAAIAEgSW
+AQROGlIgT3B0aW9uYWwuIFByb3h5IGlzIG9yY2hlc3RyYXRlZCBhbmQgbWFuYWdlZCBieSBH
+b29nbGVDbG91ZCBpbiBhIHRlbmFudAogcHJvamVjdC4KCg0KBQQAAgAGEgSWAQQRCg0KBQQA
+AgABEgSWARIgCg0KBQQAAgADEgSWASMkCg0KBQQAAgAIEgSWASVNChAKCAQAAgAInAgAEgSW
+ASZMCl8KBAQAAgESBJoBBEoaUSBPcHRpb25hbC4gQXR0YWNoIHRvIGV4aXN0aW5nIEFwcGxp
+Y2F0aW9uIExvYWQgQmFsYW5jZXJzIG9yIFNlY3VyZSBXZWIKIFByb3hpZXMuCgoNCgUEAAIB
+BhIEmgEEDwoNCgUEAAIBARIEmgEQHAoNCgUEAAIBAxIEmgEfIAoNCgUEAAIBCBIEmgEhSQoQ
+CggEAAIBCJwIABIEmgEiSAqKAQoEBAACAhIEnwECPRp8IElkZW50aWZpZXIuIE5hbWUgb2Yg
+dGhlIEFnZW50R2F0ZXdheSByZXNvdXJjZS4gSXQgbWF0Y2hlcyBwYXR0ZXJuCiBgcHJvamVj
+dHMvKi9sb2NhdGlvbnMvKi9hZ2VudEdhdGV3YXlzLzxhZ2VudF9nYXRld2F5PmAuCgoNCgUE
+AAICBRIEnwECCAoNCgUEAAICARIEnwEJDQoNCgUEAAICAxIEnwEQEQoNCgUEAAICCBIEnwES
+PAoQCggEAAICCJwIABIEnwETOwpLCgQEAAIDEgaiAQKjATIaOyBPdXRwdXQgb25seS4gVGhl
+IHRpbWVzdGFtcCB3aGVuIHRoZSByZXNvdXJjZSB3YXMgY3JlYXRlZC4KCg0KBQQAAgMGEgSi
+AQIbCg0KBQQAAgMBEgSiARwnCg0KBQQAAgMDEgSiASorCg0KBQQAAgMIEgSjAQYxChAKCAQA
+AgMInAgAEgSjAQcwCksKBAQAAgQSBqYBAqcBMho7IE91dHB1dCBvbmx5LiBUaGUgdGltZXN0
+YW1wIHdoZW4gdGhlIHJlc291cmNlIHdhcyB1cGRhdGVkLgoKDQoFBAACBAYSBKYBAhsKDQoF
+BAACBAESBKYBHCcKDQoFBAACBAMSBKYBKisKDQoFBAACBAgSBKcBBjEKEAoIBAACBAicCAAS
+BKcBBzAKVgoEBAACBRIEqgECShpIIE9wdGlvbmFsLiBTZXQgb2YgbGFiZWwgdGFncyBhc3Nv
+Y2lhdGVkIHdpdGggdGhlIEFnZW50R2F0ZXdheSByZXNvdXJjZS4KCg0KBQQAAgUGEgSqAQIV
+Cg0KBQQAAgUBEgSqARYcCg0KBQQAAgUDEgSqAR8gCg0KBQQAAgUIEgSqASFJChAKCAQAAgUI
+nAgAEgSqASJICl8KBAQAAgYSBK4BAkIaUSBPcHRpb25hbC4gQSBmcmVlLXRleHQgZGVzY3Jp
+cHRpb24gb2YgdGhlIHJlc291cmNlLiBNYXggbGVuZ3RoIDEwMjQKIGNoYXJhY3RlcnMuCgoN
+CgUEAAIGBRIErgECCAoNCgUEAAIGARIErgEJFAoNCgUEAAIGAxIErgEXGAoNCgUEAAIGCBIE
+rgEZQQoQCggEAAIGCJwIABIErgEaQArQAQoEBAACBxIEtAECOxrBASBPcHRpb25hbC4gRXRh
+ZyBvZiB0aGUgcmVzb3VyY2UuCiBJZiB0aGlzIGlzIHByb3ZpZGVkLCBpdCBtdXN0IG1hdGNo
+IHRoZSBzZXJ2ZXIncyBldGFnLiBJZiB0aGUgcHJvdmlkZWQgZXRhZwogZG9lcyBub3QgbWF0
+Y2ggdGhlIHNlcnZlcidzIGV0YWcsIHRoZSByZXF1ZXN0IHdpbGwgZmFpbCB3aXRoIGEgNDA5
+IEFCT1JURUQKIGVycm9yLgoKDQoFBAACBwUSBLQBAggKDQoFBAACBwESBLQBCQ0KDQoFBAAC
+BwMSBLQBEBEKDQoFBAACBwgSBLQBEjoKEAoIBAACBwicCAASBLQBEzkKJwoEBAACCBIGtwEC
+uAFCGhcgT3B0aW9uYWwuIERlcHJlY2F0ZWQuCgoNCgUEAAIIBBIEtwECCgoNCgUEAAIIBhIE
+twELEwoNCgUEAAIIARIEtwEUHQoNCgUEAAIIAxIEtwEgIgoNCgUEAAIICBIEuAEGQQoOCgYE
+AAIICAMSBLgBBxgKEAoIBAACCAicCAASBLgBGkAKlQIKBAQAAgkSBL4BAksahgIgT3B0aW9u
+YWwuIEEgbGlzdCBvZiBBZ2VudCByZWdpc3RyaWVzIGNvbnRhaW5pbmcgdGhlIGFnZW50cywg
+TUNQIHNlcnZlcnMgYW5kCiB0b29scyBnb3Zlcm5lZCBieSB0aGUgQWdlbnQgR2F0ZXdheS4g
+Tm90ZTogQ3VycmVudGx5IGxpbWl0ZWQgdG8KIHByb2plY3Qtc2NvcGVkIHJlZ2lzdHJpZXMg
+TXVzdCBiZSBvZiBmb3JtYXQKIGAvL2FnZW50cmVnaXN0cnkuZ29vZ2xlYXBpcy5jb20vcHJv
+amVjdHMve3Byb2plY3R9L2xvY2F0aW9ucy97bG9jYXRpb259L2AKCg0KBQQAAgkEEgS+AQIK
+Cg0KBQQAAgkFEgS+AQsRCg0KBQQAAgkBEgS+ARIcCg0KBQQAAgkDEgS+AR8hCg0KBQQAAgkI
+EgS+ASJKChAKCAQAAgkInAgAEgS+ASNJCkUKBAQAAgoSBMEBAk0aNyBPcHRpb25hbC4gTmV0
+d29yayBjb25maWd1cmF0aW9uIGZvciB0aGUgQWdlbnRHYXRld2F5LgoKDQoFBAACCgYSBMEB
+Ag8KDQoFBAACCgESBMEBEB4KDQoFBAACCgMSBMEBISMKDQoFBAACCggSBMEBJEwKEAoIBAAC
+CgicCAASBMEBJUsKRQoEBAACCxIGxAECxQEyGjUgT3V0cHV0IG9ubHkuIEZpZWxkIGZvciBw
+b3B1bGF0ZWQgQWdlbnRHYXRld2F5IGNhcmQuCgoNCgUEAAILBhIExAECGAoNCgUEAAILARIE
+xAEZKwoNCgUEAAILAxIExAEuMAoNCgUEAAILCBIExQEGMQoQCggEAAILCJwIABIExQEHMAo/
+CgIEARIGyQEA3wEBGjEgUmVxdWVzdCB1c2VkIHdpdGggdGhlIExpc3RBZ2VudEdhdGV3YXlz
+IG1ldGhvZC4KCgsKAwQBARIEyQEIIAqXAQoEBAECABIGzAEC0QEEGoYBIFJlcXVpcmVkLiBU
+aGUgcHJvamVjdCBhbmQgbG9jYXRpb24gZnJvbSB3aGljaCB0aGUgQWdlbnRHYXRld2F5cyBz
+aG91bGQgYmUKIGxpc3RlZCwgc3BlY2lmaWVkIGluIHRoZSBmb3JtYXQgYHByb2plY3RzLyov
+bG9jYXRpb25zLypgLgoKDQoFBAECAAUSBMwBAggKDQoFBAECAAESBMwBCQ8KDQoFBAECAAMS
+BMwBEhMKDwoFBAECAAgSBswBFNEBAwoQCggEAQIACJwIABIEzQEEKgoRCgcEAQIACJ8IEgbO
+AQTQAQUKTQoEBAECARIE1AECPxo/IE9wdGlvbmFsLiBNYXhpbXVtIG51bWJlciBvZiBBZ2Vu
+dEdhdGV3YXlzIHRvIHJldHVybiBwZXIgY2FsbC4KCg0KBQQBAgEFEgTUAQIHCg0KBQQBAgEB
+EgTUAQgRCg0KBQQBAgEDEgTUARQVCg0KBQQBAgEIEgTUARY+ChAKCAQBAgEInAgAEgTUARc9
+CtsBCgQEAQICEgTZAQJBGswBIE9wdGlvbmFsLiBUaGUgdmFsdWUgcmV0dXJuZWQgYnkgdGhl
+IGxhc3QgYExpc3RBZ2VudEdhdGV3YXlzUmVzcG9uc2VgCiBJbmRpY2F0ZXMgdGhhdCB0aGlz
+IGlzIGEgY29udGludWF0aW9uIG9mIGEgcHJpb3IgYExpc3RBZ2VudEdhdGV3YXlzYAogY2Fs
+bCwgYW5kIHRoYXQgdGhlIHN5c3RlbSBzaG91bGQgcmV0dXJuIHRoZSBuZXh0IHBhZ2Ugb2Yg
+ZGF0YS4KCg0KBQQBAgIFEgTZAQIICg0KBQQBAgIBEgTZAQkTCg0KBQQBAgIDEgTZARYXCg0K
+BQQBAgIIEgTZARhAChAKCAQBAgIInAgAEgTZARk/CssBCgQEAQIDEgTeAQJLGrwBIE9wdGlv
+bmFsLiBJZiB0cnVlLCBhbGxvdyBwYXJ0aWFsIHJlc3BvbnNlcyBmb3IgbXVsdGktcmVnaW9u
+YWwgQWdncmVnYXRlZAogTGlzdCByZXF1ZXN0cy4gT3RoZXJ3aXNlIGlmIG9uZSBvZiB0aGUg
+bG9jYXRpb25zIGlzIGRvd24gb3IgdW5yZWFjaGFibGUsCiB0aGUgQWdncmVnYXRlZCBMaXN0
+IHJlcXVlc3Qgd2lsbCBmYWlsLgoKDQoFBAECAwUSBN4BAgYKDQoFBAECAwESBN4BBx0KDQoF
+BAECAwMSBN4BICEKDQoFBAECAwgSBN4BIkoKEAoIBAECAwicCAASBN4BI0kKQgoCBAISBuIB
+AO8BARo0IFJlc3BvbnNlIHJldHVybmVkIGJ5IHRoZSBMaXN0QWdlbnRHYXRld2F5cyBtZXRo
+b2QuCgoLCgMEAgESBOIBCCEKLwoEBAICABIE5AECKxohIExpc3Qgb2YgQWdlbnRHYXRld2F5
+IHJlc291cmNlcy4KCg0KBQQCAgAEEgTkAQIKCg0KBQQCAgAGEgTkAQsXCg0KBQQCAgABEgTk
+ARgmCg0KBQQCAgADEgTkASkqCukBCgQEAgIBEgTpAQIdGtoBIElmIHRoZXJlIG1pZ2h0IGJl
+IG1vcmUgcmVzdWx0cyB0aGFuIHRob3NlIGFwcGVhcmluZyBpbiB0aGlzIHJlc3BvbnNlLCB0
+aGVuCiBgbmV4dF9wYWdlX3Rva2VuYCBpcyBpbmNsdWRlZC4gVG8gZ2V0IHRoZSBuZXh0IHNl
+dCBvZiByZXN1bHRzLCBjYWxsIHRoaXMKIG1ldGhvZCBhZ2FpbiB1c2luZyB0aGUgdmFsdWUg
+b2YgYG5leHRfcGFnZV90b2tlbmAgYXMgYHBhZ2VfdG9rZW5gLgoKDQoFBAICAQUSBOkBAggK
+DQoFBAICAQESBOkBCRgKDQoFBAICAQMSBOkBGxwKtQEKBAQCAgISBO4BAiIapgEgVW5yZWFj
+aGFibGUgcmVzb3VyY2VzLiBQb3B1bGF0ZWQgd2hlbiB0aGUgcmVxdWVzdCBhdHRlbXB0cyB0
+byBsaXN0IGFsbAogcmVzb3VyY2VzIGFjcm9zcyBhbGwgc3VwcG9ydGVkIGxvY2F0aW9ucywg
+d2hpbGUgc29tZSBsb2NhdGlvbnMgYXJlCiB0ZW1wb3JhcmlseSB1bmF2YWlsYWJsZS4KCg0K
+BQQCAgIEEgTuAQIKCg0KBQQCAgIFEgTuAQsRCg0KBQQCAgIBEgTuARIdCg0KBQQCAgIDEgTu
+ASAhCjsKAgQDEgbyAQD7AQEaLSBSZXF1ZXN0IHVzZWQgYnkgdGhlIEdldEFnZW50R2F0ZXdh
+eSBtZXRob2QuCgoLCgMEAwESBPIBCB4KfwoEBAMCABIG9QEC+gEEGm8gUmVxdWlyZWQuIEEg
+bmFtZSBvZiB0aGUgQWdlbnRHYXRld2F5IHRvIGdldC4gTXVzdCBiZSBpbiB0aGUgZm9ybWF0
+CiBgcHJvamVjdHMvKi9sb2NhdGlvbnMvKi9hZ2VudEdhdGV3YXlzLypgLgoKDQoFBAMCAAUS
+BPUBAggKDQoFBAMCAAESBPUBCQ0KDQoFBAMCAAMSBPUBEBEKDwoFBAMCAAgSBvUBEvoBAwoQ
+CggEAwIACJwIABIE9gEEKgoRCgcEAwIACJ8IEgb3AQT5AQUKPgoCBAQSBv4BAI0CARowIFJl
+cXVlc3QgdXNlZCBieSB0aGUgQ3JlYXRlQWdlbnRHYXRld2F5IG1ldGhvZC4KCgsKAwQEARIE
+/gEIIQp1CgQEBAIAEgaBAgKGAgQaZSBSZXF1aXJlZC4gVGhlIHBhcmVudCByZXNvdXJjZSBv
+ZiB0aGUgQWdlbnRHYXRld2F5LiBNdXN0IGJlIGluIHRoZQogZm9ybWF0IGBwcm9qZWN0cy8q
+L2xvY2F0aW9ucy8qYC4KCg0KBQQEAgAFEgSBAgIICg0KBQQEAgABEgSBAgkPCg0KBQQEAgAD
+EgSBAhITCg8KBQQEAgAIEgaBAhSGAgMKEAoIBAQCAAicCAASBIICBCoKEQoHBAQCAAifCBIG
+gwIEhQIFClAKBAQEAgESBIkCAkcaQiBSZXF1aXJlZC4gU2hvcnQgbmFtZSBvZiB0aGUgQWdl
+bnRHYXRld2F5IHJlc291cmNlIHRvIGJlIGNyZWF0ZWQuCgoNCgUEBAIBBRIEiQICCAoNCgUE
+BAIBARIEiQIJGQoNCgUEBAIBAxIEiQIcHQoNCgUEBAIBCBIEiQIeRgoQCggEBAIBCJwIABIE
+iQIfRQo+CgQEBAICEgSMAgJKGjAgUmVxdWlyZWQuIEFnZW50R2F0ZXdheSByZXNvdXJjZSB0
+byBiZSBjcmVhdGVkLgoKDQoFBAQCAgYSBIwCAg4KDQoFBAQCAgESBIwCDxwKDQoFBAQCAgMS
+BIwCHyAKDQoFBAQCAggSBIwCIUkKEAoIBAQCAgicCAASBIwCIkgKPgoCBAUSBpACAJsCARow
+IFJlcXVlc3QgdXNlZCBieSB0aGUgVXBkYXRlQWdlbnRHYXRld2F5IG1ldGhvZC4KCgsKAwQF
+ARIEkAIIIQreAgoEBAUCABIGlgIClwIvGs0CIE9wdGlvbmFsLiBGaWVsZCBtYXNrIGlzIHVz
+ZWQgdG8gc3BlY2lmeSB0aGUgZmllbGRzIHRvIGJlIG92ZXJ3cml0dGVuIGluIHRoZQogQWdl
+bnRHYXRld2F5IHJlc291cmNlIGJ5IHRoZSB1cGRhdGUuCiBUaGUgZmllbGRzIHNwZWNpZmll
+ZCBpbiB0aGUgdXBkYXRlX21hc2sgYXJlIHJlbGF0aXZlIHRvIHRoZSByZXNvdXJjZSwgbm90
+CiB0aGUgZnVsbCByZXF1ZXN0LiBBIGZpZWxkIHdpbGwgYmUgb3ZlcndyaXR0ZW4gaWYgaXQg
+aXMgaW4gdGhlIG1hc2suIElmIHRoZQogdXNlciBkb2VzIG5vdCBwcm92aWRlIGEgbWFzayB0
+aGVuIGFsbCBmaWVsZHMgd2lsbCBiZSBvdmVyd3JpdHRlbi4KCg0KBQQFAgAGEgSWAgIbCg0K
+BQQFAgABEgSWAhwnCg0KBQQFAgADEgSWAiorCg0KBQQFAgAIEgSXAgYuChAKCAQFAgAInAgA
+EgSXAgctCjgKBAQFAgESBJoCAkoaKiBSZXF1aXJlZC4gVXBkYXRlZCBBZ2VudEdhdGV3YXkg
+cmVzb3VyY2UuCgoNCgUEBQIBBhIEmgICDgoNCgUEBQIBARIEmgIPHAoNCgUEBQIBAxIEmgIf
+IAoNCgUEBQIBCBIEmgIhSQoQCggEBQIBCJwIABIEmgIiSAo+CgIEBhIGngIAqgIBGjAgUmVx
+dWVzdCB1c2VkIGJ5IHRoZSBEZWxldGVBZ2VudEdhdGV3YXkgbWV0aG9kLgoKCwoDBAYBEgSe
+AgghCoIBCgQEBgIAEgahAgKmAgQaciBSZXF1aXJlZC4gQSBuYW1lIG9mIHRoZSBBZ2VudEdh
+dGV3YXkgdG8gZGVsZXRlLiBNdXN0IGJlIGluIHRoZSBmb3JtYXQKIGBwcm9qZWN0cy8qL2xv
+Y2F0aW9ucy8qL2FnZW50R2F0ZXdheXMvKmAuCgoNCgUEBgIABRIEoQICCAoNCgUEBgIAARIE
+oQIJDQoNCgUEBgIAAxIEoQIQEQoPCgUEBgIACBIGoQISpgIDChAKCAQGAgAInAgAEgSiAgQq
+ChEKBwQGAgAInwgSBqMCBKUCBQpBCgQEBgIBEgSpAgI7GjMgT3B0aW9uYWwuIFRoZSBldGFn
+IG9mIHRoZSBBZ2VudEdhdGV3YXkgdG8gZGVsZXRlLgoKDQoFBAYCAQUSBKkCAggKDQoFBAYC
+AQESBKkCCQ0KDQoFBAYCAQMSBKkCEBEKDQoFBAYCAQgSBKkCEjoKEAoIBAYCAQicCAASBKkC
+EzliBnByb3RvMw==
+EOF
+    Protobuf::DescriptorPool->generated_pool->add_serialized_file(MIME::Base64::decode_base64($descriptor_b64));
+}
+
+# Message definitions
+
+# === Message: Google::Cloud::Networkservices::V1::AgentGateway::AgentGateway ===
+    # Fields for AgentGateway
+    # Field: google_managed Type: 11 (.google.cloud.networkservices.v1.AgentGateway.GoogleManaged)
+    # Field: self_managed Type: 11 (.google.cloud.networkservices.v1.AgentGateway.SelfManaged)
+    # Field: name Type: 9 ()
+    # Field: create_time Type: 11 (.google.protobuf.Timestamp)
+    # Field: update_time Type: 11 (.google.protobuf.Timestamp)
+    # Field: labels Type: 11 (.google.cloud.networkservices.v1.AgentGateway.LabelsEntry)
+    # Field: description Type: 9 ()
+    # Field: etag Type: 9 ()
+    # Field: protocols Type: 14 (.google.cloud.networkservices.v1.AgentGateway.Protocol)
+    # Field: registries Type: 9 ()
+    # Field: network_config Type: 11 (.google.cloud.networkservices.v1.AgentGateway.NetworkConfig)
+    # Field: agent_gateway_card Type: 11 (.google.cloud.networkservices.v1.AgentGateway.AgentGatewayOutputCard)
+
+=pod
+
+=head1 NAME
+
+Google::Cloud::Networkservices::V1::AgentGateway::AgentGateway - Compiled Protocol Buffers message class
+
+=head1 SYNOPSIS
+
+    use Google::Cloud::Networkservices::V1::AgentGateway;
+
+    my $msg = Google::Cloud::Networkservices::V1::AgentGateway::AgentGateway->new(
+        google_managed => $value,
+    );
+
+=head1 FIELDS
+
+=over 4
+
+=item * B<google_managed>
+
+Type: Message (.google.cloud.networkservices.v1.AgentGateway.GoogleManaged)
+
+=item * B<self_managed>
+
+Type: Message (.google.cloud.networkservices.v1.AgentGateway.SelfManaged)
+
+=item * B<name>
+
+Type: String
+
+=item * B<create_time>
+
+Type: Message (.google.protobuf.Timestamp)
+
+=item * B<update_time>
+
+Type: Message (.google.protobuf.Timestamp)
+
+=item * B<labels>
+
+Type: Message (.google.cloud.networkservices.v1.AgentGateway.LabelsEntry)
+
+=item * B<description>
+
+Type: String
+
+=item * B<etag>
+
+Type: String
+
+=item * B<protocols>
+
+Type: Enum (.google.cloud.networkservices.v1.AgentGateway.Protocol)
+
+=item * B<registries>
+
+Type: String
+
+=item * B<network_config>
+
+Type: Message (.google.cloud.networkservices.v1.AgentGateway.NetworkConfig)
+
+=item * B<agent_gateway_card>
+
+Type: Message (.google.cloud.networkservices.v1.AgentGateway.AgentGatewayOutputCard)
+
+=back
+
+=cut
+
+# Enum: AgentGateway::Protocol
+our $AgentGateway_PROTOCOL_UNSPECIFIED = 0;
+our $AgentGateway_MCP = 1;
+
+=pod
+
+=head2 Enum: AgentGateway::Protocol
+
+Values:
+
+=over 4
+
+=item * C<PROTOCOL_UNSPECIFIED> => 0
+
+=item * C<MCP> => 1
+
+=back
+
+=cut
+
+# === Message: Google::Cloud::Networkservices::V1::AgentGateway::ListAgentGatewaysRequest ===
+    # Fields for ListAgentGatewaysRequest
+    # Field: parent Type: 9 ()
+    # Field: page_size Type: 5 ()
+    # Field: page_token Type: 9 ()
+    # Field: return_partial_success Type: 8 ()
+
+=pod
+
+=head1 NAME
+
+Google::Cloud::Networkservices::V1::AgentGateway::ListAgentGatewaysRequest - Compiled Protocol Buffers message class
+
+=head1 SYNOPSIS
+
+    use Google::Cloud::Networkservices::V1::AgentGateway;
+
+    my $msg = Google::Cloud::Networkservices::V1::AgentGateway::ListAgentGatewaysRequest->new(
+        parent => $value,
+    );
+
+=head1 FIELDS
+
+=over 4
+
+=item * B<parent>
+
+Type: String
+
+=item * B<page_size>
+
+Type: Int32
+
+=item * B<page_token>
+
+Type: String
+
+=item * B<return_partial_success>
+
+Type: Bool
+
+=back
+
+=cut
+
+# === Message: Google::Cloud::Networkservices::V1::AgentGateway::ListAgentGatewaysResponse ===
+    # Fields for ListAgentGatewaysResponse
+    # Field: agent_gateways Type: 11 (.google.cloud.networkservices.v1.AgentGateway)
+    # Field: next_page_token Type: 9 ()
+    # Field: unreachable Type: 9 ()
+
+=pod
+
+=head1 NAME
+
+Google::Cloud::Networkservices::V1::AgentGateway::ListAgentGatewaysResponse - Compiled Protocol Buffers message class
+
+=head1 SYNOPSIS
+
+    use Google::Cloud::Networkservices::V1::AgentGateway;
+
+    my $msg = Google::Cloud::Networkservices::V1::AgentGateway::ListAgentGatewaysResponse->new(
+        agent_gateways => $value,
+    );
+
+=head1 FIELDS
+
+=over 4
+
+=item * B<agent_gateways>
+
+Type: Message (.google.cloud.networkservices.v1.AgentGateway)
+
+=item * B<next_page_token>
+
+Type: String
+
+=item * B<unreachable>
+
+Type: String
+
+=back
+
+=cut
+
+# === Message: Google::Cloud::Networkservices::V1::AgentGateway::GetAgentGatewayRequest ===
+    # Fields for GetAgentGatewayRequest
+    # Field: name Type: 9 ()
+
+=pod
+
+=head1 NAME
+
+Google::Cloud::Networkservices::V1::AgentGateway::GetAgentGatewayRequest - Compiled Protocol Buffers message class
+
+=head1 SYNOPSIS
+
+    use Google::Cloud::Networkservices::V1::AgentGateway;
+
+    my $msg = Google::Cloud::Networkservices::V1::AgentGateway::GetAgentGatewayRequest->new(
+        name => $value,
+    );
+
+=head1 FIELDS
+
+=over 4
+
+=item * B<name>
+
+Type: String
+
+=back
+
+=cut
+
+# === Message: Google::Cloud::Networkservices::V1::AgentGateway::CreateAgentGatewayRequest ===
+    # Fields for CreateAgentGatewayRequest
+    # Field: parent Type: 9 ()
+    # Field: agent_gateway_id Type: 9 ()
+    # Field: agent_gateway Type: 11 (.google.cloud.networkservices.v1.AgentGateway)
+
+=pod
+
+=head1 NAME
+
+Google::Cloud::Networkservices::V1::AgentGateway::CreateAgentGatewayRequest - Compiled Protocol Buffers message class
+
+=head1 SYNOPSIS
+
+    use Google::Cloud::Networkservices::V1::AgentGateway;
+
+    my $msg = Google::Cloud::Networkservices::V1::AgentGateway::CreateAgentGatewayRequest->new(
+        parent => $value,
+    );
+
+=head1 FIELDS
+
+=over 4
+
+=item * B<parent>
+
+Type: String
+
+=item * B<agent_gateway_id>
+
+Type: String
+
+=item * B<agent_gateway>
+
+Type: Message (.google.cloud.networkservices.v1.AgentGateway)
+
+=back
+
+=cut
+
+# === Message: Google::Cloud::Networkservices::V1::AgentGateway::UpdateAgentGatewayRequest ===
+    # Fields for UpdateAgentGatewayRequest
+    # Field: update_mask Type: 11 (.google.protobuf.FieldMask)
+    # Field: agent_gateway Type: 11 (.google.cloud.networkservices.v1.AgentGateway)
+
+=pod
+
+=head1 NAME
+
+Google::Cloud::Networkservices::V1::AgentGateway::UpdateAgentGatewayRequest - Compiled Protocol Buffers message class
+
+=head1 SYNOPSIS
+
+    use Google::Cloud::Networkservices::V1::AgentGateway;
+
+    my $msg = Google::Cloud::Networkservices::V1::AgentGateway::UpdateAgentGatewayRequest->new(
+        update_mask => $value,
+    );
+
+=head1 FIELDS
+
+=over 4
+
+=item * B<update_mask>
+
+Type: Message (.google.protobuf.FieldMask)
+
+=item * B<agent_gateway>
+
+Type: Message (.google.cloud.networkservices.v1.AgentGateway)
+
+=back
+
+=cut
+
+# === Message: Google::Cloud::Networkservices::V1::AgentGateway::DeleteAgentGatewayRequest ===
+    # Fields for DeleteAgentGatewayRequest
+    # Field: name Type: 9 ()
+    # Field: etag Type: 9 ()
+
+=pod
+
+=head1 NAME
+
+Google::Cloud::Networkservices::V1::AgentGateway::DeleteAgentGatewayRequest - Compiled Protocol Buffers message class
+
+=head1 SYNOPSIS
+
+    use Google::Cloud::Networkservices::V1::AgentGateway;
+
+    my $msg = Google::Cloud::Networkservices::V1::AgentGateway::DeleteAgentGatewayRequest->new(
+        name => $value,
+    );
+
+=head1 FIELDS
+
+=over 4
+
+=item * B<name>
+
+Type: String
+
+=item * B<etag>
+
+Type: String
+
+=back
+
+=cut
+
+1;
+
+__END__
+
+=head1 NAME
+
+Google::Cloud::Networkservices::V1::AgentGateway - Protocol Buffers schema definition
+
+=head1 DESCRIPTION
+
+Auto-generated Protocol Buffers schema definition class.
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (C) 2026 Google LLC
+
+This program is released under the Apache 2.0 license.
+
+=cut

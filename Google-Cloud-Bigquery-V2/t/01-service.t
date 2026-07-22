@@ -19,8 +19,9 @@ sub get_token {
 package Google::gRPC::Client;
 BEGIN { $INC{'Google/gRPC/Client.pm'} = 1; }
 sub new {
-    my ($class, %args) = @_;
-    return bless \%args, $class;
+    my $class = shift;
+    my $args = ( @_ == 1 && ref($_[0]) eq 'HASH' ) ? $_[0] : { @_ };
+    return bless $args, $class;
 }
 sub call {
     my ($self, $args) = @_;
@@ -32,130 +33,11 @@ sub call {
 
 # C. Main test execution
 package main;
-use Google::Cloud::Bigquery::V2;
+use Google::Cloud::Bigquery::V2::ModelClient;
 
-my $client = Google::Cloud::Bigquery::V2->new( credentials => 'dummy' );
+my $client = Google::Cloud::Bigquery::V2::ModelClient->new( credentials => 'dummy' );
 ok($client, 'Instantiated generated client');
 isa_ok($client->transport, 'Google::gRPC::Client', 'Client transport');
-
-subtest 'get_routine method' => sub {
-    $client->transport->{mock_call} = sub {
-        my ($args) = @_;
-        is($args->{service}, 'google.cloud.bigquery.v2.RoutineService', 'Correct service path');
-        is($args->{method}, 'GetRoutine', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::Routine::GetRoutineRequest', 'Request object');
-        
-        my $response = 'Google::Cloud::Bigquery::V2::Routine::Routine'->new();
-        return $response;
-    };
-    
-    my $res = $client->get_routine();
-    ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Cloud::Bigquery::V2::Routine::Routine', 'Response object class');
-    done_testing();
-};
-
-subtest 'insert_routine method' => sub {
-    $client->transport->{mock_call} = sub {
-        my ($args) = @_;
-        is($args->{service}, 'google.cloud.bigquery.v2.RoutineService', 'Correct service path');
-        is($args->{method}, 'InsertRoutine', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::Routine::InsertRoutineRequest', 'Request object');
-        
-        my $response = 'Google::Cloud::Bigquery::V2::Routine::Routine'->new();
-        return $response;
-    };
-    
-    my $res = $client->insert_routine();
-    ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Cloud::Bigquery::V2::Routine::Routine', 'Response object class');
-    done_testing();
-};
-
-subtest 'update_routine method' => sub {
-    $client->transport->{mock_call} = sub {
-        my ($args) = @_;
-        is($args->{service}, 'google.cloud.bigquery.v2.RoutineService', 'Correct service path');
-        is($args->{method}, 'UpdateRoutine', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::Routine::UpdateRoutineRequest', 'Request object');
-        
-        my $response = 'Google::Cloud::Bigquery::V2::Routine::Routine'->new();
-        return $response;
-    };
-    
-    my $res = $client->update_routine();
-    ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Cloud::Bigquery::V2::Routine::Routine', 'Response object class');
-    done_testing();
-};
-
-subtest 'patch_routine method' => sub {
-    $client->transport->{mock_call} = sub {
-        my ($args) = @_;
-        is($args->{service}, 'google.cloud.bigquery.v2.RoutineService', 'Correct service path');
-        is($args->{method}, 'PatchRoutine', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::Routine::PatchRoutineRequest', 'Request object');
-        
-        my $response = 'Google::Cloud::Bigquery::V2::Routine::Routine'->new();
-        return $response;
-    };
-    
-    my $res = $client->patch_routine();
-    ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Cloud::Bigquery::V2::Routine::Routine', 'Response object class');
-    done_testing();
-};
-
-subtest 'delete_routine method' => sub {
-    $client->transport->{mock_call} = sub {
-        my ($args) = @_;
-        is($args->{service}, 'google.cloud.bigquery.v2.RoutineService', 'Correct service path');
-        is($args->{method}, 'DeleteRoutine', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::Routine::DeleteRoutineRequest', 'Request object');
-        
-        my $response = 'Google::Protobuf::Empty::Empty'->new();
-        return $response;
-    };
-    
-    my $res = $client->delete_routine();
-    ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Protobuf::Empty::Empty', 'Response object class');
-    done_testing();
-};
-
-subtest 'list_routines method' => sub {
-    $client->transport->{mock_call} = sub {
-        my ($args) = @_;
-        is($args->{service}, 'google.cloud.bigquery.v2.RoutineService', 'Correct service path');
-        is($args->{method}, 'ListRoutines', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::Routine::ListRoutinesRequest', 'Request object');
-        
-        my $response = 'Google::Cloud::Bigquery::V2::Routine::ListRoutinesResponse'->new();
-        return $response;
-    };
-    
-    my $res = $client->list_routines();
-    ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Cloud::Bigquery::V2::Routine::ListRoutinesResponse', 'Response object class');
-    done_testing();
-};
-
-subtest 'list_projects method' => sub {
-    $client->transport->{mock_call} = sub {
-        my ($args) = @_;
-        is($args->{service}, 'google.cloud.bigquery.v2.ProjectService', 'Correct service path');
-        is($args->{method}, 'ListProjects', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::Project::ListProjectsRequest', 'Request object');
-        
-        my $response = 'Google::Cloud::Bigquery::V2::Project::ProjectList'->new();
-        return $response;
-    };
-    
-    my $res = $client->list_projects();
-    ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Cloud::Bigquery::V2::Project::ProjectList', 'Response object class');
-    done_testing();
-};
 
 subtest 'get_service_account method' => sub {
     $client->transport->{mock_call} = sub {
@@ -171,6 +53,125 @@ subtest 'get_service_account method' => sub {
     my $res = $client->get_service_account();
     ok($res, 'Method returned a response');
     isa_ok($res, 'Google::Cloud::Bigquery::V2::Project::GetServiceAccountResponse', 'Response object class');
+    done_testing();
+};
+
+subtest 'cancel_job method' => sub {
+    $client->transport->{mock_call} = sub {
+        my ($args) = @_;
+        is($args->{service}, 'google.cloud.bigquery.v2.JobService', 'Correct service path');
+        is($args->{method}, 'CancelJob', 'Correct RPC method');
+        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::Job::CancelJobRequest', 'Request object');
+        
+        my $response = 'Google::Cloud::Bigquery::V2::Job::JobCancelResponse'->new();
+        return $response;
+    };
+    
+    my $res = $client->cancel_job();
+    ok($res, 'Method returned a response');
+    isa_ok($res, 'Google::Cloud::Bigquery::V2::Job::JobCancelResponse', 'Response object class');
+    done_testing();
+};
+
+subtest 'get_job method' => sub {
+    $client->transport->{mock_call} = sub {
+        my ($args) = @_;
+        is($args->{service}, 'google.cloud.bigquery.v2.JobService', 'Correct service path');
+        is($args->{method}, 'GetJob', 'Correct RPC method');
+        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::Job::GetJobRequest', 'Request object');
+        
+        my $response = 'Google::Cloud::Bigquery::V2::Job::Job'->new();
+        return $response;
+    };
+    
+    my $res = $client->get_job();
+    ok($res, 'Method returned a response');
+    isa_ok($res, 'Google::Cloud::Bigquery::V2::Job::Job', 'Response object class');
+    done_testing();
+};
+
+subtest 'insert_job method' => sub {
+    $client->transport->{mock_call} = sub {
+        my ($args) = @_;
+        is($args->{service}, 'google.cloud.bigquery.v2.JobService', 'Correct service path');
+        is($args->{method}, 'InsertJob', 'Correct RPC method');
+        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::Job::InsertJobRequest', 'Request object');
+        
+        my $response = 'Google::Cloud::Bigquery::V2::Job::Job'->new();
+        return $response;
+    };
+    
+    my $res = $client->insert_job();
+    ok($res, 'Method returned a response');
+    isa_ok($res, 'Google::Cloud::Bigquery::V2::Job::Job', 'Response object class');
+    done_testing();
+};
+
+subtest 'delete_job method' => sub {
+    $client->transport->{mock_call} = sub {
+        my ($args) = @_;
+        is($args->{service}, 'google.cloud.bigquery.v2.JobService', 'Correct service path');
+        is($args->{method}, 'DeleteJob', 'Correct RPC method');
+        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::Job::DeleteJobRequest', 'Request object');
+        
+        my $response = 'Google::Protobuf::Empty::Empty'->new();
+        return $response;
+    };
+    
+    my $res = $client->delete_job();
+    ok($res, 'Method returned a response');
+    isa_ok($res, 'Google::Protobuf::Empty::Empty', 'Response object class');
+    done_testing();
+};
+
+subtest 'list_jobs method' => sub {
+    $client->transport->{mock_call} = sub {
+        my ($args) = @_;
+        is($args->{service}, 'google.cloud.bigquery.v2.JobService', 'Correct service path');
+        is($args->{method}, 'ListJobs', 'Correct RPC method');
+        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::Job::ListJobsRequest', 'Request object');
+        
+        my $response = 'Google::Cloud::Bigquery::V2::Job::JobList'->new();
+        return $response;
+    };
+    
+    my $res = $client->list_jobs();
+    ok($res, 'Method returned a response');
+    isa_ok($res, 'Google::Cloud::Bigquery::V2::Job::JobList', 'Response object class');
+    done_testing();
+};
+
+subtest 'get_query_results method' => sub {
+    $client->transport->{mock_call} = sub {
+        my ($args) = @_;
+        is($args->{service}, 'google.cloud.bigquery.v2.JobService', 'Correct service path');
+        is($args->{method}, 'GetQueryResults', 'Correct RPC method');
+        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::Job::GetQueryResultsRequest', 'Request object');
+        
+        my $response = 'Google::Cloud::Bigquery::V2::Job::GetQueryResultsResponse'->new();
+        return $response;
+    };
+    
+    my $res = $client->get_query_results();
+    ok($res, 'Method returned a response');
+    isa_ok($res, 'Google::Cloud::Bigquery::V2::Job::GetQueryResultsResponse', 'Response object class');
+    done_testing();
+};
+
+subtest 'query method' => sub {
+    $client->transport->{mock_call} = sub {
+        my ($args) = @_;
+        is($args->{service}, 'google.cloud.bigquery.v2.JobService', 'Correct service path');
+        is($args->{method}, 'Query', 'Correct RPC method');
+        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::Job::PostQueryRequest', 'Request object');
+        
+        my $response = 'Google::Cloud::Bigquery::V2::Job::QueryResponse'->new();
+        return $response;
+    };
+    
+    my $res = $client->query();
+    ok($res, 'Method returned a response');
+    isa_ok($res, 'Google::Cloud::Bigquery::V2::Job::QueryResponse', 'Response object class');
     done_testing();
 };
 
@@ -344,224 +345,190 @@ subtest 'list_tables method' => sub {
     done_testing();
 };
 
-subtest 'get_property_graph method' => sub {
+subtest 'list_row_access_policies method' => sub {
     $client->transport->{mock_call} = sub {
         my ($args) = @_;
-        is($args->{service}, 'google.cloud.bigquery.v2.PropertyGraphService', 'Correct service path');
-        is($args->{method}, 'GetPropertyGraph', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::PropertyGraph::GetPropertyGraphRequest', 'Request object');
+        is($args->{service}, 'google.cloud.bigquery.v2.RowAccessPolicyService', 'Correct service path');
+        is($args->{method}, 'ListRowAccessPolicies', 'Correct RPC method');
+        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::RowAccessPolicy::ListRowAccessPoliciesRequest', 'Request object');
         
-        my $response = 'Google::Cloud::Bigquery::V2::PropertyGraph::PropertyGraph'->new();
+        my $response = 'Google::Cloud::Bigquery::V2::RowAccessPolicy::ListRowAccessPoliciesResponse'->new();
         return $response;
     };
     
-    my $res = $client->get_property_graph();
+    my $res = $client->list_row_access_policies();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Cloud::Bigquery::V2::PropertyGraph::PropertyGraph', 'Response object class');
+    isa_ok($res, 'Google::Cloud::Bigquery::V2::RowAccessPolicy::ListRowAccessPoliciesResponse', 'Response object class');
     done_testing();
 };
 
-subtest 'list_property_graphs method' => sub {
+subtest 'get_row_access_policy method' => sub {
     $client->transport->{mock_call} = sub {
         my ($args) = @_;
-        is($args->{service}, 'google.cloud.bigquery.v2.PropertyGraphService', 'Correct service path');
-        is($args->{method}, 'ListPropertyGraphs', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::PropertyGraph::ListPropertyGraphsRequest', 'Request object');
+        is($args->{service}, 'google.cloud.bigquery.v2.RowAccessPolicyService', 'Correct service path');
+        is($args->{method}, 'GetRowAccessPolicy', 'Correct RPC method');
+        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::RowAccessPolicy::GetRowAccessPolicyRequest', 'Request object');
         
-        my $response = 'Google::Cloud::Bigquery::V2::PropertyGraph::ListPropertyGraphsResponse'->new();
+        my $response = 'Google::Cloud::Bigquery::V2::RowAccessPolicy::RowAccessPolicy'->new();
         return $response;
     };
     
-    my $res = $client->list_property_graphs();
+    my $res = $client->get_row_access_policy();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Cloud::Bigquery::V2::PropertyGraph::ListPropertyGraphsResponse', 'Response object class');
+    isa_ok($res, 'Google::Cloud::Bigquery::V2::RowAccessPolicy::RowAccessPolicy', 'Response object class');
     done_testing();
 };
 
-subtest 'delete_property_graph method' => sub {
+subtest 'create_row_access_policy method' => sub {
     $client->transport->{mock_call} = sub {
         my ($args) = @_;
-        is($args->{service}, 'google.cloud.bigquery.v2.PropertyGraphService', 'Correct service path');
-        is($args->{method}, 'DeletePropertyGraph', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::PropertyGraph::DeletePropertyGraphRequest', 'Request object');
+        is($args->{service}, 'google.cloud.bigquery.v2.RowAccessPolicyService', 'Correct service path');
+        is($args->{method}, 'CreateRowAccessPolicy', 'Correct RPC method');
+        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::RowAccessPolicy::CreateRowAccessPolicyRequest', 'Request object');
+        
+        my $response = 'Google::Cloud::Bigquery::V2::RowAccessPolicy::RowAccessPolicy'->new();
+        return $response;
+    };
+    
+    my $res = $client->create_row_access_policy();
+    ok($res, 'Method returned a response');
+    isa_ok($res, 'Google::Cloud::Bigquery::V2::RowAccessPolicy::RowAccessPolicy', 'Response object class');
+    done_testing();
+};
+
+subtest 'update_row_access_policy method' => sub {
+    $client->transport->{mock_call} = sub {
+        my ($args) = @_;
+        is($args->{service}, 'google.cloud.bigquery.v2.RowAccessPolicyService', 'Correct service path');
+        is($args->{method}, 'UpdateRowAccessPolicy', 'Correct RPC method');
+        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::RowAccessPolicy::UpdateRowAccessPolicyRequest', 'Request object');
+        
+        my $response = 'Google::Cloud::Bigquery::V2::RowAccessPolicy::RowAccessPolicy'->new();
+        return $response;
+    };
+    
+    my $res = $client->update_row_access_policy();
+    ok($res, 'Method returned a response');
+    isa_ok($res, 'Google::Cloud::Bigquery::V2::RowAccessPolicy::RowAccessPolicy', 'Response object class');
+    done_testing();
+};
+
+subtest 'delete_row_access_policy method' => sub {
+    $client->transport->{mock_call} = sub {
+        my ($args) = @_;
+        is($args->{service}, 'google.cloud.bigquery.v2.RowAccessPolicyService', 'Correct service path');
+        is($args->{method}, 'DeleteRowAccessPolicy', 'Correct RPC method');
+        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::RowAccessPolicy::DeleteRowAccessPolicyRequest', 'Request object');
         
         my $response = 'Google::Protobuf::Empty::Empty'->new();
         return $response;
     };
     
-    my $res = $client->delete_property_graph();
+    my $res = $client->delete_row_access_policy();
     ok($res, 'Method returned a response');
     isa_ok($res, 'Google::Protobuf::Empty::Empty', 'Response object class');
     done_testing();
 };
 
-subtest 'cancel_job method' => sub {
+subtest 'batch_delete_row_access_policies method' => sub {
     $client->transport->{mock_call} = sub {
         my ($args) = @_;
-        is($args->{service}, 'google.cloud.bigquery.v2.JobService', 'Correct service path');
-        is($args->{method}, 'CancelJob', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::Job::CancelJobRequest', 'Request object');
-        
-        my $response = 'Google::Cloud::Bigquery::V2::Job::JobCancelResponse'->new();
-        return $response;
-    };
-    
-    my $res = $client->cancel_job();
-    ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Cloud::Bigquery::V2::Job::JobCancelResponse', 'Response object class');
-    done_testing();
-};
-
-subtest 'get_job method' => sub {
-    $client->transport->{mock_call} = sub {
-        my ($args) = @_;
-        is($args->{service}, 'google.cloud.bigquery.v2.JobService', 'Correct service path');
-        is($args->{method}, 'GetJob', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::Job::GetJobRequest', 'Request object');
-        
-        my $response = 'Google::Cloud::Bigquery::V2::Job::Job'->new();
-        return $response;
-    };
-    
-    my $res = $client->get_job();
-    ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Cloud::Bigquery::V2::Job::Job', 'Response object class');
-    done_testing();
-};
-
-subtest 'insert_job method' => sub {
-    $client->transport->{mock_call} = sub {
-        my ($args) = @_;
-        is($args->{service}, 'google.cloud.bigquery.v2.JobService', 'Correct service path');
-        is($args->{method}, 'InsertJob', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::Job::InsertJobRequest', 'Request object');
-        
-        my $response = 'Google::Cloud::Bigquery::V2::Job::Job'->new();
-        return $response;
-    };
-    
-    my $res = $client->insert_job();
-    ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Cloud::Bigquery::V2::Job::Job', 'Response object class');
-    done_testing();
-};
-
-subtest 'update_job method' => sub {
-    $client->transport->{mock_call} = sub {
-        my ($args) = @_;
-        is($args->{service}, 'google.cloud.bigquery.v2.JobService', 'Correct service path');
-        is($args->{method}, 'UpdateJob', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::Job::UpdateJobRequest', 'Request object');
-        
-        my $response = 'Google::Cloud::Bigquery::V2::Job::Job'->new();
-        return $response;
-    };
-    
-    my $res = $client->update_job();
-    ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Cloud::Bigquery::V2::Job::Job', 'Response object class');
-    done_testing();
-};
-
-subtest 'delete_job method' => sub {
-    $client->transport->{mock_call} = sub {
-        my ($args) = @_;
-        is($args->{service}, 'google.cloud.bigquery.v2.JobService', 'Correct service path');
-        is($args->{method}, 'DeleteJob', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::Job::DeleteJobRequest', 'Request object');
+        is($args->{service}, 'google.cloud.bigquery.v2.RowAccessPolicyService', 'Correct service path');
+        is($args->{method}, 'BatchDeleteRowAccessPolicies', 'Correct RPC method');
+        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::RowAccessPolicy::BatchDeleteRowAccessPoliciesRequest', 'Request object');
         
         my $response = 'Google::Protobuf::Empty::Empty'->new();
         return $response;
     };
     
-    my $res = $client->delete_job();
+    my $res = $client->batch_delete_row_access_policies();
     ok($res, 'Method returned a response');
     isa_ok($res, 'Google::Protobuf::Empty::Empty', 'Response object class');
     done_testing();
 };
 
-subtest 'list_jobs method' => sub {
+subtest 'get_routine method' => sub {
     $client->transport->{mock_call} = sub {
         my ($args) = @_;
-        is($args->{service}, 'google.cloud.bigquery.v2.JobService', 'Correct service path');
-        is($args->{method}, 'ListJobs', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::Job::ListJobsRequest', 'Request object');
+        is($args->{service}, 'google.cloud.bigquery.v2.RoutineService', 'Correct service path');
+        is($args->{method}, 'GetRoutine', 'Correct RPC method');
+        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::Routine::GetRoutineRequest', 'Request object');
         
-        my $response = 'Google::Cloud::Bigquery::V2::Job::JobList'->new();
+        my $response = 'Google::Cloud::Bigquery::V2::Routine::Routine'->new();
         return $response;
     };
     
-    my $res = $client->list_jobs();
+    my $res = $client->get_routine();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Cloud::Bigquery::V2::Job::JobList', 'Response object class');
+    isa_ok($res, 'Google::Cloud::Bigquery::V2::Routine::Routine', 'Response object class');
     done_testing();
 };
 
-subtest 'get_query_results method' => sub {
+subtest 'insert_routine method' => sub {
     $client->transport->{mock_call} = sub {
         my ($args) = @_;
-        is($args->{service}, 'google.cloud.bigquery.v2.JobService', 'Correct service path');
-        is($args->{method}, 'GetQueryResults', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::Job::GetQueryResultsRequest', 'Request object');
+        is($args->{service}, 'google.cloud.bigquery.v2.RoutineService', 'Correct service path');
+        is($args->{method}, 'InsertRoutine', 'Correct RPC method');
+        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::Routine::InsertRoutineRequest', 'Request object');
         
-        my $response = 'Google::Cloud::Bigquery::V2::Job::GetQueryResultsResponse'->new();
+        my $response = 'Google::Cloud::Bigquery::V2::Routine::Routine'->new();
         return $response;
     };
     
-    my $res = $client->get_query_results();
+    my $res = $client->insert_routine();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Cloud::Bigquery::V2::Job::GetQueryResultsResponse', 'Response object class');
+    isa_ok($res, 'Google::Cloud::Bigquery::V2::Routine::Routine', 'Response object class');
     done_testing();
 };
 
-subtest 'query method' => sub {
+subtest 'update_routine method' => sub {
     $client->transport->{mock_call} = sub {
         my ($args) = @_;
-        is($args->{service}, 'google.cloud.bigquery.v2.JobService', 'Correct service path');
-        is($args->{method}, 'Query', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::Job::PostQueryRequest', 'Request object');
+        is($args->{service}, 'google.cloud.bigquery.v2.RoutineService', 'Correct service path');
+        is($args->{method}, 'UpdateRoutine', 'Correct RPC method');
+        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::Routine::UpdateRoutineRequest', 'Request object');
         
-        my $response = 'Google::Cloud::Bigquery::V2::Job::QueryResponse'->new();
+        my $response = 'Google::Cloud::Bigquery::V2::Routine::Routine'->new();
         return $response;
     };
     
-    my $res = $client->query();
+    my $res = $client->update_routine();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Cloud::Bigquery::V2::Job::QueryResponse', 'Response object class');
+    isa_ok($res, 'Google::Cloud::Bigquery::V2::Routine::Routine', 'Response object class');
     done_testing();
 };
 
-subtest 'insert_all method' => sub {
+subtest 'delete_routine method' => sub {
     $client->transport->{mock_call} = sub {
         my ($args) = @_;
-        is($args->{service}, 'google.cloud.bigquery.v2.TableDataService', 'Correct service path');
-        is($args->{method}, 'InsertAll', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::Tabledata::TableDataInsertAllRequest', 'Request object');
+        is($args->{service}, 'google.cloud.bigquery.v2.RoutineService', 'Correct service path');
+        is($args->{method}, 'DeleteRoutine', 'Correct RPC method');
+        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::Routine::DeleteRoutineRequest', 'Request object');
         
-        my $response = 'Google::Cloud::Bigquery::V2::Tabledata::TableDataInsertAllResponse'->new();
+        my $response = 'Google::Protobuf::Empty::Empty'->new();
         return $response;
     };
     
-    my $res = $client->insert_all();
+    my $res = $client->delete_routine();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Cloud::Bigquery::V2::Tabledata::TableDataInsertAllResponse', 'Response object class');
+    isa_ok($res, 'Google::Protobuf::Empty::Empty', 'Response object class');
     done_testing();
 };
 
-subtest 'list method' => sub {
+subtest 'list_routines method' => sub {
     $client->transport->{mock_call} = sub {
         my ($args) = @_;
-        is($args->{service}, 'google.cloud.bigquery.v2.TableDataService', 'Correct service path');
-        is($args->{method}, 'List', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::Tabledata::TableDataListRequest', 'Request object');
+        is($args->{service}, 'google.cloud.bigquery.v2.RoutineService', 'Correct service path');
+        is($args->{method}, 'ListRoutines', 'Correct RPC method');
+        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::Routine::ListRoutinesRequest', 'Request object');
         
-        my $response = 'Google::Cloud::Bigquery::V2::Tabledata::TableDataList'->new();
+        my $response = 'Google::Cloud::Bigquery::V2::Routine::ListRoutinesResponse'->new();
         return $response;
     };
     
-    my $res = $client->list();
+    my $res = $client->list_routines();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Cloud::Bigquery::V2::Tabledata::TableDataList', 'Response object class');
+    isa_ok($res, 'Google::Cloud::Bigquery::V2::Routine::ListRoutinesResponse', 'Response object class');
     done_testing();
 };
 
@@ -681,108 +648,6 @@ subtest 'undelete_dataset method' => sub {
     my $res = $client->undelete_dataset();
     ok($res, 'Method returned a response');
     isa_ok($res, 'Google::Cloud::Bigquery::V2::Dataset::Dataset', 'Response object class');
-    done_testing();
-};
-
-subtest 'list_row_access_policies method' => sub {
-    $client->transport->{mock_call} = sub {
-        my ($args) = @_;
-        is($args->{service}, 'google.cloud.bigquery.v2.RowAccessPolicyService', 'Correct service path');
-        is($args->{method}, 'ListRowAccessPolicies', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::RowAccessPolicy::ListRowAccessPoliciesRequest', 'Request object');
-        
-        my $response = 'Google::Cloud::Bigquery::V2::RowAccessPolicy::ListRowAccessPoliciesResponse'->new();
-        return $response;
-    };
-    
-    my $res = $client->list_row_access_policies();
-    ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Cloud::Bigquery::V2::RowAccessPolicy::ListRowAccessPoliciesResponse', 'Response object class');
-    done_testing();
-};
-
-subtest 'get_row_access_policy method' => sub {
-    $client->transport->{mock_call} = sub {
-        my ($args) = @_;
-        is($args->{service}, 'google.cloud.bigquery.v2.RowAccessPolicyService', 'Correct service path');
-        is($args->{method}, 'GetRowAccessPolicy', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::RowAccessPolicy::GetRowAccessPolicyRequest', 'Request object');
-        
-        my $response = 'Google::Cloud::Bigquery::V2::RowAccessPolicy::RowAccessPolicy'->new();
-        return $response;
-    };
-    
-    my $res = $client->get_row_access_policy();
-    ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Cloud::Bigquery::V2::RowAccessPolicy::RowAccessPolicy', 'Response object class');
-    done_testing();
-};
-
-subtest 'create_row_access_policy method' => sub {
-    $client->transport->{mock_call} = sub {
-        my ($args) = @_;
-        is($args->{service}, 'google.cloud.bigquery.v2.RowAccessPolicyService', 'Correct service path');
-        is($args->{method}, 'CreateRowAccessPolicy', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::RowAccessPolicy::CreateRowAccessPolicyRequest', 'Request object');
-        
-        my $response = 'Google::Cloud::Bigquery::V2::RowAccessPolicy::RowAccessPolicy'->new();
-        return $response;
-    };
-    
-    my $res = $client->create_row_access_policy();
-    ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Cloud::Bigquery::V2::RowAccessPolicy::RowAccessPolicy', 'Response object class');
-    done_testing();
-};
-
-subtest 'update_row_access_policy method' => sub {
-    $client->transport->{mock_call} = sub {
-        my ($args) = @_;
-        is($args->{service}, 'google.cloud.bigquery.v2.RowAccessPolicyService', 'Correct service path');
-        is($args->{method}, 'UpdateRowAccessPolicy', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::RowAccessPolicy::UpdateRowAccessPolicyRequest', 'Request object');
-        
-        my $response = 'Google::Cloud::Bigquery::V2::RowAccessPolicy::RowAccessPolicy'->new();
-        return $response;
-    };
-    
-    my $res = $client->update_row_access_policy();
-    ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Cloud::Bigquery::V2::RowAccessPolicy::RowAccessPolicy', 'Response object class');
-    done_testing();
-};
-
-subtest 'delete_row_access_policy method' => sub {
-    $client->transport->{mock_call} = sub {
-        my ($args) = @_;
-        is($args->{service}, 'google.cloud.bigquery.v2.RowAccessPolicyService', 'Correct service path');
-        is($args->{method}, 'DeleteRowAccessPolicy', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::RowAccessPolicy::DeleteRowAccessPolicyRequest', 'Request object');
-        
-        my $response = 'Google::Protobuf::Empty::Empty'->new();
-        return $response;
-    };
-    
-    my $res = $client->delete_row_access_policy();
-    ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Protobuf::Empty::Empty', 'Response object class');
-    done_testing();
-};
-
-subtest 'batch_delete_row_access_policies method' => sub {
-    $client->transport->{mock_call} = sub {
-        my ($args) = @_;
-        is($args->{service}, 'google.cloud.bigquery.v2.RowAccessPolicyService', 'Correct service path');
-        is($args->{method}, 'BatchDeleteRowAccessPolicies', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Cloud::Bigquery::V2::RowAccessPolicy::BatchDeleteRowAccessPoliciesRequest', 'Request object');
-        
-        my $response = 'Google::Protobuf::Empty::Empty'->new();
-        return $response;
-    };
-    
-    my $res = $client->batch_delete_row_access_policies();
-    ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Protobuf::Empty::Empty', 'Response object class');
     done_testing();
 };
 

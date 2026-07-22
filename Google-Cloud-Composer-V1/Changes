@@ -1,8 +1,4 @@
-0.02    Fri Jul 17 2026
-        [CI & Code Generation]
-        - Upgraded package version to 0.02.
-        - Corrected copyright assignment to Google LLC in generated module headers.
-        - Pruned redundant sub-module $VERSION declarations.
+Revision history for Google-Cloud-Composer-V1-EnvironmentsClient
 
-0.01  Mon Jul 13 22:30:27 2026
-        - Initial distribution release.
+0.03  Wed Jul 22 04:29:04 2026
+    - Initial release. Auto-generated from Protocol Buffers schema.

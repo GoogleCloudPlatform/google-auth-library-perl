@@ -1,10 +1,13 @@
+#!perl
+use 5.008003;
 use strict;
 use warnings;
-use Test::More tests => 1;
+use Test::More;
+
+plan tests => 1;
 
 BEGIN {
-    use_ok('Google::Cloud::DataFusion::V1') || print "Bail out!
-";
+    use_ok( 'Google::Cloud::DataFusion::V1::DataFusionClient' ) || print "Bail out!\n";
 }
 
-diag( "Google::Cloud::DataFusion::V1 $Google::Cloud::DataFusion::V1::VERSION, Perl $], $^X" );
+diag( "Testing Google::Cloud::DataFusion::V1::DataFusionClient $Google::Cloud::DataFusion::V1::DataFusionClient::VERSION, Perl $], $^X" );

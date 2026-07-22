@@ -7,7 +7,7 @@ use Test::More;
 plan tests => 1;
 
 BEGIN {
-    use_ok( 'Google::Cloud::Bigquery::V2' ) || print "Bail out!\n";
+    use_ok( 'Google::Cloud::Bigquery::V2::ModelClient' ) || print "Bail out!\n";
 }
 
-diag( "Testing Google::Cloud::Bigquery::V2 $Google::Cloud::Bigquery::V2::VERSION, Perl $], $^X" );
+diag( "Testing Google::Cloud::Bigquery::V2::ModelClient $Google::Cloud::Bigquery::V2::ModelClient::VERSION, Perl $], $^X" );

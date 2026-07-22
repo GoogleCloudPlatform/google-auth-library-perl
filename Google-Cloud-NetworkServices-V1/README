@@ -1,1 +1,24 @@
-Google Cloud Network Services V1 (Secure Web Proxy) API Client
+# Google::Cloud::NetworkServices::V1::NetworkServicesClient
+
+Auto-generated Protocol Buffers client library for Google Cloud Services.
+
+## Installation
+
+To install this module, run the following commands:
+
+    perl Makefile.PL
+    make
+    make test
+    make install
+
+## Documentation
+
+After installing, you can find documentation for this module with the `perldoc` command:
+
+    perldoc Google::Cloud::NetworkServices::V1::NetworkServicesClient
+
+## License and Copyright
+
+Copyright (C) 2026 Google LLC
+
+This program is released under the Apache 2.0 license.
