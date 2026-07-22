@@ -11,7 +11,7 @@ use File::Spec;
 use File::Basename qw(basename);
 use File::Which qw(which);
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 sub create_distro {
     my ($self, %args) = @_;
@@ -146,6 +146,34 @@ sub create_t {
         my $rest_test_file = $self->_generate_rest_test($primary_module);
         push @files, $rest_test_file if $rest_test_file;
     }
+
+    # Generate xt/00_perl-critic.t for author/release quality checks
+    my $xt_dir = path("xt");
+    $xt_dir->mkpath;
+    my $critic_file = path("xt/00_perl-critic.t");
+    $critic_file->spew_utf8(<<'EOF');
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use Test::More;
+use File::Spec;
+
+unless ( $ENV{AUTHOR_TESTING} || $ENV{RELEASE_TESTING} ) {
+    plan( skip_all => 'Author/Release tests not required for installation' );
+}
+
+eval 'use Test::Perl::Critic';
+plan( skip_all => 'Test::Perl::Critic required for testing code quality' ) if $@;
+
+my $root = File::Spec->rel2abs('../..');
+my $rcfile = File::Spec->catfile($root, '.perlcriticrc');
+if (-f $rcfile) {
+    Test::Perl::Critic->import( -profile => $rcfile );
+}
+
+all_critic_ok('lib');
+EOF
+    push @files, 'xt/00_perl-critic.t';
 
     return @files;
 }
@@ -282,22 +310,19 @@ BEGIN {
 EOF
     }
 
+    my $EQ = '=';
     my $client_code;
     if (@methods) {
         # Generate methods POD block dynamically
-        my $methods_pod = "\\=head2 METHODS\n\nThe following RPC methods are available in this client:\n\n\\=over 4\n\n";
+        my $methods_pod = "${EQ}head2 METHODS\n\nThe following RPC methods are available in this client:\n\n${EQ}over 4\n\n";
         for my $m (@methods) {
-            $methods_pod .= sprintf(<<"EOF", $m->{perl_name}, $m->{raw_name});
-\\=item * B<%s>
-
-Calls the RPC method C<%s> on the service. Takes a hash of parameters representing the request.
-
-EOF
+            $methods_pod .= sprintf("${EQ}item * B<%s>\n\nCalls the RPC method C<%s> on the service. Takes a hash of parameters representing the request.\n\n", $m->{perl_name}, $m->{raw_name});
         }
-        $methods_pod .= "\\=back\n\n";
+        $methods_pod .= "${EQ}back\n\n";
 
         # Generate full gRPC service client wrapper
-        $client_code = sprintf(<<"EOF", $module_name, $bridge_code, $use_statements, $grpc_target, $methods_code, $module_name, $module_name, $module_name, $module_name, $module_name, $methods_pod);
+        my $version = $self->{version} || '0.02';
+        $client_code = sprintf(<<"EOF", $module_name, $bridge_code, $use_statements, $version, $grpc_target, $methods_code, $module_name, $module_name, $module_name, $module_name, $module_name, $methods_pod);
 package %s;
 
 use strict;
@@ -310,7 +335,7 @@ use Carp qw(croak);
 %s
 %s
 
-our \$VERSION = '0.02';
+our \$VERSION = '%s';
 
 has credentials => ( is => 'ro', required => 0 );
 has transport   => ( is => 'rw' );
@@ -349,11 +374,11 @@ sub BUILD {
 
 __END__
 
-\\=head1 NAME
+${EQ}head1 NAME
 
 %s - Auto-generated client library for Google Cloud Services
 
-\\=head1 SYNOPSIS
+${EQ}head1 SYNOPSIS
 
     use %s;
     use Google::Auth;
@@ -365,37 +390,48 @@ __END__
     # Execute service methods
     my \$res = \$client->some_method( %%params );
 
-\\=head1 DESCRIPTION
+${EQ}head1 DESCRIPTION
 
 This is an auto-generated Protocol Buffers client library for Google Cloud Services, built on top of high-performance gRPC and Protocol Buffers!
 
 It provides seamless integration with Google Cloud Application Default Credentials (ADC), support for both HTTP/2 gRPC and REST transports, and fully typed RPC method dispatching.
 
-\\=head1 CONSTRUCTOR
+${EQ}head1 CONSTRUCTOR
 
-\\=head2 new
+${EQ}head2 new
 
     my \$client = %s->new(
         credentials => \$auth,       # Optional: Google::Auth object (defaults to ADC)
         transport   => 'grpc',     # Optional: 'grpc' (default) or 'rest'
     );
 
-\\=head1 METHODS
+${EQ}head1 ATTRIBUTES
+
+${EQ}head2 credentials
+
+Returns or accepts the L<Google::Auth> credentials object.
+
+${EQ}head2 transport
+
+Returns or accepts the transport instance (L<Google::gRPC::Client> or L<Google::Cloud::REST::Client>).
+
+${EQ}head1 METHODS
 
 %s
 
-\\=head1 LICENSE AND COPYRIGHT
+${EQ}head1 LICENSE AND COPYRIGHT
 
 Copyright (C) 2026 Google LLC
 
 This program is released under the Apache 2.0 license.
 
-\\=cut
+${EQ}cut
 EOF
     }
     else {
         # Generate a pure, lightweight schema container with no service dependencies
-        $client_code = sprintf(<<"EOF", $module_name, $bridge_code, $use_statements, $module_name, $module_name);
+        my $version = $self->{version} || '0.02';
+        $client_code = sprintf(<<"EOF", $module_name, $bridge_code, $use_statements, $version, $module_name, $module_name);
 package %s;
 
 use strict;
@@ -403,26 +439,26 @@ use warnings;
 %s
 %s
 
-our \$VERSION = '0.02';
+our \$VERSION = '%s';
 1; # End of %s
 
 __END__
 
-\\=head1 NAME
+${EQ}head1 NAME
 
 %s - Auto-generated Protocol Buffers schema container
 
-\\=head1 DESCRIPTION
+${EQ}head1 DESCRIPTION
 
 This is an auto-generated Protocol Buffers schema container module for Google Cloud Services.
 
-\\=head1 LICENSE AND COPYRIGHT
+${EQ}head1 LICENSE AND COPYRIGHT
 
 Copyright (C) 2026 Google LLC
 
 This program is released under the Apache 2.0 license.
 
-\\=cut
+${EQ}cut
 EOF
     }
 
@@ -542,6 +578,15 @@ distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 KIND, either express or implied.  See the License for the specific language
 governing permissions and limitations under the License.
 EOF
+}
+
+sub t_guts {
+    my ($self, @modules) = @_;
+    my %files = $self->SUPER::t_guts(@modules);
+    if (exists $files{'pod-coverage.t'}) {
+        $files{'pod-coverage.t'} =~ s/all_pod_coverage_ok\(\);/all_pod_coverage_ok({ also_private => [ qr!^(?:BUILD)\$! ] });/;
+    }
+    return %files;
 }
 
 # Utility: Convert camelCase/PascalCase to snake_case
@@ -784,7 +829,7 @@ Module::Starter::Protobuf - A Module::Starter plugin for generating Protocol Buf
 
 =head1 VERSION
 
-Version 0.02
+Version 0.03
 
 =head1 SYNOPSIS
 
