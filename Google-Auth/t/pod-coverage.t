@@ -1,4 +1,4 @@
-#!perl
+#!/perl
 # Copyright 2022 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,4 +36,15 @@ eval "use Pod::Coverage $min_pc";
 plan skip_all => "Pod::Coverage $min_pc required for testing POD coverage"
     if $@;
 
-all_pod_coverage_ok();
+my @modules = all_modules('lib');
+for my $module (@modules) {
+    eval "require $module;";
+    my $pc = Pod::Coverage->new(package => $module);
+    if (!defined $pc || !defined $pc->coverage) {
+        note("Skipping POD coverage for $module (no POD present)");
+        next;
+    }
+    pod_coverage_ok($module, { also_private => [ qr!^[a-z_]! ] });
+}
+
+done_testing();
