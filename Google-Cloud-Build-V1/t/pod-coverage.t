@@ -21,7 +21,7 @@ my @tested;
 for my $module (@modules) {
     eval "require $module;";
     my $pc = Pod::Coverage->new(package => $module);
-    if (!defined $pc || !defined $pc->coverage) {
+    if (!defined $pc || !defined $pc->coverage || ($pc->why_unrated && $pc->why_unrated =~ /couldn't find pod/i)) {
         note("Skipping POD coverage for $module (no POD present)");
         next;
     }
