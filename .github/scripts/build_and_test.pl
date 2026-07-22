@@ -132,6 +132,7 @@ sub build_package {
     $ENV{PATH} = $old_path;
     die "prove failed in $d with exit code $res" if $res != 0;
 
+    system("$make distcheck") == 0 or die "$make distcheck failed in $d";
     system("$make install") == 0 or die "$make install failed in $d";
     chdir ".." or die "Cannot chdir to ..: $!";
 }

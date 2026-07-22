@@ -285,19 +285,19 @@ EOF
     my $client_code;
     if (@methods) {
         # Generate methods POD block dynamically
-        my $methods_pod = "=head2 METHODS\n\nThe following RPC methods are available in this client:\n\n=over 4\n\n";
+        my $methods_pod = "\\=head2 METHODS\n\nThe following RPC methods are available in this client:\n\n\\=over 4\n\n";
         for my $m (@methods) {
-            $methods_pod .= sprintf(<<'EOF', $m->{perl_name}, $m->{raw_name});
-=item * B<%s>
+            $methods_pod .= sprintf(<<"EOF", $m->{perl_name}, $m->{raw_name});
+\\=item * B<%s>
 
 Calls the RPC method C<%s> on the service. Takes a hash of parameters representing the request.
 
 EOF
         }
-        $methods_pod .= "=back\n\n";
+        $methods_pod .= "\\=back\n\n";
 
         # Generate full gRPC service client wrapper
-        $client_code = sprintf(<<'EOF', $module_name, $bridge_code, $use_statements, $grpc_target, $methods_code, $module_name, $module_name, $module_name, $module_name, $module_name, $methods_pod);
+        $client_code = sprintf(<<"EOF", $module_name, $bridge_code, $use_statements, $grpc_target, $methods_code, $module_name, $module_name, $module_name, $module_name, $module_name, $methods_pod);
 package %s;
 
 use strict;
@@ -310,92 +310,92 @@ use Carp qw(croak);
 %s
 %s
 
-our $VERSION = '0.02';
+our \$VERSION = '0.02';
 
 has credentials => ( is => 'ro', required => 0 );
 has transport   => ( is => 'rw' );
 
 sub BUILD {
-    my ($self) = @_;
+    my (\$self) = \@_;
 
     # Resolve credentials: use passed credentials object if it implements get_token, or default to ADC
-    my $auth = $self->credentials;
-    if (!$auth || !eval { $auth->can('get_token') }) {
-        $auth = Google::Auth->default();
+    my \$auth = \$self->credentials;
+    if (!\$auth || !eval { \$auth->can('get_token') }) {
+        \$auth = Google::Auth->default();
     }
-    my $token = $auth->get_token();
+    my \$token = \$auth->get_token();
 
-    my $target = '%s';
-    my $t = $self->transport || 'grpc';
+    my \$target = '%s';
+    my \$t = \$self->transport || 'grpc';
 
-    if (ref($t) && eval { $t->can('call') }) {
+    if (ref(\$t) && eval { \$t->can('call') }) {
         # Already a transport object
-    } elsif (lc($t) eq 'rest') {
-        my $client = Google::Cloud::REST::Client->new(
-            target     => $target,
-            auth_token => $token,
+    } elsif (lc(\$t) eq 'rest') {
+        my \$client = Google::Cloud::REST::Client->new(
+            target     => \$target,
+            auth_token => \$token,
         );
-        $self->transport($client);
+        \$self->transport(\$client);
     } else {
         # Default high-performance HTTP/2 gRPC client
-        my $client = Google::gRPC::Client->new(
-            target     => $target,
-            auth_token => $token,
+        my \$client = Google::gRPC::Client->new(
+            target     => \$target,
+            auth_token => \$token,
         );
-        $self->transport($client);
+        \$self->transport(\$client);
     }
 }
 %s1; # End of %s
 
 __END__
 
-=head1 NAME
+\\=head1 NAME
 
 %s - Auto-generated client library for Google Cloud Services
 
-=head1 SYNOPSIS
+\\=head1 SYNOPSIS
 
     use %s;
     use Google::Auth;
 
     # Initialize Application Default Credentials (ADC) or explicit Google Auth
-    my $auth = Google::Auth->default();
-    my $client = %s->new( credentials => $auth );
+    my \$auth = Google::Auth->default();
+    my \$client = %s->new( credentials => \$auth );
 
     # Execute service methods
-    my $res = $client->some_method( %%params );
+    my \$res = \$client->some_method( %%params );
 
-=head1 DESCRIPTION
+\\=head1 DESCRIPTION
 
 This is an auto-generated Protocol Buffers client library for Google Cloud Services, built on top of high-performance gRPC and Protocol Buffers!
 
 It provides seamless integration with Google Cloud Application Default Credentials (ADC), support for both HTTP/2 gRPC and REST transports, and fully typed RPC method dispatching.
 
-=head1 CONSTRUCTOR
+\\=head1 CONSTRUCTOR
 
-=head2 new
+\\=head2 new
 
-    my $client = %s->new(
-        credentials => $auth,       # Optional: Google::Auth object (defaults to ADC)
+    my \$client = %s->new(
+        credentials => \$auth,       # Optional: Google::Auth object (defaults to ADC)
         transport   => 'grpc',     # Optional: 'grpc' (default) or 'rest'
     );
 
-=head1 METHODS
+\\=head1 METHODS
 
 %s
 
-=head1 LICENSE AND COPYRIGHT
+\\=head1 LICENSE AND COPYRIGHT
 
 Copyright (C) 2026 Google LLC
 
 This program is released under the Apache 2.0 license.
 
-=cut
+\\=cut
 EOF
     }
     else {
         # Generate a pure, lightweight schema container with no service dependencies
-        $client_code = sprintf(<<'EOF', $module_name, $bridge_code, $use_statements, $module_name, $module_name);
+        $client_code = sprintf(<<"EOF", $module_name, $bridge_code, $use_statements, $module_name, $module_name);
 package %s;
 
 use strict;
@@ -403,26 +403,26 @@ use warnings;
 %s
 %s
 
-our $VERSION = '0.02';
+our \$VERSION = '0.02';
 1; # End of %s
 
 __END__
 
-=head1 NAME
+\\=head1 NAME
 
 %s - Auto-generated Protocol Buffers schema container
 
-=head1 DESCRIPTION
+\\=head1 DESCRIPTION
 
 This is an auto-generated Protocol Buffers schema container module for Google Cloud Services.
 
-=head1 LICENSE AND COPYRIGHT
+\\=head1 LICENSE AND COPYRIGHT
 
 Copyright (C) 2026 Google LLC
 
 This program is released under the Apache 2.0 license.
 
-=cut
+\\=cut
 EOF
     }
 
@@ -789,7 +789,7 @@ Version 0.02
 =head1 SYNOPSIS
 
     use Module::Starter qw(Module::Starter::Protobuf);
-    
+
     # Or from the command line:
     # PROTOBUF_FILES=protos/my_service.proto module-starter --module=My::Client --plugin=Module::Starter::Protobuf
 
