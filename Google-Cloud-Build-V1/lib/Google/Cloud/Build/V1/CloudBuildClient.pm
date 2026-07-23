@@ -54,7 +54,7 @@ sub create_build {
     my $request_class = 'Google::Devtools::Cloudbuild::V1::Cloudbuild::CreateBuildRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Longrunning::Operation::Operation';
+    my $response_class = 'Google::Longrunning::Operations::Operation';
     my $response = $self->transport->call({
         service        => 'google.devtools.cloudbuild.v1.CloudBuild',
         method         => 'CreateBuild',

@@ -15,6 +15,11 @@ sub get_token {
     return 'mock-token';
 }
 
+# B2. Mock Google::Longrunning::Operations
+package Google::Longrunning::Operations::Operation;
+BEGIN { $INC{'Google/Longrunning/Operations.pm'} = 1; }
+sub new { return bless {}, shift; }
+
 # B. Mock Google::gRPC::Client
 package Google::gRPC::Client;
 BEGIN { $INC{'Google/gRPC/Client.pm'} = 1; }
@@ -46,13 +51,13 @@ subtest 'create_build method' => sub {
         is($args->{method}, 'CreateBuild', 'Correct RPC method');
         isa_ok($args->{request}, 'Google::Devtools::Cloudbuild::V1::Cloudbuild::CreateBuildRequest', 'Request object');
         
-        my $response = 'Google::Longrunning::Operation::Operation'->new();
+        my $response = 'Google::Longrunning::Operations::Operation'->new();
         return $response;
     };
     
     my $res = $client->create_build();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Longrunning::Operation::Operation', 'Response object class');
+    isa_ok($res, 'Google::Longrunning::Operations::Operation', 'Response object class');
     done_testing();
 };
 
