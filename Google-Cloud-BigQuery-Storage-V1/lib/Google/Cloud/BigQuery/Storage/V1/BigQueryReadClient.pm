@@ -10,13 +10,13 @@ use Carp qw(croak);
 
 use Protobuf;
 use Google::Api::Common;
-use Google::Cloud::Bigquery::Storage::V1::Avro;
-use Google::Cloud::Bigquery::Storage::V1::Stream;
 use Google::Cloud::Bigquery::Storage::V1::Annotations;
-use Google::Cloud::Bigquery::Storage::V1::Table;
-use Google::Cloud::Bigquery::Storage::V1::Storage;
-use Google::Cloud::Bigquery::Storage::V1::Protobuf;
 use Google::Cloud::Bigquery::Storage::V1::Arrow;
+use Google::Cloud::Bigquery::Storage::V1::Avro;
+use Google::Cloud::Bigquery::Storage::V1::Protobuf;
+use Google::Cloud::Bigquery::Storage::V1::Storage;
+use Google::Cloud::Bigquery::Storage::V1::Stream;
+use Google::Cloud::Bigquery::Storage::V1::Table;
 
 our $VERSION = '0.03';
 
@@ -33,7 +33,7 @@ sub BUILD {
     }
     my $token = $auth->get_token();
 
-    my $target = 'localhost:50051';
+    my $target = 'bigquerystorage.googleapis.com';
     my $t = $self->transport || 'grpc';
 
     if (ref($t) && eval { $t->can('call') }) {
