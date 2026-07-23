@@ -186,6 +186,29 @@ sub _generate_client_wrapper {
     my $package_name = '';
     my $service_name = '';
 
+    # Pre-scan messages across all files to build a dictionary
+    $self->{_message_file_base} = {};
+    for my $proto_file (@{$self->{_protobuf_files}}) {
+        my $content = path($proto_file)->slurp_utf8();
+        $content =~ s{ // .*? $ }{}gmx;
+        $content =~ s{ /\* .*? \*/ }{}gsx;
+        
+        my $pkg = '';
+        if ($content =~ / package \s+ ([\w\.]+) ; /x) {
+            $pkg = $1;
+        }
+        
+        my $fname = basename($proto_file);
+        $fname =~ s/\.proto$//;
+        my $pm_base = join '', map { ucfirst($_) } split /_/, $fname;
+        
+        while ($content =~ / message \s+ (\w+) /gsx) {
+            my $msg = $1;
+            $self->{_message_file_base}->{"$pkg.$msg"} = $pm_base;
+            $self->{_message_file_base}->{$msg} = $pm_base; # Fallback
+        }
+    }
+
     # Loop over and parse all proto files in the list!
     for my $proto_file (@{$self->{_protobuf_files}}) {
         my $proto_content = path($proto_file)->slurp_utf8();
@@ -225,8 +248,8 @@ sub _generate_client_wrapper {
             elsif ($file_service_name && $2) {
                 my ($method_name, $input_type, $output_type) = ($2, $3, $4);
                 
-                my $input_class = _resolve_perl_type($input_type, $file_package, $message_prefix);
-                my $output_class = _resolve_perl_type($output_type, $file_package, $message_prefix);
+                my $input_class = $self->_resolve_perl_type($input_type, $file_package, $message_prefix);
+                my $output_class = $self->_resolve_perl_type($output_type, $file_package, $message_prefix);
                 
                 my $perl_method_name = _camel_to_snake($method_name);
                 my $grpc_service_path = $file_package . '.' . $file_service_name;
@@ -665,7 +688,7 @@ sub _proto_to_perl_namespace {
 
 # Utility: Resolve fully-qualified or relative proto type to Perl package name
 sub _resolve_perl_type {
-    my ($raw_type, $current_file_package, $message_prefix) = @_;
+    my ($self, $raw_type, $current_file_package, $message_prefix) = @_;
     
     # Strip any leading dot (e.g. .google.protobuf.Empty -> google.protobuf.Empty)
     $raw_type =~ s/^\.//;
@@ -681,7 +704,10 @@ sub _resolve_perl_type {
         # Determine the compiled file-module namespace part (CamelCase filename)
         my $file_base = '';
         
-        if ($package eq 'google.protobuf') {
+        if (my $mapped_base = $self->{_message_file_base}->{"$package.$message_name"}) {
+            $file_base = $mapped_base;
+        }
+        elsif ($package eq 'google.protobuf') {
             # Descriptor options and schemas are in descriptor.proto
             if ($message_name =~ /Descriptor/ || $message_name =~ /Options/ || $message_name eq 'FileDescriptorSet') {
                 $file_base = 'Descriptor';
@@ -709,6 +735,10 @@ sub _resolve_perl_type {
     }
     else {
         # It is a relative type!
+        if (my $file_base = $self->{_message_file_base}->{"$current_file_package.$raw_type"} || $self->{_message_file_base}->{$raw_type}) {
+            my $perl_package_prefix = _proto_to_perl_namespace($current_file_package);
+            return $perl_package_prefix . '::' . $file_base . '::' . $raw_type;
+        }
         return $message_prefix . '::' . $raw_type;
     }
 }
