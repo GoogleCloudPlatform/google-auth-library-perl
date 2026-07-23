@@ -46,13 +46,13 @@ subtest 'set_iam_policy method' => sub {
         is($args->{method}, 'SetIamPolicy', 'Correct RPC method');
         isa_ok($args->{request}, 'Google::Iam::V1::IamPolicy::SetIamPolicyRequest', 'Request object');
         
-        my $response = 'Google::Iam::V1::IamPolicy::Policy'->new();
+        my $response = 'Google::Iam::V1::Policy::Policy'->new();
         return $response;
     };
     
     my $res = $client->set_iam_policy();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Iam::V1::IamPolicy::Policy', 'Response object class');
+    isa_ok($res, 'Google::Iam::V1::Policy::Policy', 'Response object class');
     done_testing();
 };
 
@@ -63,13 +63,13 @@ subtest 'get_iam_policy method' => sub {
         is($args->{method}, 'GetIamPolicy', 'Correct RPC method');
         isa_ok($args->{request}, 'Google::Iam::V1::IamPolicy::GetIamPolicyRequest', 'Request object');
         
-        my $response = 'Google::Iam::V1::IamPolicy::Policy'->new();
+        my $response = 'Google::Iam::V1::Policy::Policy'->new();
         return $response;
     };
     
     my $res = $client->get_iam_policy();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Iam::V1::IamPolicy::Policy', 'Response object class');
+    isa_ok($res, 'Google::Iam::V1::Policy::Policy', 'Response object class');
     done_testing();
 };
 

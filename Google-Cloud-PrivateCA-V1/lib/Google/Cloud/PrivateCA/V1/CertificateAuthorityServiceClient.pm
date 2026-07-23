@@ -55,7 +55,7 @@ sub create_certificate {
     my $request_class = 'Google::Cloud::Security::Privateca::V1::Service::CreateCertificateRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Security::Privateca::V1::Service::Certificate';
+    my $response_class = 'Google::Cloud::Security::Privateca::V1::Resources::Certificate';
     my $response = $self->transport->call({
         service        => 'google.cloud.security.privateca.v1.CertificateAuthorityService',
         method         => 'CreateCertificate',
@@ -100,6 +100,20 @@ Google::Cloud::PrivateCA::V1::CertificateAuthorityServiceClient - Client library
 C<Google::Cloud::PrivateCA::V1::CertificateAuthorityServiceClient> is an auto-generated client library for Google Cloud Services.
 
 It provides a unified client interface supporting both high-performance HTTP/2 gRPC and HTTP/REST transports, with automatic Google Cloud Application Default Credentials (ADC) resolution and typed Protocol Buffers message handling.
+
+=head1 SOURCE
+
+Generated from the following Protocol Buffers schemas:
+
+=over 4
+
+=item * C<googleapis/google/cloud/security/privateca/v1/resources.proto>
+
+=item * C<googleapis/google/cloud/security/privateca/v1/service.proto>
+
+
+
+=back
 
 =head1 CONSTRUCTOR
 

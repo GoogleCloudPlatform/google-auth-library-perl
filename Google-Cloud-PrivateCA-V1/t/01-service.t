@@ -46,13 +46,13 @@ subtest 'create_certificate method' => sub {
         is($args->{method}, 'CreateCertificate', 'Correct RPC method');
         isa_ok($args->{request}, 'Google::Cloud::Security::Privateca::V1::Service::CreateCertificateRequest', 'Request object');
         
-        my $response = 'Google::Cloud::Security::Privateca::V1::Service::Certificate'->new();
+        my $response = 'Google::Cloud::Security::Privateca::V1::Resources::Certificate'->new();
         return $response;
     };
     
     my $res = $client->create_certificate();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Cloud::Security::Privateca::V1::Service::Certificate', 'Response object class');
+    isa_ok($res, 'Google::Cloud::Security::Privateca::V1::Resources::Certificate', 'Response object class');
     done_testing();
 };
 

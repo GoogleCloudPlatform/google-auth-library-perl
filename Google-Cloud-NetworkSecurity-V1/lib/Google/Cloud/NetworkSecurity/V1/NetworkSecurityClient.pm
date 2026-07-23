@@ -142,10 +142,10 @@ sub list_address_groups {
 sub list_authorization_policies {
     my ($self, %params) = @_;
 
-    my $request_class = 'Google::Cloud::Networksecurity::V1::NetworkSecurity::ListAuthorizationPoliciesRequest';
+    my $request_class = 'Google::Cloud::Networksecurity::V1::AuthorizationPolicy::ListAuthorizationPoliciesRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Networksecurity::V1::NetworkSecurity::ListAuthorizationPoliciesResponse';
+    my $response_class = 'Google::Cloud::Networksecurity::V1::AuthorizationPolicy::ListAuthorizationPoliciesResponse';
     my $response = $self->transport->call({
         service        => 'google.cloud.networksecurity.v1.NetworkSecurity',
         method         => 'ListAuthorizationPolicies',
@@ -241,6 +241,64 @@ Google::Cloud::NetworkSecurity::V1::NetworkSecurityClient - Client library for G
 C<Google::Cloud::NetworkSecurity::V1::NetworkSecurityClient> is an auto-generated client library for Google Cloud Services.
 
 It provides a unified client interface supporting both high-performance HTTP/2 gRPC and HTTP/REST transports, with automatic Google Cloud Application Default Credentials (ADC) resolution and typed Protocol Buffers message handling.
+
+=head1 SOURCE
+
+Generated from the following Protocol Buffers schemas:
+
+=over 4
+
+=item * C<googleapis/google/cloud/networksecurity/v1/tls_inspection_policy.proto>
+
+=item * C<googleapis/google/cloud/networksecurity/v1/client_tls_policy.proto>
+
+=item * C<googleapis/google/cloud/networksecurity/v1/gateway_security_policy_rule.proto>
+
+=item * C<googleapis/google/cloud/networksecurity/v1/sse_realm.proto>
+
+=item * C<googleapis/google/cloud/networksecurity/v1/dns_threat_detector.proto>
+
+=item * C<googleapis/google/cloud/networksecurity/v1/authorization_policy.proto>
+
+=item * C<googleapis/google/cloud/networksecurity/v1/intercept.proto>
+
+=item * C<googleapis/google/cloud/networksecurity/v1/url_list.proto>
+
+=item * C<googleapis/google/cloud/networksecurity/v1/tls.proto>
+
+=item * C<googleapis/google/cloud/networksecurity/v1/security_profile_group_urlfiltering.proto>
+
+=item * C<googleapis/google/cloud/networksecurity/v1/gateway_security_policy.proto>
+
+=item * C<googleapis/google/cloud/networksecurity/v1/address_group.proto>
+
+=item * C<googleapis/google/cloud/networksecurity/v1/network_security.proto>
+
+=item * C<googleapis/google/cloud/networksecurity/v1/backend_authentication_config.proto>
+
+=item * C<googleapis/google/cloud/networksecurity/v1/authz_policy.proto>
+
+=item * C<googleapis/google/cloud/networksecurity/v1/security_profile_group_threatprevention.proto>
+
+=item * C<googleapis/google/cloud/networksecurity/v1/common.proto>
+
+=item * C<googleapis/google/cloud/networksecurity/v1/security_profile_group_intercept.proto>
+
+=item * C<googleapis/google/cloud/networksecurity/v1/mirroring.proto>
+
+=item * C<googleapis/google/cloud/networksecurity/v1/security_profile_group.proto>
+
+=item * C<googleapis/google/cloud/networksecurity/v1/security_profile_group_service.proto>
+
+=item * C<googleapis/google/cloud/networksecurity/v1/server_tls_policy.proto>
+
+=item * C<googleapis/google/cloud/networksecurity/v1/security_profile_group_mirroring.proto>
+
+=item * C<googleapis/google/cloud/networksecurity/v1/firewall_activation.proto>
+
+
+
+=back
 
 =head1 CONSTRUCTOR
 

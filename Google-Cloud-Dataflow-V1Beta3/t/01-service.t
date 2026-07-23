@@ -46,13 +46,13 @@ subtest 'create_job_from_template method' => sub {
         is($args->{method}, 'CreateJobFromTemplate', 'Correct RPC method');
         isa_ok($args->{request}, 'Google::Dataflow::V1BETA3::Templates::CreateJobFromTemplateRequest', 'Request object');
         
-        my $response = 'Google::Dataflow::V1BETA3::Templates::Job'->new();
+        my $response = 'Google::Dataflow::V1BETA3::Jobs::Job'->new();
         return $response;
     };
     
     my $res = $client->create_job_from_template();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Dataflow::V1BETA3::Templates::Job', 'Response object class');
+    isa_ok($res, 'Google::Dataflow::V1BETA3::Jobs::Job', 'Response object class');
     done_testing();
 };
 
@@ -284,13 +284,13 @@ subtest 'snapshot_job method' => sub {
         is($args->{method}, 'SnapshotJob', 'Correct RPC method');
         isa_ok($args->{request}, 'Google::Dataflow::V1BETA3::Jobs::SnapshotJobRequest', 'Request object');
         
-        my $response = 'Google::Dataflow::V1BETA3::Jobs::Snapshot'->new();
+        my $response = 'Google::Dataflow::V1BETA3::Snapshots::Snapshot'->new();
         return $response;
     };
     
     my $res = $client->snapshot_job();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Dataflow::V1BETA3::Jobs::Snapshot', 'Response object class');
+    isa_ok($res, 'Google::Dataflow::V1BETA3::Snapshots::Snapshot', 'Response object class');
     done_testing();
 };
 

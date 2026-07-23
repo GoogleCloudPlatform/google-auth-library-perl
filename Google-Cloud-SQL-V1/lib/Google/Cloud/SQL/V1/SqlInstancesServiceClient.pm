@@ -70,7 +70,7 @@ sub get {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlOperations::SqlOperationsGetRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlOperations::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlOperationsService',
         method         => 'Get',
@@ -138,7 +138,7 @@ sub delete {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlUsers::SqlUsersDeleteRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlUsers::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlUsersService',
         method         => 'Delete',
@@ -172,7 +172,7 @@ sub insert {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlUsers::SqlUsersInsertRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlUsers::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlUsersService',
         method         => 'Insert',
@@ -206,7 +206,7 @@ sub update {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlUsers::SqlUsersUpdateRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlUsers::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlUsersService',
         method         => 'Update',
@@ -223,7 +223,7 @@ sub delete {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlSslCerts::SqlSslCertsDeleteRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlSslCerts::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlSslCertsService',
         method         => 'Delete',
@@ -240,7 +240,7 @@ sub get {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlSslCerts::SqlSslCertsGetRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlSslCerts::SslCert';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::SslCert';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlSslCertsService',
         method         => 'Get',
@@ -291,7 +291,7 @@ sub add_server_ca {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesAddServerCaRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlInstancesService',
         method         => 'AddServerCa',
@@ -308,7 +308,7 @@ sub add_server_certificate {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesAddServerCertificateRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlInstancesService',
         method         => 'AddServerCertificate',
@@ -325,7 +325,7 @@ sub add_entra_id_certificate {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesAddEntraIdCertificateRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlInstancesService',
         method         => 'AddEntraIdCertificate',
@@ -342,7 +342,7 @@ sub clone {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesCloneRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlInstancesService',
         method         => 'Clone',
@@ -359,7 +359,7 @@ sub delete {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesDeleteRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlInstancesService',
         method         => 'Delete',
@@ -376,7 +376,7 @@ sub demote_master {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesDemoteMasterRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlInstancesService',
         method         => 'DemoteMaster',
@@ -393,7 +393,7 @@ sub demote {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesDemoteRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlInstancesService',
         method         => 'Demote',
@@ -410,7 +410,7 @@ sub export {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesExportRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlInstancesService',
         method         => 'Export',
@@ -427,7 +427,7 @@ sub failover {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesFailoverRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlInstancesService',
         method         => 'Failover',
@@ -444,7 +444,7 @@ sub reencrypt {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesReencryptRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlInstancesService',
         method         => 'Reencrypt',
@@ -478,7 +478,7 @@ sub import {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesImportRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlInstancesService',
         method         => 'Import',
@@ -495,7 +495,7 @@ sub insert {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesInsertRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlInstancesService',
         method         => 'Insert',
@@ -580,7 +580,7 @@ sub patch {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesPatchRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlInstancesService',
         method         => 'Patch',
@@ -597,7 +597,7 @@ sub promote_replica {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesPromoteReplicaRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlInstancesService',
         method         => 'PromoteReplica',
@@ -614,7 +614,7 @@ sub switchover {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesSwitchoverRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlInstancesService',
         method         => 'Switchover',
@@ -631,7 +631,7 @@ sub reset_ssl_config {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesResetSslConfigRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlInstancesService',
         method         => 'ResetSslConfig',
@@ -648,7 +648,7 @@ sub restart {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesRestartRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlInstancesService',
         method         => 'Restart',
@@ -665,7 +665,7 @@ sub restore_backup {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesRestoreBackupRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlInstancesService',
         method         => 'RestoreBackup',
@@ -682,7 +682,7 @@ sub rotate_server_ca {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesRotateServerCaRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlInstancesService',
         method         => 'RotateServerCa',
@@ -699,7 +699,7 @@ sub rotate_server_certificate {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesRotateServerCertificateRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlInstancesService',
         method         => 'RotateServerCertificate',
@@ -716,7 +716,7 @@ sub rotate_entra_id_certificate {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesRotateEntraIdCertificateRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlInstancesService',
         method         => 'RotateEntraIdCertificate',
@@ -733,7 +733,7 @@ sub start_replica {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesStartReplicaRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlInstancesService',
         method         => 'StartReplica',
@@ -750,7 +750,7 @@ sub stop_replica {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesStopReplicaRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlInstancesService',
         method         => 'StopReplica',
@@ -767,7 +767,7 @@ sub truncate_log {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesTruncateLogRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlInstancesService',
         method         => 'TruncateLog',
@@ -784,7 +784,7 @@ sub update {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesUpdateRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlInstancesService',
         method         => 'Update',
@@ -801,7 +801,7 @@ sub create_ephemeral {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesCreateEphemeralCertRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SslCert';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::SslCert';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlInstancesService',
         method         => 'CreateEphemeral',
@@ -818,7 +818,7 @@ sub reschedule_maintenance {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesRescheduleMaintenanceRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlInstancesService',
         method         => 'RescheduleMaintenance',
@@ -852,7 +852,7 @@ sub start_external_sync {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesStartExternalSyncRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlInstancesService',
         method         => 'StartExternalSync',
@@ -869,7 +869,7 @@ sub perform_disk_shrink {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesPerformDiskShrinkRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlInstancesService',
         method         => 'PerformDiskShrink',
@@ -903,7 +903,7 @@ sub reset_replica_size {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesResetReplicaSizeRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlInstancesService',
         method         => 'ResetReplicaSize',
@@ -988,7 +988,7 @@ sub pre_check_major_version_upgrade {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesPreCheckMajorVersionUpgradeRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlInstancesService',
         method         => 'PreCheckMajorVersionUpgrade',
@@ -1005,7 +1005,7 @@ sub point_in_time_restore {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesPointInTimeRestoreRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlInstancesService',
         method         => 'PointInTimeRestore',
@@ -1022,7 +1022,7 @@ sub delete {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlBackupRuns::SqlBackupRunsDeleteRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlBackupRuns::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlBackupRunsService',
         method         => 'Delete',
@@ -1056,7 +1056,7 @@ sub insert {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlBackupRuns::SqlBackupRunsInsertRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlBackupRuns::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlBackupRunsService',
         method         => 'Insert',
@@ -1141,7 +1141,7 @@ sub delete {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlDatabases::SqlDatabasesDeleteRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlDatabases::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlDatabasesService',
         method         => 'Delete',
@@ -1158,7 +1158,7 @@ sub get {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlDatabases::SqlDatabasesGetRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlDatabases::Database';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Database';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlDatabasesService',
         method         => 'Get',
@@ -1175,7 +1175,7 @@ sub insert {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlDatabases::SqlDatabasesInsertRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlDatabases::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlDatabasesService',
         method         => 'Insert',
@@ -1209,7 +1209,7 @@ sub patch {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlDatabases::SqlDatabasesUpdateRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlDatabases::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlDatabasesService',
         method         => 'Patch',
@@ -1226,7 +1226,7 @@ sub update {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlDatabases::SqlDatabasesUpdateRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlDatabases::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlDatabasesService',
         method         => 'Update',
@@ -1243,7 +1243,7 @@ sub create_backup {
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlBackups::CreateBackupRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlBackups::Operation';
+    my $response_class = 'Google::Cloud::Sql::V1::CloudSqlResources::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.sql.v1.SqlBackupsService',
         method         => 'CreateBackup',
@@ -1288,6 +1288,50 @@ Google::Cloud::SQL::V1::SqlInstancesServiceClient - Client library for Google Cl
 C<Google::Cloud::SQL::V1::SqlInstancesServiceClient> is an auto-generated client library for Google Cloud Services.
 
 It provides a unified client interface supporting both high-performance HTTP/2 gRPC and HTTP/REST transports, with automatic Google Cloud Application Default Credentials (ADC) resolution and typed Protocol Buffers message handling.
+
+=head1 SOURCE
+
+Generated from the following Protocol Buffers schemas:
+
+=over 4
+
+=item * C<googleapis/google/cloud/sql/v1/cloud_sql_resources.proto>
+
+=item * C<googleapis/google/cloud/sql/v1/cloud_sql_operations.proto>
+
+=item * C<googleapis/google/cloud/sql/v1/cloud_sql_tiers.proto>
+
+=item * C<googleapis/google/cloud/sql/v1/cloud_sql_events.proto>
+
+=item * C<googleapis/google/cloud/sql/v1/cloud_sql_users.proto>
+
+=item * C<googleapis/google/cloud/sql/v1/cloud_sql_iam_policies.proto>
+
+=item * C<googleapis/google/cloud/sql/v1/cloud_sql_available_database_versions.proto>
+
+=item * C<googleapis/google/cloud/sql/v1/cloud_sql_ssl_certs.proto>
+
+=item * C<googleapis/google/cloud/sql/v1/cloud_sql_instance_names.proto>
+
+=item * C<googleapis/google/cloud/sql/v1/cloud_sql_instances.proto>
+
+=item * C<googleapis/google/cloud/sql/v1/cloud_sql_backup_runs.proto>
+
+=item * C<googleapis/google/cloud/sql/v1/cloud_sql_regions.proto>
+
+=item * C<googleapis/google/cloud/sql/v1/cloud_sql_connect.proto>
+
+=item * C<googleapis/google/cloud/sql/v1/cloud_sql_flags.proto>
+
+=item * C<googleapis/google/cloud/sql/v1/cloud_sql_feature_eligibility.proto>
+
+=item * C<googleapis/google/cloud/sql/v1/cloud_sql_databases.proto>
+
+=item * C<googleapis/google/cloud/sql/v1/cloud_sql_backups.proto>
+
+
+
+=back
 
 =head1 CONSTRUCTOR
 

@@ -114,13 +114,13 @@ subtest 'create_entity method' => sub {
         is($args->{method}, 'CreateEntity', 'Correct RPC method');
         isa_ok($args->{request}, 'Google::Cloud::Dataplex::V1::Metadata::CreateEntityRequest', 'Request object');
         
-        my $response = 'Google::Cloud::Dataplex::V1::Metadata::Entity'->new();
+        my $response = 'Google::Cloud::Dataplex::V1::Logs::Entity'->new();
         return $response;
     };
     
     my $res = $client->create_entity();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Cloud::Dataplex::V1::Metadata::Entity', 'Response object class');
+    isa_ok($res, 'Google::Cloud::Dataplex::V1::Logs::Entity', 'Response object class');
     done_testing();
 };
 

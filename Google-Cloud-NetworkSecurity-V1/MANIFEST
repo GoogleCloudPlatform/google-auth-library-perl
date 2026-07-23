@@ -57,3 +57,4 @@ t/02-rest-transport.t
 t/manifest.t
 t/pod-coverage.t
 t/pod.t
+xt/00_perl-critic.t

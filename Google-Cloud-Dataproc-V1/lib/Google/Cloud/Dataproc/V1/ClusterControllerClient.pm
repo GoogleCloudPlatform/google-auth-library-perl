@@ -449,6 +449,36 @@ C<Google::Cloud::Dataproc::V1::ClusterControllerClient> is an auto-generated cli
 
 It provides a unified client interface supporting both high-performance HTTP/2 gRPC and HTTP/REST transports, with automatic Google Cloud Application Default Credentials (ADC) resolution and typed Protocol Buffers message handling.
 
+=head1 SOURCE
+
+Generated from the following Protocol Buffers schemas:
+
+=over 4
+
+=item * C<googleapis/google/cloud/dataproc/v1/session_templates.proto>
+
+=item * C<googleapis/google/cloud/dataproc/v1/batches.proto>
+
+=item * C<googleapis/google/cloud/dataproc/v1/shared.proto>
+
+=item * C<googleapis/google/cloud/dataproc/v1/autoscaling_policies.proto>
+
+=item * C<googleapis/google/cloud/dataproc/v1/node_groups.proto>
+
+=item * C<googleapis/google/cloud/dataproc/v1/workflow_templates.proto>
+
+=item * C<googleapis/google/cloud/dataproc/v1/clusters.proto>
+
+=item * C<googleapis/google/cloud/dataproc/v1/jobs.proto>
+
+=item * C<googleapis/google/cloud/dataproc/v1/operations.proto>
+
+=item * C<googleapis/google/cloud/dataproc/v1/sessions.proto>
+
+
+
+=back
+
 =head1 CONSTRUCTOR
 
 =head2 new

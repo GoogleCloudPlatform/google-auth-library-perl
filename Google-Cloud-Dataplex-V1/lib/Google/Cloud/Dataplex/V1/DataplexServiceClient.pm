@@ -143,7 +143,7 @@ sub create_entity {
     my $request_class = 'Google::Cloud::Dataplex::V1::Metadata::CreateEntityRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Dataplex::V1::Metadata::Entity';
+    my $response_class = 'Google::Cloud::Dataplex::V1::Logs::Entity';
     my $response = $self->transport->call({
         service        => 'google.cloud.dataplex.v1.MetadataService',
         method         => 'CreateEntity',
@@ -239,6 +239,60 @@ Google::Cloud::Dataplex::V1::DataplexServiceClient - Client library for Google C
 C<Google::Cloud::Dataplex::V1::DataplexServiceClient> is an auto-generated client library for Google Cloud Services.
 
 It provides a unified client interface supporting both high-performance HTTP/2 gRPC and HTTP/REST transports, with automatic Google Cloud Application Default Credentials (ADC) resolution and typed Protocol Buffers message handling.
+
+=head1 SOURCE
+
+Generated from the following Protocol Buffers schemas:
+
+=over 4
+
+=item * C<googleapis/google/cloud/dataplex/v1/data_quality.proto>
+
+=item * C<googleapis/google/cloud/dataplex/v1/resources.proto>
+
+=item * C<googleapis/google/cloud/dataplex/v1/datascans_common.proto>
+
+=item * C<googleapis/google/cloud/dataplex/v1/service.proto>
+
+=item * C<googleapis/google/cloud/dataplex/v1/datascans.proto>
+
+=item * C<googleapis/google/cloud/dataplex/v1/data_profile.proto>
+
+=item * C<googleapis/google/cloud/dataplex/v1/cmek.proto>
+
+=item * C<googleapis/google/cloud/dataplex/v1/business_glossary.proto>
+
+=item * C<googleapis/google/cloud/dataplex/v1/metadata.proto>
+
+=item * C<googleapis/google/cloud/dataplex/v1/logs.proto>
+
+=item * C<googleapis/google/cloud/dataplex/v1/data_taxonomy.proto>
+
+=item * C<googleapis/google/cloud/dataplex/v1/security.proto>
+
+=item * C<googleapis/google/cloud/dataplex/v1/catalog.proto>
+
+=item * C<googleapis/google/cloud/dataplex/v1/approval_workflow.proto>
+
+=item * C<googleapis/google/cloud/dataplex/v1/data_quality_rule_template.proto>
+
+=item * C<googleapis/google/cloud/dataplex/v1/data_documentation.proto>
+
+=item * C<googleapis/google/cloud/dataplex/v1/processing.proto>
+
+=item * C<googleapis/google/cloud/dataplex/v1/data_discovery.proto>
+
+=item * C<googleapis/google/cloud/dataplex/v1/content.proto>
+
+=item * C<googleapis/google/cloud/dataplex/v1/data_products.proto>
+
+=item * C<googleapis/google/cloud/dataplex/v1/tasks.proto>
+
+=item * C<googleapis/google/cloud/dataplex/v1/analyze.proto>
+
+
+
+=back
 
 =head1 CONSTRUCTOR
 

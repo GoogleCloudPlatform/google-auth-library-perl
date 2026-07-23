@@ -82,10 +82,10 @@ sub list_lb_traffic_extensions {
 sub list_endpoint_policies {
     my ($self, %params) = @_;
 
-    my $request_class = 'Google::Cloud::Networkservices::V1::NetworkServices::ListEndpointPoliciesRequest';
+    my $request_class = 'Google::Cloud::Networkservices::V1::EndpointPolicy::ListEndpointPoliciesRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Networkservices::V1::NetworkServices::ListEndpointPoliciesResponse';
+    my $response_class = 'Google::Cloud::Networkservices::V1::EndpointPolicy::ListEndpointPoliciesResponse';
     my $response = $self->transport->call({
         service        => 'google.cloud.networkservices.v1.NetworkServices',
         method         => 'ListEndpointPolicies',
@@ -130,6 +130,46 @@ Google::Cloud::NetworkServices::V1::NetworkServicesClient - Client library for G
 C<Google::Cloud::NetworkServices::V1::NetworkServicesClient> is an auto-generated client library for Google Cloud Services.
 
 It provides a unified client interface supporting both high-performance HTTP/2 gRPC and HTTP/REST transports, with automatic Google Cloud Application Default Credentials (ADC) resolution and typed Protocol Buffers message handling.
+
+=head1 SOURCE
+
+Generated from the following Protocol Buffers schemas:
+
+=over 4
+
+=item * C<googleapis/google/cloud/networkservices/v1/agent_gateway.proto>
+
+=item * C<googleapis/google/cloud/networkservices/v1/grpc_route.proto>
+
+=item * C<googleapis/google/cloud/networkservices/v1/tcp_route.proto>
+
+=item * C<googleapis/google/cloud/networkservices/v1/service_binding.proto>
+
+=item * C<googleapis/google/cloud/networkservices/v1/endpoint_policy.proto>
+
+=item * C<googleapis/google/cloud/networkservices/v1/tls_route.proto>
+
+=item * C<googleapis/google/cloud/networkservices/v1/mesh.proto>
+
+=item * C<googleapis/google/cloud/networkservices/v1/dep.proto>
+
+=item * C<googleapis/google/cloud/networkservices/v1/http_route.proto>
+
+=item * C<googleapis/google/cloud/networkservices/v1/extensibility.proto>
+
+=item * C<googleapis/google/cloud/networkservices/v1/service_lb_policy.proto>
+
+=item * C<googleapis/google/cloud/networkservices/v1/common.proto>
+
+=item * C<googleapis/google/cloud/networkservices/v1/route_view.proto>
+
+=item * C<googleapis/google/cloud/networkservices/v1/network_services.proto>
+
+=item * C<googleapis/google/cloud/networkservices/v1/gateway.proto>
+
+
+
+=back
 
 =head1 CONSTRUCTOR
 

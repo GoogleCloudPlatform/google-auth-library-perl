@@ -101,6 +101,20 @@ C<Google::Cloud::SecretManager::V1::SecretManagerServiceClient> is an auto-gener
 
 It provides a unified client interface supporting both high-performance HTTP/2 gRPC and HTTP/REST transports, with automatic Google Cloud Application Default Credentials (ADC) resolution and typed Protocol Buffers message handling.
 
+=head1 SOURCE
+
+Generated from the following Protocol Buffers schemas:
+
+=over 4
+
+=item * C<googleapis/google/cloud/secretmanager/v1/resources.proto>
+
+=item * C<googleapis/google/cloud/secretmanager/v1/service.proto>
+
+
+
+=back
+
 =head1 CONSTRUCTOR
 
 =head2 new

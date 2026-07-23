@@ -112,15 +112,15 @@ subtest 'list_authorization_policies method' => sub {
         my ($args) = @_;
         is($args->{service}, 'google.cloud.networksecurity.v1.NetworkSecurity', 'Correct service path');
         is($args->{method}, 'ListAuthorizationPolicies', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Cloud::Networksecurity::V1::NetworkSecurity::ListAuthorizationPoliciesRequest', 'Request object');
+        isa_ok($args->{request}, 'Google::Cloud::Networksecurity::V1::AuthorizationPolicy::ListAuthorizationPoliciesRequest', 'Request object');
         
-        my $response = 'Google::Cloud::Networksecurity::V1::NetworkSecurity::ListAuthorizationPoliciesResponse'->new();
+        my $response = 'Google::Cloud::Networksecurity::V1::AuthorizationPolicy::ListAuthorizationPoliciesResponse'->new();
         return $response;
     };
     
     my $res = $client->list_authorization_policies();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Cloud::Networksecurity::V1::NetworkSecurity::ListAuthorizationPoliciesResponse', 'Response object class');
+    isa_ok($res, 'Google::Cloud::Networksecurity::V1::AuthorizationPolicy::ListAuthorizationPoliciesResponse', 'Response object class');
     done_testing();
 };
 

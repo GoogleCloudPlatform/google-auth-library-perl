@@ -10,13 +10,13 @@ use Carp qw(croak);
 
 use Protobuf;
 use Google::Api::Common;
-use Google::Cloud::Bigquery::Storage::V1::Annotations;
-use Google::Cloud::Bigquery::Storage::V1::Arrow;
 use Google::Cloud::Bigquery::Storage::V1::Avro;
-use Google::Cloud::Bigquery::Storage::V1::Protobuf;
-use Google::Cloud::Bigquery::Storage::V1::Storage;
 use Google::Cloud::Bigquery::Storage::V1::Stream;
+use Google::Cloud::Bigquery::Storage::V1::Annotations;
 use Google::Cloud::Bigquery::Storage::V1::Table;
+use Google::Cloud::Bigquery::Storage::V1::Storage;
+use Google::Cloud::Bigquery::Storage::V1::Protobuf;
+use Google::Cloud::Bigquery::Storage::V1::Arrow;
 
 our $VERSION = '0.03';
 
@@ -33,7 +33,7 @@ sub BUILD {
     }
     my $token = $auth->get_token();
 
-    my $target = 'bigquerystorage.googleapis.com';
+    my $target = 'localhost:50051';
     my $t = $self->transport || 'grpc';
 
     if (ref($t) && eval { $t->can('call') }) {
@@ -105,6 +105,30 @@ Google::Cloud::BigQuery::Storage::V1::BigQueryReadClient - Client library for Go
 C<Google::Cloud::BigQuery::Storage::V1::BigQueryReadClient> is an auto-generated client library for Google Cloud Services.
 
 It provides a unified client interface supporting both high-performance HTTP/2 gRPC and HTTP/REST transports, with automatic Google Cloud Application Default Credentials (ADC) resolution and typed Protocol Buffers message handling.
+
+=head1 SOURCE
+
+Generated from the following Protocol Buffers schemas:
+
+=over 4
+
+=item * C<googleapis/google/cloud/bigquery/storage/v1/avro.proto>
+
+=item * C<googleapis/google/cloud/bigquery/storage/v1/stream.proto>
+
+=item * C<googleapis/google/cloud/bigquery/storage/v1/annotations.proto>
+
+=item * C<googleapis/google/cloud/bigquery/storage/v1/table.proto>
+
+=item * C<googleapis/google/cloud/bigquery/storage/v1/storage.proto>
+
+=item * C<googleapis/google/cloud/bigquery/storage/v1/protobuf.proto>
+
+=item * C<googleapis/google/cloud/bigquery/storage/v1/arrow.proto>
+
+
+
+=back
 
 =head1 CONSTRUCTOR
 

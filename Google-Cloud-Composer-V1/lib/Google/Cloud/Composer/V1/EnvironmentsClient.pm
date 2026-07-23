@@ -119,6 +119,22 @@ C<Google::Cloud::Composer::V1::EnvironmentsClient> is an auto-generated client l
 
 It provides a unified client interface supporting both high-performance HTTP/2 gRPC and HTTP/REST transports, with automatic Google Cloud Application Default Credentials (ADC) resolution and typed Protocol Buffers message handling.
 
+=head1 SOURCE
+
+Generated from the following Protocol Buffers schemas:
+
+=over 4
+
+=item * C<googleapis/google/cloud/orchestration/airflow/service/v1/environments.proto>
+
+=item * C<googleapis/google/cloud/orchestration/airflow/service/v1/image_versions.proto>
+
+=item * C<googleapis/google/cloud/orchestration/airflow/service/v1/operations.proto>
+
+
+
+=back
+
 =head1 CONSTRUCTOR
 
 =head2 new

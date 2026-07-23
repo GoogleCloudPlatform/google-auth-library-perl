@@ -109,6 +109,36 @@ C<Google::Cloud::Spanner::V1::SpannerClient> is an auto-generated client library
 
 It provides a unified client interface supporting both high-performance HTTP/2 gRPC and HTTP/REST transports, with automatic Google Cloud Application Default Credentials (ADC) resolution and typed Protocol Buffers message handling.
 
+=head1 SOURCE
+
+Generated from the following Protocol Buffers schemas:
+
+=over 4
+
+=item * C<googleapis/google/spanner/v1/result_set.proto>
+
+=item * C<googleapis/google/spanner/v1/query_plan.proto>
+
+=item * C<googleapis/google/spanner/v1/spanner.proto>
+
+=item * C<googleapis/google/spanner/v1/mutation.proto>
+
+=item * C<googleapis/google/spanner/v1/type.proto>
+
+=item * C<googleapis/google/spanner/v1/transaction.proto>
+
+=item * C<googleapis/google/spanner/v1/change_stream.proto>
+
+=item * C<googleapis/google/spanner/v1/commit_response.proto>
+
+=item * C<googleapis/google/spanner/v1/location.proto>
+
+=item * C<googleapis/google/spanner/v1/keys.proto>
+
+
+
+=back
+
 =head1 CONSTRUCTOR
 
 =head2 new

@@ -61,15 +61,15 @@ subtest 'list_endpoint_policies method' => sub {
         my ($args) = @_;
         is($args->{service}, 'google.cloud.networkservices.v1.NetworkServices', 'Correct service path');
         is($args->{method}, 'ListEndpointPolicies', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Cloud::Networkservices::V1::NetworkServices::ListEndpointPoliciesRequest', 'Request object');
+        isa_ok($args->{request}, 'Google::Cloud::Networkservices::V1::EndpointPolicy::ListEndpointPoliciesRequest', 'Request object');
         
-        my $response = 'Google::Cloud::Networkservices::V1::NetworkServices::ListEndpointPoliciesResponse'->new();
+        my $response = 'Google::Cloud::Networkservices::V1::EndpointPolicy::ListEndpointPoliciesResponse'->new();
         return $response;
     };
     
     my $res = $client->list_endpoint_policies();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Cloud::Networkservices::V1::NetworkServices::ListEndpointPoliciesResponse', 'Response object class');
+    isa_ok($res, 'Google::Cloud::Networkservices::V1::EndpointPolicy::ListEndpointPoliciesResponse', 'Response object class');
     done_testing();
 };
 

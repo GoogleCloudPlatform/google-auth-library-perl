@@ -58,7 +58,7 @@ sub set_iam_policy {
     my $request_class = 'Google::Iam::V1::IamPolicy::SetIamPolicyRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Iam::V1::IamPolicy::Policy';
+    my $response_class = 'Google::Iam::V1::Policy::Policy';
     my $response = $self->transport->call({
         service        => 'google.iam.v1.IAMPolicy',
         method         => 'SetIamPolicy',
@@ -75,7 +75,7 @@ sub get_iam_policy {
     my $request_class = 'Google::Iam::V1::IamPolicy::GetIamPolicyRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Iam::V1::IamPolicy::Policy';
+    my $response_class = 'Google::Iam::V1::Policy::Policy';
     my $response = $self->transport->call({
         service        => 'google.iam.v1.IAMPolicy',
         method         => 'GetIamPolicy',
@@ -137,6 +137,26 @@ Google::Cloud::IAM::V1::IAMPolicyClient - Client library for Google Cloud Servic
 C<Google::Cloud::IAM::V1::IAMPolicyClient> is an auto-generated client library for Google Cloud Services.
 
 It provides a unified client interface supporting both high-performance HTTP/2 gRPC and HTTP/REST transports, with automatic Google Cloud Application Default Credentials (ADC) resolution and typed Protocol Buffers message handling.
+
+=head1 SOURCE
+
+Generated from the following Protocol Buffers schemas:
+
+=over 4
+
+=item * C<googleapis/google/iam/v1/iam_policy.proto>
+
+=item * C<googleapis/google/iam/v1/options.proto>
+
+=item * C<googleapis/google/iam/v1/resource_policy_member.proto>
+
+=item * C<googleapis/google/iam/v1/policy.proto>
+
+=item * C<googleapis/google/iam/v1/logging/audit_data.proto>
+
+
+
+=back
 
 =head1 CONSTRUCTOR
 

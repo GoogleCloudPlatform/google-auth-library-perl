@@ -60,7 +60,7 @@ sub create_job_from_template {
     my $request_class = 'Google::Dataflow::V1BETA3::Templates::CreateJobFromTemplateRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Dataflow::V1BETA3::Templates::Job';
+    my $response_class = 'Google::Dataflow::V1BETA3::Jobs::Job';
     my $response = $self->transport->call({
         service        => 'google.dataflow.v1beta3.TemplatesService',
         method         => 'CreateJobFromTemplate',
@@ -298,7 +298,7 @@ sub snapshot_job {
     my $request_class = 'Google::Dataflow::V1BETA3::Jobs::SnapshotJobRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Dataflow::V1BETA3::Jobs::Snapshot';
+    my $response_class = 'Google::Dataflow::V1BETA3::Snapshots::Snapshot';
     my $response = $self->transport->call({
         service        => 'google.dataflow.v1beta3.JobsV1Beta3',
         method         => 'SnapshotJob',
@@ -394,6 +394,30 @@ Google::Cloud::Dataflow::V1Beta3::JobsV1Beta3Client - Client library for Google 
 C<Google::Cloud::Dataflow::V1Beta3::JobsV1Beta3Client> is an auto-generated client library for Google Cloud Services.
 
 It provides a unified client interface supporting both high-performance HTTP/2 gRPC and HTTP/REST transports, with automatic Google Cloud Application Default Credentials (ADC) resolution and typed Protocol Buffers message handling.
+
+=head1 SOURCE
+
+Generated from the following Protocol Buffers schemas:
+
+=over 4
+
+=item * C<googleapis/google/dataflow/v1beta3/templates.proto>
+
+=item * C<googleapis/google/dataflow/v1beta3/messages.proto>
+
+=item * C<googleapis/google/dataflow/v1beta3/environment.proto>
+
+=item * C<googleapis/google/dataflow/v1beta3/metrics.proto>
+
+=item * C<googleapis/google/dataflow/v1beta3/jobs.proto>
+
+=item * C<googleapis/google/dataflow/v1beta3/snapshots.proto>
+
+=item * C<googleapis/google/dataflow/v1beta3/streaming.proto>
+
+
+
+=back
 
 =head1 CONSTRUCTOR
 
