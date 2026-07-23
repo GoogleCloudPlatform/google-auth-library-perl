@@ -4,7 +4,6 @@
 bench/message_merge.pl
 bin/conformance_perl.pl
 bin/conformance_perl_wrapper.sh
-bin/protoc-gen-perl-pb
 BUILD
 build_defs.bzl
 c_test_config.bzl

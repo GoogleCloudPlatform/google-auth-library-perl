@@ -7,8 +7,8 @@ use File::Path qw(remove_tree);
 # 1. Define paths
 my $tmp_dir = File::Spec->catdir('tmp', 'test-dist');
 # Use the official test service proto from the protobuf submodule
-my $proto_file = File::Spec->catfile('..', 'Protobuf', 't', 'protos', 'service.proto');
-my $import_path = File::Spec->catdir('..', 'Protobuf', 't', 'protos');
+my $proto_file = File::Spec->catfile('t', 'protos', 'service.proto');
+my $import_path = File::Spec->catdir('t', 'protos');
 my $runner_file = File::Spec->catfile('tmp', 'run-integration-test.pl');
 
 # Clean up any previous runs
@@ -37,7 +37,9 @@ local $ENV{PROTOBUF_GRPC_TARGET} = 'test.googleapis.com';
 local $ENV{PERL5LIB}            = defined $ENV{PERL5LIB} ? "$plugin_lib$sep$ENV{PERL5LIB}" : $plugin_lib;
 
 use File::Which qw(which);
-my $starter_bin = $^O eq 'MSWin32' ? (which('module-starter.bat') || which('module-starter') || 'module-starter') : 'module-starter';
+my $starter_bin = $^O eq 'MSWin32' 
+    ? (which('module-starter.bat') || which('module-starter') || 'module-starter') 
+    : (which('module-starter') || 'module-starter');
 
 my $module_starter_cmd = sprintf(
     '"%s" --module=Google::Cloud::Test --plugin=Module::Starter::Protobuf --dir="%s" --author="Google LLC <cjac@google.com>" --force',

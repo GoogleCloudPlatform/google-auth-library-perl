@@ -7,8 +7,8 @@ use File::Path qw(remove_tree);
 # 1. Define paths
 my $tmp_dir = File::Spec->catdir('tmp', 'test-dist-starter');
 # Use the official test service proto from the protobuf submodule
-my $proto_file = File::Spec->catfile('..', 'Protobuf', 't', 'protos', 'service.proto');
-my $import_path = File::Spec->catdir('..', 'Protobuf', 't', 'protos');
+my $proto_file = File::Spec->catfile('t', 'protos', 'service.proto');
+my $import_path = File::Spec->catdir('t', 'protos');
 my $runner_file = File::Spec->catfile('tmp', 'run-integration-test-starter.pl');
 my $starter_script = File::Spec->catfile('bin', 'protobuf-starter');
 

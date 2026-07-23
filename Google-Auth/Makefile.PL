@@ -38,7 +38,7 @@ for my $dir (@ssl_search_dirs) {
 
 WriteMakefile(
     NAME             => 'Google::Auth',
-    AUTHOR           => q{C.J. Collier <CJCOLLIER@CPAN.ORG>},
+    AUTHOR           => q{C.J. Collier <cjac@google.com>},
     VERSION_FROM     => 'lib/Google/Auth.pm',
     ABSTRACT_FROM    => 'lib/Google/Auth.pm',
     LICENSE          => 'Apache 2.0',

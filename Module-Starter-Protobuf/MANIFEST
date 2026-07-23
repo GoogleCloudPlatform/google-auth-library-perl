@@ -13,4 +13,5 @@ t/acceptance/protobuf-starter.t
 t/manifest.t
 t/pod-coverage.t
 t/pod.t
+t/protos/service.proto
 xt/boilerplate.t
