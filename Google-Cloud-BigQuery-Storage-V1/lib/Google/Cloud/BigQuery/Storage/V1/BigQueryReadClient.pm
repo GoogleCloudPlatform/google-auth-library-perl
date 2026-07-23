@@ -60,7 +60,7 @@ sub create_read_session {
     my $request_class = 'Google::Cloud::Bigquery::Storage::V1::Storage::CreateReadSessionRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Cloud::Bigquery::Storage::V1::Storage::ReadSession';
+    my $response_class = 'Google::Cloud::Bigquery::Storage::V1::Stream::ReadSession';
     my $response = $self->transport->call({
         service        => 'google.cloud.bigquery.storage.v1.BigQueryRead',
         method         => 'CreateReadSession',

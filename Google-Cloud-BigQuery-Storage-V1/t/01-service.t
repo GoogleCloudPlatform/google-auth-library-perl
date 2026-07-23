@@ -46,13 +46,13 @@ subtest 'create_read_session method' => sub {
         is($args->{method}, 'CreateReadSession', 'Correct RPC method');
         isa_ok($args->{request}, 'Google::Cloud::Bigquery::Storage::V1::Storage::CreateReadSessionRequest', 'Request object');
         
-        my $response = 'Google::Cloud::Bigquery::Storage::V1::Storage::ReadSession'->new();
+        my $response = 'Google::Cloud::Bigquery::Storage::V1::Stream::ReadSession'->new();
         return $response;
     };
     
     my $res = $client->create_read_session();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Cloud::Bigquery::Storage::V1::Storage::ReadSession', 'Response object class');
+    isa_ok($res, 'Google::Cloud::Bigquery::Storage::V1::Stream::ReadSession', 'Response object class');
     done_testing();
 };
 
