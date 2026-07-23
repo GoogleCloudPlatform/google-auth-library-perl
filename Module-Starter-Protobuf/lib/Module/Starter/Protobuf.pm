@@ -148,9 +148,9 @@ sub create_t {
     }
 
     # Generate xt/00_perl-critic.t for author/release quality checks
-    my $xt_dir = path("xt");
+    my $xt_dir = path($self->{basedir}, "xt");
     $xt_dir->mkpath;
-    my $critic_file = path("xt/00_perl-critic.t");
+    my $critic_file = path($self->{basedir}, "xt", "00_perl-critic.t");
     $critic_file->spew_utf8(<<'EOF');
 #!/usr/bin/env perl
 use strict;
