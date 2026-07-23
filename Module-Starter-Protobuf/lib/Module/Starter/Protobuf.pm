@@ -334,6 +334,29 @@ EOF
     }
 
     my $EQ = '=';
+    
+    my $import_path = $self->{_protobuf_import_path} || '';
+    my $source_pod_items = '';
+    for my $proto_file (@{$self->{_protobuf_files}}) {
+        my $display_path = $proto_file; # Fallback
+        if ($import_path && $display_path =~ /^\Q$import_path\E\/(.*)/) {
+            my $rel = $1;
+            if ($import_path =~ /googleapis$/) {
+                $display_path = "googleapis/" . $rel;
+            } else {
+                $display_path = $rel;
+            }
+        }
+        elsif ($display_path =~ m{/(googleapis/.*)$}) {
+            $display_path = $1;
+        }
+        if ($display_path =~ /^\//) {
+            $display_path = basename($display_path);
+        }
+
+        $source_pod_items .= "${EQ}item * C<$display_path>\n\n";
+    }
+
     my $client_code;
     if (@methods) {
         # Generate methods POD block dynamically
@@ -345,7 +368,7 @@ EOF
 
         # Generate full gRPC service client wrapper
         my $version = $self->{version} || '0.02';
-        $client_code = sprintf(<<"EOF", $module_name, $bridge_code, $use_statements, $version, $grpc_target, $methods_code, $module_name, $module_name, $module_name, $module_name, $module_name, $module_name, $module_name, $methods_pod);
+        $client_code = sprintf(<<"EOF", $module_name, $bridge_code, $use_statements, $version, $grpc_target, $methods_code, $module_name, $module_name, $module_name, $module_name, $module_name, $module_name, $source_pod_items, $module_name, $methods_pod);
 package %s;
 
 use strict;
@@ -429,6 +452,16 @@ C<%s> is an auto-generated client library for Google Cloud Services.
 
 It provides a unified client interface supporting both high-performance HTTP/2 gRPC and HTTP/REST transports, with automatic Google Cloud Application Default Credentials (ADC) resolution and typed Protocol Buffers message handling.
 
+${EQ}head1 SOURCE
+
+Generated from the following Protocol Buffers schemas:
+
+${EQ}over 4
+
+%s
+
+${EQ}back
+
 ${EQ}head1 CONSTRUCTOR
 
 ${EQ}head2 new
@@ -464,7 +497,7 @@ EOF
     else {
         # Generate a pure, lightweight schema container with no service dependencies
         my $version = $self->{version} || '0.02';
-        $client_code = sprintf(<<"EOF", $module_name, $bridge_code, $use_statements, $version, $module_name, $module_name);
+        $client_code = sprintf(<<"EOF", $module_name, $bridge_code, $use_statements, $version, $module_name, $module_name, $source_pod_items);
 package %s;
 
 use strict;
@@ -484,6 +517,16 @@ ${EQ}head1 NAME
 ${EQ}head1 DESCRIPTION
 
 This is an auto-generated Protocol Buffers schema container module for Google Cloud Services.
+
+${EQ}head1 SOURCE
+
+Generated from the following Protocol Buffers schemas:
+
+${EQ}over 4
+
+%s
+
+${EQ}back
 
 ${EQ}head1 LICENSE AND COPYRIGHT
 
