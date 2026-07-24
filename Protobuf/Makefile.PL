@@ -762,6 +762,7 @@ WriteMakefile(
     VERSION           => $VERSION,
     MIN_PERL_VERSION  => '5.014',
     EXE_FILES         => ($is_win32 ? ['bin/protoc-gen-perl-pb.exe'] : ['bin/protoc-gen-perl-pb']),
+    MAN1PODS          => {},
     ABSTRACT          => 'High-performance Protocol Buffers implementation using upb',
     PREREQ_PM         => {
       'Moo'             => 0,
