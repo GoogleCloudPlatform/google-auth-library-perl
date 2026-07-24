@@ -33,7 +33,7 @@ sub call {
 
 # C. Fallback Mocks for External Response Classes
 BEGIN {
-    for my $pkg (qw( Google::Dataflow::V1BETA3::Messages::ListJobMessagesResponse )) {
+    for my $pkg (qw( Google::Dataflow::V1beta3::Messages::ListJobMessagesResponse )) {
         unless ($pkg->can('new')) {
             no strict 'refs';
             *{"${pkg}::new"} = sub { bless {}, $_[0] };
@@ -55,15 +55,15 @@ subtest 'list_job_messages method' => sub {
         my ($args) = @_;
         is($args->{service}, 'google.dataflow.v1beta3.MessagesV1Beta3', 'Correct service path');
         is($args->{method}, 'ListJobMessages', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Dataflow::V1BETA3::Messages::ListJobMessagesRequest', 'Request object');
+        isa_ok($args->{request}, 'Google::Dataflow::V1beta3::Messages::ListJobMessagesRequest', 'Request object');
         
-        my $response = 'Google::Dataflow::V1BETA3::Messages::ListJobMessagesResponse'->new();
+        my $response = 'Google::Dataflow::V1beta3::Messages::ListJobMessagesResponse'->new();
         return $response;
     };
     
     my $res = $client->list_job_messages();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Dataflow::V1BETA3::Messages::ListJobMessagesResponse', 'Response object class');
+    isa_ok($res, 'Google::Dataflow::V1beta3::Messages::ListJobMessagesResponse', 'Response object class');
     done_testing();
 };
 

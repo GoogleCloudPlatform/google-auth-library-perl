@@ -10,13 +10,13 @@ use Carp qw(croak);
 
 use Protobuf;
 use Google::Api::Common;
-use Google::Dataflow::V1BETA3::Templates;
-use Google::Dataflow::V1BETA3::Messages;
-use Google::Dataflow::V1BETA3::Environment;
-use Google::Dataflow::V1BETA3::Metrics;
-use Google::Dataflow::V1BETA3::Jobs;
-use Google::Dataflow::V1BETA3::Snapshots;
-use Google::Dataflow::V1BETA3::Streaming;
+use Google::Dataflow::V1beta3::Templates;
+use Google::Dataflow::V1beta3::Messages;
+use Google::Dataflow::V1beta3::Environment;
+use Google::Dataflow::V1beta3::Metrics;
+use Google::Dataflow::V1beta3::Jobs;
+use Google::Dataflow::V1beta3::Snapshots;
+use Google::Dataflow::V1beta3::Streaming;
 
 our $VERSION = '0.03';
 
@@ -57,10 +57,10 @@ sub BUILD {
 sub create_job {
     my ($self, %params) = @_;
 
-    my $request_class = 'Google::Dataflow::V1BETA3::Jobs::CreateJobRequest';
+    my $request_class = 'Google::Dataflow::V1beta3::Jobs::CreateJobRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Dataflow::V1BETA3::Jobs::Job';
+    my $response_class = 'Google::Dataflow::V1beta3::Jobs::Job';
     my $response = $self->transport->call({
         service        => 'google.dataflow.v1beta3.JobsV1Beta3',
         method         => 'CreateJob',
@@ -74,10 +74,10 @@ sub create_job {
 sub get_job {
     my ($self, %params) = @_;
 
-    my $request_class = 'Google::Dataflow::V1BETA3::Jobs::GetJobRequest';
+    my $request_class = 'Google::Dataflow::V1beta3::Jobs::GetJobRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Dataflow::V1BETA3::Jobs::Job';
+    my $response_class = 'Google::Dataflow::V1beta3::Jobs::Job';
     my $response = $self->transport->call({
         service        => 'google.dataflow.v1beta3.JobsV1Beta3',
         method         => 'GetJob',
@@ -91,10 +91,10 @@ sub get_job {
 sub update_job {
     my ($self, %params) = @_;
 
-    my $request_class = 'Google::Dataflow::V1BETA3::Jobs::UpdateJobRequest';
+    my $request_class = 'Google::Dataflow::V1beta3::Jobs::UpdateJobRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Dataflow::V1BETA3::Jobs::Job';
+    my $response_class = 'Google::Dataflow::V1beta3::Jobs::Job';
     my $response = $self->transport->call({
         service        => 'google.dataflow.v1beta3.JobsV1Beta3',
         method         => 'UpdateJob',
@@ -108,10 +108,10 @@ sub update_job {
 sub list_jobs {
     my ($self, %params) = @_;
 
-    my $request_class = 'Google::Dataflow::V1BETA3::Jobs::ListJobsRequest';
+    my $request_class = 'Google::Dataflow::V1beta3::Jobs::ListJobsRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Dataflow::V1BETA3::Jobs::ListJobsResponse';
+    my $response_class = 'Google::Dataflow::V1beta3::Jobs::ListJobsResponse';
     my $response = $self->transport->call({
         service        => 'google.dataflow.v1beta3.JobsV1Beta3',
         method         => 'ListJobs',
@@ -125,10 +125,10 @@ sub list_jobs {
 sub aggregated_list_jobs {
     my ($self, %params) = @_;
 
-    my $request_class = 'Google::Dataflow::V1BETA3::Jobs::ListJobsRequest';
+    my $request_class = 'Google::Dataflow::V1beta3::Jobs::ListJobsRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Dataflow::V1BETA3::Jobs::ListJobsResponse';
+    my $response_class = 'Google::Dataflow::V1beta3::Jobs::ListJobsResponse';
     my $response = $self->transport->call({
         service        => 'google.dataflow.v1beta3.JobsV1Beta3',
         method         => 'AggregatedListJobs',
@@ -142,10 +142,10 @@ sub aggregated_list_jobs {
 sub check_active_jobs {
     my ($self, %params) = @_;
 
-    my $request_class = 'Google::Dataflow::V1BETA3::Jobs::CheckActiveJobsRequest';
+    my $request_class = 'Google::Dataflow::V1beta3::Jobs::CheckActiveJobsRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Dataflow::V1BETA3::Jobs::CheckActiveJobsResponse';
+    my $response_class = 'Google::Dataflow::V1beta3::Jobs::CheckActiveJobsResponse';
     my $response = $self->transport->call({
         service        => 'google.dataflow.v1beta3.JobsV1Beta3',
         method         => 'CheckActiveJobs',
@@ -159,10 +159,10 @@ sub check_active_jobs {
 sub snapshot_job {
     my ($self, %params) = @_;
 
-    my $request_class = 'Google::Dataflow::V1BETA3::Jobs::SnapshotJobRequest';
+    my $request_class = 'Google::Dataflow::V1beta3::Jobs::SnapshotJobRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Dataflow::V1BETA3::Snapshots::Snapshot';
+    my $response_class = 'Google::Dataflow::V1beta3::Snapshots::Snapshot';
     my $response = $self->transport->call({
         service        => 'google.dataflow.v1beta3.JobsV1Beta3',
         method         => 'SnapshotJob',

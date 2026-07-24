@@ -388,7 +388,7 @@ EOF
         my @parts = split /\./, $package_name;
         my @cxs_parts = map {
             my $p = $_;
-            ($p =~ /^v\d+/i) ? uc($p) : ucfirst($p);
+            ($p =~ /^v\d+$/i) ? uc($p) : ucfirst($p);
         } @parts;
         $cxs_namespace = join '::', @cxs_parts;
     }
@@ -799,7 +799,7 @@ sub _proto_to_perl_namespace {
     my @parts = split /\./, $proto_package;
     my @perl_parts = map {
         my $part = $_;
-        if ($part =~ m{ ^ v \d+ }ix) {
+        if ($part =~ m{ ^ v \d+ $ }ix) {
             uc($part); # v2 -> V2
         } else {
             my %custom = (

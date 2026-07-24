@@ -10,13 +10,13 @@ use Carp qw(croak);
 
 use Protobuf;
 use Google::Api::Common;
-use Google::Dataflow::V1BETA3::Templates;
-use Google::Dataflow::V1BETA3::Messages;
-use Google::Dataflow::V1BETA3::Environment;
-use Google::Dataflow::V1BETA3::Metrics;
-use Google::Dataflow::V1BETA3::Jobs;
-use Google::Dataflow::V1BETA3::Snapshots;
-use Google::Dataflow::V1BETA3::Streaming;
+use Google::Dataflow::V1beta3::Templates;
+use Google::Dataflow::V1beta3::Messages;
+use Google::Dataflow::V1beta3::Environment;
+use Google::Dataflow::V1beta3::Metrics;
+use Google::Dataflow::V1beta3::Jobs;
+use Google::Dataflow::V1beta3::Snapshots;
+use Google::Dataflow::V1beta3::Streaming;
 
 our $VERSION = '0.03';
 
@@ -57,10 +57,10 @@ sub BUILD {
 sub get_snapshot {
     my ($self, %params) = @_;
 
-    my $request_class = 'Google::Dataflow::V1BETA3::Snapshots::GetSnapshotRequest';
+    my $request_class = 'Google::Dataflow::V1beta3::Snapshots::GetSnapshotRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Dataflow::V1BETA3::Snapshots::Snapshot';
+    my $response_class = 'Google::Dataflow::V1beta3::Snapshots::Snapshot';
     my $response = $self->transport->call({
         service        => 'google.dataflow.v1beta3.SnapshotsV1Beta3',
         method         => 'GetSnapshot',
@@ -74,10 +74,10 @@ sub get_snapshot {
 sub delete_snapshot {
     my ($self, %params) = @_;
 
-    my $request_class = 'Google::Dataflow::V1BETA3::Snapshots::DeleteSnapshotRequest';
+    my $request_class = 'Google::Dataflow::V1beta3::Snapshots::DeleteSnapshotRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Dataflow::V1BETA3::Snapshots::DeleteSnapshotResponse';
+    my $response_class = 'Google::Dataflow::V1beta3::Snapshots::DeleteSnapshotResponse';
     my $response = $self->transport->call({
         service        => 'google.dataflow.v1beta3.SnapshotsV1Beta3',
         method         => 'DeleteSnapshot',
@@ -91,10 +91,10 @@ sub delete_snapshot {
 sub list_snapshots {
     my ($self, %params) = @_;
 
-    my $request_class = 'Google::Dataflow::V1BETA3::Snapshots::ListSnapshotsRequest';
+    my $request_class = 'Google::Dataflow::V1beta3::Snapshots::ListSnapshotsRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Dataflow::V1BETA3::Snapshots::ListSnapshotsResponse';
+    my $response_class = 'Google::Dataflow::V1beta3::Snapshots::ListSnapshotsResponse';
     my $response = $self->transport->call({
         service        => 'google.dataflow.v1beta3.SnapshotsV1Beta3',
         method         => 'ListSnapshots',

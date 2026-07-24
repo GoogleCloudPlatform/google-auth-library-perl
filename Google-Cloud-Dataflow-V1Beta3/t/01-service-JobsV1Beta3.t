@@ -33,7 +33,7 @@ sub call {
 
 # C. Fallback Mocks for External Response Classes
 BEGIN {
-    for my $pkg (qw( Google::Dataflow::V1BETA3::Jobs::CheckActiveJobsResponse Google::Dataflow::V1BETA3::Jobs::Job Google::Dataflow::V1BETA3::Jobs::ListJobsResponse Google::Dataflow::V1BETA3::Snapshots::Snapshot )) {
+    for my $pkg (qw( Google::Dataflow::V1beta3::Jobs::CheckActiveJobsResponse Google::Dataflow::V1beta3::Jobs::Job Google::Dataflow::V1beta3::Jobs::ListJobsResponse Google::Dataflow::V1beta3::Snapshots::Snapshot )) {
         unless ($pkg->can('new')) {
             no strict 'refs';
             *{"${pkg}::new"} = sub { bless {}, $_[0] };
@@ -55,15 +55,15 @@ subtest 'create_job method' => sub {
         my ($args) = @_;
         is($args->{service}, 'google.dataflow.v1beta3.JobsV1Beta3', 'Correct service path');
         is($args->{method}, 'CreateJob', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Dataflow::V1BETA3::Jobs::CreateJobRequest', 'Request object');
+        isa_ok($args->{request}, 'Google::Dataflow::V1beta3::Jobs::CreateJobRequest', 'Request object');
         
-        my $response = 'Google::Dataflow::V1BETA3::Jobs::Job'->new();
+        my $response = 'Google::Dataflow::V1beta3::Jobs::Job'->new();
         return $response;
     };
     
     my $res = $client->create_job();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Dataflow::V1BETA3::Jobs::Job', 'Response object class');
+    isa_ok($res, 'Google::Dataflow::V1beta3::Jobs::Job', 'Response object class');
     done_testing();
 };
 
@@ -72,15 +72,15 @@ subtest 'get_job method' => sub {
         my ($args) = @_;
         is($args->{service}, 'google.dataflow.v1beta3.JobsV1Beta3', 'Correct service path');
         is($args->{method}, 'GetJob', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Dataflow::V1BETA3::Jobs::GetJobRequest', 'Request object');
+        isa_ok($args->{request}, 'Google::Dataflow::V1beta3::Jobs::GetJobRequest', 'Request object');
         
-        my $response = 'Google::Dataflow::V1BETA3::Jobs::Job'->new();
+        my $response = 'Google::Dataflow::V1beta3::Jobs::Job'->new();
         return $response;
     };
     
     my $res = $client->get_job();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Dataflow::V1BETA3::Jobs::Job', 'Response object class');
+    isa_ok($res, 'Google::Dataflow::V1beta3::Jobs::Job', 'Response object class');
     done_testing();
 };
 
@@ -89,15 +89,15 @@ subtest 'update_job method' => sub {
         my ($args) = @_;
         is($args->{service}, 'google.dataflow.v1beta3.JobsV1Beta3', 'Correct service path');
         is($args->{method}, 'UpdateJob', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Dataflow::V1BETA3::Jobs::UpdateJobRequest', 'Request object');
+        isa_ok($args->{request}, 'Google::Dataflow::V1beta3::Jobs::UpdateJobRequest', 'Request object');
         
-        my $response = 'Google::Dataflow::V1BETA3::Jobs::Job'->new();
+        my $response = 'Google::Dataflow::V1beta3::Jobs::Job'->new();
         return $response;
     };
     
     my $res = $client->update_job();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Dataflow::V1BETA3::Jobs::Job', 'Response object class');
+    isa_ok($res, 'Google::Dataflow::V1beta3::Jobs::Job', 'Response object class');
     done_testing();
 };
 
@@ -106,15 +106,15 @@ subtest 'list_jobs method' => sub {
         my ($args) = @_;
         is($args->{service}, 'google.dataflow.v1beta3.JobsV1Beta3', 'Correct service path');
         is($args->{method}, 'ListJobs', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Dataflow::V1BETA3::Jobs::ListJobsRequest', 'Request object');
+        isa_ok($args->{request}, 'Google::Dataflow::V1beta3::Jobs::ListJobsRequest', 'Request object');
         
-        my $response = 'Google::Dataflow::V1BETA3::Jobs::ListJobsResponse'->new();
+        my $response = 'Google::Dataflow::V1beta3::Jobs::ListJobsResponse'->new();
         return $response;
     };
     
     my $res = $client->list_jobs();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Dataflow::V1BETA3::Jobs::ListJobsResponse', 'Response object class');
+    isa_ok($res, 'Google::Dataflow::V1beta3::Jobs::ListJobsResponse', 'Response object class');
     done_testing();
 };
 
@@ -123,15 +123,15 @@ subtest 'aggregated_list_jobs method' => sub {
         my ($args) = @_;
         is($args->{service}, 'google.dataflow.v1beta3.JobsV1Beta3', 'Correct service path');
         is($args->{method}, 'AggregatedListJobs', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Dataflow::V1BETA3::Jobs::ListJobsRequest', 'Request object');
+        isa_ok($args->{request}, 'Google::Dataflow::V1beta3::Jobs::ListJobsRequest', 'Request object');
         
-        my $response = 'Google::Dataflow::V1BETA3::Jobs::ListJobsResponse'->new();
+        my $response = 'Google::Dataflow::V1beta3::Jobs::ListJobsResponse'->new();
         return $response;
     };
     
     my $res = $client->aggregated_list_jobs();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Dataflow::V1BETA3::Jobs::ListJobsResponse', 'Response object class');
+    isa_ok($res, 'Google::Dataflow::V1beta3::Jobs::ListJobsResponse', 'Response object class');
     done_testing();
 };
 
@@ -140,15 +140,15 @@ subtest 'check_active_jobs method' => sub {
         my ($args) = @_;
         is($args->{service}, 'google.dataflow.v1beta3.JobsV1Beta3', 'Correct service path');
         is($args->{method}, 'CheckActiveJobs', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Dataflow::V1BETA3::Jobs::CheckActiveJobsRequest', 'Request object');
+        isa_ok($args->{request}, 'Google::Dataflow::V1beta3::Jobs::CheckActiveJobsRequest', 'Request object');
         
-        my $response = 'Google::Dataflow::V1BETA3::Jobs::CheckActiveJobsResponse'->new();
+        my $response = 'Google::Dataflow::V1beta3::Jobs::CheckActiveJobsResponse'->new();
         return $response;
     };
     
     my $res = $client->check_active_jobs();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Dataflow::V1BETA3::Jobs::CheckActiveJobsResponse', 'Response object class');
+    isa_ok($res, 'Google::Dataflow::V1beta3::Jobs::CheckActiveJobsResponse', 'Response object class');
     done_testing();
 };
 
@@ -157,15 +157,15 @@ subtest 'snapshot_job method' => sub {
         my ($args) = @_;
         is($args->{service}, 'google.dataflow.v1beta3.JobsV1Beta3', 'Correct service path');
         is($args->{method}, 'SnapshotJob', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Dataflow::V1BETA3::Jobs::SnapshotJobRequest', 'Request object');
+        isa_ok($args->{request}, 'Google::Dataflow::V1beta3::Jobs::SnapshotJobRequest', 'Request object');
         
-        my $response = 'Google::Dataflow::V1BETA3::Snapshots::Snapshot'->new();
+        my $response = 'Google::Dataflow::V1beta3::Snapshots::Snapshot'->new();
         return $response;
     };
     
     my $res = $client->snapshot_job();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Dataflow::V1BETA3::Snapshots::Snapshot', 'Response object class');
+    isa_ok($res, 'Google::Dataflow::V1beta3::Snapshots::Snapshot', 'Response object class');
     done_testing();
 };
 

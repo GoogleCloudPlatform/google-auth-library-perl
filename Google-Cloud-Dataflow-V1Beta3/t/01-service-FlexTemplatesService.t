@@ -33,7 +33,7 @@ sub call {
 
 # C. Fallback Mocks for External Response Classes
 BEGIN {
-    for my $pkg (qw( Google::Dataflow::V1BETA3::Templates::LaunchFlexTemplateResponse )) {
+    for my $pkg (qw( Google::Dataflow::V1beta3::Templates::LaunchFlexTemplateResponse )) {
         unless ($pkg->can('new')) {
             no strict 'refs';
             *{"${pkg}::new"} = sub { bless {}, $_[0] };
@@ -55,15 +55,15 @@ subtest 'launch_flex_template method' => sub {
         my ($args) = @_;
         is($args->{service}, 'google.dataflow.v1beta3.FlexTemplatesService', 'Correct service path');
         is($args->{method}, 'LaunchFlexTemplate', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Dataflow::V1BETA3::Templates::LaunchFlexTemplateRequest', 'Request object');
+        isa_ok($args->{request}, 'Google::Dataflow::V1beta3::Templates::LaunchFlexTemplateRequest', 'Request object');
         
-        my $response = 'Google::Dataflow::V1BETA3::Templates::LaunchFlexTemplateResponse'->new();
+        my $response = 'Google::Dataflow::V1beta3::Templates::LaunchFlexTemplateResponse'->new();
         return $response;
     };
     
     my $res = $client->launch_flex_template();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Dataflow::V1BETA3::Templates::LaunchFlexTemplateResponse', 'Response object class');
+    isa_ok($res, 'Google::Dataflow::V1beta3::Templates::LaunchFlexTemplateResponse', 'Response object class');
     done_testing();
 };
 

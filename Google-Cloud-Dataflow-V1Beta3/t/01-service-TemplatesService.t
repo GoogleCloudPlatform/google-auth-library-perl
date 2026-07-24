@@ -33,7 +33,7 @@ sub call {
 
 # C. Fallback Mocks for External Response Classes
 BEGIN {
-    for my $pkg (qw( Google::Dataflow::V1BETA3::Jobs::Job Google::Dataflow::V1BETA3::Templates::GetTemplateResponse Google::Dataflow::V1BETA3::Templates::LaunchTemplateResponse )) {
+    for my $pkg (qw( Google::Dataflow::V1beta3::Jobs::Job Google::Dataflow::V1beta3::Templates::GetTemplateResponse Google::Dataflow::V1beta3::Templates::LaunchTemplateResponse )) {
         unless ($pkg->can('new')) {
             no strict 'refs';
             *{"${pkg}::new"} = sub { bless {}, $_[0] };
@@ -55,15 +55,15 @@ subtest 'create_job_from_template method' => sub {
         my ($args) = @_;
         is($args->{service}, 'google.dataflow.v1beta3.TemplatesService', 'Correct service path');
         is($args->{method}, 'CreateJobFromTemplate', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Dataflow::V1BETA3::Templates::CreateJobFromTemplateRequest', 'Request object');
+        isa_ok($args->{request}, 'Google::Dataflow::V1beta3::Templates::CreateJobFromTemplateRequest', 'Request object');
         
-        my $response = 'Google::Dataflow::V1BETA3::Jobs::Job'->new();
+        my $response = 'Google::Dataflow::V1beta3::Jobs::Job'->new();
         return $response;
     };
     
     my $res = $client->create_job_from_template();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Dataflow::V1BETA3::Jobs::Job', 'Response object class');
+    isa_ok($res, 'Google::Dataflow::V1beta3::Jobs::Job', 'Response object class');
     done_testing();
 };
 
@@ -72,15 +72,15 @@ subtest 'launch_template method' => sub {
         my ($args) = @_;
         is($args->{service}, 'google.dataflow.v1beta3.TemplatesService', 'Correct service path');
         is($args->{method}, 'LaunchTemplate', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Dataflow::V1BETA3::Templates::LaunchTemplateRequest', 'Request object');
+        isa_ok($args->{request}, 'Google::Dataflow::V1beta3::Templates::LaunchTemplateRequest', 'Request object');
         
-        my $response = 'Google::Dataflow::V1BETA3::Templates::LaunchTemplateResponse'->new();
+        my $response = 'Google::Dataflow::V1beta3::Templates::LaunchTemplateResponse'->new();
         return $response;
     };
     
     my $res = $client->launch_template();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Dataflow::V1BETA3::Templates::LaunchTemplateResponse', 'Response object class');
+    isa_ok($res, 'Google::Dataflow::V1beta3::Templates::LaunchTemplateResponse', 'Response object class');
     done_testing();
 };
 
@@ -89,15 +89,15 @@ subtest 'get_template method' => sub {
         my ($args) = @_;
         is($args->{service}, 'google.dataflow.v1beta3.TemplatesService', 'Correct service path');
         is($args->{method}, 'GetTemplate', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Dataflow::V1BETA3::Templates::GetTemplateRequest', 'Request object');
+        isa_ok($args->{request}, 'Google::Dataflow::V1beta3::Templates::GetTemplateRequest', 'Request object');
         
-        my $response = 'Google::Dataflow::V1BETA3::Templates::GetTemplateResponse'->new();
+        my $response = 'Google::Dataflow::V1beta3::Templates::GetTemplateResponse'->new();
         return $response;
     };
     
     my $res = $client->get_template();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Dataflow::V1BETA3::Templates::GetTemplateResponse', 'Response object class');
+    isa_ok($res, 'Google::Dataflow::V1beta3::Templates::GetTemplateResponse', 'Response object class');
     done_testing();
 };
 

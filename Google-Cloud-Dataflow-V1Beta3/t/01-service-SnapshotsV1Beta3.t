@@ -33,7 +33,7 @@ sub call {
 
 # C. Fallback Mocks for External Response Classes
 BEGIN {
-    for my $pkg (qw( Google::Dataflow::V1BETA3::Snapshots::DeleteSnapshotResponse Google::Dataflow::V1BETA3::Snapshots::ListSnapshotsResponse Google::Dataflow::V1BETA3::Snapshots::Snapshot )) {
+    for my $pkg (qw( Google::Dataflow::V1beta3::Snapshots::DeleteSnapshotResponse Google::Dataflow::V1beta3::Snapshots::ListSnapshotsResponse Google::Dataflow::V1beta3::Snapshots::Snapshot )) {
         unless ($pkg->can('new')) {
             no strict 'refs';
             *{"${pkg}::new"} = sub { bless {}, $_[0] };
@@ -55,15 +55,15 @@ subtest 'get_snapshot method' => sub {
         my ($args) = @_;
         is($args->{service}, 'google.dataflow.v1beta3.SnapshotsV1Beta3', 'Correct service path');
         is($args->{method}, 'GetSnapshot', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Dataflow::V1BETA3::Snapshots::GetSnapshotRequest', 'Request object');
+        isa_ok($args->{request}, 'Google::Dataflow::V1beta3::Snapshots::GetSnapshotRequest', 'Request object');
         
-        my $response = 'Google::Dataflow::V1BETA3::Snapshots::Snapshot'->new();
+        my $response = 'Google::Dataflow::V1beta3::Snapshots::Snapshot'->new();
         return $response;
     };
     
     my $res = $client->get_snapshot();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Dataflow::V1BETA3::Snapshots::Snapshot', 'Response object class');
+    isa_ok($res, 'Google::Dataflow::V1beta3::Snapshots::Snapshot', 'Response object class');
     done_testing();
 };
 
@@ -72,15 +72,15 @@ subtest 'delete_snapshot method' => sub {
         my ($args) = @_;
         is($args->{service}, 'google.dataflow.v1beta3.SnapshotsV1Beta3', 'Correct service path');
         is($args->{method}, 'DeleteSnapshot', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Dataflow::V1BETA3::Snapshots::DeleteSnapshotRequest', 'Request object');
+        isa_ok($args->{request}, 'Google::Dataflow::V1beta3::Snapshots::DeleteSnapshotRequest', 'Request object');
         
-        my $response = 'Google::Dataflow::V1BETA3::Snapshots::DeleteSnapshotResponse'->new();
+        my $response = 'Google::Dataflow::V1beta3::Snapshots::DeleteSnapshotResponse'->new();
         return $response;
     };
     
     my $res = $client->delete_snapshot();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Dataflow::V1BETA3::Snapshots::DeleteSnapshotResponse', 'Response object class');
+    isa_ok($res, 'Google::Dataflow::V1beta3::Snapshots::DeleteSnapshotResponse', 'Response object class');
     done_testing();
 };
 
@@ -89,15 +89,15 @@ subtest 'list_snapshots method' => sub {
         my ($args) = @_;
         is($args->{service}, 'google.dataflow.v1beta3.SnapshotsV1Beta3', 'Correct service path');
         is($args->{method}, 'ListSnapshots', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Dataflow::V1BETA3::Snapshots::ListSnapshotsRequest', 'Request object');
+        isa_ok($args->{request}, 'Google::Dataflow::V1beta3::Snapshots::ListSnapshotsRequest', 'Request object');
         
-        my $response = 'Google::Dataflow::V1BETA3::Snapshots::ListSnapshotsResponse'->new();
+        my $response = 'Google::Dataflow::V1beta3::Snapshots::ListSnapshotsResponse'->new();
         return $response;
     };
     
     my $res = $client->list_snapshots();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Dataflow::V1BETA3::Snapshots::ListSnapshotsResponse', 'Response object class');
+    isa_ok($res, 'Google::Dataflow::V1beta3::Snapshots::ListSnapshotsResponse', 'Response object class');
     done_testing();
 };
 

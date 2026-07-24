@@ -33,7 +33,7 @@ sub call {
 
 # C. Fallback Mocks for External Response Classes
 BEGIN {
-    for my $pkg (qw( Google::Dataflow::V1BETA3::Metrics::JobExecutionDetails Google::Dataflow::V1BETA3::Metrics::JobMetrics Google::Dataflow::V1BETA3::Metrics::StageExecutionDetails )) {
+    for my $pkg (qw( Google::Dataflow::V1beta3::Metrics::JobExecutionDetails Google::Dataflow::V1beta3::Metrics::JobMetrics Google::Dataflow::V1beta3::Metrics::StageExecutionDetails )) {
         unless ($pkg->can('new')) {
             no strict 'refs';
             *{"${pkg}::new"} = sub { bless {}, $_[0] };
@@ -55,15 +55,15 @@ subtest 'get_job_metrics method' => sub {
         my ($args) = @_;
         is($args->{service}, 'google.dataflow.v1beta3.MetricsV1Beta3', 'Correct service path');
         is($args->{method}, 'GetJobMetrics', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Dataflow::V1BETA3::Metrics::GetJobMetricsRequest', 'Request object');
+        isa_ok($args->{request}, 'Google::Dataflow::V1beta3::Metrics::GetJobMetricsRequest', 'Request object');
         
-        my $response = 'Google::Dataflow::V1BETA3::Metrics::JobMetrics'->new();
+        my $response = 'Google::Dataflow::V1beta3::Metrics::JobMetrics'->new();
         return $response;
     };
     
     my $res = $client->get_job_metrics();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Dataflow::V1BETA3::Metrics::JobMetrics', 'Response object class');
+    isa_ok($res, 'Google::Dataflow::V1beta3::Metrics::JobMetrics', 'Response object class');
     done_testing();
 };
 
@@ -72,15 +72,15 @@ subtest 'get_job_execution_details method' => sub {
         my ($args) = @_;
         is($args->{service}, 'google.dataflow.v1beta3.MetricsV1Beta3', 'Correct service path');
         is($args->{method}, 'GetJobExecutionDetails', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Dataflow::V1BETA3::Metrics::GetJobExecutionDetailsRequest', 'Request object');
+        isa_ok($args->{request}, 'Google::Dataflow::V1beta3::Metrics::GetJobExecutionDetailsRequest', 'Request object');
         
-        my $response = 'Google::Dataflow::V1BETA3::Metrics::JobExecutionDetails'->new();
+        my $response = 'Google::Dataflow::V1beta3::Metrics::JobExecutionDetails'->new();
         return $response;
     };
     
     my $res = $client->get_job_execution_details();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Dataflow::V1BETA3::Metrics::JobExecutionDetails', 'Response object class');
+    isa_ok($res, 'Google::Dataflow::V1beta3::Metrics::JobExecutionDetails', 'Response object class');
     done_testing();
 };
 
@@ -89,15 +89,15 @@ subtest 'get_stage_execution_details method' => sub {
         my ($args) = @_;
         is($args->{service}, 'google.dataflow.v1beta3.MetricsV1Beta3', 'Correct service path');
         is($args->{method}, 'GetStageExecutionDetails', 'Correct RPC method');
-        isa_ok($args->{request}, 'Google::Dataflow::V1BETA3::Metrics::GetStageExecutionDetailsRequest', 'Request object');
+        isa_ok($args->{request}, 'Google::Dataflow::V1beta3::Metrics::GetStageExecutionDetailsRequest', 'Request object');
         
-        my $response = 'Google::Dataflow::V1BETA3::Metrics::StageExecutionDetails'->new();
+        my $response = 'Google::Dataflow::V1beta3::Metrics::StageExecutionDetails'->new();
         return $response;
     };
     
     my $res = $client->get_stage_execution_details();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Dataflow::V1BETA3::Metrics::StageExecutionDetails', 'Response object class');
+    isa_ok($res, 'Google::Dataflow::V1beta3::Metrics::StageExecutionDetails', 'Response object class');
     done_testing();
 };
 

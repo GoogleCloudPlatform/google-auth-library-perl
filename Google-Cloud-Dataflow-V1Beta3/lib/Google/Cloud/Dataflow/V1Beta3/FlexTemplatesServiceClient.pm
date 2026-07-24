@@ -10,13 +10,13 @@ use Carp qw(croak);
 
 use Protobuf;
 use Google::Api::Common;
-use Google::Dataflow::V1BETA3::Templates;
-use Google::Dataflow::V1BETA3::Messages;
-use Google::Dataflow::V1BETA3::Environment;
-use Google::Dataflow::V1BETA3::Metrics;
-use Google::Dataflow::V1BETA3::Jobs;
-use Google::Dataflow::V1BETA3::Snapshots;
-use Google::Dataflow::V1BETA3::Streaming;
+use Google::Dataflow::V1beta3::Templates;
+use Google::Dataflow::V1beta3::Messages;
+use Google::Dataflow::V1beta3::Environment;
+use Google::Dataflow::V1beta3::Metrics;
+use Google::Dataflow::V1beta3::Jobs;
+use Google::Dataflow::V1beta3::Snapshots;
+use Google::Dataflow::V1beta3::Streaming;
 
 our $VERSION = '0.03';
 
@@ -57,10 +57,10 @@ sub BUILD {
 sub launch_flex_template {
     my ($self, %params) = @_;
 
-    my $request_class = 'Google::Dataflow::V1BETA3::Templates::LaunchFlexTemplateRequest';
+    my $request_class = 'Google::Dataflow::V1beta3::Templates::LaunchFlexTemplateRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Dataflow::V1BETA3::Templates::LaunchFlexTemplateResponse';
+    my $response_class = 'Google::Dataflow::V1beta3::Templates::LaunchFlexTemplateResponse';
     my $response = $self->transport->call({
         service        => 'google.dataflow.v1beta3.FlexTemplatesService',
         method         => 'LaunchFlexTemplate',
