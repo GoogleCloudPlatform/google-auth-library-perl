@@ -26,9 +26,18 @@ eval { require Template::Config; $Template::Config::STASH = "Template::Stash"; }
 
 my $make = $Config{make} || "make";
 my $num_cores = 1;
-if ($^O ne 'MSWin32') {
-    $num_cores = `nproc 2>/dev/null` || 1;
-    chomp $num_cores;
+if ($^O eq 'MSWin32') {
+    $num_cores = $ENV{NUMBER_OF_PROCESSORS} || 1;
+}
+elsif ($^O eq 'darwin') {
+    my $val = `sysctl -n hw.logicalcpu 2>/dev/null`;
+    chomp $val;
+    $num_cores = $val if $val && $val =~ /^\d+$/;
+}
+else {
+    my $val = `nproc 2>/dev/null`;
+    chomp $val;
+    $num_cores = $val if $val && $val =~ /^\d+$/;
 }
 my $j_flag = ($num_cores > 1) ? "-j$num_cores" : "";
 
