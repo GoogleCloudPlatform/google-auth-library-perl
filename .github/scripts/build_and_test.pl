@@ -25,6 +25,12 @@ $ENV{TEMPLATE_STASH} = "pureperl";
 eval { require Template::Config; $Template::Config::STASH = "Template::Stash"; };
 
 my $make = $Config{make} || "make";
+my $num_cores = 1;
+if ($^O ne 'MSWin32') {
+    $num_cores = `nproc 2>/dev/null` || 1;
+    chomp $num_cores;
+}
+my $j_flag = ($num_cores > 1) ? "-j$num_cores" : "";
 
 if ($^O eq 'MSWin32') {
     $ENV{PERL_CPANM_OPT} = "--prefer-source";
@@ -50,7 +56,7 @@ my @all_known_dirs = qw(
     Protobuf Google-Auth Google-Api-Common Google-gRPC Module-Starter-Protobuf
     Google-Cloud-BigQuery-Storage-V1 Google-Cloud-Bigquery-V2 Google-Cloud-Build-V1
     Google-Cloud-Composer-V1 Google-Cloud-Compute-V1 Google-Cloud-Dataflow-V1Beta3
-    Google-Cloud-DataFusion-V1 Google-Cloud-Dataplex-V1 Google-Cloud-Dataproc-V1
+    Google-Cloud-DataFusion-V1 Google-Cloud-Dataproc-V1
     Google-Cloud-IAM-V1 Google-Cloud-Metastore-V1 Google-Cloud-NetworkSecurity-V1
     Google-Cloud-NetworkServices-V1 Google-Cloud-PrivateCA-V1 Google-Cloud-PubSub-V1
     Google-Cloud-SecretManager-V1 Google-Cloud-Spanner-V1 Google-Cloud-SQL-V1
@@ -123,7 +129,7 @@ sub build_package {
         system(@cpanm_cmd, '--notest', '--installdeps', '.');
     }
     system("$^X Makefile.PL") == 0 or die "Makefile.PL failed in $d";
-    system("$make") == 0 or die "$make failed in $d";
+    system("$make $j_flag") == 0 or die "$make failed in $d";
 
     my %seen;
     my @dll_dirs;
@@ -179,7 +185,9 @@ sub build_package {
         require File::Copy;
         File::Copy::copy('MYMETA.yml', 'META.yml');
     }
-    my $res = system($^X, '-S', 'prove', '-b', '-It/lib', @test_dirs);
+    my @prove_args = ('-b', '-It/lib');
+    push @prove_args, $j_flag if $j_flag;
+    my $res = system($^X, '-S', 'prove', @prove_args, @test_dirs);
     $ENV{PATH} = $old_path;
     die "prove failed in $d with exit code $res" if $res != 0;
 
