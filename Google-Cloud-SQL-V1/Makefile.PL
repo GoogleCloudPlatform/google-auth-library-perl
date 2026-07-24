@@ -4,10 +4,10 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 my %WriteMakefileArgs = (
-    NAME             => 'Google::Cloud::SQL::V1::SqlInstancesServiceClient',
+    NAME             => 'Google::Cloud::SQL::V1::SqlAvailableDatabaseVersionsServiceClient',
     AUTHOR           => ['Google LLC <cjac@google.com>'],
-    VERSION_FROM     => 'lib/Google/Cloud/SQL/V1/SqlInstancesServiceClient.pm',
-    ABSTRACT_FROM    => 'lib/Google/Cloud/SQL/V1/SqlInstancesServiceClient.pm',
+    VERSION_FROM     => 'lib/Google/Cloud/SQL/V1/SqlAvailableDatabaseVersionsServiceClient.pm',
+    ABSTRACT_FROM    => 'lib/Google/Cloud/SQL/V1/SqlAvailableDatabaseVersionsServiceClient.pm',
     LICENSE          => 'apache_2',
     MIN_PERL_VERSION => '5.008003',
     CONFIGURE_REQUIRES => {
@@ -28,7 +28,7 @@ my %WriteMakefileArgs = (
         #'Foo::Bar::Module' => '5.0401',
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean => { FILES => 'Google-Cloud-SQL-V1-SqlInstancesServiceClient-*' },
+    clean => { FILES => 'Google-Cloud-SQL-V1-SqlAvailableDatabaseVersionsServiceClient-*' },
 );
 
 # Compatibility with old versions of ExtUtils::MakeMaker

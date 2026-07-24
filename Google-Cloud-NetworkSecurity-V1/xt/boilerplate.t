@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Test::More;
 
-plan tests => 3;
+plan tests => 12;
 
 sub not_in_file_ok {
     my ($filename, %regex) = @_;
@@ -50,7 +50,16 @@ TODO: {
     "placeholder date/time"       => qr(Date/time)
   );
 
+  module_boilerplate_ok('lib/Google/Cloud/NetworkSecurity/V1/AddressGroupServiceClient.pm');
+  module_boilerplate_ok('lib/Google/Cloud/NetworkSecurity/V1/DnsThreatDetectorServiceClient.pm');
+  module_boilerplate_ok('lib/Google/Cloud/NetworkSecurity/V1/FirewallActivationClient.pm');
+  module_boilerplate_ok('lib/Google/Cloud/NetworkSecurity/V1/InterceptClient.pm');
+  module_boilerplate_ok('lib/Google/Cloud/NetworkSecurity/V1/MirroringClient.pm');
   module_boilerplate_ok('lib/Google/Cloud/NetworkSecurity/V1/NetworkSecurityClient.pm');
+  module_boilerplate_ok('lib/Google/Cloud/NetworkSecurity/V1/OrganizationAddressGroupServiceClient.pm');
+  module_boilerplate_ok('lib/Google/Cloud/NetworkSecurity/V1/OrganizationSecurityProfileGroupServiceClient.pm');
+  module_boilerplate_ok('lib/Google/Cloud/NetworkSecurity/V1/SSERealmServiceClient.pm');
+  module_boilerplate_ok('lib/Google/Cloud/NetworkSecurity/V1/SecurityProfileGroupServiceClient.pm');
 
 
 }

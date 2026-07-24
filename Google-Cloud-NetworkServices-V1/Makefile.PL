@@ -4,10 +4,10 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 my %WriteMakefileArgs = (
-    NAME             => 'Google::Cloud::NetworkServices::V1::NetworkServicesClient',
+    NAME             => 'Google::Cloud::NetworkServices::V1::DepServiceClient',
     AUTHOR           => ['Google LLC <cjac@google.com>'],
-    VERSION_FROM     => 'lib/Google/Cloud/NetworkServices/V1/NetworkServicesClient.pm',
-    ABSTRACT_FROM    => 'lib/Google/Cloud/NetworkServices/V1/NetworkServicesClient.pm',
+    VERSION_FROM     => 'lib/Google/Cloud/NetworkServices/V1/DepServiceClient.pm',
+    ABSTRACT_FROM    => 'lib/Google/Cloud/NetworkServices/V1/DepServiceClient.pm',
     LICENSE          => 'apache_2',
     MIN_PERL_VERSION => '5.008003',
     CONFIGURE_REQUIRES => {
@@ -28,7 +28,7 @@ my %WriteMakefileArgs = (
         #'Foo::Bar::Module' => '5.0401',
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean => { FILES => 'Google-Cloud-NetworkServices-V1-NetworkServicesClient-*' },
+    clean => { FILES => 'Google-Cloud-NetworkServices-V1-DepServiceClient-*' },
 );
 
 # Compatibility with old versions of ExtUtils::MakeMaker

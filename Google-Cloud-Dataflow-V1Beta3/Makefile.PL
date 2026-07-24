@@ -4,10 +4,10 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 my %WriteMakefileArgs = (
-    NAME             => 'Google::Cloud::Dataflow::V1Beta3::JobsV1Beta3Client',
+    NAME             => 'Google::Cloud::Dataflow::V1Beta3::FlexTemplatesServiceClient',
     AUTHOR           => ['Google LLC <cjac@google.com>'],
-    VERSION_FROM     => 'lib/Google/Cloud/Dataflow/V1Beta3/JobsV1Beta3Client.pm',
-    ABSTRACT_FROM    => 'lib/Google/Cloud/Dataflow/V1Beta3/JobsV1Beta3Client.pm',
+    VERSION_FROM     => 'lib/Google/Cloud/Dataflow/V1Beta3/FlexTemplatesServiceClient.pm',
+    ABSTRACT_FROM    => 'lib/Google/Cloud/Dataflow/V1Beta3/FlexTemplatesServiceClient.pm',
     LICENSE          => 'apache_2',
     MIN_PERL_VERSION => '5.008003',
     CONFIGURE_REQUIRES => {
@@ -28,7 +28,7 @@ my %WriteMakefileArgs = (
         #'Foo::Bar::Module' => '5.0401',
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean => { FILES => 'Google-Cloud-Dataflow-V1Beta3-JobsV1Beta3Client-*' },
+    clean => { FILES => 'Google-Cloud-Dataflow-V1Beta3-FlexTemplatesServiceClient-*' },
 );
 
 # Compatibility with old versions of ExtUtils::MakeMaker

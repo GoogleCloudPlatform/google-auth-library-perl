@@ -1,4 +1,4 @@
-# Google::Cloud::NetworkServices::V1::NetworkServicesClient
+# Google::Cloud::NetworkServices::V1::DepServiceClient
 
 Auto-generated Protocol Buffers client library for Google Cloud Services.
 
@@ -15,7 +15,7 @@ To install this module, run the following commands:
 
 After installing, you can find documentation for this module with the `perldoc` command:
 
-    perldoc Google::Cloud::NetworkServices::V1::NetworkServicesClient
+    perldoc Google::Cloud::NetworkServices::V1::DepServiceClient
 
 ## License and Copyright
 

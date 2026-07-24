@@ -14,5 +14,5 @@ inc/
 nytprof.out
 pod2htm*.tmp
 pm_to_blib
-Google-Cloud-Compute-V1-InstancesClient-*
-Google-Cloud-Compute-V1-InstancesClient-*.tar.gz
+Google-Cloud-Compute-V1-AcceleratorTypesClient-*
+Google-Cloud-Compute-V1-AcceleratorTypesClient-*.tar.gz

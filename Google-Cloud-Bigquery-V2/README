@@ -1,4 +1,4 @@
-# Google::Cloud::Bigquery::V2::ModelClient
+# Google::Cloud::Bigquery::V2::DatasetServiceClient
 
 Auto-generated Protocol Buffers client library for Google Cloud Services.
 
@@ -15,7 +15,7 @@ To install this module, run the following commands:
 
 After installing, you can find documentation for this module with the `perldoc` command:
 
-    perldoc Google::Cloud::Bigquery::V2::ModelClient
+    perldoc Google::Cloud::Bigquery::V2::DatasetServiceClient
 
 ## License and Copyright
 

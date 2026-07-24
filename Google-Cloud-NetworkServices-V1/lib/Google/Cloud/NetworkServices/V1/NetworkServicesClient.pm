@@ -62,23 +62,6 @@ sub BUILD {
     }
 }
 
-sub list_lb_traffic_extensions {
-    my ($self, %params) = @_;
-
-    my $request_class = 'Google::Cloud::Networkservices::V1::Dep::ListLbTrafficExtensionsRequest';
-    my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
-
-    my $response_class = 'Google::Cloud::Networkservices::V1::Dep::ListLbTrafficExtensionsResponse';
-    my $response = $self->transport->call({
-        service        => 'google.cloud.networkservices.v1.DepService',
-        method         => 'ListLbTrafficExtensions',
-        request        => $request,
-        response_class => $response_class,
-    });
-
-    return $response;
-}
-
 sub list_endpoint_policies {
     my ($self, %params) = @_;
 
@@ -197,10 +180,6 @@ Returns or accepts the active transport object (L<Google::gRPC::Client> or L<Goo
 The following RPC methods are available in this client:
 
 =over 4
-
-=item * B<list_lb_traffic_extensions>
-
-Calls the RPC method C<ListLbTrafficExtensions> on the service. Takes a hash of parameters representing the request.
 
 =item * B<list_endpoint_policies>
 

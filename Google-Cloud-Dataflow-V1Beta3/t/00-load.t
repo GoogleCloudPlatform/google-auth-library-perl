@@ -4,10 +4,15 @@ use strict;
 use warnings;
 use Test::More;
 
-plan tests => 1;
+plan tests => 6;
 
 BEGIN {
+    use_ok( 'Google::Cloud::Dataflow::V1Beta3::FlexTemplatesServiceClient' ) || print "Bail out!\n";
     use_ok( 'Google::Cloud::Dataflow::V1Beta3::JobsV1Beta3Client' ) || print "Bail out!\n";
+    use_ok( 'Google::Cloud::Dataflow::V1Beta3::MessagesV1Beta3Client' ) || print "Bail out!\n";
+    use_ok( 'Google::Cloud::Dataflow::V1Beta3::MetricsV1Beta3Client' ) || print "Bail out!\n";
+    use_ok( 'Google::Cloud::Dataflow::V1Beta3::SnapshotsV1Beta3Client' ) || print "Bail out!\n";
+    use_ok( 'Google::Cloud::Dataflow::V1Beta3::TemplatesServiceClient' ) || print "Bail out!\n";
 }
 
-diag( "Testing Google::Cloud::Dataflow::V1Beta3::JobsV1Beta3Client $Google::Cloud::Dataflow::V1Beta3::JobsV1Beta3Client::VERSION, Perl $], $^X" );
+diag( "Testing Google::Cloud::Dataflow::V1Beta3::FlexTemplatesServiceClient $Google::Cloud::Dataflow::V1Beta3::FlexTemplatesServiceClient::VERSION, Perl $], $^X" );

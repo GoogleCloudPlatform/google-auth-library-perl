@@ -1,4 +1,4 @@
-# Google::Cloud::NetworkSecurity::V1::NetworkSecurityClient
+# Google::Cloud::NetworkSecurity::V1::AddressGroupServiceClient
 
 Auto-generated Protocol Buffers client library for Google Cloud Services.
 
@@ -15,7 +15,7 @@ To install this module, run the following commands:
 
 After installing, you can find documentation for this module with the `perldoc` command:
 
-    perldoc Google::Cloud::NetworkSecurity::V1::NetworkSecurityClient
+    perldoc Google::Cloud::NetworkSecurity::V1::AddressGroupServiceClient
 
 ## License and Copyright
 

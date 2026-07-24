@@ -49,23 +49,6 @@ sub BUILD {
     }
 }
 
-sub list_federations {
-    my ($self, %params) = @_;
-
-    my $request_class = 'Google::Cloud::Metastore::V1::MetastoreFederation::ListFederationsRequest';
-    my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
-
-    my $response_class = 'Google::Cloud::Metastore::V1::MetastoreFederation::ListFederationsResponse';
-    my $response = $self->transport->call({
-        service        => 'google.cloud.metastore.v1.DataprocMetastoreFederation',
-        method         => 'ListFederations',
-        request        => $request,
-        response_class => $response_class,
-    });
-
-    return $response;
-}
-
 sub list_services {
     my ($self, %params) = @_;
 
@@ -158,10 +141,6 @@ Returns or accepts the active transport object (L<Google::gRPC::Client> or L<Goo
 The following RPC methods are available in this client:
 
 =over 4
-
-=item * B<list_federations>
-
-Calls the RPC method C<ListFederations> on the service. Takes a hash of parameters representing the request.
 
 =item * B<list_services>
 

@@ -4,10 +4,10 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 my %WriteMakefileArgs = (
-    NAME             => 'Google::Cloud::Dataplex::V1::DataplexServiceClient',
+    NAME             => 'Google::Cloud::Dataplex::V1::BusinessGlossaryServiceClient',
     AUTHOR           => ['Google LLC <cjac@google.com>'],
-    VERSION_FROM     => 'lib/Google/Cloud/Dataplex/V1/DataplexServiceClient.pm',
-    ABSTRACT_FROM    => 'lib/Google/Cloud/Dataplex/V1/DataplexServiceClient.pm',
+    VERSION_FROM     => 'lib/Google/Cloud/Dataplex/V1/BusinessGlossaryServiceClient.pm',
+    ABSTRACT_FROM    => 'lib/Google/Cloud/Dataplex/V1/BusinessGlossaryServiceClient.pm',
     LICENSE          => 'apache_2',
     MIN_PERL_VERSION => '5.008003',
     CONFIGURE_REQUIRES => {
@@ -28,7 +28,7 @@ my %WriteMakefileArgs = (
         #'Foo::Bar::Module' => '5.0401',
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean => { FILES => 'Google-Cloud-Dataplex-V1-DataplexServiceClient-*' },
+    clean => { FILES => 'Google-Cloud-Dataplex-V1-BusinessGlossaryServiceClient-*' },
 );
 
 # Compatibility with old versions of ExtUtils::MakeMaker

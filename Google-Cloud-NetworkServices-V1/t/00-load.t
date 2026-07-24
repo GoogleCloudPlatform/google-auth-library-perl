@@ -4,10 +4,11 @@ use strict;
 use warnings;
 use Test::More;
 
-plan tests => 1;
+plan tests => 2;
 
 BEGIN {
+    use_ok( 'Google::Cloud::NetworkServices::V1::DepServiceClient' ) || print "Bail out!\n";
     use_ok( 'Google::Cloud::NetworkServices::V1::NetworkServicesClient' ) || print "Bail out!\n";
 }
 
-diag( "Testing Google::Cloud::NetworkServices::V1::NetworkServicesClient $Google::Cloud::NetworkServices::V1::NetworkServicesClient::VERSION, Perl $], $^X" );
+diag( "Testing Google::Cloud::NetworkServices::V1::DepServiceClient $Google::Cloud::NetworkServices::V1::DepServiceClient::VERSION, Perl $], $^X" );

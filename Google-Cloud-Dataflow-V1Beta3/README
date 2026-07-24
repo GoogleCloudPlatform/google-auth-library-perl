@@ -1,4 +1,4 @@
-# Google::Cloud::Dataflow::V1Beta3::JobsV1Beta3Client
+# Google::Cloud::Dataflow::V1Beta3::FlexTemplatesServiceClient
 
 Auto-generated Protocol Buffers client library for Google Cloud Services.
 
@@ -15,7 +15,7 @@ To install this module, run the following commands:
 
 After installing, you can find documentation for this module with the `perldoc` command:
 
-    perldoc Google::Cloud::Dataflow::V1Beta3::JobsV1Beta3Client
+    perldoc Google::Cloud::Dataflow::V1Beta3::FlexTemplatesServiceClient
 
 ## License and Copyright
 

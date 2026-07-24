@@ -65,57 +65,6 @@ sub create_topic {
 
     return $response;
 }
-
-sub create_schema {
-    my ($self, %params) = @_;
-
-    my $request_class = 'Google::Pubsub::V1::Schema::CreateSchemaRequest';
-    my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
-
-    my $response_class = 'Google::Pubsub::V1::Schema::Schema';
-    my $response = $self->transport->call({
-        service        => 'google.pubsub.v1.SchemaService',
-        method         => 'CreateSchema',
-        request        => $request,
-        response_class => $response_class,
-    });
-
-    return $response;
-}
-
-sub validate_schema {
-    my ($self, %params) = @_;
-
-    my $request_class = 'Google::Pubsub::V1::Schema::ValidateSchemaRequest';
-    my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
-
-    my $response_class = 'Google::Pubsub::V1::Schema::ValidateSchemaResponse';
-    my $response = $self->transport->call({
-        service        => 'google.pubsub.v1.SchemaService',
-        method         => 'ValidateSchema',
-        request        => $request,
-        response_class => $response_class,
-    });
-
-    return $response;
-}
-
-sub validate_message {
-    my ($self, %params) = @_;
-
-    my $request_class = 'Google::Pubsub::V1::Schema::ValidateMessageRequest';
-    my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
-
-    my $response_class = 'Google::Pubsub::V1::Schema::ValidateMessageResponse';
-    my $response = $self->transport->call({
-        service        => 'google.pubsub.v1.SchemaService',
-        method         => 'ValidateMessage',
-        request        => $request,
-        response_class => $response_class,
-    });
-
-    return $response;
-}
 1; # End of Google::Cloud::PubSub::V1::PublisherClient
 
 __END__
@@ -196,18 +145,6 @@ The following RPC methods are available in this client:
 =item * B<create_topic>
 
 Calls the RPC method C<CreateTopic> on the service. Takes a hash of parameters representing the request.
-
-=item * B<create_schema>
-
-Calls the RPC method C<CreateSchema> on the service. Takes a hash of parameters representing the request.
-
-=item * B<validate_schema>
-
-Calls the RPC method C<ValidateSchema> on the service. Takes a hash of parameters representing the request.
-
-=item * B<validate_message>
-
-Calls the RPC method C<ValidateMessage> on the service. Takes a hash of parameters representing the request.
 
 =back
 

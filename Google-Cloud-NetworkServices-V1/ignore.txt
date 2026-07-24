@@ -14,5 +14,5 @@ inc/
 nytprof.out
 pod2htm*.tmp
 pm_to_blib
-Google-Cloud-NetworkServices-V1-NetworkServicesClient-*
-Google-Cloud-NetworkServices-V1-NetworkServicesClient-*.tar.gz
+Google-Cloud-NetworkServices-V1-DepServiceClient-*
+Google-Cloud-NetworkServices-V1-DepServiceClient-*.tar.gz

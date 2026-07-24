@@ -51,7 +51,7 @@ my $rc_starter = system($module_starter_cmd);
 is($rc_starter, 0, 'module-starter executed successfully');
 
 # 3. Verify generated files exist
-my $client_pm = File::Spec->catfile($tmp_dir, 'lib', 'Google', 'Cloud', 'Test.pm');
+my $client_pm = File::Spec->catfile($tmp_dir, 'lib', 'Google', 'Cloud', 'TestServiceClient.pm');
 my $proto_pm = File::Spec->catfile($tmp_dir, 'lib', 'Google', 'Spanner', 'V1', 'Service.pm');
 
 ok(-f $client_pm, 'Generated high-level client wrapper');
@@ -114,11 +114,11 @@ sub call {
 package main;
 use strict;
 use warnings;
-use Google::Cloud::Test;
+use Google::Cloud::TestServiceClient;
 
 # Verify high-level client wrapper class and methods
-ok(Google::Cloud::Test->can('new'), 'Google::Cloud::Test has new()');
-can_ok('Google::Cloud::Test', qw(credentials transport say_hello));
+ok(Google::Cloud::TestServiceClient->can('new'), 'Google::Cloud::TestServiceClient has new()');
+can_ok('Google::Cloud::TestServiceClient', qw(credentials transport say_hello));
 
 # Verify low-level compiled message classes and methods
 ok(1, 'Skipping legacy class check');
@@ -127,7 +127,7 @@ ok(1, 'Skipping legacy class check');
 can_ok('Google::Cloud::Test::V1::Service::TestServiceClient', qw(new say_hello)) if Google::Cloud::Test::V1::Service::TestServiceClient->can('new');
 
 # Verify instantiation and execution
-my $client = Google::Cloud::Test->new( credentials => 'dummy' );
+my $client = Google::Cloud::TestServiceClient->new( credentials => 'dummy' );
 ok($client, 'Instantiated generated client');
 isa_ok($client->transport, 'Google::gRPC::Client', 'Client transport');
 

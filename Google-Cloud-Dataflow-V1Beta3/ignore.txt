@@ -14,5 +14,5 @@ inc/
 nytprof.out
 pod2htm*.tmp
 pm_to_blib
-Google-Cloud-Dataflow-V1Beta3-JobsV1Beta3Client-*
-Google-Cloud-Dataflow-V1Beta3-JobsV1Beta3Client-*.tar.gz
+Google-Cloud-Dataflow-V1Beta3-FlexTemplatesServiceClient-*
+Google-Cloud-Dataflow-V1Beta3-FlexTemplatesServiceClient-*.tar.gz

@@ -37,7 +37,70 @@ sub create_distro {
         $self->{_protobuf_grpc_target} = $grpc_target;
     }
 
+    my $separate = $self->{separate_clients} // $ENV{PROTOBUF_SEPARATE_CLIENTS} // 1; # Default to separate
+    $self->{separate_clients} = $separate;
+
+    if ($separate && $self->{_protobuf_files}) {
+        my %services = $self->_parse_services_meta();
+        $self->{_services_meta_all} = \%services;
+
+        my $base_module = $self->{modules}->[0];
+        my ($base_ns) = $base_module =~ /^(.*)::(\w+)$/;
+        $base_ns ||= $base_module; # Fallback
+
+        my @new_modules;
+        for my $svc (sort keys %services) {
+            my $module = "${base_ns}::${svc}Client";
+            push @new_modules, $module;
+            $self->{_module_to_service}->{$module} = $svc;
+        }
+        $self->{modules} = \@new_modules if @new_modules;
+    }
+
     return $self->SUPER::create_distro(%args);
+}
+
+# Helper to pre-parse services from proto files
+sub _parse_services_meta {
+    my ($self) = @_;
+
+    my %services;
+
+    for my $proto_file (@{$self->{_protobuf_files}}) {
+        my $proto_content = path($proto_file)->slurp_utf8();
+
+        my $file_package = '';
+        if ($proto_content =~ / package \s+ ([\w\.]+) ; /x) {
+            $file_package = $1;
+        }
+
+        my $file_service_name = '';
+        while ($proto_content =~ /
+            (?: service \s+ (\w+) \s* \{ )
+            |
+            (?: rpc \s+ (\w+) \s*
+                \( \s* (?:stream\s+)? ([\w\.]+) \s* \) \s*
+                returns \s* \( \s* (?:stream\s+)? ([\w\.]+) \s* \)
+            )
+        /gsx) {
+            if ($1) {
+                $file_service_name = $1;
+                $services{$file_service_name} = {
+                    package => $file_package,
+                    methods => [],
+                    file    => $proto_file,
+                };
+            }
+            elsif ($file_service_name && $2) {
+                push @{$services{$file_service_name}->{methods}}, {
+                    name => $2,
+                    input => $3,
+                    output => $4,
+                };
+            }
+        }
+    }
+    return %services;
 }
 
 # 2. Override create_modules to run protoc and generate the client wrappers
@@ -119,13 +182,14 @@ sub create_modules {
     }
 
     # B. Generate the high-level client wrappers for each requested module
-    # For now, we assume the first module in the list is the primary client wrapper
-    my $primary_module = $modules[0];
-    my $primary_file = $files[0];
-    my $abs_primary_file = File::Spec->catfile($self->{basedir}, $primary_file);
+    for my $i (0 .. $#modules) {
+        my $module = $modules[$i];
+        my $file = $files[$i];
+        my $abs_file = File::Spec->catfile($self->{basedir}, $file);
 
-    if ($abs_primary_file && -f $abs_primary_file) {
-        $self->_generate_client_wrapper($primary_module, $abs_primary_file);
+        if ($abs_file && -f $abs_file) {
+            $self->_generate_client_wrapper($module, $abs_file);
+        }
     }
 
     return @files;
@@ -139,12 +203,13 @@ sub create_t {
     my @files = $self->SUPER::create_t(@modules);
 
     # If we have parsed service metadata, generate our integration test!
-    if ($self->{_protobuf_files} && $self->{_services_meta}) {
-        my $primary_module = $modules[0];
-        my $test_file = $self->_generate_service_test($primary_module);
-        push @files, $test_file if $test_file;
-        my $rest_test_file = $self->_generate_rest_test($primary_module);
-        push @files, $rest_test_file if $rest_test_file;
+    if ($self->{_protobuf_files} && ($self->{_services_meta_by_module} || $self->{_services_meta})) {
+        for my $m (@modules) {
+            my $test_file = $self->_generate_service_test($m);
+            push @files, $test_file if $test_file;
+            my $rest_test_file = $self->_generate_rest_test($m);
+            push @files, $rest_test_file if $rest_test_file;
+        }
     }
 
     # Generate xt/00_perl-critic.t for author/release quality checks
@@ -186,6 +251,9 @@ sub _generate_client_wrapper {
     my $package_name = '';
     my $service_name = '';
 
+    my $service_to_gen = $self->{_module_to_service}->{$module_name};
+    $service_name = $service_to_gen if $service_to_gen;
+
     # Pre-scan messages across all files to build a dictionary
     $self->{_message_file_base} = {};
     for my $proto_file (@{$self->{_protobuf_files}}) {
@@ -194,7 +262,7 @@ sub _generate_client_wrapper {
         $content =~ s{ /\* .*? \*/ }{}gsx;
         
         my $pkg = '';
-        if ($content =~ / package \s+ ([\w\.]+) ; /x) {
+        if ($content =~ /^\s*package\s+([\w\.]+)\s*;/mx) {
             $pkg = $1;
         }
         
@@ -202,7 +270,7 @@ sub _generate_client_wrapper {
         $fname =~ s/\.proto$//;
         my $pm_base = join '', map { ucfirst($_) } split /_/, $fname;
         
-        while ($content =~ / message \s+ (\w+) /gsx) {
+        while ($content =~ /^\s*message\s+(\w+)/gmx) {
             my $msg = $1;
             $self->{_message_file_base}->{"$pkg.$msg"} = $pm_base;
             $self->{_message_file_base}->{$msg} = $pm_base; # Fallback
@@ -218,7 +286,7 @@ sub _generate_client_wrapper {
         $proto_content =~ s{ /\* .*? \*/ }{}gsx;
         
         my $file_package = '';
-        if ($proto_content =~ / package \s+ ([\w\.]+) ; /x) {
+        if ($proto_content =~ /^\s*package\s+([\w\.]+)\s*;/mx) {
             $file_package = $1;
             $package_name ||= $file_package; # Use the first package name as primary
         }
@@ -234,16 +302,16 @@ sub _generate_client_wrapper {
         # Find services and their RPC methods using a robust token scanner
         my $file_service_name = '';
         while ($proto_content =~ /
-            (?: service \s+ (\w+) )
+            (?: service \s+ (\w+) \s* \{ )
             |
             (?: rpc \s+ (\w+) \s*
-                \( \s* ([\w\.]+) \s* \) \s*
-                returns \s* \( \s* ([\w\.]+) \s* \)
+                \( \s* (?:stream\s+)? ([\w\.]+) \s* \) \s*
+                returns \s* \( \s* (?:stream\s+)? ([\w\.]+) \s* \)
             )
         /gsx) {
             if ($1) {
                 $file_service_name = $1;
-                $service_name ||= $file_service_name; # Keep track of the first service name for metadata
+                $service_name ||= $file_service_name unless $service_to_gen; # Keep track of the first service name for metadata
             }
             elsif ($file_service_name && $2) {
                 my ($method_name, $input_type, $output_type) = ($2, $3, $4);
@@ -254,13 +322,17 @@ sub _generate_client_wrapper {
                 my $perl_method_name = _camel_to_snake($method_name);
                 my $grpc_service_path = $file_package . '.' . $file_service_name;
 
-                push @methods, {
+                my $m_info = {
                     raw_name => $method_name,
                     perl_name => $perl_method_name,
                     input_class => $input_class,
                     output_class => $output_class,
                     service_path => $grpc_service_path,
                 };
+
+                if (!$service_to_gen || $file_service_name eq $service_to_gen) {
+                    push @methods, $m_info;
+                }
             }
         }
     }
@@ -542,12 +614,13 @@ EOF
     path($file_path)->spew_utf8($client_code);
 
     # Store service metadata for test generation
-    $self->{_services_meta} = {
+    $self->{_services_meta_by_module}->{$module_name} = {
         primary_module => $module_name,
         package_name   => $package_name,
         service_name   => $service_name,
         methods        => \@methods,
     };
+    $self->{_services_meta} = $self->{_services_meta_by_module}->{$module_name} if !$self->{separate_clients};
 
     return;
 }
@@ -559,7 +632,16 @@ sub Makefile_PL_guts {
 
     # If we are generating a protobuf client, inject the appropriate CPAN dependencies
     if ($self->{_protobuf_files}) {
-        my $has_services = ($self->{_services_meta} && @{$self->{_services_meta}->{methods}}) ? 1 : 0;
+        my $has_services = 0;
+        if ($self->{_services_meta_by_module}) {
+            for my $m (keys %{$self->{_services_meta_by_module}}) {
+                if (@{$self->{_services_meta_by_module}->{$m}->{methods}}) {
+                    $has_services = 1;
+                    last;
+                }
+            }
+        }
+        $has_services ||= ($self->{_services_meta} && @{$self->{_services_meta}->{methods}}) ? 1 : 0;
         my $deps;
         
         if ($has_services) {
@@ -795,13 +877,15 @@ sub _resolve_perl_type {
 sub _generate_service_test {
     my ($self, $module_name) = @_;
 
-    my $meta = $self->{_services_meta};
+    my $meta = $self->{_services_meta_by_module}->{$module_name} || $self->{_services_meta};
     return unless $meta && @{$meta->{methods}};
 
     my %output_classes = map { $_->{output_class} => 1 } @{$meta->{methods}};
     my $packages_to_mock = join(' ', sort keys %output_classes);
 
-    my $test_file = File::Spec->catfile('t', '01-service.t');
+    my ($service_name) = $module_name =~ /::(\w+)Client$/;
+    $service_name ||= 'Default';
+    my $test_file = File::Spec->catfile('t', "01-service-$service_name.t");
     my $abs_test_file = File::Spec->catfile($self->{basedir}, $test_file);
 
     # Start building the test content
@@ -894,10 +978,12 @@ EOF
 sub _generate_rest_test {
     my ($self, $module_name) = @_;
 
-    my $meta = $self->{_services_meta};
+    my $meta = $self->{_services_meta_by_module}->{$module_name} || $self->{_services_meta};
     return unless $meta && @{$meta->{methods}};
 
-    my $test_file = File::Spec->catfile('t', '02-rest-transport.t');
+    my ($service_name) = $module_name =~ /::(\w+)Client$/;
+    $service_name ||= 'Default';
+    my $test_file = File::Spec->catfile('t', "02-rest-transport-$service_name.t");
     my $abs_test_file = File::Spec->catfile($self->{basedir}, $test_file);
 
     my $test_code = sprintf(<<'EOF', $module_name, $module_name);

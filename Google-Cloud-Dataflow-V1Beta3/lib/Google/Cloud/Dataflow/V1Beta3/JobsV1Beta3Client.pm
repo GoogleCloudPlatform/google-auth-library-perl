@@ -54,142 +54,6 @@ sub BUILD {
     }
 }
 
-sub create_job_from_template {
-    my ($self, %params) = @_;
-
-    my $request_class = 'Google::Dataflow::V1BETA3::Templates::CreateJobFromTemplateRequest';
-    my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
-
-    my $response_class = 'Google::Dataflow::V1BETA3::Jobs::Job';
-    my $response = $self->transport->call({
-        service        => 'google.dataflow.v1beta3.TemplatesService',
-        method         => 'CreateJobFromTemplate',
-        request        => $request,
-        response_class => $response_class,
-    });
-
-    return $response;
-}
-
-sub launch_template {
-    my ($self, %params) = @_;
-
-    my $request_class = 'Google::Dataflow::V1BETA3::Templates::LaunchTemplateRequest';
-    my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
-
-    my $response_class = 'Google::Dataflow::V1BETA3::Templates::LaunchTemplateResponse';
-    my $response = $self->transport->call({
-        service        => 'google.dataflow.v1beta3.TemplatesService',
-        method         => 'LaunchTemplate',
-        request        => $request,
-        response_class => $response_class,
-    });
-
-    return $response;
-}
-
-sub get_template {
-    my ($self, %params) = @_;
-
-    my $request_class = 'Google::Dataflow::V1BETA3::Templates::GetTemplateRequest';
-    my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
-
-    my $response_class = 'Google::Dataflow::V1BETA3::Templates::GetTemplateResponse';
-    my $response = $self->transport->call({
-        service        => 'google.dataflow.v1beta3.TemplatesService',
-        method         => 'GetTemplate',
-        request        => $request,
-        response_class => $response_class,
-    });
-
-    return $response;
-}
-
-sub launch_flex_template {
-    my ($self, %params) = @_;
-
-    my $request_class = 'Google::Dataflow::V1BETA3::Templates::LaunchFlexTemplateRequest';
-    my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
-
-    my $response_class = 'Google::Dataflow::V1BETA3::Templates::LaunchFlexTemplateResponse';
-    my $response = $self->transport->call({
-        service        => 'google.dataflow.v1beta3.FlexTemplatesService',
-        method         => 'LaunchFlexTemplate',
-        request        => $request,
-        response_class => $response_class,
-    });
-
-    return $response;
-}
-
-sub list_job_messages {
-    my ($self, %params) = @_;
-
-    my $request_class = 'Google::Dataflow::V1BETA3::Messages::ListJobMessagesRequest';
-    my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
-
-    my $response_class = 'Google::Dataflow::V1BETA3::Messages::ListJobMessagesResponse';
-    my $response = $self->transport->call({
-        service        => 'google.dataflow.v1beta3.MessagesV1Beta3',
-        method         => 'ListJobMessages',
-        request        => $request,
-        response_class => $response_class,
-    });
-
-    return $response;
-}
-
-sub get_job_metrics {
-    my ($self, %params) = @_;
-
-    my $request_class = 'Google::Dataflow::V1BETA3::Metrics::GetJobMetricsRequest';
-    my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
-
-    my $response_class = 'Google::Dataflow::V1BETA3::Metrics::JobMetrics';
-    my $response = $self->transport->call({
-        service        => 'google.dataflow.v1beta3.MetricsV1Beta3',
-        method         => 'GetJobMetrics',
-        request        => $request,
-        response_class => $response_class,
-    });
-
-    return $response;
-}
-
-sub get_job_execution_details {
-    my ($self, %params) = @_;
-
-    my $request_class = 'Google::Dataflow::V1BETA3::Metrics::GetJobExecutionDetailsRequest';
-    my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
-
-    my $response_class = 'Google::Dataflow::V1BETA3::Metrics::JobExecutionDetails';
-    my $response = $self->transport->call({
-        service        => 'google.dataflow.v1beta3.MetricsV1Beta3',
-        method         => 'GetJobExecutionDetails',
-        request        => $request,
-        response_class => $response_class,
-    });
-
-    return $response;
-}
-
-sub get_stage_execution_details {
-    my ($self, %params) = @_;
-
-    my $request_class = 'Google::Dataflow::V1BETA3::Metrics::GetStageExecutionDetailsRequest';
-    my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
-
-    my $response_class = 'Google::Dataflow::V1BETA3::Metrics::StageExecutionDetails';
-    my $response = $self->transport->call({
-        service        => 'google.dataflow.v1beta3.MetricsV1Beta3',
-        method         => 'GetStageExecutionDetails',
-        request        => $request,
-        response_class => $response_class,
-    });
-
-    return $response;
-}
-
 sub create_job {
     my ($self, %params) = @_;
 
@@ -308,57 +172,6 @@ sub snapshot_job {
 
     return $response;
 }
-
-sub get_snapshot {
-    my ($self, %params) = @_;
-
-    my $request_class = 'Google::Dataflow::V1BETA3::Snapshots::GetSnapshotRequest';
-    my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
-
-    my $response_class = 'Google::Dataflow::V1BETA3::Snapshots::Snapshot';
-    my $response = $self->transport->call({
-        service        => 'google.dataflow.v1beta3.SnapshotsV1Beta3',
-        method         => 'GetSnapshot',
-        request        => $request,
-        response_class => $response_class,
-    });
-
-    return $response;
-}
-
-sub delete_snapshot {
-    my ($self, %params) = @_;
-
-    my $request_class = 'Google::Dataflow::V1BETA3::Snapshots::DeleteSnapshotRequest';
-    my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
-
-    my $response_class = 'Google::Dataflow::V1BETA3::Snapshots::DeleteSnapshotResponse';
-    my $response = $self->transport->call({
-        service        => 'google.dataflow.v1beta3.SnapshotsV1Beta3',
-        method         => 'DeleteSnapshot',
-        request        => $request,
-        response_class => $response_class,
-    });
-
-    return $response;
-}
-
-sub list_snapshots {
-    my ($self, %params) = @_;
-
-    my $request_class = 'Google::Dataflow::V1BETA3::Snapshots::ListSnapshotsRequest';
-    my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
-
-    my $response_class = 'Google::Dataflow::V1BETA3::Snapshots::ListSnapshotsResponse';
-    my $response = $self->transport->call({
-        service        => 'google.dataflow.v1beta3.SnapshotsV1Beta3',
-        method         => 'ListSnapshots',
-        request        => $request,
-        response_class => $response_class,
-    });
-
-    return $response;
-}
 1; # End of Google::Cloud::Dataflow::V1Beta3::JobsV1Beta3Client
 
 __END__
@@ -446,38 +259,6 @@ The following RPC methods are available in this client:
 
 =over 4
 
-=item * B<create_job_from_template>
-
-Calls the RPC method C<CreateJobFromTemplate> on the service. Takes a hash of parameters representing the request.
-
-=item * B<launch_template>
-
-Calls the RPC method C<LaunchTemplate> on the service. Takes a hash of parameters representing the request.
-
-=item * B<get_template>
-
-Calls the RPC method C<GetTemplate> on the service. Takes a hash of parameters representing the request.
-
-=item * B<launch_flex_template>
-
-Calls the RPC method C<LaunchFlexTemplate> on the service. Takes a hash of parameters representing the request.
-
-=item * B<list_job_messages>
-
-Calls the RPC method C<ListJobMessages> on the service. Takes a hash of parameters representing the request.
-
-=item * B<get_job_metrics>
-
-Calls the RPC method C<GetJobMetrics> on the service. Takes a hash of parameters representing the request.
-
-=item * B<get_job_execution_details>
-
-Calls the RPC method C<GetJobExecutionDetails> on the service. Takes a hash of parameters representing the request.
-
-=item * B<get_stage_execution_details>
-
-Calls the RPC method C<GetStageExecutionDetails> on the service. Takes a hash of parameters representing the request.
-
 =item * B<create_job>
 
 Calls the RPC method C<CreateJob> on the service. Takes a hash of parameters representing the request.
@@ -505,18 +286,6 @@ Calls the RPC method C<CheckActiveJobs> on the service. Takes a hash of paramete
 =item * B<snapshot_job>
 
 Calls the RPC method C<SnapshotJob> on the service. Takes a hash of parameters representing the request.
-
-=item * B<get_snapshot>
-
-Calls the RPC method C<GetSnapshot> on the service. Takes a hash of parameters representing the request.
-
-=item * B<delete_snapshot>
-
-Calls the RPC method C<DeleteSnapshot> on the service. Takes a hash of parameters representing the request.
-
-=item * B<list_snapshots>
-
-Calls the RPC method C<ListSnapshots> on the service. Takes a hash of parameters representing the request.
 
 =back
 

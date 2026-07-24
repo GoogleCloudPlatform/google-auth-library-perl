@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Test::More;
 
-plan tests => 3;
+plan tests => 4;
 
 sub not_in_file_ok {
     my ($filename, %regex) = @_;
@@ -51,6 +51,7 @@ TODO: {
   );
 
   module_boilerplate_ok('lib/Google/Cloud/BigQuery/Storage/V1/BigQueryReadClient.pm');
+  module_boilerplate_ok('lib/Google/Cloud/BigQuery/Storage/V1/BigQueryWriteClient.pm');
 
 
 }

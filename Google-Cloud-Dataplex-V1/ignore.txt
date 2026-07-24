@@ -14,5 +14,5 @@ inc/
 nytprof.out
 pod2htm*.tmp
 pm_to_blib
-Google-Cloud-Dataplex-V1-DataplexServiceClient-*
-Google-Cloud-Dataplex-V1-DataplexServiceClient-*.tar.gz
+Google-Cloud-Dataplex-V1-BusinessGlossaryServiceClient-*
+Google-Cloud-Dataplex-V1-BusinessGlossaryServiceClient-*.tar.gz

@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Test::More;
 
-plan tests => 3;
+plan tests => 4;
 
 sub not_in_file_ok {
     my ($filename, %regex) = @_;
@@ -50,6 +50,7 @@ TODO: {
     "placeholder date/time"       => qr(Date/time)
   );
 
+  module_boilerplate_ok('lib/Google/Cloud/NetworkServices/V1/DepServiceClient.pm');
   module_boilerplate_ok('lib/Google/Cloud/NetworkServices/V1/NetworkServicesClient.pm');
 
 

@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Test::More;
 
-plan tests => 3;
+plan tests => 8;
 
 sub not_in_file_ok {
     my ($filename, %regex) = @_;
@@ -50,7 +50,12 @@ TODO: {
     "placeholder date/time"       => qr(Date/time)
   );
 
+  module_boilerplate_ok('lib/Google/Cloud/Dataflow/V1Beta3/FlexTemplatesServiceClient.pm');
   module_boilerplate_ok('lib/Google/Cloud/Dataflow/V1Beta3/JobsV1Beta3Client.pm');
+  module_boilerplate_ok('lib/Google/Cloud/Dataflow/V1Beta3/MessagesV1Beta3Client.pm');
+  module_boilerplate_ok('lib/Google/Cloud/Dataflow/V1Beta3/MetricsV1Beta3Client.pm');
+  module_boilerplate_ok('lib/Google/Cloud/Dataflow/V1Beta3/SnapshotsV1Beta3Client.pm');
+  module_boilerplate_ok('lib/Google/Cloud/Dataflow/V1Beta3/TemplatesServiceClient.pm');
 
 
 }

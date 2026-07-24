@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Test::More;
 
-plan tests => 3;
+plan tests => 18;
 
 sub not_in_file_ok {
     my ($filename, %regex) = @_;
@@ -50,7 +50,22 @@ TODO: {
     "placeholder date/time"       => qr(Date/time)
   );
 
+  module_boilerplate_ok('lib/Google/Cloud/SQL/V1/SqlAvailableDatabaseVersionsServiceClient.pm');
+  module_boilerplate_ok('lib/Google/Cloud/SQL/V1/SqlBackupRunsServiceClient.pm');
+  module_boilerplate_ok('lib/Google/Cloud/SQL/V1/SqlBackupsServiceClient.pm');
+  module_boilerplate_ok('lib/Google/Cloud/SQL/V1/SqlConnectServiceClient.pm');
+  module_boilerplate_ok('lib/Google/Cloud/SQL/V1/SqlDatabasesServiceClient.pm');
+  module_boilerplate_ok('lib/Google/Cloud/SQL/V1/SqlEventsServiceClient.pm');
+  module_boilerplate_ok('lib/Google/Cloud/SQL/V1/SqlFeatureEligibilityServiceClient.pm');
+  module_boilerplate_ok('lib/Google/Cloud/SQL/V1/SqlFlagsServiceClient.pm');
+  module_boilerplate_ok('lib/Google/Cloud/SQL/V1/SqlIamPoliciesServiceClient.pm');
+  module_boilerplate_ok('lib/Google/Cloud/SQL/V1/SqlInstanceNamesServiceClient.pm');
   module_boilerplate_ok('lib/Google/Cloud/SQL/V1/SqlInstancesServiceClient.pm');
+  module_boilerplate_ok('lib/Google/Cloud/SQL/V1/SqlOperationsServiceClient.pm');
+  module_boilerplate_ok('lib/Google/Cloud/SQL/V1/SqlRegionsServiceClient.pm');
+  module_boilerplate_ok('lib/Google/Cloud/SQL/V1/SqlSslCertsServiceClient.pm');
+  module_boilerplate_ok('lib/Google/Cloud/SQL/V1/SqlTiersServiceClient.pm');
+  module_boilerplate_ok('lib/Google/Cloud/SQL/V1/SqlUsersServiceClient.pm');
 
 
 }

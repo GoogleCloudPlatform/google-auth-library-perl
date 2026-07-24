@@ -4,10 +4,10 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 my %WriteMakefileArgs = (
-    NAME             => 'Google::Cloud::Compute::V1::InstancesClient',
+    NAME             => 'Google::Cloud::Compute::V1::AcceleratorTypesClient',
     AUTHOR           => ['Google LLC <cjac@google.com>'],
-    VERSION_FROM     => 'lib/Google/Cloud/Compute/V1/InstancesClient.pm',
-    ABSTRACT_FROM    => 'lib/Google/Cloud/Compute/V1/InstancesClient.pm',
+    VERSION_FROM     => 'lib/Google/Cloud/Compute/V1/AcceleratorTypesClient.pm',
+    ABSTRACT_FROM    => 'lib/Google/Cloud/Compute/V1/AcceleratorTypesClient.pm',
     LICENSE          => 'apache_2',
     MIN_PERL_VERSION => '5.008003',
     CONFIGURE_REQUIRES => {
@@ -28,7 +28,7 @@ my %WriteMakefileArgs = (
         #'Foo::Bar::Module' => '5.0401',
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean => { FILES => 'Google-Cloud-Compute-V1-InstancesClient-*' },
+    clean => { FILES => 'Google-Cloud-Compute-V1-AcceleratorTypesClient-*' },
 );
 
 # Compatibility with old versions of ExtUtils::MakeMaker

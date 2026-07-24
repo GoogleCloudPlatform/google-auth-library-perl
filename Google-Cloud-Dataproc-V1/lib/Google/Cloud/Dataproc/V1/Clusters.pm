@@ -3,7 +3,7 @@ package Google::Cloud::Dataproc::V1::Clusters;
 use strict;
 use warnings;
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;

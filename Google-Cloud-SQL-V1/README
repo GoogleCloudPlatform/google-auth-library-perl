@@ -1,4 +1,4 @@
-# Google::Cloud::SQL::V1::SqlInstancesServiceClient
+# Google::Cloud::SQL::V1::SqlAvailableDatabaseVersionsServiceClient
 
 Auto-generated Protocol Buffers client library for Google Cloud Services.
 
@@ -15,7 +15,7 @@ To install this module, run the following commands:
 
 After installing, you can find documentation for this module with the `perldoc` command:
 
-    perldoc Google::Cloud::SQL::V1::SqlInstancesServiceClient
+    perldoc Google::Cloud::SQL::V1::SqlAvailableDatabaseVersionsServiceClient
 
 ## License and Copyright
 

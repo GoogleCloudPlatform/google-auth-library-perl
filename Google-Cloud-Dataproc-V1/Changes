@@ -1,4 +1,4 @@
-Revision history for Google-Cloud-Dataproc-V1-ClusterControllerClient
+Revision history for Google-Cloud-Dataproc-V1-AutoscalingPolicyServiceClient
 
-0.03  Thu Jul 23 20:04:57 2026
+0.03  Fri Jul 24 05:23:39 2026
     - Initial release. Auto-generated from Protocol Buffers schema.

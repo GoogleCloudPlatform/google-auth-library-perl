@@ -71,74 +71,6 @@ sub BUILD {
     }
 }
 
-sub list_sacrealms {
-    my ($self, %params) = @_;
-
-    my $request_class = 'Google::Cloud::Networksecurity::V1::SseRealm::ListSACRealmsRequest';
-    my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
-
-    my $response_class = 'Google::Cloud::Networksecurity::V1::SseRealm::ListSACRealmsResponse';
-    my $response = $self->transport->call({
-        service        => 'google.cloud.networksecurity.v1.SSERealmService',
-        method         => 'ListSACRealms',
-        request        => $request,
-        response_class => $response_class,
-    });
-
-    return $response;
-}
-
-sub list_dns_threat_detectors {
-    my ($self, %params) = @_;
-
-    my $request_class = 'Google::Cloud::Networksecurity::V1::DnsThreatDetector::ListDnsThreatDetectorsRequest';
-    my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
-
-    my $response_class = 'Google::Cloud::Networksecurity::V1::DnsThreatDetector::ListDnsThreatDetectorsResponse';
-    my $response = $self->transport->call({
-        service        => 'google.cloud.networksecurity.v1.DnsThreatDetectorService',
-        method         => 'ListDnsThreatDetectors',
-        request        => $request,
-        response_class => $response_class,
-    });
-
-    return $response;
-}
-
-sub list_intercept_endpoint_groups {
-    my ($self, %params) = @_;
-
-    my $request_class = 'Google::Cloud::Networksecurity::V1::Intercept::ListInterceptEndpointGroupsRequest';
-    my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
-
-    my $response_class = 'Google::Cloud::Networksecurity::V1::Intercept::ListInterceptEndpointGroupsResponse';
-    my $response = $self->transport->call({
-        service        => 'google.cloud.networksecurity.v1.Intercept',
-        method         => 'ListInterceptEndpointGroups',
-        request        => $request,
-        response_class => $response_class,
-    });
-
-    return $response;
-}
-
-sub list_address_groups {
-    my ($self, %params) = @_;
-
-    my $request_class = 'Google::Cloud::Networksecurity::V1::AddressGroup::ListAddressGroupsRequest';
-    my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
-
-    my $response_class = 'Google::Cloud::Networksecurity::V1::AddressGroup::ListAddressGroupsResponse';
-    my $response = $self->transport->call({
-        service        => 'google.cloud.networksecurity.v1.AddressGroupService',
-        method         => 'ListAddressGroups',
-        request        => $request,
-        response_class => $response_class,
-    });
-
-    return $response;
-}
-
 sub list_authorization_policies {
     my ($self, %params) = @_;
 
@@ -149,57 +81,6 @@ sub list_authorization_policies {
     my $response = $self->transport->call({
         service        => 'google.cloud.networksecurity.v1.NetworkSecurity',
         method         => 'ListAuthorizationPolicies',
-        request        => $request,
-        response_class => $response_class,
-    });
-
-    return $response;
-}
-
-sub list_mirroring_endpoint_groups {
-    my ($self, %params) = @_;
-
-    my $request_class = 'Google::Cloud::Networksecurity::V1::Mirroring::ListMirroringEndpointGroupsRequest';
-    my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
-
-    my $response_class = 'Google::Cloud::Networksecurity::V1::Mirroring::ListMirroringEndpointGroupsResponse';
-    my $response = $self->transport->call({
-        service        => 'google.cloud.networksecurity.v1.Mirroring',
-        method         => 'ListMirroringEndpointGroups',
-        request        => $request,
-        response_class => $response_class,
-    });
-
-    return $response;
-}
-
-sub list_security_profile_groups {
-    my ($self, %params) = @_;
-
-    my $request_class = 'Google::Cloud::Networksecurity::V1::SecurityProfileGroupService::ListSecurityProfileGroupsRequest';
-    my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
-
-    my $response_class = 'Google::Cloud::Networksecurity::V1::SecurityProfileGroupService::ListSecurityProfileGroupsResponse';
-    my $response = $self->transport->call({
-        service        => 'google.cloud.networksecurity.v1.SecurityProfileGroupService',
-        method         => 'ListSecurityProfileGroups',
-        request        => $request,
-        response_class => $response_class,
-    });
-
-    return $response;
-}
-
-sub list_firewall_endpoints {
-    my ($self, %params) = @_;
-
-    my $request_class = 'Google::Cloud::Networksecurity::V1::FirewallActivation::ListFirewallEndpointsRequest';
-    my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
-
-    my $response_class = 'Google::Cloud::Networksecurity::V1::FirewallActivation::ListFirewallEndpointsResponse';
-    my $response = $self->transport->call({
-        service        => 'google.cloud.networksecurity.v1.FirewallActivation',
-        method         => 'ListFirewallEndpoints',
         request        => $request,
         response_class => $response_class,
     });
@@ -327,37 +208,9 @@ The following RPC methods are available in this client:
 
 =over 4
 
-=item * B<list_sacrealms>
-
-Calls the RPC method C<ListSACRealms> on the service. Takes a hash of parameters representing the request.
-
-=item * B<list_dns_threat_detectors>
-
-Calls the RPC method C<ListDnsThreatDetectors> on the service. Takes a hash of parameters representing the request.
-
-=item * B<list_intercept_endpoint_groups>
-
-Calls the RPC method C<ListInterceptEndpointGroups> on the service. Takes a hash of parameters representing the request.
-
-=item * B<list_address_groups>
-
-Calls the RPC method C<ListAddressGroups> on the service. Takes a hash of parameters representing the request.
-
 =item * B<list_authorization_policies>
 
 Calls the RPC method C<ListAuthorizationPolicies> on the service. Takes a hash of parameters representing the request.
-
-=item * B<list_mirroring_endpoint_groups>
-
-Calls the RPC method C<ListMirroringEndpointGroups> on the service. Takes a hash of parameters representing the request.
-
-=item * B<list_security_profile_groups>
-
-Calls the RPC method C<ListSecurityProfileGroups> on the service. Takes a hash of parameters representing the request.
-
-=item * B<list_firewall_endpoints>
-
-Calls the RPC method C<ListFirewallEndpoints> on the service. Takes a hash of parameters representing the request.
 
 =back
 

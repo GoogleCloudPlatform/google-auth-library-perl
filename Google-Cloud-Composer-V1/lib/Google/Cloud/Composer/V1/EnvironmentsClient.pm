@@ -66,23 +66,6 @@ sub create_environment {
 
     return $response;
 }
-
-sub list_image_versions {
-    my ($self, %params) = @_;
-
-    my $request_class = 'Google::Cloud::Orchestration::Airflow::Service::V1::ImageVersions::ListImageVersionsRequest';
-    my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
-
-    my $response_class = 'Google::Cloud::Orchestration::Airflow::Service::V1::ImageVersions::ListImageVersionsResponse';
-    my $response = $self->transport->call({
-        service        => 'google.cloud.orchestration.airflow.service.v1.ImageVersions',
-        method         => 'ListImageVersions',
-        request        => $request,
-        response_class => $response_class,
-    });
-
-    return $response;
-}
 1; # End of Google::Cloud::Composer::V1::EnvironmentsClient
 
 __END__
@@ -165,10 +148,6 @@ The following RPC methods are available in this client:
 =item * B<create_environment>
 
 Calls the RPC method C<CreateEnvironment> on the service. Takes a hash of parameters representing the request.
-
-=item * B<list_image_versions>
-
-Calls the RPC method C<ListImageVersions> on the service. Takes a hash of parameters representing the request.
 
 =back
 

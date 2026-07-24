@@ -4,10 +4,10 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 my %WriteMakefileArgs = (
-    NAME             => 'Google::Cloud::Dataproc::V1::ClusterControllerClient',
+    NAME             => 'Google::Cloud::Dataproc::V1::AutoscalingPolicyServiceClient',
     AUTHOR           => ['Google LLC <cjac@google.com>'],
-    VERSION_FROM     => 'lib/Google/Cloud/Dataproc/V1/ClusterControllerClient.pm',
-    ABSTRACT_FROM    => 'lib/Google/Cloud/Dataproc/V1/ClusterControllerClient.pm',
+    VERSION_FROM     => 'lib/Google/Cloud/Dataproc/V1/AutoscalingPolicyServiceClient.pm',
+    ABSTRACT_FROM    => 'lib/Google/Cloud/Dataproc/V1/AutoscalingPolicyServiceClient.pm',
     LICENSE          => 'apache_2',
     MIN_PERL_VERSION => '5.008003',
     CONFIGURE_REQUIRES => {
@@ -28,7 +28,7 @@ my %WriteMakefileArgs = (
         #'Foo::Bar::Module' => '5.0401',
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean => { FILES => 'Google-Cloud-Dataproc-V1-ClusterControllerClient-*' },
+    clean => { FILES => 'Google-Cloud-Dataproc-V1-AutoscalingPolicyServiceClient-*' },
 );
 
 # Compatibility with old versions of ExtUtils::MakeMaker

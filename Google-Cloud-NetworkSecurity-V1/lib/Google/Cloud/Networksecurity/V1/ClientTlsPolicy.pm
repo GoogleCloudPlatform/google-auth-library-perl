@@ -3,7 +3,7 @@ package Google::Cloud::Networksecurity::V1::ClientTlsPolicy;
 use strict;
 use warnings;
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;

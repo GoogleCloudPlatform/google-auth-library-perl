@@ -4,10 +4,10 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 my %WriteMakefileArgs = (
-    NAME             => 'Google::Cloud::Bigquery::V2::ModelClient',
+    NAME             => 'Google::Cloud::Bigquery::V2::DatasetServiceClient',
     AUTHOR           => ['Google LLC <cjac@google.com>'],
-    VERSION_FROM     => 'lib/Google/Cloud/Bigquery/V2/ModelClient.pm',
-    ABSTRACT_FROM    => 'lib/Google/Cloud/Bigquery/V2/ModelClient.pm',
+    VERSION_FROM     => 'lib/Google/Cloud/Bigquery/V2/DatasetServiceClient.pm',
+    ABSTRACT_FROM    => 'lib/Google/Cloud/Bigquery/V2/DatasetServiceClient.pm',
     LICENSE          => 'apache_2',
     MIN_PERL_VERSION => '5.008003',
     CONFIGURE_REQUIRES => {
@@ -28,7 +28,7 @@ my %WriteMakefileArgs = (
         #'Foo::Bar::Module' => '5.0401',
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean => { FILES => 'Google-Cloud-Bigquery-V2-ModelClient-*' },
+    clean => { FILES => 'Google-Cloud-Bigquery-V2-DatasetServiceClient-*' },
 );
 
 # Compatibility with old versions of ExtUtils::MakeMaker

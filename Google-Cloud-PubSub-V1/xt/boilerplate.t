@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Test::More;
 
-plan tests => 3;
+plan tests => 5;
 
 sub not_in_file_ok {
     my ($filename, %regex) = @_;
@@ -51,6 +51,8 @@ TODO: {
   );
 
   module_boilerplate_ok('lib/Google/Cloud/PubSub/V1/PublisherClient.pm');
+  module_boilerplate_ok('lib/Google/Cloud/PubSub/V1/SchemaServiceClient.pm');
+  module_boilerplate_ok('lib/Google/Cloud/PubSub/V1/SubscriberClient.pm');
 
 
 }
