@@ -173,11 +173,9 @@ if (!$is_google3_dev) {
     }
 
     my $abs_protoc_dir = File::Spec->rel2abs('protoc');
-    eval { symlink($abs_protoc_dir, $symlink_target) }
-        or do {
-            print "Symlink failed ($!); copying directory 'protoc' -> '$symlink_target'...\n";
-            require File::Copy;
-            File::Path::make_path($symlink_target) unless -d $symlink_target;
+    print "Copying directory 'protoc' -> '$symlink_target' to avoid symlinks...\n";
+    require File::Copy;
+    File::Path::make_path($symlink_target) unless -d $symlink_target;
             use File::Find qw(find);
             find({
                 wanted => sub {
@@ -193,7 +191,6 @@ if (!$is_google3_dev) {
                 },
                 no_chdir => 1
             }, 'protoc');
-        };
 }
 
 our $bazel_gen_include = $is_google3_dev

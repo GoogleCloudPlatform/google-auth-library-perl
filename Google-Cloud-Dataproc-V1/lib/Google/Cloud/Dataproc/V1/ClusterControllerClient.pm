@@ -80,7 +80,7 @@ sub create_batch {
     my $request_class = 'Google::Cloud::Dataproc::V1::Batches::CreateBatchRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Longrunning::Operation::Operation';
+    my $response_class = 'Google::Longrunning::Operations::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.dataproc.v1.BatchController',
         method         => 'CreateBatch',
@@ -114,7 +114,7 @@ sub create_node_group {
     my $request_class = 'Google::Cloud::Dataproc::V1::NodeGroups::CreateNodeGroupRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Longrunning::Operation::Operation';
+    my $response_class = 'Google::Longrunning::Operations::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.dataproc.v1.NodeGroupController',
         method         => 'CreateNodeGroup',
@@ -148,7 +148,7 @@ sub create_cluster {
     my $request_class = 'Google::Cloud::Dataproc::V1::Clusters::CreateClusterRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Longrunning::Operation::Operation';
+    my $response_class = 'Google::Longrunning::Operations::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.dataproc.v1.ClusterController',
         method         => 'CreateCluster',
@@ -165,7 +165,7 @@ sub update_cluster {
     my $request_class = 'Google::Cloud::Dataproc::V1::Clusters::UpdateClusterRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Longrunning::Operation::Operation';
+    my $response_class = 'Google::Longrunning::Operations::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.dataproc.v1.ClusterController',
         method         => 'UpdateCluster',
@@ -182,7 +182,7 @@ sub stop_cluster {
     my $request_class = 'Google::Cloud::Dataproc::V1::Clusters::StopClusterRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Longrunning::Operation::Operation';
+    my $response_class = 'Google::Longrunning::Operations::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.dataproc.v1.ClusterController',
         method         => 'StopCluster',
@@ -199,7 +199,7 @@ sub start_cluster {
     my $request_class = 'Google::Cloud::Dataproc::V1::Clusters::StartClusterRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Longrunning::Operation::Operation';
+    my $response_class = 'Google::Longrunning::Operations::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.dataproc.v1.ClusterController',
         method         => 'StartCluster',
@@ -216,7 +216,7 @@ sub delete_cluster {
     my $request_class = 'Google::Cloud::Dataproc::V1::Clusters::DeleteClusterRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Longrunning::Operation::Operation';
+    my $response_class = 'Google::Longrunning::Operations::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.dataproc.v1.ClusterController',
         method         => 'DeleteCluster',
@@ -267,7 +267,7 @@ sub diagnose_cluster {
     my $request_class = 'Google::Cloud::Dataproc::V1::Clusters::DiagnoseClusterRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Longrunning::Operation::Operation';
+    my $response_class = 'Google::Longrunning::Operations::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.dataproc.v1.ClusterController',
         method         => 'DiagnoseCluster',
@@ -301,7 +301,7 @@ sub submit_job_as_operation {
     my $request_class = 'Google::Cloud::Dataproc::V1::Jobs::SubmitJobRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Longrunning::Operation::Operation';
+    my $response_class = 'Google::Longrunning::Operations::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.dataproc.v1.JobController',
         method         => 'SubmitJobAsOperation',
@@ -403,7 +403,7 @@ sub create_session {
     my $request_class = 'Google::Cloud::Dataproc::V1::Sessions::CreateSessionRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Longrunning::Operation::Operation';
+    my $response_class = 'Google::Longrunning::Operations::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.dataproc.v1.SessionController',
         method         => 'CreateSession',

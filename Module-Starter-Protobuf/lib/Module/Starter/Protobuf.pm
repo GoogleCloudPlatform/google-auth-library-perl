@@ -768,6 +768,10 @@ sub _resolve_perl_type {
                 $file_base = $message_name;
             }
         }
+        elsif ($package eq 'google.longrunning') {
+            # Standard long running operations are in operations.proto -> Operations
+            $file_base = 'Operations';
+        }
         else {
             # For all other packages (like google.type or custom packages),
             # we default to the message name as the file base.
@@ -794,12 +798,15 @@ sub _generate_service_test {
     my $meta = $self->{_services_meta};
     return unless $meta && @{$meta->{methods}};
 
+    my %output_classes = map { $_->{output_class} => 1 } @{$meta->{methods}};
+    my $packages_to_mock = join(' ', sort keys %output_classes);
+
     my $test_file = File::Spec->catfile('t', '01-service.t');
     my $abs_test_file = File::Spec->catfile($self->{basedir}, $test_file);
 
     # Start building the test content
     # We must escape %args as %%args to prevent sprintf from parsing it as a format specifier!
-    my $test_code = sprintf(<<'EOF', $module_name, $module_name);
+    my $test_code = sprintf(<<'EOF', $packages_to_mock, $module_name, $module_name);
 use strict;
 use warnings;
 use Test::More;
@@ -833,7 +840,18 @@ sub call {
     die 'No mock_call handler configured in transport!';
 }
 
-# C. Main test execution
+# C. Fallback Mocks for External Response Classes
+BEGIN {
+    for my $pkg (qw( %s )) {
+        unless ($pkg->can('new')) {
+            no strict 'refs';
+            *{"${pkg}::new"} = sub { bless {}, $_[0] };
+            $INC{join('/', split('::', $pkg)) . '.pm'} = 1;
+        }
+    }
+}
+
+# D. Main test execution
 package main;
 use %s;
 

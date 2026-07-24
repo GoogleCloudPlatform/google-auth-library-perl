@@ -31,7 +31,18 @@ sub call {
     die 'No mock_call handler configured in transport!';
 }
 
-# C. Main test execution
+# C. Fallback Mocks for External Response Classes
+BEGIN {
+    for my $pkg (qw( Google::Cloud::Networksecurity::V1::AddressGroup::ListAddressGroupsResponse Google::Cloud::Networksecurity::V1::AuthorizationPolicy::ListAuthorizationPoliciesResponse Google::Cloud::Networksecurity::V1::DnsThreatDetector::ListDnsThreatDetectorsResponse Google::Cloud::Networksecurity::V1::FirewallActivation::ListFirewallEndpointsResponse Google::Cloud::Networksecurity::V1::Intercept::ListInterceptEndpointGroupsResponse Google::Cloud::Networksecurity::V1::Mirroring::ListMirroringEndpointGroupsResponse Google::Cloud::Networksecurity::V1::SecurityProfileGroupService::ListSecurityProfileGroupsResponse Google::Cloud::Networksecurity::V1::SseRealm::ListSACRealmsResponse )) {
+        unless ($pkg->can('new')) {
+            no strict 'refs';
+            *{"${pkg}::new"} = sub { bless {}, $_[0] };
+            $INC{join('/', split('::', $pkg)) . '.pm'} = 1;
+        }
+    }
+}
+
+# D. Main test execution
 package main;
 use Google::Cloud::NetworkSecurity::V1::NetworkSecurityClient;
 

@@ -174,6 +174,11 @@ sub build_package {
     local $ENV{PERL5LIB} = join($sep, @libs, $ENV{PERL5LIB} || ());
     my @test_dirs = ('t/');
     push @test_dirs, 'xt/' if -d 'xt';
+    
+    if (-f 'MYMETA.yml' && ! -f 'META.yml') {
+        require File::Copy;
+        File::Copy::copy('MYMETA.yml', 'META.yml');
+    }
     my $res = system($^X, '-S', 'prove', '-b', '-It/lib', @test_dirs);
     $ENV{PATH} = $old_path;
     die "prove failed in $d with exit code $res" if $res != 0;

@@ -31,7 +31,18 @@ sub call {
     die 'No mock_call handler configured in transport!';
 }
 
-# C. Main test execution
+# C. Fallback Mocks for External Response Classes
+BEGIN {
+    for my $pkg (qw( Google::Cloud::Sql::V1::CloudSqlBackupRuns::BackupRun Google::Cloud::Sql::V1::CloudSqlBackupRuns::BackupRunsListResponse Google::Cloud::Sql::V1::CloudSqlConnect::ConnectSettings Google::Cloud::Sql::V1::CloudSqlConnect::GenerateEphemeralCertResponse Google::Cloud::Sql::V1::CloudSqlDatabases::DatabasesListResponse Google::Cloud::Sql::V1::CloudSqlFlags::FlagsListResponse Google::Cloud::Sql::V1::CloudSqlInstances::DatabaseInstance Google::Cloud::Sql::V1::CloudSqlInstances::InstancesListEntraIdCertificatesResponse Google::Cloud::Sql::V1::CloudSqlInstances::InstancesListResponse Google::Cloud::Sql::V1::CloudSqlInstances::InstancesListServerCasResponse Google::Cloud::Sql::V1::CloudSqlInstances::InstancesListServerCertificatesResponse Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesAcquireSsrsLeaseResponse Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesExecuteSqlResponse Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesGetDiskShrinkConfigResponse Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesGetLatestRecoveryTimeResponse Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesReleaseSsrsLeaseResponse Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesVerifyExternalSyncSettingsResponse Google::Cloud::Sql::V1::CloudSqlOperations::OperationsListResponse Google::Cloud::Sql::V1::CloudSqlResources::Database Google::Cloud::Sql::V1::CloudSqlResources::Operation Google::Cloud::Sql::V1::CloudSqlResources::SslCert Google::Cloud::Sql::V1::CloudSqlSslCerts::SslCertsInsertResponse Google::Cloud::Sql::V1::CloudSqlSslCerts::SslCertsListResponse Google::Cloud::Sql::V1::CloudSqlTiers::TiersListResponse Google::Cloud::Sql::V1::CloudSqlUsers::User Google::Cloud::Sql::V1::CloudSqlUsers::UsersListResponse Google::Protobuf::Empty::Empty )) {
+        unless ($pkg->can('new')) {
+            no strict 'refs';
+            *{"${pkg}::new"} = sub { bless {}, $_[0] };
+            $INC{join('/', split('::', $pkg)) . '.pm'} = 1;
+        }
+    }
+}
+
+# D. Main test execution
 package main;
 use Google::Cloud::SQL::V1::SqlInstancesServiceClient;
 

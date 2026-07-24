@@ -31,7 +31,18 @@ sub call {
     die 'No mock_call handler configured in transport!';
 }
 
-# C. Main test execution
+# C. Fallback Mocks for External Response Classes
+BEGIN {
+    for my $pkg (qw( Google::Cloud::Security::Privateca::V1::Resources::Certificate )) {
+        unless ($pkg->can('new')) {
+            no strict 'refs';
+            *{"${pkg}::new"} = sub { bless {}, $_[0] };
+            $INC{join('/', split('::', $pkg)) . '.pm'} = 1;
+        }
+    }
+}
+
+# D. Main test execution
 package main;
 use Google::Cloud::PrivateCA::V1::CertificateAuthorityServiceClient;
 

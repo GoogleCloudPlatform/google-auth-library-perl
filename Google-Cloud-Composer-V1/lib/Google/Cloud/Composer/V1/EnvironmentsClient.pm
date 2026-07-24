@@ -56,7 +56,7 @@ sub create_environment {
     my $request_class = 'Google::Cloud::Orchestration::Airflow::Service::V1::Environments::CreateEnvironmentRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Longrunning::Operation::Operation';
+    my $response_class = 'Google::Longrunning::Operations::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.orchestration.airflow.service.v1.Environments',
         method         => 'CreateEnvironment',

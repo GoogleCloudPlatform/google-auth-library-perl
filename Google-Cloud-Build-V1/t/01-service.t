@@ -15,11 +15,6 @@ sub get_token {
     return 'mock-token';
 }
 
-# B2. Mock Google::Longrunning::Operations
-package Google::Longrunning::Operations::Operation;
-BEGIN { $INC{'Google/Longrunning/Operations.pm'} = 1; }
-sub new { return bless {}, shift; }
-
 # B. Mock Google::gRPC::Client
 package Google::gRPC::Client;
 BEGIN { $INC{'Google/gRPC/Client.pm'} = 1; }
@@ -36,7 +31,18 @@ sub call {
     die 'No mock_call handler configured in transport!';
 }
 
-# C. Main test execution
+# C. Fallback Mocks for External Response Classes
+BEGIN {
+    for my $pkg (qw( Google::Devtools::Cloudbuild::V1::Cloudbuild::Build Google::Devtools::Cloudbuild::V1::Cloudbuild::BuildTrigger Google::Devtools::Cloudbuild::V1::Cloudbuild::DefaultServiceAccount Google::Devtools::Cloudbuild::V1::Cloudbuild::WorkerPool Google::Longrunning::Operations::Operation Google::Protobuf::Empty::Empty )) {
+        unless ($pkg->can('new')) {
+            no strict 'refs';
+            *{"${pkg}::new"} = sub { bless {}, $_[0] };
+            $INC{join('/', split('::', $pkg)) . '.pm'} = 1;
+        }
+    }
+}
+
+# D. Main test execution
 package main;
 use Google::Cloud::Build::V1::CloudBuildClient;
 

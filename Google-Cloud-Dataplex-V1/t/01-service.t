@@ -31,7 +31,18 @@ sub call {
     die 'No mock_call handler configured in transport!';
 }
 
-# C. Main test execution
+# C. Fallback Mocks for External Response Classes
+BEGIN {
+    for my $pkg (qw( Google::Cloud::Dataplex::V1::Logs::Entity Google::Longrunning::Operations::Operation )) {
+        unless ($pkg->can('new')) {
+            no strict 'refs';
+            *{"${pkg}::new"} = sub { bless {}, $_[0] };
+            $INC{join('/', split('::', $pkg)) . '.pm'} = 1;
+        }
+    }
+}
+
+# D. Main test execution
 package main;
 use Google::Cloud::Dataplex::V1::DataplexServiceClient;
 
@@ -46,13 +57,13 @@ subtest 'create_lake method' => sub {
         is($args->{method}, 'CreateLake', 'Correct RPC method');
         isa_ok($args->{request}, 'Google::Cloud::Dataplex::V1::Service::CreateLakeRequest', 'Request object');
         
-        my $response = 'Google::Longrunning::Operation::Operation'->new();
+        my $response = 'Google::Longrunning::Operations::Operation'->new();
         return $response;
     };
     
     my $res = $client->create_lake();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Longrunning::Operation::Operation', 'Response object class');
+    isa_ok($res, 'Google::Longrunning::Operations::Operation', 'Response object class');
     done_testing();
 };
 
@@ -63,13 +74,13 @@ subtest 'create_data_scan method' => sub {
         is($args->{method}, 'CreateDataScan', 'Correct RPC method');
         isa_ok($args->{request}, 'Google::Cloud::Dataplex::V1::Datascans::CreateDataScanRequest', 'Request object');
         
-        my $response = 'Google::Longrunning::Operation::Operation'->new();
+        my $response = 'Google::Longrunning::Operations::Operation'->new();
         return $response;
     };
     
     my $res = $client->create_data_scan();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Longrunning::Operation::Operation', 'Response object class');
+    isa_ok($res, 'Google::Longrunning::Operations::Operation', 'Response object class');
     done_testing();
 };
 
@@ -80,13 +91,13 @@ subtest 'create_encryption_config method' => sub {
         is($args->{method}, 'CreateEncryptionConfig', 'Correct RPC method');
         isa_ok($args->{request}, 'Google::Cloud::Dataplex::V1::Cmek::CreateEncryptionConfigRequest', 'Request object');
         
-        my $response = 'Google::Longrunning::Operation::Operation'->new();
+        my $response = 'Google::Longrunning::Operations::Operation'->new();
         return $response;
     };
     
     my $res = $client->create_encryption_config();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Longrunning::Operation::Operation', 'Response object class');
+    isa_ok($res, 'Google::Longrunning::Operations::Operation', 'Response object class');
     done_testing();
 };
 
@@ -97,13 +108,13 @@ subtest 'create_glossary method' => sub {
         is($args->{method}, 'CreateGlossary', 'Correct RPC method');
         isa_ok($args->{request}, 'Google::Cloud::Dataplex::V1::BusinessGlossary::CreateGlossaryRequest', 'Request object');
         
-        my $response = 'Google::Longrunning::Operation::Operation'->new();
+        my $response = 'Google::Longrunning::Operations::Operation'->new();
         return $response;
     };
     
     my $res = $client->create_glossary();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Longrunning::Operation::Operation', 'Response object class');
+    isa_ok($res, 'Google::Longrunning::Operations::Operation', 'Response object class');
     done_testing();
 };
 
@@ -131,13 +142,13 @@ subtest 'create_data_taxonomy method' => sub {
         is($args->{method}, 'CreateDataTaxonomy', 'Correct RPC method');
         isa_ok($args->{request}, 'Google::Cloud::Dataplex::V1::DataTaxonomy::CreateDataTaxonomyRequest', 'Request object');
         
-        my $response = 'Google::Longrunning::Operation::Operation'->new();
+        my $response = 'Google::Longrunning::Operations::Operation'->new();
         return $response;
     };
     
     my $res = $client->create_data_taxonomy();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Longrunning::Operation::Operation', 'Response object class');
+    isa_ok($res, 'Google::Longrunning::Operations::Operation', 'Response object class');
     done_testing();
 };
 
@@ -148,13 +159,13 @@ subtest 'create_entry_type method' => sub {
         is($args->{method}, 'CreateEntryType', 'Correct RPC method');
         isa_ok($args->{request}, 'Google::Cloud::Dataplex::V1::Catalog::CreateEntryTypeRequest', 'Request object');
         
-        my $response = 'Google::Longrunning::Operation::Operation'->new();
+        my $response = 'Google::Longrunning::Operations::Operation'->new();
         return $response;
     };
     
     my $res = $client->create_entry_type();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Longrunning::Operation::Operation', 'Response object class');
+    isa_ok($res, 'Google::Longrunning::Operations::Operation', 'Response object class');
     done_testing();
 };
 
@@ -165,13 +176,13 @@ subtest 'create_data_product method' => sub {
         is($args->{method}, 'CreateDataProduct', 'Correct RPC method');
         isa_ok($args->{request}, 'Google::Cloud::Dataplex::V1::DataProducts::CreateDataProductRequest', 'Request object');
         
-        my $response = 'Google::Longrunning::Operation::Operation'->new();
+        my $response = 'Google::Longrunning::Operations::Operation'->new();
         return $response;
     };
     
     my $res = $client->create_data_product();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Longrunning::Operation::Operation', 'Response object class');
+    isa_ok($res, 'Google::Longrunning::Operations::Operation', 'Response object class');
     done_testing();
 };
 

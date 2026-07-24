@@ -75,7 +75,7 @@ sub create_lake {
     my $request_class = 'Google::Cloud::Dataplex::V1::Service::CreateLakeRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Longrunning::Operation::Operation';
+    my $response_class = 'Google::Longrunning::Operations::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.dataplex.v1.DataplexService',
         method         => 'CreateLake',
@@ -92,7 +92,7 @@ sub create_data_scan {
     my $request_class = 'Google::Cloud::Dataplex::V1::Datascans::CreateDataScanRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Longrunning::Operation::Operation';
+    my $response_class = 'Google::Longrunning::Operations::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.dataplex.v1.DataScanService',
         method         => 'CreateDataScan',
@@ -109,7 +109,7 @@ sub create_encryption_config {
     my $request_class = 'Google::Cloud::Dataplex::V1::Cmek::CreateEncryptionConfigRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Longrunning::Operation::Operation';
+    my $response_class = 'Google::Longrunning::Operations::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.dataplex.v1.CmekService',
         method         => 'CreateEncryptionConfig',
@@ -126,7 +126,7 @@ sub create_glossary {
     my $request_class = 'Google::Cloud::Dataplex::V1::BusinessGlossary::CreateGlossaryRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Longrunning::Operation::Operation';
+    my $response_class = 'Google::Longrunning::Operations::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.dataplex.v1.BusinessGlossaryService',
         method         => 'CreateGlossary',
@@ -160,7 +160,7 @@ sub create_data_taxonomy {
     my $request_class = 'Google::Cloud::Dataplex::V1::DataTaxonomy::CreateDataTaxonomyRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Longrunning::Operation::Operation';
+    my $response_class = 'Google::Longrunning::Operations::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.dataplex.v1.DataTaxonomyService',
         method         => 'CreateDataTaxonomy',
@@ -177,7 +177,7 @@ sub create_entry_type {
     my $request_class = 'Google::Cloud::Dataplex::V1::Catalog::CreateEntryTypeRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Longrunning::Operation::Operation';
+    my $response_class = 'Google::Longrunning::Operations::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.dataplex.v1.CatalogService',
         method         => 'CreateEntryType',
@@ -194,7 +194,7 @@ sub create_data_product {
     my $request_class = 'Google::Cloud::Dataplex::V1::DataProducts::CreateDataProductRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
-    my $response_class = 'Google::Longrunning::Operation::Operation';
+    my $response_class = 'Google::Longrunning::Operations::Operation';
     my $response = $self->transport->call({
         service        => 'google.cloud.dataplex.v1.DataProductService',
         method         => 'CreateDataProduct',

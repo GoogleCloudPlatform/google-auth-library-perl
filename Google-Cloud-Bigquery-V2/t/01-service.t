@@ -31,7 +31,18 @@ sub call {
     die 'No mock_call handler configured in transport!';
 }
 
-# C. Main test execution
+# C. Fallback Mocks for External Response Classes
+BEGIN {
+    for my $pkg (qw( Google::Cloud::Bigquery::V2::Dataset::Dataset Google::Cloud::Bigquery::V2::Dataset::DatasetList Google::Cloud::Bigquery::V2::Job::GetQueryResultsResponse Google::Cloud::Bigquery::V2::Job::Job Google::Cloud::Bigquery::V2::Job::JobCancelResponse Google::Cloud::Bigquery::V2::Job::JobList Google::Cloud::Bigquery::V2::Job::QueryResponse Google::Cloud::Bigquery::V2::Model::ListModelsResponse Google::Cloud::Bigquery::V2::Model::Model Google::Cloud::Bigquery::V2::Project::GetServiceAccountResponse Google::Cloud::Bigquery::V2::Routine::ListRoutinesResponse Google::Cloud::Bigquery::V2::Routine::Routine Google::Cloud::Bigquery::V2::RowAccessPolicy::ListRowAccessPoliciesResponse Google::Cloud::Bigquery::V2::RowAccessPolicy::RowAccessPolicy Google::Cloud::Bigquery::V2::Table::Table Google::Cloud::Bigquery::V2::Table::TableList Google::Protobuf::Empty::Empty )) {
+        unless ($pkg->can('new')) {
+            no strict 'refs';
+            *{"${pkg}::new"} = sub { bless {}, $_[0] };
+            $INC{join('/', split('::', $pkg)) . '.pm'} = 1;
+        }
+    }
+}
+
+# D. Main test execution
 package main;
 use Google::Cloud::Bigquery::V2::ModelClient;
 

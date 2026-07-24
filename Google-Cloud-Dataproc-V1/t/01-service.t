@@ -31,7 +31,18 @@ sub call {
     die 'No mock_call handler configured in transport!';
 }
 
-# C. Main test execution
+# C. Fallback Mocks for External Response Classes
+BEGIN {
+    for my $pkg (qw( Google::Cloud::Dataproc::V1::AutoscalingPolicies::AutoscalingPolicy Google::Cloud::Dataproc::V1::Clusters::Cluster Google::Cloud::Dataproc::V1::Clusters::ListClustersResponse Google::Cloud::Dataproc::V1::Jobs::Job Google::Cloud::Dataproc::V1::Jobs::ListJobsResponse Google::Cloud::Dataproc::V1::SessionTemplates::SessionTemplate Google::Cloud::Dataproc::V1::WorkflowTemplates::WorkflowTemplate Google::Longrunning::Operations::Operation Google::Protobuf::Empty::Empty )) {
+        unless ($pkg->can('new')) {
+            no strict 'refs';
+            *{"${pkg}::new"} = sub { bless {}, $_[0] };
+            $INC{join('/', split('::', $pkg)) . '.pm'} = 1;
+        }
+    }
+}
+
+# D. Main test execution
 package main;
 use Google::Cloud::Dataproc::V1::ClusterControllerClient;
 
@@ -63,13 +74,13 @@ subtest 'create_batch method' => sub {
         is($args->{method}, 'CreateBatch', 'Correct RPC method');
         isa_ok($args->{request}, 'Google::Cloud::Dataproc::V1::Batches::CreateBatchRequest', 'Request object');
         
-        my $response = 'Google::Longrunning::Operation::Operation'->new();
+        my $response = 'Google::Longrunning::Operations::Operation'->new();
         return $response;
     };
     
     my $res = $client->create_batch();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Longrunning::Operation::Operation', 'Response object class');
+    isa_ok($res, 'Google::Longrunning::Operations::Operation', 'Response object class');
     done_testing();
 };
 
@@ -97,13 +108,13 @@ subtest 'create_node_group method' => sub {
         is($args->{method}, 'CreateNodeGroup', 'Correct RPC method');
         isa_ok($args->{request}, 'Google::Cloud::Dataproc::V1::NodeGroups::CreateNodeGroupRequest', 'Request object');
         
-        my $response = 'Google::Longrunning::Operation::Operation'->new();
+        my $response = 'Google::Longrunning::Operations::Operation'->new();
         return $response;
     };
     
     my $res = $client->create_node_group();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Longrunning::Operation::Operation', 'Response object class');
+    isa_ok($res, 'Google::Longrunning::Operations::Operation', 'Response object class');
     done_testing();
 };
 
@@ -131,13 +142,13 @@ subtest 'create_cluster method' => sub {
         is($args->{method}, 'CreateCluster', 'Correct RPC method');
         isa_ok($args->{request}, 'Google::Cloud::Dataproc::V1::Clusters::CreateClusterRequest', 'Request object');
         
-        my $response = 'Google::Longrunning::Operation::Operation'->new();
+        my $response = 'Google::Longrunning::Operations::Operation'->new();
         return $response;
     };
     
     my $res = $client->create_cluster();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Longrunning::Operation::Operation', 'Response object class');
+    isa_ok($res, 'Google::Longrunning::Operations::Operation', 'Response object class');
     done_testing();
 };
 
@@ -148,13 +159,13 @@ subtest 'update_cluster method' => sub {
         is($args->{method}, 'UpdateCluster', 'Correct RPC method');
         isa_ok($args->{request}, 'Google::Cloud::Dataproc::V1::Clusters::UpdateClusterRequest', 'Request object');
         
-        my $response = 'Google::Longrunning::Operation::Operation'->new();
+        my $response = 'Google::Longrunning::Operations::Operation'->new();
         return $response;
     };
     
     my $res = $client->update_cluster();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Longrunning::Operation::Operation', 'Response object class');
+    isa_ok($res, 'Google::Longrunning::Operations::Operation', 'Response object class');
     done_testing();
 };
 
@@ -165,13 +176,13 @@ subtest 'stop_cluster method' => sub {
         is($args->{method}, 'StopCluster', 'Correct RPC method');
         isa_ok($args->{request}, 'Google::Cloud::Dataproc::V1::Clusters::StopClusterRequest', 'Request object');
         
-        my $response = 'Google::Longrunning::Operation::Operation'->new();
+        my $response = 'Google::Longrunning::Operations::Operation'->new();
         return $response;
     };
     
     my $res = $client->stop_cluster();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Longrunning::Operation::Operation', 'Response object class');
+    isa_ok($res, 'Google::Longrunning::Operations::Operation', 'Response object class');
     done_testing();
 };
 
@@ -182,13 +193,13 @@ subtest 'start_cluster method' => sub {
         is($args->{method}, 'StartCluster', 'Correct RPC method');
         isa_ok($args->{request}, 'Google::Cloud::Dataproc::V1::Clusters::StartClusterRequest', 'Request object');
         
-        my $response = 'Google::Longrunning::Operation::Operation'->new();
+        my $response = 'Google::Longrunning::Operations::Operation'->new();
         return $response;
     };
     
     my $res = $client->start_cluster();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Longrunning::Operation::Operation', 'Response object class');
+    isa_ok($res, 'Google::Longrunning::Operations::Operation', 'Response object class');
     done_testing();
 };
 
@@ -199,13 +210,13 @@ subtest 'delete_cluster method' => sub {
         is($args->{method}, 'DeleteCluster', 'Correct RPC method');
         isa_ok($args->{request}, 'Google::Cloud::Dataproc::V1::Clusters::DeleteClusterRequest', 'Request object');
         
-        my $response = 'Google::Longrunning::Operation::Operation'->new();
+        my $response = 'Google::Longrunning::Operations::Operation'->new();
         return $response;
     };
     
     my $res = $client->delete_cluster();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Longrunning::Operation::Operation', 'Response object class');
+    isa_ok($res, 'Google::Longrunning::Operations::Operation', 'Response object class');
     done_testing();
 };
 
@@ -250,13 +261,13 @@ subtest 'diagnose_cluster method' => sub {
         is($args->{method}, 'DiagnoseCluster', 'Correct RPC method');
         isa_ok($args->{request}, 'Google::Cloud::Dataproc::V1::Clusters::DiagnoseClusterRequest', 'Request object');
         
-        my $response = 'Google::Longrunning::Operation::Operation'->new();
+        my $response = 'Google::Longrunning::Operations::Operation'->new();
         return $response;
     };
     
     my $res = $client->diagnose_cluster();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Longrunning::Operation::Operation', 'Response object class');
+    isa_ok($res, 'Google::Longrunning::Operations::Operation', 'Response object class');
     done_testing();
 };
 
@@ -284,13 +295,13 @@ subtest 'submit_job_as_operation method' => sub {
         is($args->{method}, 'SubmitJobAsOperation', 'Correct RPC method');
         isa_ok($args->{request}, 'Google::Cloud::Dataproc::V1::Jobs::SubmitJobRequest', 'Request object');
         
-        my $response = 'Google::Longrunning::Operation::Operation'->new();
+        my $response = 'Google::Longrunning::Operations::Operation'->new();
         return $response;
     };
     
     my $res = $client->submit_job_as_operation();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Longrunning::Operation::Operation', 'Response object class');
+    isa_ok($res, 'Google::Longrunning::Operations::Operation', 'Response object class');
     done_testing();
 };
 
@@ -386,13 +397,13 @@ subtest 'create_session method' => sub {
         is($args->{method}, 'CreateSession', 'Correct RPC method');
         isa_ok($args->{request}, 'Google::Cloud::Dataproc::V1::Sessions::CreateSessionRequest', 'Request object');
         
-        my $response = 'Google::Longrunning::Operation::Operation'->new();
+        my $response = 'Google::Longrunning::Operations::Operation'->new();
         return $response;
     };
     
     my $res = $client->create_session();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Longrunning::Operation::Operation', 'Response object class');
+    isa_ok($res, 'Google::Longrunning::Operations::Operation', 'Response object class');
     done_testing();
 };
 

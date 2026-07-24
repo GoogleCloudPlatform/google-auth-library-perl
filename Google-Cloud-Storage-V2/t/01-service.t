@@ -31,7 +31,18 @@ sub call {
     die 'No mock_call handler configured in transport!';
 }
 
-# C. Main test execution
+# C. Fallback Mocks for External Response Classes
+BEGIN {
+    for my $pkg (qw( Google::Iam::V1::Policy::Policy Google::Protobuf::Empty::Empty Google::Storage::V2::Storage::Bucket Google::Storage::V2::Storage::ListBucketsResponse Google::Storage::V2::Storage::Object )) {
+        unless ($pkg->can('new')) {
+            no strict 'refs';
+            *{"${pkg}::new"} = sub { bless {}, $_[0] };
+            $INC{join('/', split('::', $pkg)) . '.pm'} = 1;
+        }
+    }
+}
+
+# D. Main test execution
 package main;
 use Google::Cloud::Storage::V2::StorageClient;
 

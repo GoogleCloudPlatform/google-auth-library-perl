@@ -31,7 +31,18 @@ sub call {
     die 'No mock_call handler configured in transport!';
 }
 
-# C. Main test execution
+# C. Fallback Mocks for External Response Classes
+BEGIN {
+    for my $pkg (qw( Google::Dataflow::V1BETA3::Jobs::CheckActiveJobsResponse Google::Dataflow::V1BETA3::Jobs::Job Google::Dataflow::V1BETA3::Jobs::ListJobsResponse Google::Dataflow::V1BETA3::Messages::ListJobMessagesResponse Google::Dataflow::V1BETA3::Metrics::JobExecutionDetails Google::Dataflow::V1BETA3::Metrics::JobMetrics Google::Dataflow::V1BETA3::Metrics::StageExecutionDetails Google::Dataflow::V1BETA3::Snapshots::DeleteSnapshotResponse Google::Dataflow::V1BETA3::Snapshots::ListSnapshotsResponse Google::Dataflow::V1BETA3::Snapshots::Snapshot Google::Dataflow::V1BETA3::Templates::GetTemplateResponse Google::Dataflow::V1BETA3::Templates::LaunchFlexTemplateResponse Google::Dataflow::V1BETA3::Templates::LaunchTemplateResponse )) {
+        unless ($pkg->can('new')) {
+            no strict 'refs';
+            *{"${pkg}::new"} = sub { bless {}, $_[0] };
+            $INC{join('/', split('::', $pkg)) . '.pm'} = 1;
+        }
+    }
+}
+
+# D. Main test execution
 package main;
 use Google::Cloud::Dataflow::V1Beta3::JobsV1Beta3Client;
 

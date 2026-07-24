@@ -31,7 +31,18 @@ sub call {
     die 'No mock_call handler configured in transport!';
 }
 
-# C. Main test execution
+# C. Fallback Mocks for External Response Classes
+BEGIN {
+    for my $pkg (qw( Google::Cloud::Orchestration::Airflow::Service::V1::ImageVersions::ListImageVersionsResponse Google::Longrunning::Operations::Operation )) {
+        unless ($pkg->can('new')) {
+            no strict 'refs';
+            *{"${pkg}::new"} = sub { bless {}, $_[0] };
+            $INC{join('/', split('::', $pkg)) . '.pm'} = 1;
+        }
+    }
+}
+
+# D. Main test execution
 package main;
 use Google::Cloud::Composer::V1::EnvironmentsClient;
 
@@ -46,13 +57,13 @@ subtest 'create_environment method' => sub {
         is($args->{method}, 'CreateEnvironment', 'Correct RPC method');
         isa_ok($args->{request}, 'Google::Cloud::Orchestration::Airflow::Service::V1::Environments::CreateEnvironmentRequest', 'Request object');
         
-        my $response = 'Google::Longrunning::Operation::Operation'->new();
+        my $response = 'Google::Longrunning::Operations::Operation'->new();
         return $response;
     };
     
     my $res = $client->create_environment();
     ok($res, 'Method returned a response');
-    isa_ok($res, 'Google::Longrunning::Operation::Operation', 'Response object class');
+    isa_ok($res, 'Google::Longrunning::Operations::Operation', 'Response object class');
     done_testing();
 };
 
