@@ -70,6 +70,8 @@ lib/Google/Api/Usage.pm
 lib/Google/Api/Usage/Types.pm
 lib/Google/Api/Visibility.pm
 lib/Google/Api/Visibility/Types.pm
+lib/Google/Cloud/ExtendedOperations.pm
+lib/Google/Cloud/ExtendedOperations/Types.pm
 lib/Google/Cloud/REST/Client.pm
 lib/Google/Longrunning/Operations.pm
 lib/Google/Longrunning/Operations/Types.pm
