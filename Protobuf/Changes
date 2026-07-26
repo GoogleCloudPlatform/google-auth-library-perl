@@ -1,5 +1,11 @@
 Revision history for Protobuf
 
+0.12    2026-07-26
+        [Ecosystem Hardening & Parity]
+        - Merged Google-Protobuf-WKT into core Protobuf distribution.
+        - Bundled standard Well-Known Types (Timestamp, Any, Descriptor, etc.) directly in lib/Google/Protobuf/.
+
+
 0.11    Wed Jul 22 2026
         [Documentation]
         - Added missing 0.10 release entry to Changes file (reported by Lukas Mai / @mauke).
