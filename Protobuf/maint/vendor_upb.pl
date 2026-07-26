@@ -8,6 +8,8 @@ use File::Copy qw(copy);
 use File::Find;
 use Cwd qw(abs_path);
 use HTTP::Tiny;
+use JSON::PP qw(decode_json);
+
 
 my $perl_dir = abs_path(File::Spec->curdir());
 my $project_root = abs_path(File::Spec->catdir($perl_dir, '..'));
@@ -17,7 +19,53 @@ my $vendor_dir = File::Spec->catdir($perl_dir, 'vendor');
 # Check if we are in a Google3 dev environment
 my $is_google3 = ($perl_dir =~ m{^/google/src/cloud/});
 
-my $downloaded_root = '/usr/local/google/home/cjac/src/github/c9h/dbi/tmp/upb_download/protobuf-35.1';
+my $latest_tag;
+{
+    my $http = HTTP::Tiny->new();
+    my $url = 'https://api.github.com/repos/protocolbuffers/protobuf/tags';
+    my $response = $http->get($url);
+
+    die "Failed to fetch tags: $response->{status} $response->{reason}" unless $response->{success};
+
+    my $tags = decode_json($response->{content});
+
+    foreach my $tag (@$tags) {
+        my $name = $tag->{name};
+        # Exclude -rc, -dev, and any other non-standard suffixes
+        next if $name =~ /-(rc|dev)/;
+        # Ensure it looks like vX.Y or vX.Y.Z
+        next unless $name =~ /^v\d+\.\d+(\.\d+)?$/;
+        
+        $latest_tag = $name;
+        last;
+    }
+}
+
+die "No valid tag found" unless $latest_tag;
+
+print "Selected latest valid tag: $latest_tag\n";
+
+my $version = $latest_tag;
+$version =~ s/^v//; # Remove 'v' prefix for directory name
+
+my $tarball_url = "https://github.com/protocolbuffers/protobuf/archive/refs/tags/$latest_tag.tar.gz";
+my $download_dir = '/tmp/upb_vendor_download';
+make_path($download_dir);
+
+my $tarball_path = File::Spec->catfile($download_dir, "$latest_tag.tar.gz");
+
+print "Downloading $tarball_url to $tarball_path...\n";
+my $http_dl = HTTP::Tiny->new();
+my $dl_response = $http_dl->mirror($tarball_url, $tarball_path);
+
+die "Download failed: $dl_response->{status} $dl_response->{reason}" unless $dl_response->{success};
+
+print "Extracting...\n";
+my $cmd = "tar -xzf $tarball_path -C $download_dir";
+system($cmd) == 0 or die "Extraction failed: $!";
+
+my $downloaded_root = File::Spec->catdir($download_dir, "protobuf-$version");
+
 
 my $upb_src_dir = File::Spec->catdir($downloaded_root, 'upb');
 
