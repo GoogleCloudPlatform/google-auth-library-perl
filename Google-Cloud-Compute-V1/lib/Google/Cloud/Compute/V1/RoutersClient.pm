@@ -12,7 +12,7 @@ use Protobuf;
 use Google::Api::Common;
 use Google::Cloud::Compute::V1::Compute;
 
-our $VERSION = '0.03';
+our $VERSION = '0.02';
 
 has credentials => ( is => 'ro', required => 0 );
 has transport   => ( is => 'rw' );
@@ -82,6 +82,23 @@ sub delete {
     return $response;
 }
 
+sub delete_named_set {
+    my ($self, %params) = @_;
+
+    my $request_class = 'Google::Cloud::Compute::V1::Compute::DeleteNamedSetRouterRequest';
+    my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
+
+    my $response_class = 'Google::Cloud::Compute::V1::Compute::Operation';
+    my $response = $self->transport->call({
+        service        => 'google.cloud.compute.v1.Routers',
+        method         => 'DeleteNamedSet',
+        request        => $request,
+        response_class => $response_class,
+    });
+
+    return $response;
+}
+
 sub delete_route_policy {
     my ($self, %params) = @_;
 
@@ -109,6 +126,23 @@ sub get {
     my $response = $self->transport->call({
         service        => 'google.cloud.compute.v1.Routers',
         method         => 'Get',
+        request        => $request,
+        response_class => $response_class,
+    });
+
+    return $response;
+}
+
+sub get_named_set {
+    my ($self, %params) = @_;
+
+    my $request_class = 'Google::Cloud::Compute::V1::Compute::GetNamedSetRouterRequest';
+    my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
+
+    my $response_class = 'Google::Cloud::Compute::V1::Compute::RoutersGetNamedSetResponse';
+    my $response = $self->transport->call({
+        service        => 'google.cloud.compute.v1.Routers',
+        method         => 'GetNamedSet',
         request        => $request,
         response_class => $response_class,
     });
@@ -235,6 +269,23 @@ sub list_bgp_routes {
     return $response;
 }
 
+sub list_named_sets {
+    my ($self, %params) = @_;
+
+    my $request_class = 'Google::Cloud::Compute::V1::Compute::ListNamedSetsRoutersRequest';
+    my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
+
+    my $response_class = 'Google::Cloud::Compute::V1::Compute::RoutersListNamedSets';
+    my $response = $self->transport->call({
+        service        => 'google.cloud.compute.v1.Routers',
+        method         => 'ListNamedSets',
+        request        => $request,
+        response_class => $response_class,
+    });
+
+    return $response;
+}
+
 sub list_route_policies {
     my ($self, %params) = @_;
 
@@ -262,6 +313,23 @@ sub patch {
     my $response = $self->transport->call({
         service        => 'google.cloud.compute.v1.Routers',
         method         => 'Patch',
+        request        => $request,
+        response_class => $response_class,
+    });
+
+    return $response;
+}
+
+sub patch_named_set {
+    my ($self, %params) = @_;
+
+    my $request_class = 'Google::Cloud::Compute::V1::Compute::PatchNamedSetRouterRequest';
+    my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
+
+    my $response_class = 'Google::Cloud::Compute::V1::Compute::Operation';
+    my $response = $self->transport->call({
+        service        => 'google.cloud.compute.v1.Routers',
+        method         => 'PatchNamedSet',
         request        => $request,
         response_class => $response_class,
     });
@@ -313,6 +381,23 @@ sub update {
     my $response = $self->transport->call({
         service        => 'google.cloud.compute.v1.Routers',
         method         => 'Update',
+        request        => $request,
+        response_class => $response_class,
+    });
+
+    return $response;
+}
+
+sub update_named_set {
+    my ($self, %params) = @_;
+
+    my $request_class = 'Google::Cloud::Compute::V1::Compute::UpdateNamedSetRouterRequest';
+    my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
+
+    my $response_class = 'Google::Cloud::Compute::V1::Compute::Operation';
+    my $response = $self->transport->call({
+        service        => 'google.cloud.compute.v1.Routers',
+        method         => 'UpdateNamedSet',
         request        => $request,
         response_class => $response_class,
     });
@@ -378,7 +463,7 @@ Generated from the following Protocol Buffers schemas:
 
 =over 4
 
-=item * C<googleapis/google/cloud/compute/v1/compute.proto>
+=item * C<google/cloud/compute/v1/compute.proto>
 
 
 
@@ -419,6 +504,10 @@ Calls the RPC method C<AggregatedList> on the service. Takes a hash of parameter
 
 Calls the RPC method C<Delete> on the service. Takes a hash of parameters representing the request.
 
+=item * B<delete_named_set>
+
+Calls the RPC method C<DeleteNamedSet> on the service. Takes a hash of parameters representing the request.
+
 =item * B<delete_route_policy>
 
 Calls the RPC method C<DeleteRoutePolicy> on the service. Takes a hash of parameters representing the request.
@@ -426,6 +515,10 @@ Calls the RPC method C<DeleteRoutePolicy> on the service. Takes a hash of parame
 =item * B<get>
 
 Calls the RPC method C<Get> on the service. Takes a hash of parameters representing the request.
+
+=item * B<get_named_set>
+
+Calls the RPC method C<GetNamedSet> on the service. Takes a hash of parameters representing the request.
 
 =item * B<get_nat_ip_info>
 
@@ -455,6 +548,10 @@ Calls the RPC method C<List> on the service. Takes a hash of parameters represen
 
 Calls the RPC method C<ListBgpRoutes> on the service. Takes a hash of parameters representing the request.
 
+=item * B<list_named_sets>
+
+Calls the RPC method C<ListNamedSets> on the service. Takes a hash of parameters representing the request.
+
 =item * B<list_route_policies>
 
 Calls the RPC method C<ListRoutePolicies> on the service. Takes a hash of parameters representing the request.
@@ -462,6 +559,10 @@ Calls the RPC method C<ListRoutePolicies> on the service. Takes a hash of parame
 =item * B<patch>
 
 Calls the RPC method C<Patch> on the service. Takes a hash of parameters representing the request.
+
+=item * B<patch_named_set>
+
+Calls the RPC method C<PatchNamedSet> on the service. Takes a hash of parameters representing the request.
 
 =item * B<patch_route_policy>
 
@@ -474,6 +575,10 @@ Calls the RPC method C<Preview> on the service. Takes a hash of parameters repre
 =item * B<update>
 
 Calls the RPC method C<Update> on the service. Takes a hash of parameters representing the request.
+
+=item * B<update_named_set>
+
+Calls the RPC method C<UpdateNamedSet> on the service. Takes a hash of parameters representing the request.
 
 =item * B<update_route_policy>
 

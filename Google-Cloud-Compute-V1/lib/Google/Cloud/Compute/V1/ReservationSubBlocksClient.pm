@@ -7,7 +7,7 @@ use Protobuf;
 use Google::Api::Common;
 use Google::Cloud::Compute::V1::Compute;
 
-our $VERSION = '0.03';
+our $VERSION = '0.02';
 1; # End of Google::Cloud::Compute::V1::ReservationSubBlocksClient
 
 __END__
@@ -26,7 +26,7 @@ Generated from the following Protocol Buffers schemas:
 
 =over 4
 
-=item * C<googleapis/google/cloud/compute/v1/compute.proto>
+=item * C<google/cloud/compute/v1/compute.proto>
 
 
 

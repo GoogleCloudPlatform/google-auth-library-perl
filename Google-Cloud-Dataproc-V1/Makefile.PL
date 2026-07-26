@@ -5,7 +5,7 @@ use ExtUtils::MakeMaker;
 
 my %WriteMakefileArgs = (
     NAME             => 'Google::Cloud::Dataproc::V1::AutoscalingPolicyServiceClient',
-    AUTHOR           => ['Google LLC <cjac@google.com>'],
+    AUTHOR           => ['C.J. Collier <cjac@google.com>'],
     VERSION_FROM     => 'lib/Google/Cloud/Dataproc/V1/AutoscalingPolicyServiceClient.pm',
     ABSTRACT_FROM    => 'lib/Google/Cloud/Dataproc/V1/AutoscalingPolicyServiceClient.pm',
     LICENSE          => 'apache_2',

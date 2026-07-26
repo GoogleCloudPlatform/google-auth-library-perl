@@ -67,6 +67,51 @@ coerce 'RepeatedAddSecretVersionRequest',
 declare 'MapStringAddSecretVersionRequest',
     as HashRef[AddSecretVersionRequest()];
 
+declare 'EnableManagedRotationRequest',
+    as InstanceOf['Google::Cloud::Secretmanager::V1::Service::EnableManagedRotationRequest'];
+
+coerce 'EnableManagedRotationRequest',
+    from HashRef, via { 'Google::Cloud::Secretmanager::V1::Service::EnableManagedRotationRequest'->new($_) };
+
+declare 'RepeatedEnableManagedRotationRequest',
+    as ArrayRef[EnableManagedRotationRequest()];
+
+coerce 'RepeatedEnableManagedRotationRequest',
+    from ArrayRef[HashRef], via { [ map { 'Google::Cloud::Secretmanager::V1::Service::EnableManagedRotationRequest'->new($_) } @$_ ] };
+
+declare 'MapStringEnableManagedRotationRequest',
+    as HashRef[EnableManagedRotationRequest()];
+
+declare 'CloudSQLSingleUserCredentials',
+    as InstanceOf['Google::Cloud::Secretmanager::V1::Service::EnableManagedRotationRequest::CloudSQLSingleUserCredentials'];
+
+coerce 'CloudSQLSingleUserCredentials',
+    from HashRef, via { 'Google::Cloud::Secretmanager::V1::Service::EnableManagedRotationRequest::CloudSQLSingleUserCredentials'->new($_) };
+
+declare 'RepeatedCloudSQLSingleUserCredentials',
+    as ArrayRef[CloudSQLSingleUserCredentials()];
+
+coerce 'RepeatedCloudSQLSingleUserCredentials',
+    from ArrayRef[HashRef], via { [ map { 'Google::Cloud::Secretmanager::V1::Service::EnableManagedRotationRequest::CloudSQLSingleUserCredentials'->new($_) } @$_ ] };
+
+declare 'MapStringCloudSQLSingleUserCredentials',
+    as HashRef[CloudSQLSingleUserCredentials()];
+
+declare 'RotateSecretRequest',
+    as InstanceOf['Google::Cloud::Secretmanager::V1::Service::RotateSecretRequest'];
+
+coerce 'RotateSecretRequest',
+    from HashRef, via { 'Google::Cloud::Secretmanager::V1::Service::RotateSecretRequest'->new($_) };
+
+declare 'RepeatedRotateSecretRequest',
+    as ArrayRef[RotateSecretRequest()];
+
+coerce 'RepeatedRotateSecretRequest',
+    from ArrayRef[HashRef], via { [ map { 'Google::Cloud::Secretmanager::V1::Service::RotateSecretRequest'->new($_) } @$_ ] };
+
+declare 'MapStringRotateSecretRequest',
+    as HashRef[RotateSecretRequest()];
+
 declare 'GetSecretRequest',
     as InstanceOf['Google::Cloud::Secretmanager::V1::Service::GetSecretRequest'];
 

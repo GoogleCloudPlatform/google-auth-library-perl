@@ -10,13 +10,13 @@ use Carp qw(croak);
 
 use Protobuf;
 use Google::Api::Common;
-use Google::Iam::V1::IamPolicy;
 use Google::Iam::V1::Options;
-use Google::Iam::V1::ResourcePolicyMember;
 use Google::Iam::V1::Policy;
+use Google::Iam::V1::ResourcePolicyMember;
+use Google::Iam::V1::IamPolicy;
 use Google::Iam::V1::Logging::AuditData;
 
-our $VERSION = '0.03';
+our $VERSION = '0.02';
 
 has credentials => ( is => 'ro', required => 0 );
 has transport   => ( is => 'rw' );
@@ -144,15 +144,15 @@ Generated from the following Protocol Buffers schemas:
 
 =over 4
 
-=item * C<googleapis/google/iam/v1/iam_policy.proto>
+=item * C<google/iam/v1/resource_policy_member.proto>
 
-=item * C<googleapis/google/iam/v1/options.proto>
+=item * C<google/iam/v1/options.proto>
 
-=item * C<googleapis/google/iam/v1/resource_policy_member.proto>
+=item * C<google/iam/v1/policy.proto>
 
-=item * C<googleapis/google/iam/v1/policy.proto>
+=item * C<google/iam/v1/iam_policy.proto>
 
-=item * C<googleapis/google/iam/v1/logging/audit_data.proto>
+=item * C<google/iam/v1/logging/audit_data.proto>
 
 
 

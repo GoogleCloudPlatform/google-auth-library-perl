@@ -5,7 +5,7 @@ use ExtUtils::MakeMaker;
 
 my %WriteMakefileArgs = (
     NAME             => 'Google::Cloud::Storage::V2::StorageClient',
-    AUTHOR           => ['Google LLC <cjac@google.com>'],
+    AUTHOR           => ['C.J. Collier <cjac@google.com>'],
     VERSION_FROM     => 'lib/Google/Cloud/Storage/V2/StorageClient.pm',
     ABSTRACT_FROM    => 'lib/Google/Cloud/Storage/V2/StorageClient.pm',
     LICENSE          => 'apache_2',

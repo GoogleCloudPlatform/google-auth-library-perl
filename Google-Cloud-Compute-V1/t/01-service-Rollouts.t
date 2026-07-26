@@ -50,6 +50,23 @@ my $client = Google::Cloud::Compute::V1::RolloutsClient->new( credentials => 'du
 ok($client, 'Instantiated generated client');
 isa_ok($client->transport, 'Google::gRPC::Client', 'Client transport');
 
+subtest 'advance method' => sub {
+    $client->transport->{mock_call} = sub {
+        my ($args) = @_;
+        is($args->{service}, 'google.cloud.compute.v1.Rollouts', 'Correct service path');
+        is($args->{method}, 'Advance', 'Correct RPC method');
+        isa_ok($args->{request}, 'Google::Cloud::Compute::V1::Compute::AdvanceRolloutRequest', 'Request object');
+        
+        my $response = 'Google::Cloud::Compute::V1::Compute::Operation'->new();
+        return $response;
+    };
+    
+    my $res = $client->advance();
+    ok($res, 'Method returned a response');
+    isa_ok($res, 'Google::Cloud::Compute::V1::Compute::Operation', 'Response object class');
+    done_testing();
+};
+
 subtest 'cancel method' => sub {
     $client->transport->{mock_call} = sub {
         my ($args) = @_;
@@ -115,6 +132,40 @@ subtest 'list method' => sub {
     my $res = $client->list();
     ok($res, 'Method returned a response');
     isa_ok($res, 'Google::Cloud::Compute::V1::Compute::RolloutsListResponse', 'Response object class');
+    done_testing();
+};
+
+subtest 'pause method' => sub {
+    $client->transport->{mock_call} = sub {
+        my ($args) = @_;
+        is($args->{service}, 'google.cloud.compute.v1.Rollouts', 'Correct service path');
+        is($args->{method}, 'Pause', 'Correct RPC method');
+        isa_ok($args->{request}, 'Google::Cloud::Compute::V1::Compute::PauseRolloutRequest', 'Request object');
+        
+        my $response = 'Google::Cloud::Compute::V1::Compute::Operation'->new();
+        return $response;
+    };
+    
+    my $res = $client->pause();
+    ok($res, 'Method returned a response');
+    isa_ok($res, 'Google::Cloud::Compute::V1::Compute::Operation', 'Response object class');
+    done_testing();
+};
+
+subtest 'resume method' => sub {
+    $client->transport->{mock_call} = sub {
+        my ($args) = @_;
+        is($args->{service}, 'google.cloud.compute.v1.Rollouts', 'Correct service path');
+        is($args->{method}, 'Resume', 'Correct RPC method');
+        isa_ok($args->{request}, 'Google::Cloud::Compute::V1::Compute::ResumeRolloutRequest', 'Request object');
+        
+        my $response = 'Google::Cloud::Compute::V1::Compute::Operation'->new();
+        return $response;
+    };
+    
+    my $res = $client->resume();
+    ok($res, 'Method returned a response');
+    isa_ok($res, 'Google::Cloud::Compute::V1::Compute::Operation', 'Response object class');
     done_testing();
 };
 

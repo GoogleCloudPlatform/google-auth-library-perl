@@ -12,7 +12,7 @@ use Protobuf;
 use Google::Api::Common;
 use Google::Devtools::Cloudbuild::V1::Cloudbuild;
 
-our $VERSION = '0.03';
+our $VERSION = '0.02';
 
 has credentials => ( is => 'ro', required => 0 );
 has transport   => ( is => 'rw' );
@@ -208,7 +208,7 @@ Generated from the following Protocol Buffers schemas:
 
 =over 4
 
-=item * C<googleapis/google/devtools/cloudbuild/v1/cloudbuild.proto>
+=item * C<google/devtools/cloudbuild/v1/cloudbuild.proto>
 
 
 

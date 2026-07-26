@@ -12,21 +12,21 @@ use Protobuf;
 use Google::Api::Common;
 use Google::Cloud::Networkservices::V1::AgentGateway;
 use Google::Cloud::Networkservices::V1::GrpcRoute;
-use Google::Cloud::Networkservices::V1::TcpRoute;
-use Google::Cloud::Networkservices::V1::ServiceBinding;
-use Google::Cloud::Networkservices::V1::EndpointPolicy;
 use Google::Cloud::Networkservices::V1::TlsRoute;
-use Google::Cloud::Networkservices::V1::Mesh;
-use Google::Cloud::Networkservices::V1::Dep;
-use Google::Cloud::Networkservices::V1::HttpRoute;
 use Google::Cloud::Networkservices::V1::Extensibility;
 use Google::Cloud::Networkservices::V1::ServiceLbPolicy;
-use Google::Cloud::Networkservices::V1::Common;
 use Google::Cloud::Networkservices::V1::RouteView;
-use Google::Cloud::Networkservices::V1::NetworkServices;
+use Google::Cloud::Networkservices::V1::HttpRoute;
+use Google::Cloud::Networkservices::V1::ServiceBinding;
+use Google::Cloud::Networkservices::V1::TcpRoute;
+use Google::Cloud::Networkservices::V1::Common;
+use Google::Cloud::Networkservices::V1::Mesh;
+use Google::Cloud::Networkservices::V1::Dep;
 use Google::Cloud::Networkservices::V1::Gateway;
+use Google::Cloud::Networkservices::V1::EndpointPolicy;
+use Google::Cloud::Networkservices::V1::NetworkServices;
 
-our $VERSION = '0.03';
+our $VERSION = '0.02';
 
 has credentials => ( is => 'ro', required => 0 );
 has transport   => ( is => 'rw' );
@@ -120,35 +120,35 @@ Generated from the following Protocol Buffers schemas:
 
 =over 4
 
-=item * C<googleapis/google/cloud/networkservices/v1/agent_gateway.proto>
+=item * C<google/cloud/networkservices/v1/http_route.proto>
 
-=item * C<googleapis/google/cloud/networkservices/v1/grpc_route.proto>
+=item * C<google/cloud/networkservices/v1/tcp_route.proto>
 
-=item * C<googleapis/google/cloud/networkservices/v1/tcp_route.proto>
+=item * C<google/cloud/networkservices/v1/common.proto>
 
-=item * C<googleapis/google/cloud/networkservices/v1/service_binding.proto>
+=item * C<google/cloud/networkservices/v1/mesh.proto>
 
-=item * C<googleapis/google/cloud/networkservices/v1/endpoint_policy.proto>
+=item * C<google/cloud/networkservices/v1/network_services.proto>
 
-=item * C<googleapis/google/cloud/networkservices/v1/tls_route.proto>
+=item * C<google/cloud/networkservices/v1/service_binding.proto>
 
-=item * C<googleapis/google/cloud/networkservices/v1/mesh.proto>
+=item * C<google/cloud/networkservices/v1/tls_route.proto>
 
-=item * C<googleapis/google/cloud/networkservices/v1/dep.proto>
+=item * C<google/cloud/networkservices/v1/dep.proto>
 
-=item * C<googleapis/google/cloud/networkservices/v1/http_route.proto>
+=item * C<google/cloud/networkservices/v1/route_view.proto>
 
-=item * C<googleapis/google/cloud/networkservices/v1/extensibility.proto>
+=item * C<google/cloud/networkservices/v1/service_lb_policy.proto>
 
-=item * C<googleapis/google/cloud/networkservices/v1/service_lb_policy.proto>
+=item * C<google/cloud/networkservices/v1/endpoint_policy.proto>
 
-=item * C<googleapis/google/cloud/networkservices/v1/common.proto>
+=item * C<google/cloud/networkservices/v1/gateway.proto>
 
-=item * C<googleapis/google/cloud/networkservices/v1/route_view.proto>
+=item * C<google/cloud/networkservices/v1/grpc_route.proto>
 
-=item * C<googleapis/google/cloud/networkservices/v1/network_services.proto>
+=item * C<google/cloud/networkservices/v1/extensibility.proto>
 
-=item * C<googleapis/google/cloud/networkservices/v1/gateway.proto>
+=item * C<google/cloud/networkservices/v1/agent_gateway.proto>
 
 
 

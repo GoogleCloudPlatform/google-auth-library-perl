@@ -22,6 +22,21 @@ coerce 'RepeatedGetConnectSettingsRequest',
 declare 'MapStringGetConnectSettingsRequest',
     as HashRef[GetConnectSettingsRequest()];
 
+declare 'ResolveConnectSettingsRequest',
+    as InstanceOf['Google::Cloud::Sql::V1::CloudSqlConnect::ResolveConnectSettingsRequest'];
+
+coerce 'ResolveConnectSettingsRequest',
+    from HashRef, via { 'Google::Cloud::Sql::V1::CloudSqlConnect::ResolveConnectSettingsRequest'->new($_) };
+
+declare 'RepeatedResolveConnectSettingsRequest',
+    as ArrayRef[ResolveConnectSettingsRequest()];
+
+coerce 'RepeatedResolveConnectSettingsRequest',
+    from ArrayRef[HashRef], via { [ map { 'Google::Cloud::Sql::V1::CloudSqlConnect::ResolveConnectSettingsRequest'->new($_) } @$_ ] };
+
+declare 'MapStringResolveConnectSettingsRequest',
+    as HashRef[ResolveConnectSettingsRequest()];
+
 declare 'ConnectSettings',
     as InstanceOf['Google::Cloud::Sql::V1::CloudSqlConnect::ConnectSettings'];
 

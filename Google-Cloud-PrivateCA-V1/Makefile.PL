@@ -5,7 +5,7 @@ use ExtUtils::MakeMaker;
 
 my %WriteMakefileArgs = (
     NAME             => 'Google::Cloud::PrivateCA::V1::CertificateAuthorityServiceClient',
-    AUTHOR           => ['Google LLC <cjac@google.com>'],
+    AUTHOR           => ['C.J. Collier <cjac@google.com>'],
     VERSION_FROM     => 'lib/Google/Cloud/PrivateCA/V1/CertificateAuthorityServiceClient.pm',
     ABSTRACT_FROM    => 'lib/Google/Cloud/PrivateCA/V1/CertificateAuthorityServiceClient.pm',
     LICENSE          => 'apache_2',

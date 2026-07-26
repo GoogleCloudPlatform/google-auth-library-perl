@@ -10,10 +10,10 @@ use Carp qw(croak);
 
 use Protobuf;
 use Google::Api::Common;
-use Google::Pubsub::V1::Pubsub;
 use Google::Pubsub::V1::Schema;
+use Google::Pubsub::V1::Pubsub;
 
-our $VERSION = '0.03';
+our $VERSION = '0.02';
 
 has credentials => ( is => 'ro', required => 0 );
 has transport   => ( is => 'rw' );
@@ -141,9 +141,9 @@ Generated from the following Protocol Buffers schemas:
 
 =over 4
 
-=item * C<googleapis/google/pubsub/v1/pubsub.proto>
+=item * C<google/pubsub/v1/schema.proto>
 
-=item * C<googleapis/google/pubsub/v1/schema.proto>
+=item * C<google/pubsub/v1/pubsub.proto>
 
 
 

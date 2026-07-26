@@ -22,6 +22,9 @@ coerce 'RepeatedSecret',
 declare 'MapStringSecret',
     as HashRef[Secret()];
 
+declare 'SecretType',
+    as (Int | Str);
+
 declare 'LabelsEntry',
     as InstanceOf['Google::Cloud::Secretmanager::V1::Resources::Secret::LabelsEntry'];
 
@@ -279,6 +282,24 @@ coerce 'RepeatedRotation',
 
 declare 'MapStringRotation',
     as HashRef[Rotation()];
+
+declare 'ManagedRotationStatus',
+    as InstanceOf['Google::Cloud::Secretmanager::V1::Resources::Rotation::ManagedRotationStatus'];
+
+coerce 'ManagedRotationStatus',
+    from HashRef, via { 'Google::Cloud::Secretmanager::V1::Resources::Rotation::ManagedRotationStatus'->new($_) };
+
+declare 'RepeatedManagedRotationStatus',
+    as ArrayRef[ManagedRotationStatus()];
+
+coerce 'RepeatedManagedRotationStatus',
+    from ArrayRef[HashRef], via { [ map { 'Google::Cloud::Secretmanager::V1::Resources::Rotation::ManagedRotationStatus'->new($_) } @$_ ] };
+
+declare 'MapStringManagedRotationStatus',
+    as HashRef[ManagedRotationStatus()];
+
+declare 'State',
+    as (Int | Str);
 
 declare 'SecretPayload',
     as InstanceOf['Google::Cloud::Secretmanager::V1::Resources::SecretPayload'];

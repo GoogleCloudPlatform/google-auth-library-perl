@@ -679,6 +679,21 @@ coerce 'RepeatedAddressesScopedList',
 declare 'MapStringAddressesScopedList',
     as HashRef[AddressesScopedList()];
 
+declare 'AdvanceRolloutRequest',
+    as InstanceOf['Google::Cloud::Compute::V1::Compute::AdvanceRolloutRequest'];
+
+coerce 'AdvanceRolloutRequest',
+    from HashRef, via { 'Google::Cloud::Compute::V1::Compute::AdvanceRolloutRequest'->new($_) };
+
+declare 'RepeatedAdvanceRolloutRequest',
+    as ArrayRef[AdvanceRolloutRequest()];
+
+coerce 'RepeatedAdvanceRolloutRequest',
+    from ArrayRef[HashRef], via { [ map { 'Google::Cloud::Compute::V1::Compute::AdvanceRolloutRequest'->new($_) } @$_ ] };
+
+declare 'MapStringAdvanceRolloutRequest',
+    as HashRef[AdvanceRolloutRequest()];
+
 declare 'AdvancedMachineFeatures',
     as InstanceOf['Google::Cloud::Compute::V1::Compute::AdvancedMachineFeatures'];
 
@@ -2806,6 +2821,21 @@ declare 'MapStringBackendServiceLogConfig',
 declare 'OptionalMode',
     as (Int | Str);
 
+declare 'BackendServiceLogConfigLoggingHttpHeader',
+    as InstanceOf['Google::Cloud::Compute::V1::Compute::BackendServiceLogConfigLoggingHttpHeader'];
+
+coerce 'BackendServiceLogConfigLoggingHttpHeader',
+    from HashRef, via { 'Google::Cloud::Compute::V1::Compute::BackendServiceLogConfigLoggingHttpHeader'->new($_) };
+
+declare 'RepeatedBackendServiceLogConfigLoggingHttpHeader',
+    as ArrayRef[BackendServiceLogConfigLoggingHttpHeader()];
+
+coerce 'RepeatedBackendServiceLogConfigLoggingHttpHeader',
+    from ArrayRef[HashRef], via { [ map { 'Google::Cloud::Compute::V1::Compute::BackendServiceLogConfigLoggingHttpHeader'->new($_) } @$_ ] };
+
+declare 'MapStringBackendServiceLogConfigLoggingHttpHeader',
+    as HashRef[BackendServiceLogConfigLoggingHttpHeader()];
+
 declare 'BackendServiceNetworkPassThroughLbTrafficPolicy',
     as InstanceOf['Google::Cloud::Compute::V1::Compute::BackendServiceNetworkPassThroughLbTrafficPolicy'];
 
@@ -4132,6 +4162,21 @@ coerce 'RepeatedDate',
 declare 'MapStringDate',
     as HashRef[Date()];
 
+declare 'DateTime',
+    as InstanceOf['Google::Cloud::Compute::V1::Compute::DateTime'];
+
+coerce 'DateTime',
+    from HashRef, via { 'Google::Cloud::Compute::V1::Compute::DateTime'->new($_) };
+
+declare 'RepeatedDateTime',
+    as ArrayRef[DateTime()];
+
+coerce 'RepeatedDateTime',
+    from ArrayRef[HashRef], via { [ map { 'Google::Cloud::Compute::V1::Compute::DateTime'->new($_) } @$_ ] };
+
+declare 'MapStringDateTime',
+    as HashRef[DateTime()];
+
 declare 'DeleteAccessConfigInstanceRequest',
     as InstanceOf['Google::Cloud::Compute::V1::Compute::DeleteAccessConfigInstanceRequest'];
 
@@ -4701,6 +4746,21 @@ coerce 'RepeatedDeleteMachineImageRequest',
 
 declare 'MapStringDeleteMachineImageRequest',
     as HashRef[DeleteMachineImageRequest()];
+
+declare 'DeleteNamedSetRouterRequest',
+    as InstanceOf['Google::Cloud::Compute::V1::Compute::DeleteNamedSetRouterRequest'];
+
+coerce 'DeleteNamedSetRouterRequest',
+    from HashRef, via { 'Google::Cloud::Compute::V1::Compute::DeleteNamedSetRouterRequest'->new($_) };
+
+declare 'RepeatedDeleteNamedSetRouterRequest',
+    as ArrayRef[DeleteNamedSetRouterRequest()];
+
+coerce 'RepeatedDeleteNamedSetRouterRequest',
+    from ArrayRef[HashRef], via { [ map { 'Google::Cloud::Compute::V1::Compute::DeleteNamedSetRouterRequest'->new($_) } @$_ ] };
+
+declare 'MapStringDeleteNamedSetRouterRequest',
+    as HashRef[DeleteNamedSetRouterRequest()];
 
 declare 'DeleteNetworkAttachmentRequest',
     as InstanceOf['Google::Cloud::Compute::V1::Compute::DeleteNetworkAttachmentRequest'];
@@ -6874,6 +6934,9 @@ declare 'MapStringFirewallPolicyRule',
 declare 'Direction',
     as (Int | Str);
 
+declare 'TargetType',
+    as (Int | Str);
+
 declare 'FirewallPolicyRuleMatcher',
     as InstanceOf['Google::Cloud::Compute::V1::Compute::FirewallPolicyRuleMatcher'];
 
@@ -7041,6 +7104,21 @@ coerce 'RepeatedItemsEntry',
 
 declare 'MapStringItemsEntry',
     as HashRef[ItemsEntry()];
+
+declare 'ForwardingRuleAttachedExtension',
+    as InstanceOf['Google::Cloud::Compute::V1::Compute::ForwardingRuleAttachedExtension'];
+
+coerce 'ForwardingRuleAttachedExtension',
+    from HashRef, via { 'Google::Cloud::Compute::V1::Compute::ForwardingRuleAttachedExtension'->new($_) };
+
+declare 'RepeatedForwardingRuleAttachedExtension',
+    as ArrayRef[ForwardingRuleAttachedExtension()];
+
+coerce 'RepeatedForwardingRuleAttachedExtension',
+    from ArrayRef[HashRef], via { [ map { 'Google::Cloud::Compute::V1::Compute::ForwardingRuleAttachedExtension'->new($_) } @$_ ] };
+
+declare 'MapStringForwardingRuleAttachedExtension',
+    as HashRef[ForwardingRuleAttachedExtension()];
 
 declare 'ForwardingRuleList',
     as InstanceOf['Google::Cloud::Compute::V1::Compute::ForwardingRuleList'];
@@ -7909,6 +7987,9 @@ coerce 'RepeatedGetForwardingRuleRequest',
 declare 'MapStringGetForwardingRuleRequest',
     as HashRef[GetForwardingRuleRequest()];
 
+declare 'View',
+    as (Int | Str);
+
 declare 'GetFromFamilyImageRequest',
     as InstanceOf['Google::Cloud::Compute::V1::Compute::GetFromFamilyImageRequest'];
 
@@ -7968,6 +8049,9 @@ coerce 'RepeatedGetGlobalForwardingRuleRequest',
 
 declare 'MapStringGetGlobalForwardingRuleRequest',
     as HashRef[GetGlobalForwardingRuleRequest()];
+
+declare 'View',
+    as (Int | Str);
 
 declare 'GetGlobalNetworkEndpointGroupRequest',
     as InstanceOf['Google::Cloud::Compute::V1::Compute::GetGlobalNetworkEndpointGroupRequest'];
@@ -8958,6 +9042,21 @@ coerce 'RepeatedGetMacsecConfigInterconnectRequest',
 
 declare 'MapStringGetMacsecConfigInterconnectRequest',
     as HashRef[GetMacsecConfigInterconnectRequest()];
+
+declare 'GetNamedSetRouterRequest',
+    as InstanceOf['Google::Cloud::Compute::V1::Compute::GetNamedSetRouterRequest'];
+
+coerce 'GetNamedSetRouterRequest',
+    from HashRef, via { 'Google::Cloud::Compute::V1::Compute::GetNamedSetRouterRequest'->new($_) };
+
+declare 'RepeatedGetNamedSetRouterRequest',
+    as ArrayRef[GetNamedSetRouterRequest()];
+
+coerce 'RepeatedGetNamedSetRouterRequest',
+    from ArrayRef[HashRef], via { [ map { 'Google::Cloud::Compute::V1::Compute::GetNamedSetRouterRequest'->new($_) } @$_ ] };
+
+declare 'MapStringGetNamedSetRouterRequest',
+    as HashRef[GetNamedSetRouterRequest()];
 
 declare 'GetNatIpInfoRouterRequest',
     as InstanceOf['Google::Cloud::Compute::V1::Compute::GetNatIpInfoRouterRequest'];
@@ -13204,6 +13303,9 @@ declare 'MapStringInstance',
 declare 'KeyRevocationActionType',
     as (Int | Str);
 
+declare 'LocalSsdEncryptionMode',
+    as (Int | Str);
+
 declare 'PrivateIpv6GoogleAccess',
     as (Int | Str);
 
@@ -13550,6 +13652,24 @@ declare 'ForceUpdateOnRepair',
     as (Int | Str);
 
 declare 'OnFailedHealthCheck',
+    as (Int | Str);
+
+declare 'InstanceGroupManagerInstanceLifecyclePolicyOnRepair',
+    as InstanceOf['Google::Cloud::Compute::V1::Compute::InstanceGroupManagerInstanceLifecyclePolicyOnRepair'];
+
+coerce 'InstanceGroupManagerInstanceLifecyclePolicyOnRepair',
+    from HashRef, via { 'Google::Cloud::Compute::V1::Compute::InstanceGroupManagerInstanceLifecyclePolicyOnRepair'->new($_) };
+
+declare 'RepeatedInstanceGroupManagerInstanceLifecyclePolicyOnRepair',
+    as ArrayRef[InstanceGroupManagerInstanceLifecyclePolicyOnRepair()];
+
+coerce 'RepeatedInstanceGroupManagerInstanceLifecyclePolicyOnRepair',
+    from ArrayRef[HashRef], via { [ map { 'Google::Cloud::Compute::V1::Compute::InstanceGroupManagerInstanceLifecyclePolicyOnRepair'->new($_) } @$_ ] };
+
+declare 'MapStringInstanceGroupManagerInstanceLifecyclePolicyOnRepair',
+    as HashRef[InstanceGroupManagerInstanceLifecyclePolicyOnRepair()];
+
+declare 'AllowChangingZone',
     as (Int | Str);
 
 declare 'InstanceGroupManagerList',
@@ -14387,6 +14507,9 @@ declare 'MapStringInstanceProperties',
     as HashRef[InstanceProperties()];
 
 declare 'KeyRevocationActionType',
+    as (Int | Str);
+
+declare 'LocalSsdEncryptionMode',
     as (Int | Str);
 
 declare 'PrivateIpv6GoogleAccess',
@@ -17434,6 +17557,21 @@ coerce 'RepeatedListManagedInstancesRegionInstanceGroupManagersRequest',
 declare 'MapStringListManagedInstancesRegionInstanceGroupManagersRequest',
     as HashRef[ListManagedInstancesRegionInstanceGroupManagersRequest()];
 
+declare 'ListNamedSetsRoutersRequest',
+    as InstanceOf['Google::Cloud::Compute::V1::Compute::ListNamedSetsRoutersRequest'];
+
+coerce 'ListNamedSetsRoutersRequest',
+    from HashRef, via { 'Google::Cloud::Compute::V1::Compute::ListNamedSetsRoutersRequest'->new($_) };
+
+declare 'RepeatedListNamedSetsRoutersRequest',
+    as ArrayRef[ListNamedSetsRoutersRequest()];
+
+coerce 'RepeatedListNamedSetsRoutersRequest',
+    from ArrayRef[HashRef], via { [ map { 'Google::Cloud::Compute::V1::Compute::ListNamedSetsRoutersRequest'->new($_) } @$_ ] };
+
+declare 'MapStringListNamedSetsRoutersRequest',
+    as HashRef[ListNamedSetsRoutersRequest()];
+
 declare 'ListNetworkAttachmentsRequest',
     as InstanceOf['Google::Cloud::Compute::V1::Compute::ListNetworkAttachmentsRequest'];
 
@@ -19186,6 +19324,36 @@ coerce 'RepeatedManagedInstancePropertiesFromFlexibilityPolicy',
 declare 'MapStringManagedInstancePropertiesFromFlexibilityPolicy',
     as HashRef[ManagedInstancePropertiesFromFlexibilityPolicy()];
 
+declare 'ManagedInstanceScheduling',
+    as InstanceOf['Google::Cloud::Compute::V1::Compute::ManagedInstanceScheduling'];
+
+coerce 'ManagedInstanceScheduling',
+    from HashRef, via { 'Google::Cloud::Compute::V1::Compute::ManagedInstanceScheduling'->new($_) };
+
+declare 'RepeatedManagedInstanceScheduling',
+    as ArrayRef[ManagedInstanceScheduling()];
+
+coerce 'RepeatedManagedInstanceScheduling',
+    from ArrayRef[HashRef], via { [ map { 'Google::Cloud::Compute::V1::Compute::ManagedInstanceScheduling'->new($_) } @$_ ] };
+
+declare 'MapStringManagedInstanceScheduling',
+    as HashRef[ManagedInstanceScheduling()];
+
+declare 'ManagedInstanceShutdownDetails',
+    as InstanceOf['Google::Cloud::Compute::V1::Compute::ManagedInstanceShutdownDetails'];
+
+coerce 'ManagedInstanceShutdownDetails',
+    from HashRef, via { 'Google::Cloud::Compute::V1::Compute::ManagedInstanceShutdownDetails'->new($_) };
+
+declare 'RepeatedManagedInstanceShutdownDetails',
+    as ArrayRef[ManagedInstanceShutdownDetails()];
+
+coerce 'RepeatedManagedInstanceShutdownDetails',
+    from ArrayRef[HashRef], via { [ map { 'Google::Cloud::Compute::V1::Compute::ManagedInstanceShutdownDetails'->new($_) } @$_ ] };
+
+declare 'MapStringManagedInstanceShutdownDetails',
+    as HashRef[ManagedInstanceShutdownDetails()];
+
 declare 'ManagedInstanceVersion',
     as InstanceOf['Google::Cloud::Compute::V1::Compute::ManagedInstanceVersion'];
 
@@ -19353,6 +19521,24 @@ coerce 'RepeatedNamedPort',
 
 declare 'MapStringNamedPort',
     as HashRef[NamedPort()];
+
+declare 'NamedSet',
+    as InstanceOf['Google::Cloud::Compute::V1::Compute::NamedSet'];
+
+coerce 'NamedSet',
+    from HashRef, via { 'Google::Cloud::Compute::V1::Compute::NamedSet'->new($_) };
+
+declare 'RepeatedNamedSet',
+    as ArrayRef[NamedSet()];
+
+coerce 'RepeatedNamedSet',
+    from ArrayRef[HashRef], via { [ map { 'Google::Cloud::Compute::V1::Compute::NamedSet'->new($_) } @$_ ] };
+
+declare 'MapStringNamedSet',
+    as HashRef[NamedSet()];
+
+declare 'Type',
+    as (Int | Str);
 
 declare 'NatIpInfo',
     as InstanceOf['Google::Cloud::Compute::V1::Compute::NatIpInfo'];
@@ -21451,6 +21637,21 @@ coerce 'RepeatedPatchInterconnectRequest',
 declare 'MapStringPatchInterconnectRequest',
     as HashRef[PatchInterconnectRequest()];
 
+declare 'PatchNamedSetRouterRequest',
+    as InstanceOf['Google::Cloud::Compute::V1::Compute::PatchNamedSetRouterRequest'];
+
+coerce 'PatchNamedSetRouterRequest',
+    from HashRef, via { 'Google::Cloud::Compute::V1::Compute::PatchNamedSetRouterRequest'->new($_) };
+
+declare 'RepeatedPatchNamedSetRouterRequest',
+    as ArrayRef[PatchNamedSetRouterRequest()];
+
+coerce 'RepeatedPatchNamedSetRouterRequest',
+    from ArrayRef[HashRef], via { [ map { 'Google::Cloud::Compute::V1::Compute::PatchNamedSetRouterRequest'->new($_) } @$_ ] };
+
+declare 'MapStringPatchNamedSetRouterRequest',
+    as HashRef[PatchNamedSetRouterRequest()];
+
 declare 'PatchNetworkAttachmentRequest',
     as InstanceOf['Google::Cloud::Compute::V1::Compute::PatchNetworkAttachmentRequest'];
 
@@ -22171,6 +22372,21 @@ coerce 'RepeatedPathRule',
 declare 'MapStringPathRule',
     as HashRef[PathRule()];
 
+declare 'PauseRolloutRequest',
+    as InstanceOf['Google::Cloud::Compute::V1::Compute::PauseRolloutRequest'];
+
+coerce 'PauseRolloutRequest',
+    from HashRef, via { 'Google::Cloud::Compute::V1::Compute::PauseRolloutRequest'->new($_) };
+
+declare 'RepeatedPauseRolloutRequest',
+    as ArrayRef[PauseRolloutRequest()];
+
+coerce 'RepeatedPauseRolloutRequest',
+    from ArrayRef[HashRef], via { [ map { 'Google::Cloud::Compute::V1::Compute::PauseRolloutRequest'->new($_) } @$_ ] };
+
+declare 'MapStringPauseRolloutRequest',
+    as HashRef[PauseRolloutRequest()];
+
 declare 'PerInstanceConfig',
     as InstanceOf['Google::Cloud::Compute::V1::Compute::PerInstanceConfig'];
 
@@ -22263,6 +22479,27 @@ coerce 'RepeatedPerformMaintenanceReservationSubBlockRequest',
 
 declare 'MapStringPerformMaintenanceReservationSubBlockRequest',
     as HashRef[PerformMaintenanceReservationSubBlockRequest()];
+
+declare 'PeriodicPartialMaintenanceSchedule',
+    as InstanceOf['Google::Cloud::Compute::V1::Compute::PeriodicPartialMaintenanceSchedule'];
+
+coerce 'PeriodicPartialMaintenanceSchedule',
+    from HashRef, via { 'Google::Cloud::Compute::V1::Compute::PeriodicPartialMaintenanceSchedule'->new($_) };
+
+declare 'RepeatedPeriodicPartialMaintenanceSchedule',
+    as ArrayRef[PeriodicPartialMaintenanceSchedule()];
+
+coerce 'RepeatedPeriodicPartialMaintenanceSchedule',
+    from ArrayRef[HashRef], via { [ map { 'Google::Cloud::Compute::V1::Compute::PeriodicPartialMaintenanceSchedule'->new($_) } @$_ ] };
+
+declare 'MapStringPeriodicPartialMaintenanceSchedule',
+    as HashRef[PeriodicPartialMaintenanceSchedule()];
+
+declare 'SubType',
+    as (Int | Str);
+
+declare 'Type',
+    as (Int | Str);
 
 declare 'Policy',
     as InstanceOf['Google::Cloud::Compute::V1::Compute::Policy'];
@@ -25027,6 +25264,36 @@ coerce 'RepeatedResourceStatusPhysicalHostTopology',
 declare 'MapStringResourceStatusPhysicalHostTopology',
     as HashRef[ResourceStatusPhysicalHostTopology()];
 
+declare 'ResourceStatusPhysicalHostTopologyAdditionalAttributes',
+    as InstanceOf['Google::Cloud::Compute::V1::Compute::ResourceStatusPhysicalHostTopologyAdditionalAttributes'];
+
+coerce 'ResourceStatusPhysicalHostTopologyAdditionalAttributes',
+    from HashRef, via { 'Google::Cloud::Compute::V1::Compute::ResourceStatusPhysicalHostTopologyAdditionalAttributes'->new($_) };
+
+declare 'RepeatedResourceStatusPhysicalHostTopologyAdditionalAttributes',
+    as ArrayRef[ResourceStatusPhysicalHostTopologyAdditionalAttributes()];
+
+coerce 'RepeatedResourceStatusPhysicalHostTopologyAdditionalAttributes',
+    from ArrayRef[HashRef], via { [ map { 'Google::Cloud::Compute::V1::Compute::ResourceStatusPhysicalHostTopologyAdditionalAttributes'->new($_) } @$_ ] };
+
+declare 'MapStringResourceStatusPhysicalHostTopologyAdditionalAttributes',
+    as HashRef[ResourceStatusPhysicalHostTopologyAdditionalAttributes()];
+
+declare 'AcceleratorTopologyIdsEntry',
+    as InstanceOf['Google::Cloud::Compute::V1::Compute::ResourceStatusPhysicalHostTopologyAdditionalAttributes::AcceleratorTopologyIdsEntry'];
+
+coerce 'AcceleratorTopologyIdsEntry',
+    from HashRef, via { 'Google::Cloud::Compute::V1::Compute::ResourceStatusPhysicalHostTopologyAdditionalAttributes::AcceleratorTopologyIdsEntry'->new($_) };
+
+declare 'RepeatedAcceleratorTopologyIdsEntry',
+    as ArrayRef[AcceleratorTopologyIdsEntry()];
+
+coerce 'RepeatedAcceleratorTopologyIdsEntry',
+    from ArrayRef[HashRef], via { [ map { 'Google::Cloud::Compute::V1::Compute::ResourceStatusPhysicalHostTopologyAdditionalAttributes::AcceleratorTopologyIdsEntry'->new($_) } @$_ ] };
+
+declare 'MapStringAcceleratorTopologyIdsEntry',
+    as HashRef[AcceleratorTopologyIdsEntry()];
+
 declare 'ResourceStatusReservationConsumptionInfo',
     as InstanceOf['Google::Cloud::Compute::V1::Compute::ResourceStatusReservationConsumptionInfo'];
 
@@ -25101,6 +25368,21 @@ coerce 'RepeatedResumeInstancesRegionInstanceGroupManagerRequest',
 
 declare 'MapStringResumeInstancesRegionInstanceGroupManagerRequest',
     as HashRef[ResumeInstancesRegionInstanceGroupManagerRequest()];
+
+declare 'ResumeRolloutRequest',
+    as InstanceOf['Google::Cloud::Compute::V1::Compute::ResumeRolloutRequest'];
+
+coerce 'ResumeRolloutRequest',
+    from HashRef, via { 'Google::Cloud::Compute::V1::Compute::ResumeRolloutRequest'->new($_) };
+
+declare 'RepeatedResumeRolloutRequest',
+    as ArrayRef[ResumeRolloutRequest()];
+
+coerce 'RepeatedResumeRolloutRequest',
+    from ArrayRef[HashRef], via { [ map { 'Google::Cloud::Compute::V1::Compute::ResumeRolloutRequest'->new($_) } @$_ ] };
+
+declare 'MapStringResumeRolloutRequest',
+    as HashRef[ResumeRolloutRequest()];
 
 declare 'Rollout',
     as InstanceOf['Google::Cloud::Compute::V1::Compute::Rollout'];
@@ -25924,6 +26206,21 @@ coerce 'RepeatedRouterStatusResponse',
 declare 'MapStringRouterStatusResponse',
     as HashRef[RouterStatusResponse()];
 
+declare 'RoutersGetNamedSetResponse',
+    as InstanceOf['Google::Cloud::Compute::V1::Compute::RoutersGetNamedSetResponse'];
+
+coerce 'RoutersGetNamedSetResponse',
+    from HashRef, via { 'Google::Cloud::Compute::V1::Compute::RoutersGetNamedSetResponse'->new($_) };
+
+declare 'RepeatedRoutersGetNamedSetResponse',
+    as ArrayRef[RoutersGetNamedSetResponse()];
+
+coerce 'RepeatedRoutersGetNamedSetResponse',
+    from ArrayRef[HashRef], via { [ map { 'Google::Cloud::Compute::V1::Compute::RoutersGetNamedSetResponse'->new($_) } @$_ ] };
+
+declare 'MapStringRoutersGetNamedSetResponse',
+    as HashRef[RoutersGetNamedSetResponse()];
+
 declare 'RoutersGetRoutePolicyResponse',
     as InstanceOf['Google::Cloud::Compute::V1::Compute::RoutersGetRoutePolicyResponse'];
 
@@ -25953,6 +26250,21 @@ coerce 'RepeatedRoutersListBgpRoutes',
 
 declare 'MapStringRoutersListBgpRoutes',
     as HashRef[RoutersListBgpRoutes()];
+
+declare 'RoutersListNamedSets',
+    as InstanceOf['Google::Cloud::Compute::V1::Compute::RoutersListNamedSets'];
+
+coerce 'RoutersListNamedSets',
+    from HashRef, via { 'Google::Cloud::Compute::V1::Compute::RoutersListNamedSets'->new($_) };
+
+declare 'RepeatedRoutersListNamedSets',
+    as ArrayRef[RoutersListNamedSets()];
+
+coerce 'RepeatedRoutersListNamedSets',
+    from ArrayRef[HashRef], via { [ map { 'Google::Cloud::Compute::V1::Compute::RoutersListNamedSets'->new($_) } @$_ ] };
+
+declare 'MapStringRoutersListNamedSets',
+    as HashRef[RoutersListNamedSets()];
 
 declare 'RoutersListRoutePolicies',
     as InstanceOf['Google::Cloud::Compute::V1::Compute::RoutersListRoutePolicies'];
@@ -26397,6 +26709,9 @@ coerce 'RepeatedSecurityPolicyDdosProtectionConfig',
 
 declare 'MapStringSecurityPolicyDdosProtectionConfig',
     as HashRef[SecurityPolicyDdosProtectionConfig()];
+
+declare 'DdosAdaptiveProtection',
+    as (Int | Str);
 
 declare 'DdosProtection',
     as (Int | Str);
@@ -29956,6 +30271,9 @@ coerce 'RepeatedSubnetworkSecondaryRange',
 declare 'MapStringSubnetworkSecondaryRange',
     as HashRef[SubnetworkSecondaryRange()];
 
+declare 'IpVersion',
+    as (Int | Str);
+
 declare 'SubnetworkUtilizationDetails',
     as InstanceOf['Google::Cloud::Compute::V1::Compute::SubnetworkUtilizationDetails'];
 
@@ -30813,6 +31131,9 @@ coerce 'RepeatedTargetTcpProxy',
 
 declare 'MapStringTargetTcpProxy',
     as HashRef[TargetTcpProxy()];
+
+declare 'LoadBalancingScheme',
+    as (Int | Str);
 
 declare 'ProxyHeader',
     as (Int | Str);
@@ -31885,6 +32206,21 @@ coerce 'RepeatedTestPermissionsResponse',
 declare 'MapStringTestPermissionsResponse',
     as HashRef[TestPermissionsResponse()];
 
+declare 'TimeZone',
+    as InstanceOf['Google::Cloud::Compute::V1::Compute::TimeZone'];
+
+coerce 'TimeZone',
+    from HashRef, via { 'Google::Cloud::Compute::V1::Compute::TimeZone'->new($_) };
+
+declare 'RepeatedTimeZone',
+    as ArrayRef[TimeZone()];
+
+coerce 'RepeatedTimeZone',
+    from ArrayRef[HashRef], via { [ map { 'Google::Cloud::Compute::V1::Compute::TimeZone'->new($_) } @$_ ] };
+
+declare 'MapStringTimeZone',
+    as HashRef[TimeZone()];
+
 declare 'Uint128',
     as InstanceOf['Google::Cloud::Compute::V1::Compute::Uint128'];
 
@@ -32169,6 +32505,21 @@ coerce 'RepeatedUpdateLicenseRequest',
 
 declare 'MapStringUpdateLicenseRequest',
     as HashRef[UpdateLicenseRequest()];
+
+declare 'UpdateNamedSetRouterRequest',
+    as InstanceOf['Google::Cloud::Compute::V1::Compute::UpdateNamedSetRouterRequest'];
+
+coerce 'UpdateNamedSetRouterRequest',
+    from HashRef, via { 'Google::Cloud::Compute::V1::Compute::UpdateNamedSetRouterRequest'->new($_) };
+
+declare 'RepeatedUpdateNamedSetRouterRequest',
+    as ArrayRef[UpdateNamedSetRouterRequest()];
+
+coerce 'RepeatedUpdateNamedSetRouterRequest',
+    from ArrayRef[HashRef], via { [ map { 'Google::Cloud::Compute::V1::Compute::UpdateNamedSetRouterRequest'->new($_) } @$_ ] };
+
+declare 'MapStringUpdateNamedSetRouterRequest',
+    as HashRef[UpdateNamedSetRouterRequest()];
 
 declare 'UpdateNetworkInterfaceInstanceRequest',
     as InstanceOf['Google::Cloud::Compute::V1::Compute::UpdateNetworkInterfaceInstanceRequest'];
@@ -33750,6 +34101,21 @@ coerce 'RepeatedZoneList',
 
 declare 'MapStringZoneList',
     as HashRef[ZoneList()];
+
+declare 'ZoneResourceStatus',
+    as InstanceOf['Google::Cloud::Compute::V1::Compute::ZoneResourceStatus'];
+
+coerce 'ZoneResourceStatus',
+    from HashRef, via { 'Google::Cloud::Compute::V1::Compute::ZoneResourceStatus'->new($_) };
+
+declare 'RepeatedZoneResourceStatus',
+    as ArrayRef[ZoneResourceStatus()];
+
+coerce 'RepeatedZoneResourceStatus',
+    from ArrayRef[HashRef], via { [ map { 'Google::Cloud::Compute::V1::Compute::ZoneResourceStatus'->new($_) } @$_ ] };
+
+declare 'MapStringZoneResourceStatus',
+    as HashRef[ZoneResourceStatus()];
 
 declare 'ZoneSetLabelsRequest',
     as InstanceOf['Google::Cloud::Compute::V1::Compute::ZoneSetLabelsRequest'];

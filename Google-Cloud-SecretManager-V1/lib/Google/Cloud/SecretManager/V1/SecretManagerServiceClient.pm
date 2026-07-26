@@ -13,7 +13,7 @@ use Google::Api::Common;
 use Google::Cloud::Secretmanager::V1::Resources;
 use Google::Cloud::Secretmanager::V1::Service;
 
-our $VERSION = '0.03';
+our $VERSION = '0.02';
 
 has credentials => ( is => 'ro', required => 0 );
 has transport   => ( is => 'rw' );
@@ -107,9 +107,9 @@ Generated from the following Protocol Buffers schemas:
 
 =over 4
 
-=item * C<googleapis/google/cloud/secretmanager/v1/resources.proto>
+=item * C<google/cloud/secretmanager/v1/service.proto>
 
-=item * C<googleapis/google/cloud/secretmanager/v1/service.proto>
+=item * C<google/cloud/secretmanager/v1/resources.proto>
 
 
 

@@ -400,6 +400,24 @@ coerce 'RepeatedDiskConfig',
 declare 'MapStringDiskConfig',
     as HashRef[DiskConfig()];
 
+declare 'AttachedDiskConfig',
+    as InstanceOf['Google::Cloud::Dataproc::V1::Clusters::AttachedDiskConfig'];
+
+coerce 'AttachedDiskConfig',
+    from HashRef, via { 'Google::Cloud::Dataproc::V1::Clusters::AttachedDiskConfig'->new($_) };
+
+declare 'RepeatedAttachedDiskConfig',
+    as ArrayRef[AttachedDiskConfig()];
+
+coerce 'RepeatedAttachedDiskConfig',
+    from ArrayRef[HashRef], via { [ map { 'Google::Cloud::Dataproc::V1::Clusters::AttachedDiskConfig'->new($_) } @$_ ] };
+
+declare 'MapStringAttachedDiskConfig',
+    as HashRef[AttachedDiskConfig()];
+
+declare 'DiskType',
+    as (Int | Str);
+
 declare 'AuxiliaryNodeGroup',
     as InstanceOf['Google::Cloud::Dataproc::V1::Clusters::AuxiliaryNodeGroup'];
 

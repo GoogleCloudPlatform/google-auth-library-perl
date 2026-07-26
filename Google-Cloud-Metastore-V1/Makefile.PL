@@ -5,7 +5,7 @@ use ExtUtils::MakeMaker;
 
 my %WriteMakefileArgs = (
     NAME             => 'Google::Cloud::Metastore::V1::DataprocMetastoreClient',
-    AUTHOR           => ['Google LLC <cjac@google.com>'],
+    AUTHOR           => ['C.J. Collier <cjac@google.com>'],
     VERSION_FROM     => 'lib/Google/Cloud/Metastore/V1/DataprocMetastoreClient.pm',
     ABSTRACT_FROM    => 'lib/Google/Cloud/Metastore/V1/DataprocMetastoreClient.pm',
     LICENSE          => 'apache_2',

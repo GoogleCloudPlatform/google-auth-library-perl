@@ -40,6 +40,9 @@ declare 'SqlAvailabilityType',
 declare 'SqlUpdateTrack',
     as (Int | Str);
 
+declare 'AutoDnsStatus',
+    as (Int | Str);
+
 declare 'AclEntry',
     as InstanceOf['Google::Cloud::Sql::V1::CloudSqlResources::AclEntry'];
 
@@ -849,6 +852,9 @@ coerce 'RepeatedPerformanceCaptureConfig',
 
 declare 'MapStringPerformanceCaptureConfig',
     as HashRef[PerformanceCaptureConfig()];
+
+declare 'TransactionKillType',
+    as (Int | Str);
 
 declare 'ConnectionPoolFlags',
     as InstanceOf['Google::Cloud::Sql::V1::CloudSqlResources::ConnectionPoolFlags'];

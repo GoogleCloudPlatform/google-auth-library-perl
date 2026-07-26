@@ -67,6 +67,23 @@ subtest 'get_connect_settings method' => sub {
     done_testing();
 };
 
+subtest 'resolve_connect_settings method' => sub {
+    $client->transport->{mock_call} = sub {
+        my ($args) = @_;
+        is($args->{service}, 'google.cloud.sql.v1.SqlConnectService', 'Correct service path');
+        is($args->{method}, 'ResolveConnectSettings', 'Correct RPC method');
+        isa_ok($args->{request}, 'Google::Cloud::Sql::V1::CloudSqlConnect::ResolveConnectSettingsRequest', 'Request object');
+        
+        my $response = 'Google::Cloud::Sql::V1::CloudSqlConnect::ConnectSettings'->new();
+        return $response;
+    };
+    
+    my $res = $client->resolve_connect_settings();
+    ok($res, 'Method returned a response');
+    isa_ok($res, 'Google::Cloud::Sql::V1::CloudSqlConnect::ConnectSettings', 'Response object class');
+    done_testing();
+};
+
 subtest 'generate_ephemeral_cert method' => sub {
     $client->transport->{mock_call} = sub {
         my ($args) = @_;

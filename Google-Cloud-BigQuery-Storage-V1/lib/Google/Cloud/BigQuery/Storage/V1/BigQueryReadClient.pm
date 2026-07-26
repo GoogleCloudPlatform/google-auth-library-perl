@@ -10,15 +10,15 @@ use Carp qw(croak);
 
 use Protobuf;
 use Google::Api::Common;
+use Google::Cloud::Bigquery::Storage::V1::Arrow;
 use Google::Cloud::Bigquery::Storage::V1::Avro;
-use Google::Cloud::Bigquery::Storage::V1::Stream;
+use Google::Cloud::Bigquery::Storage::V1::Protobuf;
 use Google::Cloud::Bigquery::Storage::V1::Annotations;
 use Google::Cloud::Bigquery::Storage::V1::Table;
+use Google::Cloud::Bigquery::Storage::V1::Stream;
 use Google::Cloud::Bigquery::Storage::V1::Storage;
-use Google::Cloud::Bigquery::Storage::V1::Protobuf;
-use Google::Cloud::Bigquery::Storage::V1::Arrow;
 
-our $VERSION = '0.03';
+our $VERSION = '0.02';
 
 has credentials => ( is => 'ro', required => 0 );
 has transport   => ( is => 'rw' );
@@ -112,19 +112,19 @@ Generated from the following Protocol Buffers schemas:
 
 =over 4
 
-=item * C<googleapis/google/cloud/bigquery/storage/v1/avro.proto>
+=item * C<google/cloud/bigquery/storage/v1/storage.proto>
 
-=item * C<googleapis/google/cloud/bigquery/storage/v1/stream.proto>
+=item * C<google/cloud/bigquery/storage/v1/arrow.proto>
 
-=item * C<googleapis/google/cloud/bigquery/storage/v1/annotations.proto>
+=item * C<google/cloud/bigquery/storage/v1/protobuf.proto>
 
-=item * C<googleapis/google/cloud/bigquery/storage/v1/table.proto>
+=item * C<google/cloud/bigquery/storage/v1/avro.proto>
 
-=item * C<googleapis/google/cloud/bigquery/storage/v1/storage.proto>
+=item * C<google/cloud/bigquery/storage/v1/annotations.proto>
 
-=item * C<googleapis/google/cloud/bigquery/storage/v1/protobuf.proto>
+=item * C<google/cloud/bigquery/storage/v1/table.proto>
 
-=item * C<googleapis/google/cloud/bigquery/storage/v1/arrow.proto>
+=item * C<google/cloud/bigquery/storage/v1/stream.proto>
 
 
 

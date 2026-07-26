@@ -10,18 +10,18 @@ use Carp qw(croak);
 
 use Protobuf;
 use Google::Api::Common;
-use Google::Cloud::Dataproc::V1::SessionTemplates;
-use Google::Cloud::Dataproc::V1::Batches;
 use Google::Cloud::Dataproc::V1::Shared;
+use Google::Cloud::Dataproc::V1::Operations;
+use Google::Cloud::Dataproc::V1::Jobs;
 use Google::Cloud::Dataproc::V1::AutoscalingPolicies;
+use Google::Cloud::Dataproc::V1::Sessions;
+use Google::Cloud::Dataproc::V1::Batches;
+use Google::Cloud::Dataproc::V1::Clusters;
+use Google::Cloud::Dataproc::V1::SessionTemplates;
 use Google::Cloud::Dataproc::V1::NodeGroups;
 use Google::Cloud::Dataproc::V1::WorkflowTemplates;
-use Google::Cloud::Dataproc::V1::Clusters;
-use Google::Cloud::Dataproc::V1::Jobs;
-use Google::Cloud::Dataproc::V1::Operations;
-use Google::Cloud::Dataproc::V1::Sessions;
 
-our $VERSION = '0.03';
+our $VERSION = '0.02';
 
 has credentials => ( is => 'ro', required => 0 );
 has transport   => ( is => 'rw' );
@@ -234,25 +234,25 @@ Generated from the following Protocol Buffers schemas:
 
 =over 4
 
-=item * C<googleapis/google/cloud/dataproc/v1/session_templates.proto>
+=item * C<google/cloud/dataproc/v1/node_groups.proto>
 
-=item * C<googleapis/google/cloud/dataproc/v1/batches.proto>
+=item * C<google/cloud/dataproc/v1/autoscaling_policies.proto>
 
-=item * C<googleapis/google/cloud/dataproc/v1/shared.proto>
+=item * C<google/cloud/dataproc/v1/batches.proto>
 
-=item * C<googleapis/google/cloud/dataproc/v1/autoscaling_policies.proto>
+=item * C<google/cloud/dataproc/v1/session_templates.proto>
 
-=item * C<googleapis/google/cloud/dataproc/v1/node_groups.proto>
+=item * C<google/cloud/dataproc/v1/operations.proto>
 
-=item * C<googleapis/google/cloud/dataproc/v1/workflow_templates.proto>
+=item * C<google/cloud/dataproc/v1/shared.proto>
 
-=item * C<googleapis/google/cloud/dataproc/v1/clusters.proto>
+=item * C<google/cloud/dataproc/v1/workflow_templates.proto>
 
-=item * C<googleapis/google/cloud/dataproc/v1/jobs.proto>
+=item * C<google/cloud/dataproc/v1/sessions.proto>
 
-=item * C<googleapis/google/cloud/dataproc/v1/operations.proto>
+=item * C<google/cloud/dataproc/v1/jobs.proto>
 
-=item * C<googleapis/google/cloud/dataproc/v1/sessions.proto>
+=item * C<google/cloud/dataproc/v1/clusters.proto>
 
 
 

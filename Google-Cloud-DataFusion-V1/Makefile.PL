@@ -5,7 +5,7 @@ use ExtUtils::MakeMaker;
 
 my %WriteMakefileArgs = (
     NAME             => 'Google::Cloud::DataFusion::V1::DataFusionClient',
-    AUTHOR           => ['Google LLC <cjac@google.com>'],
+    AUTHOR           => ['C.J. Collier <cjac@google.com>'],
     VERSION_FROM     => 'lib/Google/Cloud/DataFusion/V1/DataFusionClient.pm',
     ABSTRACT_FROM    => 'lib/Google/Cloud/DataFusion/V1/DataFusionClient.pm',
     LICENSE          => 'apache_2',

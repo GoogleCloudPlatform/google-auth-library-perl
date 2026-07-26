@@ -5,7 +5,7 @@ use ExtUtils::MakeMaker;
 
 my %WriteMakefileArgs = (
     NAME             => 'Google::Cloud::Build::V1::CloudBuildClient',
-    AUTHOR           => ['Google LLC <cjac@google.com>'],
+    AUTHOR           => ['C.J. Collier <cjac@google.com>'],
     VERSION_FROM     => 'lib/Google/Cloud/Build/V1/CloudBuildClient.pm',
     ABSTRACT_FROM    => 'lib/Google/Cloud/Build/V1/CloudBuildClient.pm',
     LICENSE          => 'apache_2',

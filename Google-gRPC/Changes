@@ -1,6 +1,8 @@
 Revision history for Google::gRPC
 
 0.04    Wed Jul 22 2026
+        - Exclude BUILD from POD coverage tests.
+        - Resolved author testing failures (Kwalitee, PerlTidy).
         [POD Documentation & Quality Modernization]
         - Added comprehensive POD documentation (NAME, SYNOPSIS, DESCRIPTION, AUTHOR, LICENSE) across all Google::gRPC submodules.
         - Added main package module Google::gRPC.pm ($VERSION = 0.04) and t/99-pod-coverage.t test suite.

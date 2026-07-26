@@ -33,7 +33,7 @@ sub call {
 
 # C. Fallback Mocks for External Response Classes
 BEGIN {
-    for my $pkg (qw( Google::Cloud::Compute::V1::Compute::NatIpInfoResponse Google::Cloud::Compute::V1::Compute::Operation Google::Cloud::Compute::V1::Compute::Router Google::Cloud::Compute::V1::Compute::RouterAggregatedList Google::Cloud::Compute::V1::Compute::RouterList Google::Cloud::Compute::V1::Compute::RouterStatusResponse Google::Cloud::Compute::V1::Compute::RoutersGetRoutePolicyResponse Google::Cloud::Compute::V1::Compute::RoutersListBgpRoutes Google::Cloud::Compute::V1::Compute::RoutersListRoutePolicies Google::Cloud::Compute::V1::Compute::RoutersPreviewResponse Google::Cloud::Compute::V1::Compute::VmEndpointNatMappingsList )) {
+    for my $pkg (qw( Google::Cloud::Compute::V1::Compute::NatIpInfoResponse Google::Cloud::Compute::V1::Compute::Operation Google::Cloud::Compute::V1::Compute::Router Google::Cloud::Compute::V1::Compute::RouterAggregatedList Google::Cloud::Compute::V1::Compute::RouterList Google::Cloud::Compute::V1::Compute::RouterStatusResponse Google::Cloud::Compute::V1::Compute::RoutersGetNamedSetResponse Google::Cloud::Compute::V1::Compute::RoutersGetRoutePolicyResponse Google::Cloud::Compute::V1::Compute::RoutersListBgpRoutes Google::Cloud::Compute::V1::Compute::RoutersListNamedSets Google::Cloud::Compute::V1::Compute::RoutersListRoutePolicies Google::Cloud::Compute::V1::Compute::RoutersPreviewResponse Google::Cloud::Compute::V1::Compute::VmEndpointNatMappingsList )) {
         unless ($pkg->can('new')) {
             no strict 'refs';
             *{"${pkg}::new"} = sub { bless {}, $_[0] };
@@ -84,6 +84,23 @@ subtest 'delete method' => sub {
     done_testing();
 };
 
+subtest 'delete_named_set method' => sub {
+    $client->transport->{mock_call} = sub {
+        my ($args) = @_;
+        is($args->{service}, 'google.cloud.compute.v1.Routers', 'Correct service path');
+        is($args->{method}, 'DeleteNamedSet', 'Correct RPC method');
+        isa_ok($args->{request}, 'Google::Cloud::Compute::V1::Compute::DeleteNamedSetRouterRequest', 'Request object');
+        
+        my $response = 'Google::Cloud::Compute::V1::Compute::Operation'->new();
+        return $response;
+    };
+    
+    my $res = $client->delete_named_set();
+    ok($res, 'Method returned a response');
+    isa_ok($res, 'Google::Cloud::Compute::V1::Compute::Operation', 'Response object class');
+    done_testing();
+};
+
 subtest 'delete_route_policy method' => sub {
     $client->transport->{mock_call} = sub {
         my ($args) = @_;
@@ -115,6 +132,23 @@ subtest 'get method' => sub {
     my $res = $client->get();
     ok($res, 'Method returned a response');
     isa_ok($res, 'Google::Cloud::Compute::V1::Compute::Router', 'Response object class');
+    done_testing();
+};
+
+subtest 'get_named_set method' => sub {
+    $client->transport->{mock_call} = sub {
+        my ($args) = @_;
+        is($args->{service}, 'google.cloud.compute.v1.Routers', 'Correct service path');
+        is($args->{method}, 'GetNamedSet', 'Correct RPC method');
+        isa_ok($args->{request}, 'Google::Cloud::Compute::V1::Compute::GetNamedSetRouterRequest', 'Request object');
+        
+        my $response = 'Google::Cloud::Compute::V1::Compute::RoutersGetNamedSetResponse'->new();
+        return $response;
+    };
+    
+    my $res = $client->get_named_set();
+    ok($res, 'Method returned a response');
+    isa_ok($res, 'Google::Cloud::Compute::V1::Compute::RoutersGetNamedSetResponse', 'Response object class');
     done_testing();
 };
 
@@ -237,6 +271,23 @@ subtest 'list_bgp_routes method' => sub {
     done_testing();
 };
 
+subtest 'list_named_sets method' => sub {
+    $client->transport->{mock_call} = sub {
+        my ($args) = @_;
+        is($args->{service}, 'google.cloud.compute.v1.Routers', 'Correct service path');
+        is($args->{method}, 'ListNamedSets', 'Correct RPC method');
+        isa_ok($args->{request}, 'Google::Cloud::Compute::V1::Compute::ListNamedSetsRoutersRequest', 'Request object');
+        
+        my $response = 'Google::Cloud::Compute::V1::Compute::RoutersListNamedSets'->new();
+        return $response;
+    };
+    
+    my $res = $client->list_named_sets();
+    ok($res, 'Method returned a response');
+    isa_ok($res, 'Google::Cloud::Compute::V1::Compute::RoutersListNamedSets', 'Response object class');
+    done_testing();
+};
+
 subtest 'list_route_policies method' => sub {
     $client->transport->{mock_call} = sub {
         my ($args) = @_;
@@ -266,6 +317,23 @@ subtest 'patch method' => sub {
     };
     
     my $res = $client->patch();
+    ok($res, 'Method returned a response');
+    isa_ok($res, 'Google::Cloud::Compute::V1::Compute::Operation', 'Response object class');
+    done_testing();
+};
+
+subtest 'patch_named_set method' => sub {
+    $client->transport->{mock_call} = sub {
+        my ($args) = @_;
+        is($args->{service}, 'google.cloud.compute.v1.Routers', 'Correct service path');
+        is($args->{method}, 'PatchNamedSet', 'Correct RPC method');
+        isa_ok($args->{request}, 'Google::Cloud::Compute::V1::Compute::PatchNamedSetRouterRequest', 'Request object');
+        
+        my $response = 'Google::Cloud::Compute::V1::Compute::Operation'->new();
+        return $response;
+    };
+    
+    my $res = $client->patch_named_set();
     ok($res, 'Method returned a response');
     isa_ok($res, 'Google::Cloud::Compute::V1::Compute::Operation', 'Response object class');
     done_testing();
@@ -317,6 +385,23 @@ subtest 'update method' => sub {
     };
     
     my $res = $client->update();
+    ok($res, 'Method returned a response');
+    isa_ok($res, 'Google::Cloud::Compute::V1::Compute::Operation', 'Response object class');
+    done_testing();
+};
+
+subtest 'update_named_set method' => sub {
+    $client->transport->{mock_call} = sub {
+        my ($args) = @_;
+        is($args->{service}, 'google.cloud.compute.v1.Routers', 'Correct service path');
+        is($args->{method}, 'UpdateNamedSet', 'Correct RPC method');
+        isa_ok($args->{request}, 'Google::Cloud::Compute::V1::Compute::UpdateNamedSetRouterRequest', 'Request object');
+        
+        my $response = 'Google::Cloud::Compute::V1::Compute::Operation'->new();
+        return $response;
+    };
+    
+    my $res = $client->update_named_set();
     ok($res, 'Method returned a response');
     isa_ok($res, 'Google::Cloud::Compute::V1::Compute::Operation', 'Response object class');
     done_testing();

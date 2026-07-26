@@ -5,7 +5,7 @@ use ExtUtils::MakeMaker;
 
 my %WriteMakefileArgs = (
     NAME             => 'Google::Cloud::PubSub::V1::PublisherClient',
-    AUTHOR           => ['Google LLC <cjac@google.com>'],
+    AUTHOR           => ['C.J. Collier <cjac@google.com>'],
     VERSION_FROM     => 'lib/Google/Cloud/PubSub/V1/PublisherClient.pm',
     ABSTRACT_FROM    => 'lib/Google/Cloud/PubSub/V1/PublisherClient.pm',
     LICENSE          => 'apache_2',

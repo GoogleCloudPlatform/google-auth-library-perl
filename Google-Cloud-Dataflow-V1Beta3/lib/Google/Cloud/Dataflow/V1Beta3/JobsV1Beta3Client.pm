@@ -10,15 +10,15 @@ use Carp qw(croak);
 
 use Protobuf;
 use Google::Api::Common;
-use Google::Dataflow::V1beta3::Templates;
-use Google::Dataflow::V1beta3::Messages;
-use Google::Dataflow::V1beta3::Environment;
-use Google::Dataflow::V1beta3::Metrics;
-use Google::Dataflow::V1beta3::Jobs;
-use Google::Dataflow::V1beta3::Snapshots;
 use Google::Dataflow::V1beta3::Streaming;
+use Google::Dataflow::V1beta3::Snapshots;
+use Google::Dataflow::V1beta3::Messages;
+use Google::Dataflow::V1beta3::Metrics;
+use Google::Dataflow::V1beta3::Environment;
+use Google::Dataflow::V1beta3::Jobs;
+use Google::Dataflow::V1beta3::Templates;
 
-our $VERSION = '0.03';
+our $VERSION = '0.02';
 
 has credentials => ( is => 'ro', required => 0 );
 has transport   => ( is => 'rw' );
@@ -214,19 +214,19 @@ Generated from the following Protocol Buffers schemas:
 
 =over 4
 
-=item * C<googleapis/google/dataflow/v1beta3/templates.proto>
+=item * C<google/dataflow/v1beta3/metrics.proto>
 
-=item * C<googleapis/google/dataflow/v1beta3/messages.proto>
+=item * C<google/dataflow/v1beta3/templates.proto>
 
-=item * C<googleapis/google/dataflow/v1beta3/environment.proto>
+=item * C<google/dataflow/v1beta3/environment.proto>
 
-=item * C<googleapis/google/dataflow/v1beta3/metrics.proto>
+=item * C<google/dataflow/v1beta3/messages.proto>
 
-=item * C<googleapis/google/dataflow/v1beta3/jobs.proto>
+=item * C<google/dataflow/v1beta3/jobs.proto>
 
-=item * C<googleapis/google/dataflow/v1beta3/snapshots.proto>
+=item * C<google/dataflow/v1beta3/streaming.proto>
 
-=item * C<googleapis/google/dataflow/v1beta3/streaming.proto>
+=item * C<google/dataflow/v1beta3/snapshots.proto>
 
 
 

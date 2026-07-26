@@ -5,7 +5,7 @@ use ExtUtils::MakeMaker;
 
 my %WriteMakefileArgs = (
     NAME             => 'Google::Cloud::Dataflow::V1Beta3::FlexTemplatesServiceClient',
-    AUTHOR           => ['Google LLC <cjac@google.com>'],
+    AUTHOR           => ['C.J. Collier <cjac@google.com>'],
     VERSION_FROM     => 'lib/Google/Cloud/Dataflow/V1Beta3/FlexTemplatesServiceClient.pm',
     ABSTRACT_FROM    => 'lib/Google/Cloud/Dataflow/V1Beta3/FlexTemplatesServiceClient.pm',
     LICENSE          => 'apache_2',

@@ -5,7 +5,7 @@ use ExtUtils::MakeMaker;
 
 my %WriteMakefileArgs = (
     NAME             => 'Google::Cloud::IAM::V1::IAMPolicyClient',
-    AUTHOR           => ['Google LLC <cjac@google.com>'],
+    AUTHOR           => ['C.J. Collier <cjac@google.com>'],
     VERSION_FROM     => 'lib/Google/Cloud/IAM/V1/IAMPolicyClient.pm',
     ABSTRACT_FROM    => 'lib/Google/Cloud/IAM/V1/IAMPolicyClient.pm',
     LICENSE          => 'apache_2',

@@ -5,7 +5,7 @@ use ExtUtils::MakeMaker;
 
 my %WriteMakefileArgs = (
     NAME             => 'Google::Cloud::Bigquery::V2::DatasetServiceClient',
-    AUTHOR           => ['Google LLC <cjac@google.com>'],
+    AUTHOR           => ['C.J. Collier <cjac@google.com>'],
     VERSION_FROM     => 'lib/Google/Cloud/Bigquery/V2/DatasetServiceClient.pm',
     ABSTRACT_FROM    => 'lib/Google/Cloud/Bigquery/V2/DatasetServiceClient.pm',
     LICENSE          => 'apache_2',

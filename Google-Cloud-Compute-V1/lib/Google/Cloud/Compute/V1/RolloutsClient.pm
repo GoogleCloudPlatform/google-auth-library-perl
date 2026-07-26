@@ -12,7 +12,7 @@ use Protobuf;
 use Google::Api::Common;
 use Google::Cloud::Compute::V1::Compute;
 
-our $VERSION = '0.03';
+our $VERSION = '0.02';
 
 has credentials => ( is => 'ro', required => 0 );
 has transport   => ( is => 'rw' );
@@ -46,6 +46,23 @@ sub BUILD {
         );
         $self->transport($client);
     }
+}
+
+sub advance {
+    my ($self, %params) = @_;
+
+    my $request_class = 'Google::Cloud::Compute::V1::Compute::AdvanceRolloutRequest';
+    my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
+
+    my $response_class = 'Google::Cloud::Compute::V1::Compute::Operation';
+    my $response = $self->transport->call({
+        service        => 'google.cloud.compute.v1.Rollouts',
+        method         => 'Advance',
+        request        => $request,
+        response_class => $response_class,
+    });
+
+    return $response;
 }
 
 sub cancel {
@@ -115,6 +132,40 @@ sub list {
 
     return $response;
 }
+
+sub pause {
+    my ($self, %params) = @_;
+
+    my $request_class = 'Google::Cloud::Compute::V1::Compute::PauseRolloutRequest';
+    my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
+
+    my $response_class = 'Google::Cloud::Compute::V1::Compute::Operation';
+    my $response = $self->transport->call({
+        service        => 'google.cloud.compute.v1.Rollouts',
+        method         => 'Pause',
+        request        => $request,
+        response_class => $response_class,
+    });
+
+    return $response;
+}
+
+sub resume {
+    my ($self, %params) = @_;
+
+    my $request_class = 'Google::Cloud::Compute::V1::Compute::ResumeRolloutRequest';
+    my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
+
+    my $response_class = 'Google::Cloud::Compute::V1::Compute::Operation';
+    my $response = $self->transport->call({
+        service        => 'google.cloud.compute.v1.Rollouts',
+        method         => 'Resume',
+        request        => $request,
+        response_class => $response_class,
+    });
+
+    return $response;
+}
 1; # End of Google::Cloud::Compute::V1::RolloutsClient
 
 __END__
@@ -157,7 +208,7 @@ Generated from the following Protocol Buffers schemas:
 
 =over 4
 
-=item * C<googleapis/google/cloud/compute/v1/compute.proto>
+=item * C<google/cloud/compute/v1/compute.proto>
 
 
 
@@ -190,6 +241,10 @@ The following RPC methods are available in this client:
 
 =over 4
 
+=item * B<advance>
+
+Calls the RPC method C<Advance> on the service. Takes a hash of parameters representing the request.
+
 =item * B<cancel>
 
 Calls the RPC method C<Cancel> on the service. Takes a hash of parameters representing the request.
@@ -205,6 +260,14 @@ Calls the RPC method C<Get> on the service. Takes a hash of parameters represent
 =item * B<list>
 
 Calls the RPC method C<List> on the service. Takes a hash of parameters representing the request.
+
+=item * B<pause>
+
+Calls the RPC method C<Pause> on the service. Takes a hash of parameters representing the request.
+
+=item * B<resume>
+
+Calls the RPC method C<Resume> on the service. Takes a hash of parameters representing the request.
 
 =back
 

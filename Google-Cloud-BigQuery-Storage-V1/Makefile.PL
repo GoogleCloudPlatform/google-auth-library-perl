@@ -5,7 +5,7 @@ use ExtUtils::MakeMaker;
 
 my %WriteMakefileArgs = (
     NAME             => 'Google::Cloud::BigQuery::Storage::V1::BigQueryReadClient',
-    AUTHOR           => ['Google LLC <cjac@google.com>'],
+    AUTHOR           => ['C.J. Collier <cjac@google.com>'],
     VERSION_FROM     => 'lib/Google/Cloud/BigQuery/Storage/V1/BigQueryReadClient.pm',
     ABSTRACT_FROM    => 'lib/Google/Cloud/BigQuery/Storage/V1/BigQueryReadClient.pm',
     LICENSE          => 'apache_2',
