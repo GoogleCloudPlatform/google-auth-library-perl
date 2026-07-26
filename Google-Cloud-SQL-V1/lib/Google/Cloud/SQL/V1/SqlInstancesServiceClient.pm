@@ -251,7 +251,7 @@ sub get {
     return $response;
 }
 
-sub import {
+sub import_instances {
     my ($self, %params) = @_;
 
     my $request_class = 'Google::Cloud::Sql::V1::CloudSqlInstances::SqlInstancesImportRequest';
