@@ -1,6 +1,8 @@
 Revision history for Google-Auth
 
 0.05    Wed Jul 22 2026
+        - Fixed POD test failures.
+        - Resolved author testing failures (Kwalitee, PerlTidy).
         [Version Alignment & Submodule Synchronization]
         - Synchronized $VERSION = '0.05' across all Google::Auth submodules.
         - Hardened release_lint.pl distcheck verification.
