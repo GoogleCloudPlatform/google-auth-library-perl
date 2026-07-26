@@ -170,6 +170,10 @@ sub create_modules {
         push @cmd, ('-I', $norm_import_path);
         push @cmd, ('-I', '/usr/include') if -d '/usr/include';
         push @cmd, ('-I', '/usr/local/include') if -d '/usr/local/include';
+        
+        my $temp_deps = Path::Tiny->tempfile();
+        push @cmd, '--dependency_out=' . $temp_deps;
+        
         push @cmd, $rel_proto;
         
         my $cmd_str = join(' ', map { $_ =~ /\s/ ? qq("$_\") : $_ } @cmd);
@@ -179,6 +183,16 @@ sub create_modules {
         if ($rc != 0) {
             die "protoc execution failed with code $rc for $norm_proto_file. Command: $cmd_str\n";
         }
+
+        # Parse dependencies
+        my $deps_content = $temp_deps->slurp_utf8();
+        $deps_content =~ s/\\\n//g; # Remove line continuations
+        my ($target, $prereqs_str) = split /:/, $deps_content, 2;
+        die "Malformed dependency output: missing colon" unless defined $prereqs_str;
+
+        # Filter out empty elements, target itself, and the dependent file itself (self-loop prevention)
+        my @prereqs = grep { $_ && $_ ne $target && $_ ne $norm_proto_file } split /\s+/, $prereqs_str;
+        $self->{_protobuf_dependencies}->{$proto_file} = \@prereqs;
     }
 
     # B. Generate the high-level client wrappers for each requested module
@@ -368,11 +382,54 @@ EOF
         'Protobuf',
         'Google::Api::Common',
     );
-    for my $proto_file (@{$self->{_protobuf_files}}) {
+    # Build Dependency DAG and sort topologically (Kahn's algorithm)
+    my %dependencies = %{$self->{_protobuf_dependencies} || {}};
+    my %in_degree;
+    my %adj_list;
+
+    for my $u (keys %dependencies) {
+        $in_degree{$u} //= 0;
+        $adj_list{$u} //= [];
+    }
+
+    for my $u (keys %dependencies) {
+        for my $v (@{$dependencies{$u}}) {
+            # v is a prerequisite of u, so edge goes v -> u
+            push @{$adj_list{$v}}, $u;
+            $in_degree{$u}++;
+            $in_degree{$v} //= 0;
+            $adj_list{$v} //= [];
+        }
+    }
+
+    my @q = grep { $in_degree{$_} == 0 } keys %in_degree;
+    my @sorted;
+
+    while (@q) {
+        my $u = shift @q;
+        push @sorted, $u;
+        for my $v (@{$adj_list{$u}}) {
+            $in_degree{$v}--;
+            if ($in_degree{$v} == 0) {
+                push @q, $v;
+            }
+        }
+    }
+    die 'Circular dependency detected' if @sorted != keys %in_degree;
+
+    # %local_files is a lookup hash derived from @{$self->{_protobuf_files}}
+    my %local_files = map { $_ => 1 } @{$self->{_protobuf_files}};
+
+    for my $proto_file (@sorted) {
+        # Only generate 'use' for files in the local processing set
+        next unless exists $local_files{$proto_file}; 
+        
         my $content = path($proto_file)->slurp_utf8();
         my $pkg = '';
         if ($content =~ / package \s+ ([\w\.]+) ; /x) {
             $pkg = $1;
+        } else {
+            die "Failed to extract package name from $proto_file using heuristic regex";
         }
         my $prefix = _proto_to_perl_namespace($pkg);
         my $fname = basename($proto_file);
