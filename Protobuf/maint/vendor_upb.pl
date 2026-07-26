@@ -17,21 +17,15 @@ my $vendor_dir = File::Spec->catdir($perl_dir, 'vendor');
 # Check if we are in a Google3 dev environment
 my $is_google3 = ($perl_dir =~ m{^/google/src/cloud/});
 
-my $upb_src_dir = (-d File::Spec->catdir($perl_dir, 'third_party', 'protobuf', 'upb'))
-    ? File::Spec->catdir($perl_dir, 'third_party', 'protobuf', 'upb')
-    : File::Spec->catdir($vendor_dir, 'upb');
+my $downloaded_root = '/usr/local/google/home/cjac/src/github/c9h/dbi/tmp/upb_download/protobuf-35.1';
 
-my $upb_generator_src_dir = (-d File::Spec->catdir($perl_dir, 'third_party', 'protobuf', 'upb_generator'))
-    ? File::Spec->catdir($perl_dir, 'third_party', 'protobuf', 'upb_generator')
-    : File::Spec->catdir($vendor_dir, 'upb_generator');
+my $upb_src_dir = File::Spec->catdir($downloaded_root, 'upb');
 
-my $utf8_range_src_dir = (-d File::Spec->catdir($perl_dir, 'third_party', 'protobuf', 'third_party', 'utf8_range'))
-    ? File::Spec->catdir($perl_dir, 'third_party', 'protobuf', 'third_party', 'utf8_range')
-    : File::Spec->catdir($vendor_dir, 'third_party', 'utf8_range');
+my $upb_generator_src_dir = File::Spec->catdir($downloaded_root, 'upb_generator');
 
-my $proto_src_dir = (-d File::Spec->catdir($perl_dir, 'third_party', 'protobuf', 'src', 'google', 'protobuf'))
-    ? File::Spec->catdir($perl_dir, 'third_party', 'protobuf', 'src', 'google', 'protobuf')
-    : File::Spec->catdir($vendor_dir, 'src', 'google', 'protobuf');
+my $utf8_range_src_dir = File::Spec->catdir($downloaded_root, 'third_party', 'utf8_range');
+
+my $proto_src_dir = File::Spec->catdir($downloaded_root, 'src', 'google', 'protobuf');
 
 print "Vendoring upb and third_party into $vendor_dir...\n";
 if ($is_google3) {

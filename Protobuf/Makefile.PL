@@ -628,7 +628,7 @@ sub MY::postamble {
     my $descriptor_upb_o = "protoc/descriptor.upb.o";
 
     my $bootstrap_define = $is_google3_dev ? "" : "-DUPB_BOOTSTRAP_STAGE=0";
-    my $protoc_cflags = "-g -fPIC -D_GNU_SOURCE -std=c++20 -Wall $bootstrap_define -DPROTOBUF_PERL_VERSION=\\\"$VERSION\\\"";
+    my $protoc_cflags = "-g -fPIC -D_GNU_SOURCE -std=c++20 -Wall $bootstrap_define -DPROTOBUF_PERL_VERSION=\\\"$VERSION\\\" $sanitizer_flags";
     my $g3_inc = $is_google3_dev ? "-I../../.." : "";
     my $protoc_inc = "-I. -I./protoc -I$project_root -I$upb_dir -I$src_dir -I$third_party_dir -I" . File::Spec->catdir($third_party_dir, 'utf8_range') . " -I" . $bazel_gen_include . " -I" . $cmake_gen_include . " -I" . File::Spec->catdir($upb_generator_dir, 'stage0') . " -I$Config{archlibexp}/CORE $g3_inc $main::mac_inc";
 

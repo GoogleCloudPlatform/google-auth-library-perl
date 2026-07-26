@@ -187,31 +187,7 @@ sub add_serialized_file {
             $file = eval { _xs_add_serialized_file($self, $serialized) };
             if (!$file && $@) {
                 my $err = $@;
-                if ($err =~ /Depends on file ['"]([^'"]+)['"]/) {
-                    my $dep = $1;
-                    my $raw_dep = pack("C*", 0x0a, length($dep)) . $dep
-                                . pack("C*", 0x62, 6) . "proto3";
-                    eval { _xs_add_serialized_file($self, $raw_dep) };
-                    next;
-                }
-                elsif ($err =~ /(?:couldn['"]t resolve name|Message type not resolved for field .*? of type) ['"]\.?([^'"]+)['"]/) {
-                    my $sym = $1;
-                    my ($pkg, $msg_name) = ($sym =~ /^(?:(.+)\.)?([^.]+)$/);
-                    $pkg ||= '';
-                    $msg_name ||= $sym;
-                    my $fn = ($pkg ? $pkg : 'default') . "/stub_$msg_name.proto";
-                    $fn =~ s/\./\//g;
-
-                    my $msg_proto = pack("C*", 0x0a, length($msg_name)) . $msg_name;
-                    my $raw_stub = pack("C*", 0x0a, length($fn)) . $fn
-                                 . ($pkg ? pack("C*", 0x12, length($pkg)) . $pkg : '')
-                                 . pack("C*", 0x22, length($msg_proto)) . $msg_proto
-                                 . pack("C*", 0x62, 6) . "proto3";
-                    eval { _xs_add_serialized_file($self, $raw_stub) };
-                    warn "STUB CREATION FAILED FOR $sym ($fn): $@\n" if $@;
-                    next;
-                }
-                elsif ($err =~ /has no extension range in message/) {
+                if ($err =~ /has no extension range in message/) {
                     # WKT extension range error on custom google.protobuf options. Safe to ignore.
                     last;
                 }
