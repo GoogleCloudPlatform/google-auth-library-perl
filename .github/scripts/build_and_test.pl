@@ -64,11 +64,11 @@ eval {
 my @all_known_dirs = qw(
     Protobuf Google-Auth Google-Api-Common Google-gRPC Module-Starter-Protobuf
     Google-Cloud-Bigquery-Storage-V1 Google-Cloud-Bigquery-V2 Google-Cloud-Build-V1
-    Google-Cloud-Composer-V1 Google-Cloud-Compute-V1 Google-Cloud-Dataflow-V1Beta3
-    Google-Cloud-DataFusion-V1 Google-Cloud-Dataplex-V1 Google-Cloud-Dataproc-V1
-    Google-Cloud-IAM-V1 Google-Cloud-Metastore-V1 Google-Cloud-NetworkSecurity-V1
-    Google-Cloud-NetworkServices-V1 Google-Cloud-PrivateCA-V1 Google-Cloud-PubSub-V1
-    Google-Cloud-SecretManager-V1 Google-Cloud-Spanner-V1 Google-Cloud-SQL-V1
+    Google-Cloud-Composer-V1 Google-Cloud-Compute-V1 Google-Cloud-Dataflow-V1beta3
+    Google-Cloud-Datafusion-V1 Google-Cloud-Dataplex-V1 Google-Cloud-Dataproc-V1
+    Google-Cloud-Iam-V1 Google-Cloud-Metastore-V1 Google-Cloud-Networksecurity-V1
+    Google-Cloud-Networkservices-V1 Google-Cloud-Privateca-V1 Google-Cloud-Pubsub-V1
+    Google-Cloud-Secretmanager-V1 Google-Cloud-Spanner-V1 Google-Cloud-Sql-V1
     Google-Cloud-Storage-V2
 );
 
