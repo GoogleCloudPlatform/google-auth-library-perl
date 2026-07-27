@@ -1536,14 +1536,14 @@ Values:
 
 =cut
 
-# === Service Client: Google::Cloud::Bigquery::Storage::V1::Storage::BigQueryReadClient ===
-package Google::Cloud::Bigquery::Storage::V1::Storage::BigQueryReadClient;
+# === Service Client: Google::Cloud::Bigquery::Storage::V1::Storage::BigqueryReadClient ===
+package Google::Cloud::Bigquery::Storage::V1::Storage::BigqueryReadClient;
 
 =pod
 
 =head1 NAME
 
-Google::Cloud::Bigquery::Storage::V1::Storage::BigQueryReadClient - Client stub representing the remote BigQueryRead service
+Google::Cloud::Bigquery::Storage::V1::Storage::BigqueryReadClient - Client stub representing the remote BigQueryRead service
 
 =head1 DESCRIPTION
 
@@ -1621,14 +1621,14 @@ sub split_read_stream {
     });
 }
 
-# === Service Client: Google::Cloud::Bigquery::Storage::V1::Storage::BigQueryWriteClient ===
-package Google::Cloud::Bigquery::Storage::V1::Storage::BigQueryWriteClient;
+# === Service Client: Google::Cloud::Bigquery::Storage::V1::Storage::BigqueryWriteClient ===
+package Google::Cloud::Bigquery::Storage::V1::Storage::BigqueryWriteClient;
 
 =pod
 
 =head1 NAME
 
-Google::Cloud::Bigquery::Storage::V1::Storage::BigQueryWriteClient - Client stub representing the remote BigQueryWrite service
+Google::Cloud::Bigquery::Storage::V1::Storage::BigqueryWriteClient - Client stub representing the remote BigQueryWrite service
 
 =head1 DESCRIPTION
 

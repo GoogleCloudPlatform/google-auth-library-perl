@@ -21,7 +21,7 @@ WriteMakefile(
         'Google::Auth'                        => '0.03',
         'Google::gRPC::Client'                => '0.03',
         'Google::Cloud::Bigquery::V2'         => '0.02',
-        'Google::Cloud::BigQuery::Storage::V1'=> '0.02',
+        'Google::Cloud::Bigquery::Storage::V1'=> '0.02',
         'Protobuf'                            => '0.06',
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },

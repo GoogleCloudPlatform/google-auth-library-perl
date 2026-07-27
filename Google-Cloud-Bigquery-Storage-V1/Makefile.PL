@@ -4,9 +4,9 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 WriteMakefile(
-    NAME             => 'Google::Cloud::BigQuery::Storage::V1',
+    NAME             => 'Google::Cloud::Bigquery::Storage::V1',
     AUTHOR           => ['C.J. Collier <cjac@google.com>'],
-    VERSION_FROM     => 'lib/Google/Cloud/BigQuery/Storage/V1.pm',
+    VERSION_FROM     => 'lib/Google/Cloud/Bigquery/Storage/V1.pm',
     ABSTRACT         => 'Google Cloud BigQuery Storage V1 API Client',
     LICENSE          => 'apache_2_0',
     MIN_PERL_VERSION => '5.008003',
@@ -25,5 +25,5 @@ WriteMakefile(
         'Protobuf'             => '0.05',
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean => { FILES => 'Google-Cloud-BigQuery-Storage-V1-*' },
+    clean => { FILES => 'Google-Cloud-Bigquery-Storage-V1-*' },
 );

@@ -1,4 +1,4 @@
-package Google::Cloud::BigQuery::Storage::V1::BigQueryReadClient;
+package Google::Cloud::Bigquery::Storage::V1::BigqueryReadClient;
 
 use strict;
 use warnings;
@@ -70,29 +70,29 @@ sub create_read_session {
 
     return $response;
 }
-1; # End of Google::Cloud::BigQuery::Storage::V1::BigQueryReadClient
+1; # End of Google::Cloud::Bigquery::Storage::V1::BigqueryReadClient
 
 __END__
 
 =head1 NAME
 
-Google::Cloud::BigQuery::Storage::V1::BigQueryReadClient - Client library for Google Cloud Services
+Google::Cloud::Bigquery::Storage::V1::BigqueryReadClient - Client library for Google Cloud Services
 
 =head1 SYNOPSIS
 
-    use Google::Cloud::BigQuery::Storage::V1::BigQueryReadClient;
+    use Google::Cloud::Bigquery::Storage::V1::BigqueryReadClient;
     use Google::Auth;
 
     my $auth = Google::Auth->default();
 
     # 1. High-performance gRPC Transport (Default)
-    my $grpc_client = Google::Cloud::BigQuery::Storage::V1::BigQueryReadClient->new(
+    my $grpc_client = Google::Cloud::Bigquery::Storage::V1::BigqueryReadClient->new(
         credentials => $auth,
         transport   => 'grpc', # Optional: 'grpc' is default
     );
 
     # 2. HTTP/REST Transport
-    my $rest_client = Google::Cloud::BigQuery::Storage::V1::BigQueryReadClient->new(
+    my $rest_client = Google::Cloud::Bigquery::Storage::V1::BigqueryReadClient->new(
         credentials => $auth,
         transport   => 'rest',
     );
@@ -102,7 +102,7 @@ Google::Cloud::BigQuery::Storage::V1::BigQueryReadClient - Client library for Go
 
 =head1 DESCRIPTION
 
-C<Google::Cloud::BigQuery::Storage::V1::BigQueryReadClient> is an auto-generated client library for Google Cloud Services.
+C<Google::Cloud::Bigquery::Storage::V1::BigqueryReadClient> is an auto-generated client library for Google Cloud Services.
 
 It provides a unified client interface supporting both high-performance HTTP/2 gRPC and HTTP/REST transports, with automatic Google Cloud Application Default Credentials (ADC) resolution and typed Protocol Buffers message handling.
 
@@ -134,7 +134,7 @@ Generated from the following Protocol Buffers schemas:
 
 =head2 new
 
-    my $client = Google::Cloud::BigQuery::Storage::V1::BigQueryReadClient->new(
+    my $client = Google::Cloud::Bigquery::Storage::V1::BigqueryReadClient->new(
         credentials => $auth,   # Optional: Google::Auth object (defaults to ADC)
         transport   => 'grpc', # Optional: 'grpc' (default) or 'rest'
     );

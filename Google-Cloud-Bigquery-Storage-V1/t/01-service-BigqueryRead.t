@@ -44,9 +44,9 @@ BEGIN {
 
 # D. Main test execution
 package main;
-use Google::Cloud::BigQuery::Storage::V1::BigQueryReadClient;
+use Google::Cloud::Bigquery::Storage::V1::BigqueryReadClient;
 
-my $client = Google::Cloud::BigQuery::Storage::V1::BigQueryReadClient->new( credentials => 'dummy' );
+my $client = Google::Cloud::Bigquery::Storage::V1::BigqueryReadClient->new( credentials => 'dummy' );
 ok($client, 'Instantiated generated client');
 isa_ok($client->transport, 'Google::gRPC::Client', 'Client transport');
 

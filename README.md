@@ -40,7 +40,7 @@ This monorepo supports Google Cloud's core infrastructure, data analytics, netwo
 │ • Google-Cloud-Dataflow-V1Beta3    - Cloud Dataflow (Apache Beam)        │
 │ • Google-Cloud-Dataplex-V1         - Cloud Dataplex Data Governance      │
 │ • Google-Cloud-DataFusion-V1       - Cloud Data Fusion (ETL Pipelines)   │
-│ • Google-Cloud-BigQuery-Storage-V1- Cloud BigQuery Storage API (Arrow)   │
+│ • Google-Cloud-Bigquery-Storage-V1- Cloud BigQuery Storage API (Arrow)   │
 │ • Google-Cloud-Bigquery-V2         - Cloud BigQuery V2 Data Warehouse    │
 │ • Google-Cloud-Spanner-V1          - Cloud Spanner Relational Database   │
 ├──────────────────────────────────────────────────────────────────────────┤
@@ -74,7 +74,7 @@ This monorepo supports Google Cloud's core infrastructure, data analytics, netwo
 | **`Google-gRPC/`** | `Google::gRPC` | `0.02` | Transport | `nghttp2` C/XS bindings, 100% Pure-Perl fallback (`Protocol::HTTP2`), DNS `getaddrinfo` load balancing, deadlines, and retries. |
 | **`Module-Starter-Protobuf/`** | `Module::Starter::Protobuf` | `0.01` | Tooling | `protobuf-starter` CLI generator and `protoc-gen-perl-pb` integration. |
 | **`Google-Cloud-Bigquery-V2/`** | `Google::Cloud::Bigquery::V2` | `0.01` | Service Client | Cloud BigQuery V2 Data Warehouse API client. |
-| **`Google-Cloud-BigQuery-Storage-V1/`** | `Google::Cloud::BigQuery::Storage::V1` | `0.01` | Service Client | Cloud BigQuery Storage API client for high-throughput Arrow streaming. |
+| **`Google-Cloud-Bigquery-Storage-V1/`** | `Google::Cloud::Bigquery::Storage::V1` | `0.01` | Service Client | Cloud BigQuery Storage API client for high-throughput Arrow streaming. |
 | **`Google-Cloud-Spanner-V1/`** | `Google::Cloud::Spanner::V1` | `0.01` | Service Client | Cloud Spanner V1 relational database client. |
 | **`Google-Cloud-Dataproc-V1/`** | `Google::Cloud::Dataproc::V1` | `0.01` | Service Client | Cloud Dataproc V1 API client (GCE clusters & Serverless Spark). |
 | **`Google-Cloud-PubSub-V1/`** | `Google::Cloud::PubSub::V1` | `0.01` | Service Client | Cloud Pub/Sub V1 messaging API client. |
@@ -165,7 +165,7 @@ cpanm ./Module-Starter-Protobuf
 
 # 2. Install Service Clients
 cpanm ./Google-Cloud-Bigquery-V2
-cpanm ./Google-Cloud-BigQuery-Storage-V1
+cpanm ./Google-Cloud-Bigquery-Storage-V1
 cpanm ./Google-Cloud-Spanner-V1
 cpanm ./Google-Cloud-Dataproc-V1
 cpanm ./Google-Cloud-PubSub-V1

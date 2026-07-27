@@ -13,11 +13,11 @@ sub get_token { 'mock-token-abc' }
 
 package main;
 use Google::Api::Common;
-use Google::Cloud::BigQuery::Storage::V1::BigQueryReadClient;
+use Google::Cloud::Bigquery::Storage::V1::BigqueryReadClient;
 use Google::Cloud::REST::Client;
 
 subtest 'Client REST Transport Initialization' => sub {
-    my $client = Google::Cloud::BigQuery::Storage::V1::BigQueryReadClient->new(
+    my $client = Google::Cloud::Bigquery::Storage::V1::BigqueryReadClient->new(
         credentials => bless({}, 'Google::Auth::Mock'),
         transport   => 'rest',
     );

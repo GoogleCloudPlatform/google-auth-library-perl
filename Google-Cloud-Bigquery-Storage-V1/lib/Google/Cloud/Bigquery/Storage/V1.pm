@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-package Google::Cloud::BigQuery::Storage::V1;
+package Google::Cloud::Bigquery::Storage::V1;
 
 use strict;
 use warnings;
@@ -53,15 +53,15 @@ __END__
 
 =head1 NAME
 
-Google::Cloud::BigQuery::Storage::V1 - Google Cloud BigQuery Storage V1 API Client
+Google::Cloud::Bigquery::Storage::V1 - Google Cloud BigQuery Storage V1 API Client
 
 =head1 SYNOPSIS
 
-    use Google::Cloud::BigQuery::Storage::V1;
+    use Google::Cloud::Bigquery::Storage::V1;
     use Google::Auth;
 
     my $auth = Google::Auth->default();
-    my $client = Google::Cloud::BigQuery::Storage::V1->new(credentials => $auth);
+    my $client = Google::Cloud::Bigquery::Storage::V1->new(credentials => $auth);
 
 =head1 DESCRIPTION
 

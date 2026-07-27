@@ -9,12 +9,12 @@ use lib "$Bin/../Protobuf/lib",
         "$Bin/../Google-Api-Common/lib",
         "$Bin/../Google-gRPC/lib",
         "$Bin/../Google-Cloud-Bigquery-V2/lib",
-        "$Bin/../Google-Cloud-BigQuery-Storage-V1/lib";
+        "$Bin/../Google-Cloud-Bigquery-Storage-V1/lib";
 
 use Test::More tests => 10;
 use Google::Api::Common;
 use Google::Cloud::Bigquery::V2;
-use Google::Cloud::BigQuery::Storage::V1;
+use Google::Cloud::Bigquery::Storage::V1;
 
 diag("=== BigQuery & BigQuery Storage API Exercise ===");
 
@@ -34,8 +34,8 @@ ok($bq, "2. Google::Cloud::Bigquery::V2 client instantiated over gRPC");
 diag("BigQuery V2 Init Error: $@") if $@;
 
 # Step 3: Instantiate BigQuery Storage V1 Client
-my $bqs = eval { Google::Cloud::BigQuery::Storage::V1->new(credentials => $auth) };
-ok($bqs, "3. Google::Cloud::BigQuery::Storage::V1 client instantiated over gRPC");
+my $bqs = eval { Google::Cloud::Bigquery::Storage::V1->new(credentials => $auth) };
+ok($bqs, "3. Google::Cloud::Bigquery::Storage::V1 client instantiated over gRPC");
 diag("BigQuery Storage V1 Init Error: $@") if $@;
 
 # Step 4: Construct Dataset Definition

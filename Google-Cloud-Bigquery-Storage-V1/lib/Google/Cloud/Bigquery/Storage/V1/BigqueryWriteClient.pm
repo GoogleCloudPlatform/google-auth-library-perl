@@ -1,4 +1,4 @@
-package Google::Cloud::BigQuery::Storage::V1::BigQueryWriteClient;
+package Google::Cloud::Bigquery::Storage::V1::BigqueryWriteClient;
 
 use strict;
 use warnings;
@@ -14,13 +14,13 @@ use Google::Cloud::Bigquery::Storage::V1::Stream;
 use Google::Cloud::Bigquery::Storage::V1::Storage;
 
 our $VERSION = '0.02';
-1; # End of Google::Cloud::BigQuery::Storage::V1::BigQueryWriteClient
+1; # End of Google::Cloud::Bigquery::Storage::V1::BigqueryWriteClient
 
 __END__
 
 =head1 NAME
 
-Google::Cloud::BigQuery::Storage::V1::BigQueryWriteClient - Auto-generated Protocol Buffers schema container
+Google::Cloud::Bigquery::Storage::V1::BigqueryWriteClient - Auto-generated Protocol Buffers schema container
 
 =head1 DESCRIPTION
 

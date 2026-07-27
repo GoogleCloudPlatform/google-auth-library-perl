@@ -14,5 +14,5 @@ inc/
 nytprof.out
 pod2htm*.tmp
 pm_to_blib
-Google-Cloud-BigQuery-Storage-V1-BigQueryReadClient-*
-Google-Cloud-BigQuery-Storage-V1-BigQueryReadClient-*.tar.gz
+Google-Cloud-Bigquery-Storage-V1-BigqueryReadClient-*
+Google-Cloud-Bigquery-Storage-V1-BigqueryReadClient-*.tar.gz

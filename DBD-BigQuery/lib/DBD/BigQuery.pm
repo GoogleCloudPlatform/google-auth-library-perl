@@ -18,7 +18,7 @@ use strict;
 use warnings;
 use DBI ();
 use Google::Cloud::Bigquery::V2;
-use Google::Cloud::BigQuery::Storage::V1;
+use Google::Cloud::Bigquery::Storage::V1;
 use Google::Auth;
 use Carp qw(croak);
 
@@ -476,6 +476,6 @@ C<DBD::BigQuery> supports non-blocking execution via DBI's C<Async> attribute.
 
 =head1 SEE ALSO
 
-L<DBI>, L<DBD::Spanner>, L<Google::Cloud::Bigquery::V2>, L<Google::Cloud::BigQuery::Storage::V1>
+L<DBI>, L<DBD::Spanner>, L<Google::Cloud::Bigquery::V2>, L<Google::Cloud::Bigquery::Storage::V1>
 
 =cut
