@@ -56,7 +56,7 @@ use Google::Type::Dayofweek;
 use Google::Type::LocalizedText;
 use Google::Cloud::REST::Client;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 1; # End of Google::Api::Common
 
 __END__
