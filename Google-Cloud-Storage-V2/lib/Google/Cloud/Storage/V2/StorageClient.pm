@@ -11,6 +11,8 @@ use Carp qw(croak);
 use Protobuf;
 use Google::Api::Common;
 use Google::Storage::V2::Storage;
+use Google::Iam::V1::IamPolicy;
+use Google::Iam::V1::Policy;
 
 our $VERSION = '0.02';
 
@@ -136,7 +138,7 @@ sub lock_bucket_retention_policy {
 sub get_iam_policy {
     my ($self, %params) = @_;
 
-    my $request_class = 'Google::Iam::V1::GetIamPolicyRequest::GetIamPolicyRequest';
+    my $request_class = 'Google::Iam::V1::IamPolicy::GetIamPolicyRequest';
     my $request = eval { $request_class->new(\%params) } || eval { $request_class->new(%params) } || ($request_class->can('encode') ? $request_class->encode(\%params) : \%params);
 
     my $response_class = 'Google::Iam::V1::Policy::Policy';
