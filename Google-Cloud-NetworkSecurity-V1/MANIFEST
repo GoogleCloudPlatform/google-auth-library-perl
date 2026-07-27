@@ -1,4 +1,6 @@
 Changes
+ignore.txt
+lib/Google/Cloud/NetworkSecurity/V1.pm
 lib/Google/Cloud/Networksecurity/V1/AddressGroup.pm
 lib/Google/Cloud/Networksecurity/V1/AddressGroup/Types.pm
 lib/Google/Cloud/NetworkSecurity/V1/AddressGroupServiceClient.pm
@@ -81,3 +83,4 @@ t/manifest.t
 t/pod-coverage.t
 t/pod.t
 xt/00_perl-critic.t
+xt/boilerplate.t

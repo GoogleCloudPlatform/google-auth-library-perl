@@ -1,4 +1,6 @@
 Changes
+ignore.txt
+lib/Google/Cloud/Dataproc/V1.pm
 lib/Google/Cloud/Dataproc/V1/AutoscalingPolicies.pm
 lib/Google/Cloud/Dataproc/V1/AutoscalingPolicies/Types.pm
 lib/Google/Cloud/Dataproc/V1/AutoscalingPolicyServiceClient.pm
@@ -51,3 +53,4 @@ t/manifest.t
 t/pod-coverage.t
 t/pod.t
 xt/00_perl-critic.t
+xt/boilerplate.t

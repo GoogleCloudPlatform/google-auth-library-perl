@@ -1,4 +1,7 @@
 Changes
+Google-Cloud-SQL-V1-0.02.tar.gz
+ignore.txt
+lib/Google/Cloud/SQL/V1.pm
 lib/Google/Cloud/Sql/V1/CloudSqlAvailableDatabaseVersions.pm
 lib/Google/Cloud/Sql/V1/CloudSqlAvailableDatabaseVersions/Types.pm
 lib/Google/Cloud/Sql/V1/CloudSqlBackupRuns.pm
@@ -77,3 +80,4 @@ t/manifest.t
 t/pod-coverage.t
 t/pod.t
 xt/00_perl-critic.t
+xt/boilerplate.t

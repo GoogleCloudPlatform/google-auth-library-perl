@@ -1,4 +1,6 @@
 Changes
+ignore.txt
+lib/Google/Cloud/Storage/V2.pm
 lib/Google/Cloud/Storage/V2/StorageClient.pm
 lib/Google/Storage/V2/Storage.pm
 lib/Google/Storage/V2/Storage/Types.pm
@@ -12,3 +14,4 @@ t/manifest.t
 t/pod-coverage.t
 t/pod.t
 xt/00_perl-critic.t
+xt/boilerplate.t

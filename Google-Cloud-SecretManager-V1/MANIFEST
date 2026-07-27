@@ -1,4 +1,6 @@
 Changes
+ignore.txt
+lib/Google/Cloud/SecretManager/V1.pm
 lib/Google/Cloud/Secretmanager/V1/Resources.pm
 lib/Google/Cloud/Secretmanager/V1/Resources/Types.pm
 lib/Google/Cloud/SecretManager/V1/SecretManagerServiceClient.pm
@@ -14,3 +16,4 @@ t/manifest.t
 t/pod-coverage.t
 t/pod.t
 xt/00_perl-critic.t
+xt/boilerplate.t

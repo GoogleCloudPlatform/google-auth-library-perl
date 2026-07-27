@@ -1,4 +1,6 @@
 Changes
+ignore.txt
+lib/Google/Cloud/Build/V1.pm
 lib/Google/Cloud/Build/V1/CloudBuildClient.pm
 lib/Google/Devtools/Cloudbuild/V1/Cloudbuild.pm
 lib/Google/Devtools/Cloudbuild/V1/Cloudbuild/Types.pm
@@ -12,3 +14,4 @@ t/manifest.t
 t/pod-coverage.t
 t/pod.t
 xt/00_perl-critic.t
+xt/boilerplate.t

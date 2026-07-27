@@ -1,4 +1,6 @@
 Changes
+ignore.txt
+lib/Google/Cloud/Dataflow/V1Beta3.pm
 lib/Google/Cloud/Dataflow/V1Beta3/FlexTemplatesServiceClient.pm
 lib/Google/Cloud/Dataflow/V1Beta3/JobsV1Beta3Client.pm
 lib/Google/Cloud/Dataflow/V1Beta3/MessagesV1Beta3Client.pm
@@ -39,3 +41,4 @@ t/manifest.t
 t/pod-coverage.t
 t/pod.t
 xt/00_perl-critic.t
+xt/boilerplate.t

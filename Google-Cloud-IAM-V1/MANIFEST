@@ -1,4 +1,6 @@
 Changes
+ignore.txt
+lib/Google/Cloud/IAM/V1.pm
 lib/Google/Cloud/IAM/V1/IAMPolicyClient.pm
 lib/Google/Iam/V1/IamPolicy.pm
 lib/Google/Iam/V1/IamPolicy/Types.pm
@@ -20,3 +22,4 @@ t/manifest.t
 t/pod-coverage.t
 t/pod.t
 xt/00_perl-critic.t
+xt/boilerplate.t

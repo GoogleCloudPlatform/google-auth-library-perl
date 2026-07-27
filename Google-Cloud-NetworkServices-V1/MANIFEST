@@ -1,4 +1,6 @@
 Changes
+ignore.txt
+lib/Google/Cloud/NetworkServices/V1.pm
 lib/Google/Cloud/Networkservices/V1/AgentGateway.pm
 lib/Google/Cloud/Networkservices/V1/AgentGateway/Types.pm
 lib/Google/Cloud/Networkservices/V1/Common.pm
@@ -43,3 +45,4 @@ t/manifest.t
 t/pod-coverage.t
 t/pod.t
 xt/00_perl-critic.t
+xt/boilerplate.t

@@ -4,12 +4,28 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 my %WriteMakefileArgs = (
-    NAME             => 'Google::Cloud::Bigquery::V2::DatasetServiceClient',
-    AUTHOR           => ['C.J. Collier <cjac@google.com>'],
-    VERSION_FROM     => 'lib/Google/Cloud/Bigquery/V2/DatasetServiceClient.pm',
-    ABSTRACT_FROM    => 'lib/Google/Cloud/Bigquery/V2/DatasetServiceClient.pm',
+    NAME             => 'Google::Cloud::Bigquery::V2',
+    AUTHOR           => 'Google LLC <cjac@google.com>',
+    VERSION_FROM     => 'lib/Google/Cloud/Bigquery/V2.pm',
+    ABSTRACT_FROM    => 'lib/Google/Cloud/Bigquery/V2.pm',
     LICENSE          => 'apache_2',
     MIN_PERL_VERSION => '5.008003',
+    META_MERGE       => {
+        'meta-spec' => { version => 2 },
+        resources   => {
+            repository => {
+                type => 'git',
+                url  => 'https://github.com/c9h/google-auth-library-perl.git',
+                web  => 'https://github.com/c9h/google-auth-library-perl',
+            },
+        },
+        provides => {
+            'Google::Cloud::Bigquery::V2' => {
+                file    => 'lib/Google/Cloud/Bigquery/V2.pm',
+                version => '0.01',
+            },
+        },
+    },
     CONFIGURE_REQUIRES => {
         'ExtUtils::MakeMaker' => '0',
     },
@@ -28,7 +44,7 @@ my %WriteMakefileArgs = (
         #'Foo::Bar::Module' => '5.0401',
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean => { FILES => 'Google-Cloud-Bigquery-V2-DatasetServiceClient-*' },
+    clean => { FILES => 'Google-Cloud-Bigquery-V2-*' },
 );
 
 # Compatibility with old versions of ExtUtils::MakeMaker

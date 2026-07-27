@@ -1,4 +1,6 @@
 Changes
+ignore.txt
+lib/Google/Cloud/Composer/V1.pm
 lib/Google/Cloud/Composer/V1/EnvironmentsClient.pm
 lib/Google/Cloud/Composer/V1/ImageVersionsClient.pm
 lib/Google/Cloud/Orchestration/Airflow/Service/V1/Environments.pm
@@ -19,3 +21,4 @@ t/manifest.t
 t/pod-coverage.t
 t/pod.t
 xt/00_perl-critic.t
+xt/boilerplate.t

@@ -1,4 +1,6 @@
 Changes
+ignore.txt
+lib/Google/Cloud/BigQuery/Storage/V1.pm
 lib/Google/Cloud/Bigquery/Storage/V1/Annotations.pm
 lib/Google/Cloud/Bigquery/Storage/V1/Annotations/Types.pm
 lib/Google/Cloud/Bigquery/Storage/V1/Arrow.pm
@@ -25,3 +27,4 @@ t/manifest.t
 t/pod-coverage.t
 t/pod.t
 xt/00_perl-critic.t
+xt/boilerplate.t

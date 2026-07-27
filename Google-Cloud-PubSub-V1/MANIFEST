@@ -1,4 +1,6 @@
 Changes
+ignore.txt
+lib/Google/Cloud/PubSub/V1.pm
 lib/Google/Cloud/PubSub/V1/PublisherClient.pm
 lib/Google/Cloud/PubSub/V1/SchemaServiceClient.pm
 lib/Google/Cloud/PubSub/V1/SubscriberClient.pm
@@ -18,3 +20,4 @@ t/manifest.t
 t/pod-coverage.t
 t/pod.t
 xt/00_perl-critic.t
+xt/boilerplate.t

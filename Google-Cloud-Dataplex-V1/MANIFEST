@@ -1,4 +1,6 @@
 Changes
+ignore.txt
+lib/Google/Cloud/Dataplex/V1.pm
 lib/Google/Cloud/Dataplex/V1/Analyze.pm
 lib/Google/Cloud/Dataplex/V1/Analyze/Types.pm
 lib/Google/Cloud/Dataplex/V1/ApprovalWorkflow.pm
@@ -99,3 +101,4 @@ valgrind_output.txt
 valgrind_output_failing_test.txt
 valgrind_output_fixed_inc.txt
 xt/00_perl-critic.t
+xt/boilerplate.t

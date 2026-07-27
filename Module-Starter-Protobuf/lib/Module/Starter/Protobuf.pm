@@ -48,13 +48,13 @@ sub create_distro {
         my ($base_ns) = $base_module =~ /^(.*)::(\w+)$/;
         $base_ns ||= $base_module; # Fallback
 
-        my @new_modules;
+        my @new_modules = ($base_module);
         for my $svc (sort keys %services) {
             my $module = "${base_ns}::${svc}Client";
             push @new_modules, $module;
             $self->{_module_to_service}->{$module} = $svc;
         }
-        $self->{modules} = \@new_modules if @new_modules;
+        $self->{modules} = \@new_modules if @new_modules > 1;
     }
 
     return $self->SUPER::create_distro(%args);
