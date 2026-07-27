@@ -16,6 +16,8 @@ our $VERSION = '0.03';
 sub create_distro {
     my ($self, %args) = @_;
 
+    $self->{version} ||= $self->_detect_version();
+
     $args{license} ||= 'apache_2';
     $args{author}  ||= 'Google LLC <cjac@google.com>';
     $args{email}   ||= 'cjac@google.com';
@@ -101,6 +103,23 @@ sub _parse_services_meta {
         }
     }
     return %services;
+}
+
+sub _detect_version {
+    my ($self) = @_;
+    my $target_dir = $self->{dir} || $self->{basedir};
+    return '0.01' unless $target_dir;
+    
+    my $changes_file = File::Spec->catfile($target_dir, 'Changes');
+    if (-f $changes_file) {
+        my $content = path($changes_file)->slurp_utf8();
+        if ($content =~ /^(\d+\.\d+)/m) {
+            my $current_version = $1;
+            my $next = $current_version + 0.01;
+            return sprintf("%0.2f", $next);
+        }
+    }
+    return '0.01';
 }
 
 # 2. Override create_modules to run protoc and generate the client wrappers
@@ -496,7 +515,7 @@ EOF
         $methods_pod .= "${EQ}back\n\n";
 
         # Generate full gRPC service client wrapper
-        my $version = $self->{version} || '0.02';
+        my $version = $self->{version} || $self->_detect_version();
         $client_code = sprintf(<<"EOF", $module_name, $bridge_code, $use_statements, $version, $grpc_target, $methods_code, $module_name, $module_name, $module_name, $module_name, $module_name, $module_name, $source_pod_items, $module_name, $methods_pod);
 package %s;
 
@@ -625,7 +644,7 @@ EOF
     }
     else {
         # Generate a pure, lightweight schema container with no service dependencies
-        my $version = $self->{version} || '0.02';
+        my $version = $self->{version} || $self->_detect_version();
         $client_code = sprintf(<<"EOF", $module_name, $bridge_code, $use_statements, $version, $module_name, $module_name, $source_pod_items);
 package %s;
 
