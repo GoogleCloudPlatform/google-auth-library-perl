@@ -32,7 +32,7 @@ use Google::Cloud::Networksecurity::V1::SseRealm;
 use Google::Cloud::Networksecurity::V1::FirewallActivation;
 use Google::Cloud::Networksecurity::V1::Mirroring;
 use Google::Cloud::Networksecurity::V1::SecurityProfileGroup;
-use Google::Cloud::Networksecurity::V1::NetworkSecurity;
+use Google::Cloud::Networksecurity::V1::Networksecurity;
 use Google::Cloud::Networksecurity::V1::SecurityProfileGroupService;
 
 our $VERSION = '0.02';

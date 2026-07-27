@@ -1,4 +1,4 @@
-package Google::Cloud::Networkservices::V1::NetworkServices::Types;
+package Google::Cloud::Networkservices::V1::Networkservices::Types;
 
 use strict;
 use warnings;
@@ -13,7 +13,7 @@ __END__
 
 =head1 NAME
 
-Google::Cloud::Networkservices::V1::NetworkServices::Types - Type definitions and coercions
+Google::Cloud::Networkservices::V1::Networkservices::Types - Type definitions and coercions
 
 =head1 DESCRIPTION
 

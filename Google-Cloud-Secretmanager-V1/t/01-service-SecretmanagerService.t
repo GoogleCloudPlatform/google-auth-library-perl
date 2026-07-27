@@ -44,9 +44,9 @@ BEGIN {
 
 # D. Main test execution
 package main;
-use Google::Cloud::Secretmanager::V1::SecretManagerServiceClient;
+use Google::Cloud::Secretmanager::V1::SecretmanagerServiceClient;
 
-my $client = Google::Cloud::Secretmanager::V1::SecretManagerServiceClient->new( credentials => 'dummy' );
+my $client = Google::Cloud::Secretmanager::V1::SecretmanagerServiceClient->new( credentials => 'dummy' );
 ok($client, 'Instantiated generated client');
 isa_ok($client->transport, 'Google::gRPC::Client', 'Client transport');
 

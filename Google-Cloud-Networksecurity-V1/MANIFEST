@@ -30,8 +30,8 @@ lib/Google/Cloud/Networksecurity/V1/InterceptClient.pm
 lib/Google/Cloud/Networksecurity/V1/Mirroring.pm
 lib/Google/Cloud/Networksecurity/V1/Mirroring/Types.pm
 lib/Google/Cloud/Networksecurity/V1/MirroringClient.pm
-lib/Google/Cloud/Networksecurity/V1/NetworkSecurity.pm
-lib/Google/Cloud/Networksecurity/V1/NetworkSecurity/Types.pm
+lib/Google/Cloud/Networksecurity/V1/Networksecurity.pm
+lib/Google/Cloud/Networksecurity/V1/Networksecurity/Types.pm
 lib/Google/Cloud/Networksecurity/V1/NetworksecurityClient.pm
 lib/Google/Cloud/Networksecurity/V1/OrganizationAddressGroupServiceClient.pm
 lib/Google/Cloud/Networksecurity/V1/OrganizationSecurityProfileGroupServiceClient.pm

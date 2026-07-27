@@ -1,4 +1,4 @@
-package Google::Cloud::Networksecurity::V1::NetworkSecurity::Types;
+package Google::Cloud::Networksecurity::V1::Networksecurity::Types;
 
 use strict;
 use warnings;
@@ -13,7 +13,7 @@ __END__
 
 =head1 NAME
 
-Google::Cloud::Networksecurity::V1::NetworkSecurity::Types - Type definitions and coercions
+Google::Cloud::Networksecurity::V1::Networksecurity::Types - Type definitions and coercions
 
 =head1 DESCRIPTION
 

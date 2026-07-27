@@ -1,4 +1,4 @@
-package Google::Cloud::Networksecurity::V1::NetworkSecurity;
+package Google::Cloud::Networksecurity::V1::Networksecurity;
 
 use strict;
 use warnings;
@@ -484,14 +484,14 @@ EOF
 
 # Message definitions
 
-# === Service Client: Google::Cloud::Networksecurity::V1::NetworkSecurity::NetworksecurityClient ===
-package Google::Cloud::Networksecurity::V1::NetworkSecurity::NetworksecurityClient;
+# === Service Client: Google::Cloud::Networksecurity::V1::Networksecurity::NetworksecurityClient ===
+package Google::Cloud::Networksecurity::V1::Networksecurity::NetworksecurityClient;
 
 =pod
 
 =head1 NAME
 
-Google::Cloud::Networksecurity::V1::NetworkSecurity::NetworksecurityClient - Client stub representing the remote NetworkSecurity service
+Google::Cloud::Networksecurity::V1::Networksecurity::NetworksecurityClient - Client stub representing the remote Networksecurity service
 
 =head1 DESCRIPTION
 
@@ -1121,7 +1121,7 @@ __END__
 
 =head1 NAME
 
-Google::Cloud::Networksecurity::V1::NetworkSecurity - Protocol Buffers schema definition
+Google::Cloud::Networksecurity::V1::Networksecurity - Protocol Buffers schema definition
 
 =head1 DESCRIPTION
 

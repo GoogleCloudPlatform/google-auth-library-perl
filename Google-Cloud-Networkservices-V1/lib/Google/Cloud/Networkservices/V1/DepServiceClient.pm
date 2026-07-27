@@ -24,7 +24,7 @@ use Google::Cloud::Networkservices::V1::EndpointPolicy;
 use Google::Cloud::Networkservices::V1::Gateway;
 use Google::Cloud::Networkservices::V1::Mesh;
 use Google::Cloud::Networkservices::V1::Dep;
-use Google::Cloud::Networkservices::V1::NetworkServices;
+use Google::Cloud::Networkservices::V1::Networkservices;
 
 our $VERSION = '0.02';
 

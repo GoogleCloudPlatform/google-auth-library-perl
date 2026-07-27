@@ -1162,14 +1162,14 @@ Type: String
 
 =cut
 
-# === Service Client: Google::Cloud::Secretmanager::V1::Service::SecretManagerServiceClient ===
-package Google::Cloud::Secretmanager::V1::Service::SecretManagerServiceClient;
+# === Service Client: Google::Cloud::Secretmanager::V1::Service::SecretmanagerServiceClient ===
+package Google::Cloud::Secretmanager::V1::Service::SecretmanagerServiceClient;
 
 =pod
 
 =head1 NAME
 
-Google::Cloud::Secretmanager::V1::Service::SecretManagerServiceClient - Client stub representing the remote SecretManagerService service
+Google::Cloud::Secretmanager::V1::Service::SecretmanagerServiceClient - Client stub representing the remote SecretManagerService service
 
 =head1 DESCRIPTION
 

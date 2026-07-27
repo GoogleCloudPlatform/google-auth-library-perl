@@ -50,7 +50,7 @@ TODO: {
     "placeholder date/time"       => qr(Date/time)
   );
 
-  module_boilerplate_ok('lib/Google/Cloud/Secretmanager/V1/SecretManagerServiceClient.pm');
+  module_boilerplate_ok('lib/Google/Cloud/Secretmanager/V1/SecretmanagerServiceClient.pm');
 
 
 }

@@ -33,7 +33,7 @@ use Google::Cloud::Networksecurity::V1::SseRealm;
 use Google::Cloud::Networksecurity::V1::ClientTlsPolicy;
 use Google::Cloud::Networksecurity::V1::ServerTlsPolicy;
 use Google::Cloud::Networksecurity::V1::SecurityProfileGroupService;
-use Google::Cloud::Networksecurity::V1::NetworkSecurity;
+use Google::Cloud::Networksecurity::V1::Networksecurity;
 
 our $VERSION = '0.02';
 

@@ -7,7 +7,7 @@ use Test::More;
 plan tests => 1;
 
 BEGIN {
-    use_ok( 'Google::Cloud::Secretmanager::V1::SecretManagerServiceClient' ) || print "Bail out!\n";
+    use_ok( 'Google::Cloud::Secretmanager::V1::SecretmanagerServiceClient' ) || print "Bail out!\n";
 }
 
-diag( "Testing Google::Cloud::Secretmanager::V1::SecretManagerServiceClient $Google::Cloud::Secretmanager::V1::SecretManagerServiceClient::VERSION, Perl $], $^X" );
+diag( "Testing Google::Cloud::Secretmanager::V1::SecretmanagerServiceClient $Google::Cloud::Secretmanager::V1::SecretmanagerServiceClient::VERSION, Perl $], $^X" );

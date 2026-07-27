@@ -20,8 +20,8 @@ lib/Google/Cloud/Networkservices/V1/HttpRoute.pm
 lib/Google/Cloud/Networkservices/V1/HttpRoute/Types.pm
 lib/Google/Cloud/Networkservices/V1/Mesh.pm
 lib/Google/Cloud/Networkservices/V1/Mesh/Types.pm
-lib/Google/Cloud/Networkservices/V1/NetworkServices.pm
-lib/Google/Cloud/Networkservices/V1/NetworkServices/Types.pm
+lib/Google/Cloud/Networkservices/V1/Networkservices.pm
+lib/Google/Cloud/Networkservices/V1/Networkservices/Types.pm
 lib/Google/Cloud/Networkservices/V1/NetworkservicesClient.pm
 lib/Google/Cloud/Networkservices/V1/RouteView.pm
 lib/Google/Cloud/Networkservices/V1/RouteView/Types.pm

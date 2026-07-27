@@ -1,4 +1,4 @@
-package Google::Cloud::Networkservices::V1::NetworkServices;
+package Google::Cloud::Networkservices::V1::Networkservices;
 
 use strict;
 use warnings;
@@ -591,14 +591,14 @@ EOF
 
 # Message definitions
 
-# === Service Client: Google::Cloud::Networkservices::V1::NetworkServices::NetworkservicesClient ===
-package Google::Cloud::Networkservices::V1::NetworkServices::NetworkservicesClient;
+# === Service Client: Google::Cloud::Networkservices::V1::Networkservices::NetworkservicesClient ===
+package Google::Cloud::Networkservices::V1::Networkservices::NetworkservicesClient;
 
 =pod
 
 =head1 NAME
 
-Google::Cloud::Networkservices::V1::NetworkServices::NetworkservicesClient - Client stub representing the remote NetworkServices service
+Google::Cloud::Networkservices::V1::Networkservices::NetworkservicesClient - Client stub representing the remote Networkservices service
 
 =head1 DESCRIPTION
 
@@ -1462,7 +1462,7 @@ __END__
 
 =head1 NAME
 
-Google::Cloud::Networkservices::V1::NetworkServices - Protocol Buffers schema definition
+Google::Cloud::Networkservices::V1::Networkservices - Protocol Buffers schema definition
 
 =head1 DESCRIPTION
 
