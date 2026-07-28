@@ -36,6 +36,7 @@ lib/Google/Cloud/Networkservices/V1/TlsRoute/Types.pm
 Makefile.PL
 MANIFEST			This list of files
 README
+SECURITY.md
 t/00-load.t
 t/01-service-DepService.t
 t/01-service-Networkservices.t

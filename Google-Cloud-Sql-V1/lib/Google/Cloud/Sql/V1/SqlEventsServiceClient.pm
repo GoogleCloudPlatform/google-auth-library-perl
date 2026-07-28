@@ -23,7 +23,7 @@ use Google::Cloud::Sql::V1::CloudSqlOperations;
 use Google::Cloud::Sql::V1::CloudSqlBackupRuns;
 use Google::Cloud::Sql::V1::CloudSqlBackups;
 
-our $VERSION = '0.02';
+our $VERSION = '0.04';
 1; # End of Google::Cloud::Sql::V1::SqlEventsServiceClient
 
 __END__

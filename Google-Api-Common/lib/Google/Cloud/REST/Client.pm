@@ -10,7 +10,7 @@ use Carp qw(croak);
 use Log::Any qw($log);
 use Time::HiRes qw(sleep);
 
-our $VERSION = '0.01';
+our $VERSION = '0.04';
 
 has target => (
     is       => 'ro',

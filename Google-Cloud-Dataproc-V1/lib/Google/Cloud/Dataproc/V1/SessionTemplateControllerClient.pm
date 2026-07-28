@@ -21,7 +21,7 @@ use Google::Cloud::Dataproc::V1::SessionTemplates;
 use Google::Cloud::Dataproc::V1::NodeGroups;
 use Google::Cloud::Dataproc::V1::WorkflowTemplates;
 
-our $VERSION = '0.02';
+our $VERSION = '0.04';
 
 has credentials => ( is => 'ro', required => 0 );
 has transport   => ( is => 'rw' );

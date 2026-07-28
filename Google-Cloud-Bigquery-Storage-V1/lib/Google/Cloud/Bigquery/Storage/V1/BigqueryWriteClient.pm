@@ -13,7 +13,7 @@ use Google::Cloud::Bigquery::Storage::V1::Table;
 use Google::Cloud::Bigquery::Storage::V1::Stream;
 use Google::Cloud::Bigquery::Storage::V1::Storage;
 
-our $VERSION = '0.02';
+our $VERSION = '0.04';
 1; # End of Google::Cloud::Bigquery::Storage::V1::BigqueryWriteClient
 
 __END__

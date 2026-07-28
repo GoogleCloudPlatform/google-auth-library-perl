@@ -13,7 +13,7 @@ use Google::Api::Common;
 use Google::Cloud::Security::Privateca::V1::Resources;
 use Google::Cloud::Security::Privateca::V1::Service;
 
-our $VERSION = '0.02';
+our $VERSION = '0.04';
 
 has credentials => ( is => 'ro', required => 0 );
 has transport   => ( is => 'rw' );

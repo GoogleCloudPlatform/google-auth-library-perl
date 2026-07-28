@@ -14,7 +14,7 @@ use Google::Cloud::Orchestration::Airflow::Service::V1::Environments;
 use Google::Cloud::Orchestration::Airflow::Service::V1::ImageVersions;
 use Google::Cloud::Orchestration::Airflow::Service::V1::Operations;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 has credentials => ( is => 'ro', required => 0 );
 has transport   => ( is => 'rw' );

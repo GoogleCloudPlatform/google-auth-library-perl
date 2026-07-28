@@ -21,7 +21,7 @@ use Google::gRPC::Client;
 use Google::Auth;
 use Carp qw(croak);
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 has credentials => ( is => 'ro', required => 0 );
 has transport   => ( is => 'rw' );

@@ -33,7 +33,7 @@ use Google::Cloud::Dataplex::V1::DataTaxonomy;
 use Google::Cloud::Dataplex::V1::ApprovalWorkflow;
 use Google::Cloud::Dataplex::V1::DataProducts;
 
-our $VERSION = '0.02';
+our $VERSION = '0.04';
 
 has credentials => ( is => 'ro', required => 0 );
 has transport   => ( is => 'rw' );

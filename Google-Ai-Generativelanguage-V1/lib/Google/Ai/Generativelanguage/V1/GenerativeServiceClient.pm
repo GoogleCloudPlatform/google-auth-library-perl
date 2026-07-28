@@ -17,7 +17,7 @@ use Google::Ai::Generativelanguage::V1::Model;
 use Google::Ai::Generativelanguage::V1::GenerativeService;
 use Google::Ai::Generativelanguage::V1::ModelService;
 
-our $VERSION = '0.02';
+our $VERSION = '0.04';
 
 has credentials => ( is => 'ro', required => 0 );
 has transport   => ( is => 'rw' );

@@ -14,7 +14,7 @@ use Google::Storage::V2::Storage;
 use Google::Iam::V1::IamPolicy;
 use Google::Iam::V1::Policy;
 
-our $VERSION = '0.02';
+our $VERSION = '0.04';
 
 has credentials => ( is => 'ro', required => 0 );
 has transport   => ( is => 'rw' );

@@ -76,6 +76,7 @@ prove_verbose_local_protobuf.txt
 prove_verbose_output.txt
 prove_verbose_output_dataplex.txt
 README
+SECURITY.md
 t/00-load.t
 t/01-service-BusinessGlossaryService.t
 t/01-service-CatalogService.t

@@ -28,7 +28,7 @@ use Google::Cloud::Dataplex::V1::DataTaxonomy;
 use Google::Cloud::Dataplex::V1::ApprovalWorkflow;
 use Google::Cloud::Dataplex::V1::DataProducts;
 
-our $VERSION = '0.02';
+our $VERSION = '0.04';
 1; # End of Google::Cloud::Dataplex::V1::ContentServiceClient
 
 __END__

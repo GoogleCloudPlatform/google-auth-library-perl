@@ -1,5 +1,8 @@
 Revision history for Google-Cloud-Networksecurity-V1-AddressGroupServiceClient
 
+0.04    Tue Jul 28 2026
+    - Added SECURITY.md
+
 0.03  Fri Jul 24 05:23:49 2026
     - Initial release. Auto-generated from Protocol Buffers schema.
     - Regenerated clients with separate service classes and regex fixes.

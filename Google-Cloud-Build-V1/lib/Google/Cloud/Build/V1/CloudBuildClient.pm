@@ -12,7 +12,7 @@ use Protobuf;
 use Google::Api::Common;
 use Google::Devtools::Cloudbuild::V1::Cloudbuild;
 
-our $VERSION = '0.02';
+our $VERSION = '0.04';
 
 has credentials => ( is => 'ro', required => 0 );
 has transport   => ( is => 'rw' );

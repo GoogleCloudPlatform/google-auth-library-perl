@@ -28,7 +28,7 @@ use Google::Cloud::Sql::V1::CloudSqlSslCerts;
 use Google::Cloud::Sql::V1::CloudSqlInstances;
 use Google::Cloud::Sql::V1::CloudSqlBackups;
 
-our $VERSION = '0.02';
+our $VERSION = '0.04';
 
 has credentials => ( is => 'ro', required => 0 );
 has transport   => ( is => 'rw' );

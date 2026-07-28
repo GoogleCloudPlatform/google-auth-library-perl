@@ -26,7 +26,7 @@ use Google::Cloud::Networkservices::V1::Mesh;
 use Google::Cloud::Networkservices::V1::Dep;
 use Google::Cloud::Networkservices::V1::Networkservices;
 
-our $VERSION = '0.02';
+our $VERSION = '0.04';
 
 has credentials => ( is => 'ro', required => 0 );
 has transport   => ( is => 'rw' );

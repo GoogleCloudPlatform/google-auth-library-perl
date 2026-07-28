@@ -1,5 +1,8 @@
 Revision history for Google-Api-Common
 
+0.04    Tue Jul 28 2026
+    - Added SECURITY.md
+
 0.03    2026-07-26
         [Ecosystem Hardening & Parity]
         - Merged Google-Longrunning into Google-Api-Common distribution.

@@ -1,5 +1,8 @@
 Revision history for Google-Cloud-Dataplex-V1-BusinessGlossaryServiceClient
 
+0.04    Tue Jul 28 2026
+    - Added SECURITY.md
+
 0.03  Sat Jul 25 21:26:59 2026
     - Initial release. Auto-generated from Protocol Buffers schema.
     - Regenerated clients with separate service classes and regex fixes.

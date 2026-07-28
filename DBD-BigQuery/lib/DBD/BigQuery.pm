@@ -22,7 +22,7 @@ use Google::Cloud::Bigquery::Storage::V1;
 use Google::Auth;
 use Carp qw(croak);
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 our $err = 0;
 our $errstr = '';
 our $drh = undef;

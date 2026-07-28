@@ -129,6 +129,7 @@ lib/Google/Cloud/Compute/V1/ZoneVmExtensionPoliciesClient.pm
 Makefile.PL
 MANIFEST			This list of files
 README
+SECURITY.md
 t/00-load.t
 t/01-service-AcceleratorTypes.t
 t/01-service-Addresses.t

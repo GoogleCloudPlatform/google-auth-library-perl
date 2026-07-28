@@ -35,7 +35,7 @@ use Google::Cloud::Networksecurity::V1::AddressGroup;
 use Google::Cloud::Networksecurity::V1::Networksecurity;
 use Google::Cloud::Networksecurity::V1::SecurityProfileGroupService;
 
-our $VERSION = '0.02';
+our $VERSION = '0.04';
 
 has credentials => ( is => 'ro', required => 0 );
 has transport   => ( is => 'rw' );

@@ -18,7 +18,7 @@ use Google::Dataflow::V1beta3::Environment;
 use Google::Dataflow::V1beta3::Jobs;
 use Google::Dataflow::V1beta3::Templates;
 
-our $VERSION = '0.02';
+our $VERSION = '0.04';
 
 has credentials => ( is => 'ro', required => 0 );
 has transport   => ( is => 'rw' );

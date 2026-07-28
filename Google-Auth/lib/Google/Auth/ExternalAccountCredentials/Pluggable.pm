@@ -25,7 +25,7 @@ use Google::Auth::Exceptions;
 use Capture::Tiny qw(capture);
 use Log::Any qw($log);
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 sub retrieve_subject_token {
     my ($self) = @_;

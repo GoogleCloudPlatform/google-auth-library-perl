@@ -13,7 +13,7 @@ use Google::Api::Common;
 use Google::Cloud::Metastore::V1::Metastore;
 use Google::Cloud::Metastore::V1::MetastoreFederation;
 
-our $VERSION = '0.02';
+our $VERSION = '0.04';
 
 has credentials => ( is => 'ro', required => 0 );
 has transport   => ( is => 'rw' );

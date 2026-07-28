@@ -1,5 +1,8 @@
 Revision history for Google-Ai-Generativelanguage-V1
 
+0.04    Tue Jul 28 2026
+    - Added SECURITY.md
+
 0.02    2026-07-26
         - Fixed POD test failures and updated pod-coverage.t to skip undocumented type packages.
 

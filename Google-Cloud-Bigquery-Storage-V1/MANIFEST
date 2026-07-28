@@ -20,6 +20,7 @@ lib/Google/Cloud/Bigquery/Storage/V1/Table/Types.pm
 Makefile.PL
 MANIFEST			This list of files
 README
+SECURITY.md
 t/00-load.t
 t/01-service-BigqueryRead.t
 t/02-rest-transport-BigqueryRead.t

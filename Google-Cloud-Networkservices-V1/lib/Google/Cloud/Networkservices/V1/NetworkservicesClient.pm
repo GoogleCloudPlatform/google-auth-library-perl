@@ -26,7 +26,7 @@ use Google::Cloud::Networkservices::V1::Gateway;
 use Google::Cloud::Networkservices::V1::EndpointPolicy;
 use Google::Cloud::Networkservices::V1::Networkservices;
 
-our $VERSION = '0.02';
+our $VERSION = '0.04';
 
 has credentials => ( is => 'ro', required => 0 );
 has transport   => ( is => 'rw' );

@@ -30,7 +30,7 @@ use Google::Cloud::Networksecurity::V1::SecurityProfileGroup;
 use Google::Cloud::Networksecurity::V1::Networksecurity;
 use Google::Cloud::Networksecurity::V1::SecurityProfileGroupService;
 
-our $VERSION = '0.02';
+our $VERSION = '0.04';
 1; # End of Google::Cloud::Networksecurity::V1::OrganizationAddressGroupServiceClient
 
 __END__

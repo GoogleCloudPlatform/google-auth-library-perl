@@ -12,7 +12,7 @@ use Protobuf;
 use Google::Api::Common;
 use Google::Ai::Generativelanguage::V1::GenerativeService;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 has credentials => ( is => 'ro', required => 0 );
 has transport   => ( is => 'rw' );
@@ -156,12 +156,6 @@ The following RPC methods are available in this client:
 
 =over 4
 
-=head2 METHODS
-
-The following RPC methods are available in this client:
-
-=over 4
-
 =item * B<generate_content>
 
 Calls the RPC method C<GenerateContent> on the service. Takes a hash of parameters representing the request.
@@ -177,10 +171,6 @@ Calls the RPC method C<BatchEmbedContents> on the service. Takes a hash of param
 =item * B<count_tokens>
 
 Calls the RPC method C<CountTokens> on the service. Takes a hash of parameters representing the request.
-
-=back
-
-
 
 =back
 
