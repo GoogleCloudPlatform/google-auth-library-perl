@@ -25,6 +25,21 @@ $ENV{TEMPLATE_STASH} = "pureperl";
 eval { require Template::Config; $Template::Config::STASH = "Template::Stash"; };
 
 my $make = $Config{make} || "make";
+my $num_cores = 1;
+if ($^O eq 'MSWin32') {
+    $num_cores = $ENV{NUMBER_OF_PROCESSORS} || 1;
+}
+elsif ($^O eq 'darwin') {
+    my $val = `sysctl -n hw.logicalcpu 2>/dev/null`;
+    chomp $val;
+    $num_cores = $val if $val && $val =~ /^\d+$/;
+}
+else {
+    my $val = `nproc 2>/dev/null`;
+    chomp $val;
+    $num_cores = $val if $val && $val =~ /^\d+$/;
+}
+my $j_flag = ($num_cores > 1) ? "-j$num_cores" : "";
 
 if ($^O eq 'MSWin32') {
     $ENV{PERL_CPANM_OPT} = "--prefer-source";
@@ -46,16 +61,58 @@ eval {
     local::lib->import($local_dir);
 };
 
-my @dirs = @ARGV ? @ARGV : qw(
+my @all_known_dirs = qw(
     Protobuf Google-Auth Google-Api-Common Google-gRPC Module-Starter-Protobuf
-    Google-Cloud-BigQuery-Storage-V1 Google-Cloud-Bigquery-V2 Google-Cloud-Build-V1
-    Google-Cloud-Composer-V1 Google-Cloud-Compute-V1 Google-Cloud-Dataflow-V1Beta3
-    Google-Cloud-DataFusion-V1 Google-Cloud-Dataplex-V1 Google-Cloud-Dataproc-V1
-    Google-Cloud-IAM-V1 Google-Cloud-Metastore-V1 Google-Cloud-NetworkSecurity-V1
-    Google-Cloud-NetworkServices-V1 Google-Cloud-PrivateCA-V1 Google-Cloud-PubSub-V1
-    Google-Cloud-SecretManager-V1 Google-Cloud-Spanner-V1 Google-Cloud-SQL-V1
+    Google-Cloud-Bigquery-Storage-V1 Google-Cloud-Bigquery-V2 Google-Cloud-Build-V1
+    Google-Cloud-Composer-V1 Google-Cloud-Compute-V1 Google-Cloud-Dataflow-V1beta3
+    Google-Cloud-Datafusion-V1 Google-Cloud-Dataplex-V1 Google-Cloud-Dataproc-V1
+    Google-Cloud-Iam-V1 Google-Cloud-Metastore-V1 Google-Cloud-Networksecurity-V1
+    Google-Cloud-Networkservices-V1 Google-Cloud-Privateca-V1 Google-Cloud-Pubsub-V1
+    Google-Cloud-Secretmanager-V1 Google-Cloud-Spanner-V1 Google-Cloud-Sql-V1
     Google-Cloud-Storage-V2
 );
+
+my @dirs;
+if (@ARGV) {
+    @dirs = @ARGV;
+}
+elsif ($ENV{CI_TEST_ALL}) {
+    @dirs = @all_known_dirs;
+}
+else {
+    my $target_ref = $ENV{PRE_PUSH_TARGET_REF} || $ENV{PRE_PUSH_REMOTE_REF};
+    if (!$target_ref) {
+        my $upstream = `git rev-parse --verify \@{u} 2>/dev/null`;
+        chomp $upstream;
+        if ($upstream) {
+            $target_ref = $upstream;
+        }
+        else {
+            my $base = `git merge-base HEAD origin/main 2>/dev/null || git merge-base HEAD origin/master 2>/dev/null`;
+            chomp $base;
+            $target_ref = $base || 'HEAD~1';
+        }
+    }
+    print "=== Pre-push Delta Detection: Comparing HEAD against last pushed ref [$target_ref] ===\n";
+    my @diff_files = `git diff --name-only $target_ref...HEAD 2>/dev/null`;
+    chomp @diff_files;
+    
+    my %changed_dirs;
+    for my $f (@diff_files) {
+        my ($top) = split(/\//, $f);
+        if ($top && grep { $_ eq $top } @all_known_dirs) {
+            $changed_dirs{$top} = 1;
+        }
+    }
+    
+    if (!%changed_dirs || grep { $_ =~ /^\.github|^\.perlcriticrc|^Makefile/ } @diff_files) {
+        @dirs = @all_known_dirs;
+    }
+    else {
+        @dirs = sort keys %changed_dirs;
+        print "=== Pre-push Delta Filtering: Testing changed package(s): " . join(", ", @dirs) . " ===\n";
+    }
+}
 for my $d (@dirs) {
     chdir $root_dir or die "Cannot chdir to $root_dir: $!";
     build_package($d);
@@ -81,7 +138,7 @@ sub build_package {
         system(@cpanm_cmd, '--notest', '--installdeps', '.');
     }
     system("$^X Makefile.PL") == 0 or die "Makefile.PL failed in $d";
-    system("$make") == 0 or die "$make failed in $d";
+    system("$make $j_flag") == 0 or die "$make failed in $d";
 
     my %seen;
     my @dll_dirs;
@@ -98,8 +155,11 @@ sub build_package {
     $abs_arch =~ s/\//\\/g if $^O eq "MSWin32";
     $abs_cur =~ s/\//\\/g if $^O eq "MSWin32";
 
+    my $abs_pkg_arch = File::Spec->rel2abs("blib/arch/auto/$d");
     my $old_path = $ENV{PATH};
-    $ENV{PATH} = join($sep, $abs_arch, $abs_cur, @dll_dirs, $old_path);
+    $ENV{PATH} = join($sep, $abs_pkg_arch, $abs_arch, $abs_cur, @dll_dirs, $old_path);
+    local $ENV{LD_LIBRARY_PATH} = join(':', $abs_pkg_arch, $abs_arch, $abs_cur, $ENV{LD_LIBRARY_PATH} || ());
+    local $ENV{DYLD_LIBRARY_PATH} = join(':', $abs_pkg_arch, $abs_arch, $abs_cur, $ENV{DYLD_LIBRARY_PATH} || ());
     my $top_abs = File::Spec->rel2abs($top_dir);
     my @libs = (
         File::Spec->rel2abs('blib/lib'),
@@ -123,11 +183,24 @@ sub build_package {
     if ($^O eq 'MSWin32') {
         s{\\}{/}g for @libs;
     }
+    local $ENV{PROTOBUF_DEBUG} = 1;
+    local $ENV{RELEASE_TESTING} = 1;
+    local $ENV{AUTHOR_TESTING} = 1;
     local $ENV{PERL5LIB} = join($sep, @libs, $ENV{PERL5LIB} || ());
-    my $res = system($^X, '-S', 'prove', '-b', '-It/lib', 't/');
+    my @test_dirs = ('t/');
+    push @test_dirs, 'xt/' if -d 'xt';
+    
+    if (-f 'MYMETA.yml' && ! -f 'META.yml') {
+        require File::Copy;
+        File::Copy::copy('MYMETA.yml', 'META.yml');
+    }
+    my @prove_args = ('-b', '-It/lib');
+    push @prove_args, $j_flag if $j_flag;
+    my $res = system($^X, '-S', 'prove', @prove_args, @test_dirs);
     $ENV{PATH} = $old_path;
     die "prove failed in $d with exit code $res" if $res != 0;
 
+    system("$make distcheck") == 0 or die "$make distcheck failed in $d";
     system("$make install") == 0 or die "$make install failed in $d";
     chdir ".." or die "Cannot chdir to ..: $!";
 }

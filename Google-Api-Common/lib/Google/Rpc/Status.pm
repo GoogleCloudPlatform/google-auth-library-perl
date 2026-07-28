@@ -6,7 +6,7 @@ use MIME::Base64 ();
 use Protobuf;
 use Protobuf::DescriptorPool;
 
-our $VERSION = '0.01';
+our $VERSION = '0.04';
 
 BEGIN {
     my $descriptor_b64 = 'Chdnb29nbGUvcnBjL3N0YXR1cy5wcm90bxIKZ29vZ2xlLnJwYyInCgZTdGF0dXMSDAoEY29kZRgBIAEoBRIPCgdtZXNzYWdlGAIgASgJYgZwcm90bzM=';

@@ -6,6 +6,7 @@ Makefile.PL
 MANIFEST			This list of files
 MANIFEST.SKIP
 README
+SECURITY.md
 t/00-load.t
 t/01-protobuf.t
 t/02-protobuf-starter.t
@@ -13,4 +14,5 @@ t/acceptance/protobuf-starter.t
 t/manifest.t
 t/pod-coverage.t
 t/pod.t
+t/protos/service.proto
 xt/boilerplate.t

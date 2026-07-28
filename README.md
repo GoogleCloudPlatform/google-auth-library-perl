@@ -24,23 +24,23 @@ This monorepo supports Google Cloud's core infrastructure, data analytics, netwo
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
 │ [Layer 6] Service Client Libraries                                       │
-│ • Google-Cloud-NetworkServices-V1  - Secure Web Proxy (SWP) Gateways     │
-│ • Google-Cloud-NetworkSecurity-V1  - Gateway Security Policies & Rules   │
-│ • Google-Cloud-PrivateCA-V1        - Certificate Authority Service (CAS) │
-│ • Google-Cloud-SQL-V1              - Cloud SQL Admin                     │
+│ • Google-Cloud-Networkservices-V1  - Secure Web Proxy (SWP) Gateways     │
+│ • Google-Cloud-Networksecurity-V1  - Gateway Security Policies & Rules   │
+│ • Google-Cloud-Privateca-V1        - Certificate Authority Service (CAS) │
+│ • Google-Cloud-Sql-V1              - Cloud SQL Admin                     │
 │ • Google-Cloud-Metastore-V1        - Dataproc Metastore (DPMS)           │
-│ • Google-Cloud-SecretManager-V1    - Secret Manager                      │
+│ • Google-Cloud-Secretmanager-V1    - Secret Manager                      │
 │ • Google-Cloud-Build-V1            - Cloud Build CI/CD Triggers          │
-│ • Google-Cloud-IAM-V1              - Identity & Access Management (IAM) │
+│ • Google-Cloud-Iam-V1              - Identity & Access Management (IAM) │
 │ • Google-Cloud-Compute-V1          - Google Compute Engine (GCE)         │
 │ • Google-Cloud-Storage-V2          - Google Cloud Storage (GCS)          │
 │ • Google-Cloud-Dataproc-V1         - Cloud Dataproc (Spark / Hadoop)     │
-│ • Google-Cloud-PubSub-V1           - Cloud Pub/Sub Messaging             │
+│ • Google-Cloud-Pubsub-V1           - Cloud Pub/Sub Messaging             │
 │ • Google-Cloud-Composer-V1         - Cloud Composer (Managed Airflow)    │
-│ • Google-Cloud-Dataflow-V1Beta3    - Cloud Dataflow (Apache Beam)        │
+│ • Google-Cloud-Dataflow-V1beta3    - Cloud Dataflow (Apache Beam)        │
 │ • Google-Cloud-Dataplex-V1         - Cloud Dataplex Data Governance      │
-│ • Google-Cloud-DataFusion-V1       - Cloud Data Fusion (ETL Pipelines)   │
-│ • Google-Cloud-BigQuery-Storage-V1- Cloud BigQuery Storage API (Arrow)   │
+│ • Google-Cloud-Datafusion-V1       - Cloud Data Fusion (ETL Pipelines)   │
+│ • Google-Cloud-Bigquery-Storage-V1- Cloud BigQuery Storage API (Arrow)   │
 │ • Google-Cloud-Bigquery-V2         - Cloud BigQuery V2 Data Warehouse    │
 │ • Google-Cloud-Spanner-V1          - Cloud Spanner Relational Database   │
 ├──────────────────────────────────────────────────────────────────────────┤
@@ -74,23 +74,23 @@ This monorepo supports Google Cloud's core infrastructure, data analytics, netwo
 | **`Google-gRPC/`** | `Google::gRPC` | `0.02` | Transport | `nghttp2` C/XS bindings, 100% Pure-Perl fallback (`Protocol::HTTP2`), DNS `getaddrinfo` load balancing, deadlines, and retries. |
 | **`Module-Starter-Protobuf/`** | `Module::Starter::Protobuf` | `0.01` | Tooling | `protobuf-starter` CLI generator and `protoc-gen-perl-pb` integration. |
 | **`Google-Cloud-Bigquery-V2/`** | `Google::Cloud::Bigquery::V2` | `0.01` | Service Client | Cloud BigQuery V2 Data Warehouse API client. |
-| **`Google-Cloud-BigQuery-Storage-V1/`** | `Google::Cloud::BigQuery::Storage::V1` | `0.01` | Service Client | Cloud BigQuery Storage API client for high-throughput Arrow streaming. |
+| **`Google-Cloud-Bigquery-Storage-V1/`** | `Google::Cloud::Bigquery::Storage::V1` | `0.01` | Service Client | Cloud BigQuery Storage API client for high-throughput Arrow streaming. |
 | **`Google-Cloud-Spanner-V1/`** | `Google::Cloud::Spanner::V1` | `0.01` | Service Client | Cloud Spanner V1 relational database client. |
 | **`Google-Cloud-Dataproc-V1/`** | `Google::Cloud::Dataproc::V1` | `0.01` | Service Client | Cloud Dataproc V1 API client (GCE clusters & Serverless Spark). |
-| **`Google-Cloud-PubSub-V1/`** | `Google::Cloud::PubSub::V1` | `0.01` | Service Client | Cloud Pub/Sub V1 messaging API client. |
+| **`Google-Cloud-Pubsub-V1/`** | `Google::Cloud::Pubsub::V1` | `0.01` | Service Client | Cloud Pub/Sub V1 messaging API client. |
 | **`Google-Cloud-Storage-V2/`** | `Google::Cloud::Storage::V2` | `0.01` | Service Client | Cloud Storage V2 API client. |
 | **`Google-Cloud-Compute-V1/`** | `Google::Cloud::Compute::V1` | `0.01` | Service Client | Compute Engine V1 API client. |
-| **`Google-Cloud-IAM-V1/`** | `Google::Cloud::IAM::V1` | `0.01` | Service Client | Identity & Access Management (IAM) V1 API client. |
+| **`Google-Cloud-Iam-V1/`** | `Google::Cloud::Iam::V1` | `0.01` | Service Client | Identity & Access Management (IAM) V1 API client. |
 | **`Google-Cloud-Build-V1/`** | `Google::Cloud::Build::V1` | `0.01` | Service Client | Cloud Build V1 API client. |
-| **`Google-Cloud-SecretManager-V1/`** | `Google::Cloud::SecretManager::V1` | `0.01` | Service Client | Secret Manager V1 API client. |
+| **`Google-Cloud-Secretmanager-V1/`** | `Google::Cloud::Secretmanager::V1` | `0.01` | Service Client | Secret Manager V1 API client. |
 | **`Google-Cloud-Metastore-V1/`** | `Google::Cloud::Metastore::V1` | `0.01` | Service Client | Dataproc Metastore (DPMS) V1 API client. |
-| **`Google-Cloud-SQL-V1/`** | `Google::Cloud::SQL::V1` | `0.01` | Service Client | Cloud SQL Admin V1 API client. |
-| **`Google-Cloud-PrivateCA-V1/`** | `Google::Cloud::PrivateCA::V1` | `0.01` | Service Client | Certificate Authority Service (Private CA) V1 API client. |
-| **`Google-Cloud-NetworkSecurity-V1/`** | `Google::Cloud::NetworkSecurity::V1` | `0.01` | Service Client | Gateway Security Policies & Rules V1 API client. |
-| **`Google-Cloud-NetworkServices-V1/`** | `Google::Cloud::NetworkServices::V1` | `0.01` | Service Client | Secure Web Proxy (SWP) Gateways V1 API client. |
+| **`Google-Cloud-Sql-V1/`** | `Google::Cloud::Sql::V1` | `0.01` | Service Client | Cloud SQL Admin V1 API client. |
+| **`Google-Cloud-Privateca-V1/`** | `Google::Cloud::Privateca::V1` | `0.01` | Service Client | Certificate Authority Service (Private CA) V1 API client. |
+| **`Google-Cloud-Networksecurity-V1/`** | `Google::Cloud::Networksecurity::V1` | `0.01` | Service Client | Gateway Security Policies & Rules V1 API client. |
+| **`Google-Cloud-Networkservices-V1/`** | `Google::Cloud::Networkservices::V1` | `0.01` | Service Client | Secure Web Proxy (SWP) Gateways V1 API client. |
 | **`Google-Cloud-Composer-V1/`** | `Google::Cloud::Composer::V1` | `0.01` | Service Client | Cloud Composer V1 API client (Managed Airflow). |
-| **`Google-Cloud-Dataflow-V1Beta3/`** | `Google::Cloud::Dataflow::V1Beta3` | `0.01` | Service Client | Cloud Dataflow V1Beta3 API client (Apache Beam). |
-| **`Google-Cloud-DataFusion-V1/`** | `Google::Cloud::DataFusion::V1` | `0.01` | Service Client | Cloud Data Fusion V1 API client. |
+| **`Google-Cloud-Dataflow-V1beta3/`** | `Google::Cloud::Dataflow::V1beta3` | `0.01` | Service Client | Cloud Dataflow V1Beta3 API client (Apache Beam). |
+| **`Google-Cloud-Datafusion-V1/`** | `Google::Cloud::Datafusion::V1` | `0.01` | Service Client | Cloud Data Fusion V1 API client. |
 | **`Google-Cloud-Dataplex-V1/`** | `Google::Cloud::Dataplex::V1` | `0.01` | Service Client | Cloud Dataplex V1 API client. |
 
 ---
@@ -165,23 +165,23 @@ cpanm ./Module-Starter-Protobuf
 
 # 2. Install Service Clients
 cpanm ./Google-Cloud-Bigquery-V2
-cpanm ./Google-Cloud-BigQuery-Storage-V1
+cpanm ./Google-Cloud-Bigquery-Storage-V1
 cpanm ./Google-Cloud-Spanner-V1
 cpanm ./Google-Cloud-Dataproc-V1
-cpanm ./Google-Cloud-PubSub-V1
+cpanm ./Google-Cloud-Pubsub-V1
 cpanm ./Google-Cloud-Storage-V2
 cpanm ./Google-Cloud-Compute-V1
-cpanm ./Google-Cloud-IAM-V1
+cpanm ./Google-Cloud-Iam-V1
 cpanm ./Google-Cloud-Build-V1
-cpanm ./Google-Cloud-SecretManager-V1
+cpanm ./Google-Cloud-Secretmanager-V1
 cpanm ./Google-Cloud-Metastore-V1
-cpanm ./Google-Cloud-SQL-V1
-cpanm ./Google-Cloud-PrivateCA-V1
-cpanm ./Google-Cloud-NetworkSecurity-V1
-cpanm ./Google-Cloud-NetworkServices-V1
+cpanm ./Google-Cloud-Sql-V1
+cpanm ./Google-Cloud-Privateca-V1
+cpanm ./Google-Cloud-Networksecurity-V1
+cpanm ./Google-Cloud-Networkservices-V1
 cpanm ./Google-Cloud-Composer-V1
-cpanm ./Google-Cloud-Dataflow-V1Beta3
-cpanm ./Google-Cloud-DataFusion-V1
+cpanm ./Google-Cloud-Dataflow-V1beta3
+cpanm ./Google-Cloud-Datafusion-V1
 cpanm ./Google-Cloud-Dataplex-V1
 ```
 

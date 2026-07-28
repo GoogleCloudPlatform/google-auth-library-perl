@@ -9,7 +9,7 @@ use lib "$Bin/../Protobuf/lib",
         "$Bin/../Google-Api-Common/lib",
         "$Bin/../Google-gRPC/lib",
         "$Bin/../Google-Cloud-Bigquery-V2/lib",
-        "$Bin/../Google-Cloud-BigQuery-Storage-V1/lib";
+        "$Bin/../Google-Cloud-Bigquery-Storage-V1/lib";
 
 use Test::More tests => 11;
 use Google::gRPC::ChannelPool;
@@ -17,7 +17,7 @@ use Google::gRPC::Client;
 use Google::gRPC::Framing;
 use Google::Api::Common;
 use Google::Cloud::Bigquery::V2;
-use Google::Cloud::BigQuery::Storage::V1;
+use Google::Cloud::Bigquery::Storage::V1;
 
 diag("=== BigQuery Client-Side Load Balanced Multi-FD Exercise ===");
 
@@ -52,7 +52,7 @@ ok($pool, "2. Google::gRPC::ChannelPool instantiated with 4 subchannel socket FD
 # Step 3: Instantiate BigQuery V2 and Storage V1 Clients using ChannelPool
 my $bq_client  = Google::gRPC::Client->new(channel_pool => $pool);
 my $bq_service = Google::Cloud::Bigquery::V2->new(credentials => $auth, transport => $bq_client);
-my $bqs_service= Google::Cloud::BigQuery::Storage::V1->new(credentials => $auth, transport => $bq_client);
+my $bqs_service= Google::Cloud::Bigquery::Storage::V1->new(credentials => $auth, transport => $bq_client);
 
 ok($bq_service && $bqs_service, "3. BigQuery V2 & Storage V1 clients attached to ChannelPool transport");
 

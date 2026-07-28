@@ -1,2 +1,38 @@
 severity = 5
-exclude  = Modules::ProhibitMultiplePackages Subroutines::ProhibitBuiltinHomonyms Modules::RequireEndWithOne
+verbose = 8
+
+[TestingAndDebugging::RequireUseStrict]
+severity = 1
+
+[TestingAndDebugging::RequireUseWarnings]
+severity = 1
+
+[TestingAndDebugging::ProhibitNoStrict]
+severity = 1
+
+[TestingAndDebugging::ProhibitNoWarnings]
+severity = 1
+
+[BuiltinFunctions::ProhibitStringEval]
+severity = 1
+
+[Modules::RequireBarewordIncludes]
+severity = 1
+
+[CodeLayout::RequireTidyCode]
+severity = 1
+
+[Documentation::RequirePodSections]
+severity = 1
+
+[Subroutines::RequireFinalReturn]
+severity = 1
+
+[ValuesAndExpressions::RequireInterpolationOfMetachars]
+severity = 1
+
+[Subroutines::ProhibitExplicitReturnUndef]
+severity = 1
+
+[Subroutines::ProhibitNestedSubs]
+severity = 1

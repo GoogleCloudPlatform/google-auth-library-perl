@@ -13,8 +13,16 @@
 # limitations under the License.
 package Google::Auth::Signet;
 
+use strict;
+use warnings;
+
+our $VERSION = '0.06';
+
 package Google::Auth::Signet::OAuth2;
 
-#use LWP::Authen::OAuth2;
+use strict;
+use warnings;
+
+our $VERSION = '0.06';
 
 # to be based on googleapis/google-auth-library-ruby/lib/googleauth/signet.rb

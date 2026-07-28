@@ -3,7 +3,7 @@ package Google::Type::PostalAddress;
 use strict;
 use warnings;
 
-our $VERSION = '0.05';
+our $VERSION = '0.04';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;

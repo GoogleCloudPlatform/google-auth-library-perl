@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-our $VERSION = '0.09';
+our $VERSION = '0.12';
 BEGIN {
     $ENV{PACKAGE_STASH_IMPLEMENTATION} ||= 'PP';
     $ENV{MOO_XS_DISABLE} ||= '1';
@@ -173,11 +173,9 @@ if (!$is_google3_dev) {
     }
 
     my $abs_protoc_dir = File::Spec->rel2abs('protoc');
-    eval { symlink($abs_protoc_dir, $symlink_target) }
-        or do {
-            print "Symlink failed ($!); copying directory 'protoc' -> '$symlink_target'...\n";
-            require File::Copy;
-            File::Path::make_path($symlink_target) unless -d $symlink_target;
+    print "Copying directory 'protoc' -> '$symlink_target' to avoid symlinks...\n";
+    require File::Copy;
+    File::Path::make_path($symlink_target) unless -d $symlink_target;
             use File::Find qw(find);
             find({
                 wanted => sub {
@@ -193,7 +191,6 @@ if (!$is_google3_dev) {
                 },
                 no_chdir => 1
             }, 'protoc');
-        };
 }
 
 our $bazel_gen_include = $is_google3_dev
@@ -631,7 +628,7 @@ sub MY::postamble {
     my $descriptor_upb_o = "protoc/descriptor.upb.o";
 
     my $bootstrap_define = $is_google3_dev ? "" : "-DUPB_BOOTSTRAP_STAGE=0";
-    my $protoc_cflags = "-g -fPIC -D_GNU_SOURCE -std=c++20 -Wall $bootstrap_define -DPROTOBUF_PERL_VERSION=\\\"$VERSION\\\"";
+    my $protoc_cflags = "-g -fPIC -D_GNU_SOURCE -std=c++20 -Wall $bootstrap_define -DPROTOBUF_PERL_VERSION=\\\"$VERSION\\\" $sanitizer_flags";
     my $g3_inc = $is_google3_dev ? "-I../../.." : "";
     my $protoc_inc = "-I. -I./protoc -I$project_root -I$upb_dir -I$src_dir -I$third_party_dir -I" . File::Spec->catdir($third_party_dir, 'utf8_range') . " -I" . $bazel_gen_include . " -I" . $cmake_gen_include . " -I" . File::Spec->catdir($upb_generator_dir, 'stage0') . " -I$Config{archlibexp}/CORE $g3_inc $main::mac_inc";
 
@@ -664,19 +661,10 @@ sub MY::postamble {
     $make_frag .= $/;
 
     # Copy libprotobufperl to blib so it can be found via Rpath without LD_LIBRARY_PATH
-    my $ext = $main::extlib_ext;
-    $make_frag .= <<"EOF";
-
-# Make the shared library a dependency of the blib copy
-\$(INST_ARCHAUTODIR)/libprotobufperl.$ext : libprotobufperl.$ext
-	\$(NOECHO) \$(MKPATH) \$(INST_ARCHAUTODIR)
-	\$(CP) libprotobufperl.$ext \$(INST_ARCHAUTODIR)/libprotobufperl.$ext
-
-# Ensure the copy and plugin build happen during standard make
-all :: \$(INST_ARCHAUTODIR)/libprotobufperl.$ext
-all :: $protoc_plugin_exe
-
-EOF
+    $make_frag .= main::_render_tt('blib_libprotobufperl_copy', {
+        ext               => $main::extlib_ext,
+        protoc_plugin_exe => $protoc_plugin_exe,
+    });
 
     if ($main::is_win32) {
         $make_frag .= "\nconfig ::\n\t\$(NOECHO) \$(MKPATH) \$(INST_AUTODIR) \$(INST_LIBDIR)\n";
@@ -739,7 +727,7 @@ our $mac_inc = '';
 our $mac_libs = '';
 if ($is_linux) {
     $common_lib_link_flags = '-Wl,-z,origin -Wl,-soname,libprotobufperl.so -Wl,--version-script=libprotobufperl.map';
-    $extra_ldflags = ' -Wl,-z,origin -Wl,-rpath,$$ORIGIN:$$ORIGIN/../../..';
+    $extra_ldflags = ' -Wl,-z,origin -Wl,-rpath,\$$ORIGIN:\$$ORIGIN/../../..';
 } elsif ($is_darwin) {
     $common_lib_link_flags = "-Wl,-install_name,\@rpath/libprotobufperl.$extlib_ext -Wl,-undefined,dynamic_lookup";
     $extra_ldflags = ' -Wl,-rpath,@loader_path';
@@ -772,8 +760,9 @@ sub MY::fixin {
 WriteMakefile(
     NAME              => 'Protobuf',
     VERSION           => $VERSION,
-    MIN_PERL_VERSION  => '5.014',
+    MIN_PERL_VERSION  => '0.12',
     EXE_FILES         => ($is_win32 ? ['bin/protoc-gen-perl-pb.exe'] : ['bin/protoc-gen-perl-pb']),
+    MAN1PODS          => {},
     ABSTRACT          => 'High-performance Protocol Buffers implementation using upb',
     PREREQ_PM         => {
       'Moo'             => 0,
@@ -797,7 +786,19 @@ WriteMakefile(
             },
         },
         no_index => {
-            directory => [ 'xlib', 't', 'inc', 'local' ],
+            directory => [ 'xlib', 't', 'inc', 'local', 'lib/Google', 'lib/Conformance', 'lib/Protobuf_test_messages' ],
+            package   => [
+                'Google::ProtocolBuffers::Dynamic',
+                'Google::Protobuf',
+                'Google::Protobuf::Any',
+                'Google::Protobuf::Duration',
+                'Google::Protobuf::Timestamp',
+                'Google::Protobuf::FieldMask',
+                'Google::Protobuf::Struct',
+                'Google::Protobuf::Wrappers',
+                'Google::Protobuf::Empty',
+                'Conformance',
+            ],
         },
     },
     TEST_REQUIRES => {
@@ -851,6 +852,14 @@ sub test {
         is_darwin => $main::is_darwin,
         jobs      => $main::num_cores,
     });
+}
+
+sub dist_basics {
+    my $self = shift;
+    my $inherited = $self->SUPER::dist_basics(@_);
+    my $check_code = "\t\$(PERL) -Ilib maint/release_lint.pl\n";
+    $inherited =~ s/(distcheck\s*:)/$1 release_lint\n\nrelease_lint :\n$check_code\n/;
+    return $inherited;
 }
 
 package main;

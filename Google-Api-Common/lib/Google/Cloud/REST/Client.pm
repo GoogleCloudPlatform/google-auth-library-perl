@@ -10,7 +10,7 @@ use Carp qw(croak);
 use Log::Any qw($log);
 use Time::HiRes qw(sleep);
 
-our $VERSION = '0.01';
+our $VERSION = '0.04';
 
 has target => (
     is       => 'ro',
@@ -150,7 +150,7 @@ sub call {
 
     # Parse response
     my $content = $res->content;
-    return undef unless defined $content && length $content;
+    return unless defined $content && length $content;
 
     my $decoded_json = eval { decode_json($content) };
     if ($@) {
