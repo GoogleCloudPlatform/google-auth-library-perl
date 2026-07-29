@@ -66,10 +66,10 @@ my @all_known_dirs = qw(
     Google-Cloud-Bigquery-Storage-V1 Google-Cloud-Bigquery-V2 Google-Cloud-Build-V1
     Google-Cloud-Composer-V1 Google-Cloud-Compute-V1 Google-Cloud-Dataflow-V1beta3
     Google-Cloud-Datafusion-V1 Google-Cloud-Dataplex-V1 Google-Cloud-Dataproc-V1
-    Google-Cloud-Iam-V1 Google-Cloud-Metastore-V1 Google-Cloud-Networksecurity-V1
-    Google-Cloud-Networkservices-V1 Google-Cloud-Privateca-V1 Google-Cloud-Pubsub-V1
-    Google-Cloud-Secretmanager-V1 Google-Cloud-Spanner-V1 Google-Cloud-Sql-V1
-    Google-Cloud-Storage-V2
+    Google-Cloud-Iam-V1 Google-Cloud-Kms-V1 Google-Cloud-Metastore-V1
+    Google-Cloud-Networksecurity-V1 Google-Cloud-Networkservices-V1
+    Google-Cloud-Privateca-V1 Google-Cloud-Pubsub-V1 Google-Cloud-Secretmanager-V1
+    Google-Cloud-Spanner-V1 Google-Cloud-Sql-V1 Google-Cloud-Storage-V2
 );
 
 my @dirs;
