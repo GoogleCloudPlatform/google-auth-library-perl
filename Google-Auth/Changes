@@ -1,5 +1,10 @@
 Revision history for Google-Auth
 
+0.07    Fri Jul 31 2026
+    - Hardened credential validation and handling.
+    - Added custom universe opt-in/handling.
+    - Added untainting for pluggable credentials.
+
 0.06    Tue Jul 28 2026
     - Added SECURITY.md
 

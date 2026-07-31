@@ -25,7 +25,7 @@ use Google::Auth;
 use MIME::Base64 qw(decode_base64);
 
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 1;
 

@@ -24,7 +24,7 @@ use Google::Auth::ComputeEngine;
 use Google::Auth::Exceptions;
 use XSLoader;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 XSLoader::load( 'Google::Auth', $VERSION );
 
 
@@ -37,7 +37,7 @@ Google::Auth - Implements application default credentials and project ID detecti
 
 =head1 VERSION
 
-Version 0.05
+Version 0.07
 
 =cut
 
@@ -96,6 +96,20 @@ sub default
 # End of Google::Auth
 1;
 
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+=over 4
+
+=item GOOGLE_EXTERNAL_ACCOUNT_ALLOW_EXECUTABLES
+
+Set to '1' to allow Pluggable Credentials to execute external commands. Default is '0' (disabled).
+
+=item GOOGLE_EXTERNAL_ACCOUNT_ALLOW_CUSTOM_UNIVERSES
+
+Set to '1' to allow custom universes in credentials files loaded from JSON. Default is '0' (disabled).
+
+=back
 
 =head1 AUTHOR
 

@@ -16,13 +16,13 @@ package Google::Auth::Signet;
 use strict;
 use warnings;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 package Google::Auth::Signet::OAuth2;
 
 use strict;
 use warnings;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 # to be based on googleapis/google-auth-library-ruby/lib/googleauth/signet.rb

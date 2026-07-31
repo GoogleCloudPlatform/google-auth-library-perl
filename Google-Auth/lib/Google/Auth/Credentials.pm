@@ -23,7 +23,7 @@ use Google::Auth::Exceptions;
 use Time::HiRes;
 use Log::Any qw($log);
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 has access_token => (
     is  => 'rw',

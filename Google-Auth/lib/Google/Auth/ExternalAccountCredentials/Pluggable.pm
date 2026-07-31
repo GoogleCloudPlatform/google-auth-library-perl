@@ -25,7 +25,7 @@ use Google::Auth::Exceptions;
 use Capture::Tiny qw(capture);
 use Log::Any qw($log);
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 sub retrieve_subject_token {
     my ($self) = @_;
@@ -52,6 +52,11 @@ sub retrieve_subject_token {
     local %ENV = %ENV;
     while ( my ( $k, $v ) = each %$env_vars ) {
         $ENV{$k} = $v;
+    }
+
+    # Untaint command for Taint mode (user has explicitly enabled executables)
+    if ($command =~ /^(.*)$/s) {
+        $command = $1;
     }
 
     $log->infof('Executing Pluggable credential command: %s', $command);

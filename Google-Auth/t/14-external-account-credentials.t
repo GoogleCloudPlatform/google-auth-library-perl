@@ -251,6 +251,43 @@ subtest 'Initialization and Validation Errors' => sub {
         $creds_evil->retrieve_subject_token();
     };
     like( $@, qr/carries security violation/, 'throws error on invalid domain in url' );
+
+    # 8. Safety violation on attacker-supplied universe_domain in JSON
+    my $creds_bypass = Google::Auth::ExternalAccountCredentials->new(
+        audience           => '//iam.googleapis.com/projects/123456/locations/global/workloadIdentityPools/my-pool/providers/my-provider',
+        subject_token_type => 'urn:ietf:params:oauth:token-type:jwt',
+        json_key => {
+            universe_domain => 'evil.com',
+            token_url => 'https://sts.evil.com/token',
+            credential_source => {
+                url => 'http://evil.com/subject',
+            },
+        }
+    );
+    eval {
+        $creds_bypass->retrieve_subject_token();
+    };
+    like( $@, qr/carries security violation/, 'throws error on attacker-supplied universe_domain in file' );
+
+    # 9. Allowed custom universe via env var
+    {
+        local $ENV{GOOGLE_EXTERNAL_ACCOUNT_ALLOW_CUSTOM_UNIVERSES} = '1';
+        my $creds_custom_ok = Google::Auth::ExternalAccountCredentials->new(
+            audience           => '//iam.googleapis.com/projects/123456/locations/global/workloadIdentityPools/my-pool/providers/my-provider',
+            subject_token_type => 'urn:ietf:params:oauth:token-type:jwt',
+            json_key => {
+                universe_domain => 'allowed-custom.com',
+                token_url => 'https://sts.allowed-custom.com/token',
+                credential_source => {
+                    url => 'http://allowed-custom.com/subject',
+                },
+            }
+        );
+        eval {
+            $creds_custom_ok->retrieve_subject_token();
+        };
+        unlike( $@, qr/carries security violation/, 'does not throw security violation when custom universe is enabled via env var' );
+    }
 };
 
 subtest 'STS Exchange Failure' => sub {

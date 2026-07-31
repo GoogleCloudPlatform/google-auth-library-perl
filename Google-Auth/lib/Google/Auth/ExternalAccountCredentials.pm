@@ -28,7 +28,7 @@ use Google::Auth::Exceptions;
 use Google::Auth::RetryHelper;
 use Log::Any qw($log);
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 has audience => (
     is       => 'ro',
@@ -65,9 +65,16 @@ has ua => (
     default => sub { LWP::UserAgent->new( timeout => 10 ) },
 );
 
+has _is_universe_pinned => (
+    is      => 'ro',
+    default => sub { 0 },
+);
+
+
 around BUILDARGS => sub {
     my ( $orig, $class, @args ) = @_;
     my $args = $class->$orig(@args);
+    my $pinned_universe = exists $args->{universe_domain};
 
     if ( my $json = $args->{json_key} ) {
         $args->{audience}                          //= $json->{audience};
@@ -77,6 +84,8 @@ around BUILDARGS => sub {
         $args->{service_account_impersonation_url} //= $json->{service_account_impersonation_url};
         $args->{universe_domain}                   //= $json->{universe_domain};
     }
+
+    $args->{_is_universe_pinned} = $pinned_universe ? 1 : 0;
 
     return $args;
 };
@@ -297,7 +306,18 @@ sub _validate_url {
         $is_valid = 1;
     }
     elsif ( $host eq $universe_domain || $host =~ /\.\Q$universe_domain\E$/ ) {
-        $is_valid = 1;
+        if ( $self->_is_universe_pinned ) {
+            $is_valid = 1;
+        }
+        else {
+            # Not pinned, came from JSON. Only allow if explicitly enabled via env var.
+            if ( ($ENV{GOOGLE_EXTERNAL_ACCOUNT_ALLOW_CUSTOM_UNIVERSES} // '0') eq '1' ) {
+                $is_valid = 1;
+            }
+            else {
+                $log->warnf("Custom universe_domain %s detected in JSON but not enabled via GOOGLE_EXTERNAL_ACCOUNT_ALLOW_CUSTOM_UNIVERSES=1", $universe_domain);
+            }
+        }
     }
 
     unless ($is_valid) {
