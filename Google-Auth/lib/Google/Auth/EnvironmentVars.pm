@@ -152,7 +152,7 @@ L<https://metacpan.org/release/Google-Auth>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2020,2021 Google LLC and contributors
+Copyright 2020 Google LLC and contributors
 
 This program is released under the following license: Apache 2.0
 
