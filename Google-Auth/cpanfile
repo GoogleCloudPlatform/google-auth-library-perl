@@ -5,7 +5,6 @@ requires 'Perl::Critic';
 requires 'JSON::PP';
 requires 'Capture::Tiny';
 
-
 requires 'Test::Exception';
 requires 'Test::LWP::UserAgent';
 requires 'Test::Perl::Critic';

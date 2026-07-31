@@ -30,7 +30,6 @@ Version 0.07
 
 =cut
 
-
 =head1 SYNOPSIS
 
 Canonical package for reading environment variables used with Google::Auth
@@ -46,9 +45,9 @@ Library.
 =cut
 
 has PROJECT => (
-    is            => 'ro',
-    builder       => sub { $ENV{GOOGLE_CLOUD_PROJECT} },
-    documentation => 'Environment variable defining default project',
+  is            => 'ro',
+  builder       => sub { $ENV{GOOGLE_CLOUD_PROJECT} },
+  documentation => 'Environment variable defining default project',
 );
 
 =head2 LEGACY_PROJECT
@@ -59,10 +58,10 @@ situations (such as Google App Engine).
 =cut
 
 has LEGACY_PROJECT => (
-    is            => 'ro',
-    builder       => sub { $ENV{GCLOUD_PROJECT} },
-    documentation =>
-        'Previously used environment variable defining the default project',
+  is            => 'ro',
+  builder       => sub { $ENV{GCLOUD_PROJECT} },
+  documentation =>
+    'Previously used environment variable defining the default project',
 );
 
 =head2 CREDENTIALS
@@ -73,9 +72,9 @@ default credentials
 =cut
 
 has CREDENTIALS => (
-    is            => 'ro',
-    builder       => sub { $ENV{GOOGLE_APPLICATION_CREDENTIALS} },
-    documentation =>
+  is            => 'ro',
+  builder       => sub { $ENV{GOOGLE_APPLICATION_CREDENTIALS} },
+  documentation =>
 'Environment variable defining the location of Google application default credentials',
 );
 
@@ -86,9 +85,9 @@ The environment variable name which can replace ~/.config if set
 =cut
 
 has CLOUD_SDK_CONFIG_DIR => (
-    is            => 'ro',
-    builder       => sub { $ENV{CLOUDSDK_CONFIG} },
-    documentation =>
+  is            => 'ro',
+  builder       => sub { $ENV{CLOUDSDK_CONFIG} },
+  documentation =>
 q{Environment variable defines the location of Google Cloud SDK's config files},
 );
 
@@ -100,11 +99,11 @@ addresses used when contacting the GCE metadata service.
 =cut
 
 has GCE_METADATA_ROOT => (
-    is            => 'ro',
-    builder       => sub { $ENV{GCE_METADATA_ROOT} },
-    documentation =>
-'Environment variable providing an alternate hostname or host:port to be '
-        . 'used for GCE metadata requests',
+  is            => 'ro',
+  builder       => sub { $ENV{GCE_METADATA_ROOT} },
+  documentation =>
+    'Environment variable providing an alternate hostname or host:port to be '
+    . 'used for GCE metadata requests',
 );
 
 =head2 GCE_METADATA_IP
@@ -112,11 +111,11 @@ has GCE_METADATA_ROOT => (
 =cut
 
 has GCE_METADATA_IP => (
-    is            => 'ro',
-    builder       => sub { $ENV{GCE_METADATA_IP} },
-    documentation =>
+  is            => 'ro',
+  builder       => sub { $ENV{GCE_METADATA_IP} },
+  documentation =>
 'Environment variable providing an alternate ip:port to be used for ip-only '
-        . 'GCE metadata requests',
+    . 'GCE metadata requests',
 );
 
 =head1 AUTHOR

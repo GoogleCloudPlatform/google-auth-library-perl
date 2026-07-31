@@ -19,9 +19,8 @@ use Test::More;
 
 plan tests => 2;
 
-BEGIN
-{
-    use_ok('Google::Auth')                       || print "Bail out!\n";
-    use_ok('Google::Auth::IDTokens::KeySources') || print "Bail out!\n";
+BEGIN {
+  use_ok('Google::Auth')                       || print "Bail out!\n";
+  use_ok('Google::Auth::IDTokens::KeySources') || print "Bail out!\n";
 }
 note("Testing Google::Auth $Google::Auth::VERSION, Perl $], $^X");

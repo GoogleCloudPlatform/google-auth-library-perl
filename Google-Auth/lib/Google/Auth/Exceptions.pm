@@ -28,27 +28,26 @@ Version 0.07
 
 =cut
 
-
 # Base class for all google.auth errors
 
 package Google::Auth::Error;
 use Moo;
 use overload '""' => \&to_string, fallback => 1;
 
-has message => ( is => 'ro', required => 1 );
+has message => (is => 'ro', required => 1);
 
 sub to_string {
-    my ($self) = @_;
-    return $self->message;
+  my ($self) = @_;
+  return $self->message;
 }
 
 sub throw {
-    my ($class, $message) = @_;
-    if (ref $class) {
-        die $class;
-    }
-    my $self = $class->new({ message => $message || 'Unknown error' });
-    die $self;
+  my ($class, $message) = @_;
+  if (ref $class) {
+    die $class;
+  }
+  my $self = $class->new({message => $message || 'Unknown error'});
+  die $self;
 }
 
 # Used to indicate an error occurred during an HTTP request

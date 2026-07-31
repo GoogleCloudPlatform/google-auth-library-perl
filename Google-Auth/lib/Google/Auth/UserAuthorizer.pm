@@ -19,10 +19,9 @@ use warnings;
 
 use Moo;
 
-
 has json_key => (
-    is       => 'ro',
-    required => 0,
+  is       => 'ro',
+  required => 0,
 );
 
 1;

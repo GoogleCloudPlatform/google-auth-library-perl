@@ -16,11 +16,9 @@ package Google::Auth::Signet;
 use strict;
 use warnings;
 
-
 package Google::Auth::Signet::OAuth2;
 
 use strict;
 use warnings;
-
 
 # to be based on googleapis/google-auth-library-ruby/lib/googleauth/signet.rb

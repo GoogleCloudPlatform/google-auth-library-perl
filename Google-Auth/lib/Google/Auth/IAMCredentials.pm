@@ -19,5 +19,4 @@ use strict;
 
 my $coder = JSON::MaybeXS->new->ascii->pretty->allow_nonref;
 
-
 1;

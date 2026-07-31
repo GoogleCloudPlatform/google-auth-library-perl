@@ -17,5 +17,4 @@ package Google::Auth::IDTokens;
 use strict;
 use warnings;
 
-
 1;

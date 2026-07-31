@@ -19,11 +19,10 @@ use warnings;
 
 use Moo;
 
-
 sub on_gce {
-    my ( $class, %options ) = @_;
-    # Return false for now until metadata server detection is implemented
-    return 0;
+  my ($class, %options) = @_;
+  # Return false for now until metadata server detection is implemented
+  return 0;
 }
 
 1;

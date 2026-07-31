@@ -18,9 +18,8 @@ use warnings;
 use Test::More;
 use Test::Exception;
 
-BEGIN
-{
-    use_ok('Google::Auth::Exceptions') || print "Bail out!\n";
+BEGIN {
+  use_ok('Google::Auth::Exceptions') || print "Bail out!\n";
 }
 
 note("Testing Google::Auth::Exceptions, Perl $], $^X");

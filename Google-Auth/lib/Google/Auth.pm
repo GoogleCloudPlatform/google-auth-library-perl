@@ -25,8 +25,7 @@ use Google::Auth::Exceptions;
 use XSLoader;
 
 our $VERSION = '0.07';
-XSLoader::load( 'Google::Auth', $VERSION );
-
+XSLoader::load('Google::Auth', $VERSION);
 
 =head1 NAME
 
@@ -40,7 +39,6 @@ Google::Auth - Implements application default credentials and project ID detecti
 Version 0.07
 
 =cut
-
 
 =head1 SYNOPSIS
 
@@ -67,35 +65,33 @@ Gets the default credentials for the current environment.
 =cut
 
 #[%- Perl::Critic::Policy::Subroutines::ProhibitBuiltinHomonyms %]
-sub default
-{
-    my ( $self, $scopes, $options ) = @_;
-    $options //= {};
+sub default {
+  my ($self, $scopes, $options) = @_;
+  $options //= {};
 
-    my $dc = Google::Auth::DefaultCredentials->new();
+  my $dc = Google::Auth::DefaultCredentials->new();
 
-    my $creds = $dc->from_env( $scopes, %$options )
-             || $dc->from_well_known_path( $scopes, %$options )
-             || $dc->from_system_default_path( $scopes, %$options );
+  my $creds =
+       $dc->from_env($scopes, %$options)
+    || $dc->from_well_known_path($scopes, %$options)
+    || $dc->from_system_default_path($scopes, %$options);
 
-    return $creds if $creds;
+  return $creds if $creds;
 
-    if ( Google::Auth::ComputeEngine->on_gce( %$options ) ) {
-        return Google::Auth::ComputeEngine->new( scope => $scopes, %$options );
-    }
+  if (Google::Auth::ComputeEngine->on_gce(%$options)) {
+    return Google::Auth::ComputeEngine->new(scope => $scopes, %$options);
+  }
 
-    Google::Auth::DefaultCredentialsError->throw(
-        'Your credentials were not found. To set up Application Default '
-      . 'Credentials for your environment, see '
-      . 'https://cloud.google.com/docs/authentication/external/set-up-adc'
-    );
+  Google::Auth::DefaultCredentialsError->throw(
+    'Your credentials were not found. To set up Application Default ' .
+      'Credentials for your environment, see ' .
+      'https://cloud.google.com/docs/authentication/external/set-up-adc');
 }
 
 # I have no idea why my perlcritic throws this
 #[%- Perl::Critic::Policy::Modules::RequireEndWithOne %]
 # End of Google::Auth
 1;
-
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
