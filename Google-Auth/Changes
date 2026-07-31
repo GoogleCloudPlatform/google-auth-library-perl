@@ -1,11 +1,12 @@
 Revision history for Google-Auth
 
 0.07    Fri Jul 31 2026
-    - Hardened credential validation and handling.
-    - Added custom universe opt-in/handling.
-    - Added untainting for pluggable credentials.
-    - Aligned distribution standards (CONTRIBUTING.md, .perltidyrc) with standard Google Perl SDKs.
-    - Restored MANIFEST hygiene for release readiness.
+    - Hardened credential validation and handling (Custom Universe opt-in safeguards).
+    - Added untainting and validation for pluggable credentials commands.
+    - Centralized version management (removed redundant submodule $VERSIONs).
+    - Normalized Copyright headers to "Google LLC and contributors" with first contribution year.
+    - Applied uniform code formatting via .perltidyrc.
+    - Restored MANIFEST hygiene and aligned contributing guidelines.
 
 0.06    Tue Jul 28 2026
     - Added SECURITY.md
