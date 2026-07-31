@@ -23,12 +23,14 @@ contributing, please review the guidelines and best practices below.
 ### Feature Requests
 
 We appreciate your feedback and encourage you to submit feature requests that
-will help improve this library.
+will help improve this library. You can submit feature requests by opening an issue on GitHub:
+https://github.com/GoogleCloudPlatform/google-auth-library-perl/issues
 
 ### Bug Reports
 
 We appreciate your feedback and encourage you to report bugs that will help
-improve this library.
+improve this library. Please report bugs by opening an issue on GitHub:
+https://github.com/GoogleCloudPlatform/google-auth-library-perl/issues
 
 **Please do not include any personal identifiable information or authorization/access data
 in any of the information you post.**
@@ -45,7 +47,8 @@ https://cla.developers.google.com/ to see your current agreements on file or to 
 ### Pull Request Submission Best Practices
 
 When making a pull request, first make your own forked copy of this repository, make any changes
-on a separate branch of that forked copy, then submit the pull request from your new fork/branch.
+on a separate branch of that forked copy, then submit the pull request from your new fork/branch to:
+https://github.com/GoogleCloudPlatform/google-auth-library-perl/pulls
 
 ### Style Guidelines & Naming Conventions
 

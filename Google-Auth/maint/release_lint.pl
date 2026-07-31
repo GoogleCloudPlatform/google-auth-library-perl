@@ -26,4 +26,18 @@ if (!$has_entry) {
 }
 
 print "RELEASE LINT PASS: Version $v verified in Changes.\n";
+
+print "=== Running Author/Release Tests (xt/) ===\n";
+local $ENV{AUTHOR_TESTING}  = 1;
+local $ENV{RELEASE_TESTING} = 1;
+local $ENV{TEST_PERLTIDY}   = 1;
+
+# Run prove on xt/ directory
+my $exit_code = system('prove', '-l', 'xt/');
+
+if ($exit_code != 0) {
+  die "RELEASE LINT ERROR: Author tests (xt/) failed!\n";
+}
+
+print "RELEASE LINT PASS: All checks and tests passed.\n";
 exit 0;
