@@ -1,4 +1,4 @@
-# Copyright 2026 Google LLC
+# Copyright 2026 Google LLC and contributors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ use Google::Auth::Exceptions;
 use Capture::Tiny qw(capture);
 use Log::Any qw($log);
 
-our $VERSION = '0.07';
 
 sub retrieve_subject_token {
     my ($self) = @_;
@@ -54,7 +53,41 @@ sub retrieve_subject_token {
         $ENV{$k} = $v;
     }
 
-    # Untaint command for Taint mode (user has explicitly enabled executables)
+    # Extract executable to verify existence
+    my $executable;
+    if ($command =~ /^\s*"([^"]+)"/) {
+        $executable = $1;
+    }
+    elsif ($command =~ /^\s*'([^']+)'/) {
+        $executable = $1;
+    }
+    elsif ($command =~ /^\s*(\S+)/) {
+        $executable = $1;
+    }
+
+    if ( defined $executable ) {
+        my $found = 0;
+        if ( -f $executable && -x _ ) {
+            $found = 1;
+        }
+        else {
+            # Search PATH
+            for my $dir (split /:/, ($ENV{PATH} // '')) {
+                my $path = "$dir/$executable";
+                if (-f $path && -x _) {
+                    $found = 1;
+                    last;
+                }
+            }
+        }
+        
+        if (!$found) {
+            $log->errorf('Executable not found or not executable: %s', $executable);
+            Google::Auth::Error->throw("Executable not found or not executable: $executable");
+        }
+    }
+
+    # Untaint command for Taint mode (user has explicitly enabled executables and we have verified the executable exists)
     if ($command =~ /^(.*)$/s) {
         $command = $1;
     }

@@ -1,4 +1,4 @@
-# Copyright 2022 Google Inc.
+# Copyright 2022 Google LLC and contributors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -145,7 +145,7 @@ L<https://metacpan.org/release/Google-Auth>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2020,2021 Google, LLC
+Copyright 2020,2021 Google LLC and contributors
 
 This program is released under the following license: Apache 2.0
 

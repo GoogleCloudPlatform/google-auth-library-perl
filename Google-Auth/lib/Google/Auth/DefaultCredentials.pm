@@ -1,4 +1,4 @@
-# Copyright 2022 Google, LLC
+# Copyright 2022 Google LLC and contributors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ use File::Spec;
 use Google::Auth::EnvironmentVars;
 use Google::Auth::Exceptions;
 
-our $VERSION = '0.07';
 
 has environment => (
     is      => 'ro',

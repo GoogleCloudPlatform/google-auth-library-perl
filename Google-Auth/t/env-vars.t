@@ -1,5 +1,5 @@
 #!perl
-# Copyright 2022 Google LLC
+# Copyright 2022 Google LLC and contributors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ BEGIN
     use_ok('Google::Auth::EnvironmentVars') || print "Bail out!\n";
 }
 
-note("Testing Google::Auth::EnvironmentVars $Google::Auth::EnvironmentVars::VERSION, Perl $], $^X");
+note("Testing Google::Auth::EnvironmentVars, Perl $], $^X");
 
 my $prj_str = 'test-project-string';
 

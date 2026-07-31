@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-# Copyright 2020,2021,2022 Google LLC
+# Copyright 2020,2021,2022 Google LLC and contributors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ use Google::Auth;
 use MIME::Base64 qw(decode_base64);
 
 
-our $VERSION = '0.07';
 
 1;
 

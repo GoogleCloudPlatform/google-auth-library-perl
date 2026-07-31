@@ -1,4 +1,4 @@
-# Copyright 2020,2021,2022 Google LLC
+# Copyright 2020,2021,2022 Google LLC and contributors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ use Test::More;
 
 use FindBin;
 
-note("Testing Google::Auth::IDTokens::KeySources $Google::Auth::IDTokens::KeySources::VERSION, Perl $], $^X");
+note("Testing Google::Auth::IDTokens::KeySources, Perl $], $^X");
 
 BEGIN
 {

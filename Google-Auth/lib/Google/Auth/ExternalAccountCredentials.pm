@@ -1,4 +1,4 @@
-# Copyright 2026 Google LLC
+# Copyright 2026 Google LLC and contributors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@ use Google::Auth::Exceptions;
 use Google::Auth::RetryHelper;
 use Log::Any qw($log);
 
-our $VERSION = '0.07';
 
 has audience => (
     is       => 'ro',
