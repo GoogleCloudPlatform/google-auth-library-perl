@@ -41,7 +41,7 @@ WriteMakefile(
     AUTHOR           => q{C.J. Collier <cjac@google.com>},
     VERSION_FROM     => 'lib/Google/Auth.pm',
     ABSTRACT_FROM    => 'lib/Google/Auth.pm',
-    LICENSE          => 'Apache 2.0',
+    LICENSE          => 'apache_2_0',
     PL_FILES         => {},
     LIBS             => [$libs_flags],
     INC              => $inc_flags,
