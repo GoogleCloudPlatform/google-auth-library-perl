@@ -1,5 +1,8 @@
 Revision history for Google-Auth
 
+0.08    Sun Aug 2 2026
+    - Fully fixed CVE-2026-66901: Extended URL validation to all credential types (UserRefreshCredentials, ImpersonatedServiceAccountCredentials) and fixed bypass in ExternalAccountCredentials via make_creds.
+
 0.07    Fri Jul 31 2026
     - Hardened credential validation and handling (Custom Universe opt-in safeguards).
     - Added untainting and validation for pluggable credentials commands.
@@ -10,6 +13,8 @@ Revision history for Google-Auth
 
 0.06    Tue Jul 28 2026
     - Added SECURITY.md
+    - Fixed CVE-2026-66902: Pluggable credentials "executable" now require explicit opt-in via GOOGLE_EXTERNAL_ACCOUNT_ALLOW_EXECUTABLES=1.
+    - Added URL Domain Validation to prevent security violations via invalid or compromised domains in credential sources (partial fix for CVE-2026-66901).
 
 0.05    Wed Jul 22 2026
         - Fixed POD test failures.
