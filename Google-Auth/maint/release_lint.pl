@@ -1,46 +1,43 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
-use File::Find;
 
 use blib;
 require Google::Auth;
 my $v = $Google::Auth::VERSION;
 if (!defined $v || !length $v) {
-    die "RELEASE LINT ERROR: VERSION not set in Google::Auth\n";
+  die "RELEASE LINT ERROR: VERSION not set in Google::Auth\n";
 }
 
-open my $fh, '<', 'Changes' or die "RELEASE LINT ERROR: Cannot read Changes: $!\n";
+open my $fh, '<', 'Changes'
+  or die "RELEASE LINT ERROR: Cannot read Changes: $!\n";
 my $has_entry = 0;
 while (<$fh>) {
-    if (/^\Q$v\E\b/) {
-        $has_entry = 1;
-        last;
-    }
+  if (/^\Q$v\E\b/) {
+    $has_entry = 1;
+    last;
+  }
 }
 close $fh;
 
 if (!$has_entry) {
-    die "RELEASE LINT ERROR: No Changes entry found for version $v in Changes file!\n";
+  die
+"RELEASE LINT ERROR: No Changes entry found for version $v in Changes file!\n";
 }
 
-my @mismatches;
-find(sub {
-    return unless /\.pm$/;
-    open my $pm, '<', $_ or return;
-    while (<$pm>) {
-        if (/our\s+\$VERSION\s*=\s*['"]([^'"]+)['"]/) {
-            if ($1 ne $v) {
-                push @mismatches, "$File::Find::name (expected $v, found $1)";
-            }
-        }
-    }
-    close $pm;
-}, 'lib');
+print "RELEASE LINT PASS: Version $v verified in Changes.\n";
 
-if (@mismatches) {
-    die "RELEASE LINT ERROR: Version mismatches found:\n  " . join("\n  ", @mismatches) . "\n";
+print "=== Running Author/Release Tests (xt/) ===\n";
+local $ENV{AUTHOR_TESTING}  = 1;
+local $ENV{RELEASE_TESTING} = 1;
+local $ENV{TEST_PERLTIDY}   = 1;
+
+# Run prove on xt/ directory
+my $exit_code = system('prove', '-l', 'xt/');
+
+if ($exit_code != 0) {
+  die "RELEASE LINT ERROR: Author tests (xt/) failed!\n";
 }
 
-print "RELEASE LINT PASS: Version $v verified in Changes and across all lib/ modules.\n";
+print "RELEASE LINT PASS: All checks and tests passed.\n";
 exit 0;

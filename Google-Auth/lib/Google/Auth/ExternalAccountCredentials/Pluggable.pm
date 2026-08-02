@@ -1,4 +1,4 @@
-# Copyright 2026 Google LLC
+# Copyright 2026 Google LLC and contributors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,110 +23,166 @@ extends 'Google::Auth::ExternalAccountCredentials';
 use JSON::PP;
 use Google::Auth::Exceptions;
 use Capture::Tiny qw(capture);
-use Log::Any qw($log);
-
-our $VERSION = '0.06';
+use Log::Any      qw($log);
 
 sub retrieve_subject_token {
-    my ($self) = @_;
+  my ($self) = @_;
 
-    if ( ($ENV{GOOGLE_EXTERNAL_ACCOUNT_ALLOW_EXECUTABLES} // '0') ne '1' ) {
-        $log->errorf('Pluggable credentials are not enabled. Set GOOGLE_EXTERNAL_ACCOUNT_ALLOW_EXECUTABLES=1 to enable.');
-        Google::Auth::Error->throw('Pluggable credentials are not enabled. Set GOOGLE_EXTERNAL_ACCOUNT_ALLOW_EXECUTABLES=1 to enable.');
+  if (($ENV{GOOGLE_EXTERNAL_ACCOUNT_ALLOW_EXECUTABLES} // '0') ne '1') {
+    $log->errorf(
+'Pluggable credentials are not enabled. Set GOOGLE_EXTERNAL_ACCOUNT_ALLOW_EXECUTABLES=1 to enable.'
+    );
+    Google::Auth::Error->throw(
+'Pluggable credentials are not enabled. Set GOOGLE_EXTERNAL_ACCOUNT_ALLOW_EXECUTABLES=1 to enable.'
+    );
+  }
+
+  my $source = $self->credential_source;
+  my $exec   = $source->{executable};
+  if (!defined $exec) {
+    $log->errorf(
+      'Missing executable configuration in Pluggable credential_source');
+    Google::Auth::Error->throw(
+      'Missing executable configuration in credential_source');
+  }
+
+  my $command = $exec->{command};
+  if (!defined $command) {
+    $log->errorf('Missing command in Pluggable executable configuration');
+    Google::Auth::Error->throw('Missing command in executable configuration');
+  }
+
+  my $env_vars = $exec->{environment_variables} // {};
+  local %ENV = %ENV;
+  while (my ($k, $v) = each %$env_vars) {
+    $ENV{$k} = $v;
+  }
+
+  # Extract executable to verify existence
+  my $executable;
+  if ($command =~ /^\s*"([^"]+)"/) {
+    $executable = $1;
+  } elsif ($command =~ /^\s*'([^']+)'/) {
+    $executable = $1;
+  } elsif ($command =~ /^\s*(\S+)/) {
+    $executable = $1;
+  }
+
+  if (defined $executable) {
+    my $found = 0;
+    if (-f $executable && -x _ ) {
+      $found = 1;
+    } else {
+      # Search PATH
+      for my $dir (split /:/, ($ENV{PATH} // '')) {
+        my $path = "$dir/$executable";
+        if (-f $path && -x _) {
+          $found = 1;
+          last;
+        }
+      }
     }
 
-    my $source = $self->credential_source;
-    my $exec   = $source->{executable};
-    if ( !defined $exec ) {
-        $log->errorf('Missing executable configuration in Pluggable credential_source');
-        Google::Auth::Error->throw('Missing executable configuration in credential_source');
+    if (!$found) {
+      $log->errorf('Executable not found or not executable: %s', $executable);
+      Google::Auth::Error->throw(
+        "Executable not found or not executable: $executable");
     }
+  }
 
-    my $command = $exec->{command};
-    if ( !defined $command ) {
-        $log->errorf('Missing command in Pluggable executable configuration');
-        Google::Auth::Error->throw('Missing command in executable configuration');
-    }
+  # Untaint command for Taint mode (user has explicitly enabled executables and we have verified the executable exists)
+  if ($command =~ /^(.*)$/s) {
+    $command = $1;
+  }
 
-    my $env_vars = $exec->{environment_variables} // {};
-    local %ENV = %ENV;
-    while ( my ( $k, $v ) = each %$env_vars ) {
-        $ENV{$k} = $v;
-    }
+  $log->infof('Executing Pluggable credential command: %s', $command);
 
-    $log->infof('Executing Pluggable credential command: %s', $command);
-    
-    my $timeout = $exec->{timeout_millis} ? $exec->{timeout_millis} / 1000 : 30;
-    my ($stdout, $stderr, $exit);
-    
-    eval {
-        local $SIG{ALRM} = sub { die "Timeout\n" };
-        alarm($timeout);
-        ($stdout, $stderr, $exit) = capture {
-            system($command);
-        };
-        alarm(0);
+  my $timeout = $exec->{timeout_millis} ? $exec->{timeout_millis} / 1000 : 30;
+  my ($stdout, $stderr, $exit);
+
+  eval {
+    local $SIG{ALRM} = sub { die "Timeout\n" };
+    alarm($timeout);
+    ($stdout, $stderr, $exit) = capture {
+      system($command);
     };
+    alarm(0);
+  };
+  if ($@) {
+    alarm(0);
+    if ($@ eq "Timeout\n") {
+      $log->errorf('Pluggable command timed out after %d seconds', $timeout);
+      Google::Auth::Error->throw(
+        "Pluggable command timed out after $timeout seconds");
+    } else {
+      die $@;    # Re-throw other errors
+    }
+  }
+
+  if ($exit != 0) {
+    my $exit_code = $exit >> 8;
+    $log->errorf('Pluggable command failed with exit code %d: %s',
+      $exit_code, $stderr);
+    Google::Auth::Error->throw(
+      'Pluggable credential command failed with exit code ' .
+        $exit_code . ': ' .
+        $stderr);
+  }
+
+  my $format      = $source->{format} // {};
+  my $format_type = $format->{type}   // 'json';
+
+  my $token;
+  if ($format_type eq 'json') {
+    $log->tracef('Parsing JSON output from Pluggable command...');
+    my $clean_stdout = $stdout;
+    $clean_stdout =~ s/^\s*['"]?|['"]?\s*$//g;
+    my $data =
+      eval { decode_json($stdout) } || eval { decode_json($clean_stdout) };
     if ($@) {
-        alarm(0);
-        if ($@ eq "Timeout\n") {
-            $log->errorf('Pluggable command timed out after %d seconds', $timeout);
-            Google::Auth::Error->throw("Pluggable command timed out after $timeout seconds");
-        }
-        else {
-            die $@; # Re-throw other errors
-        }
+      $log->errorf('Pluggable JSON parsing failed: %s', $@);
+      Google::Auth::Error->throw(
+        'Failed to parse JSON from pluggable command output: ' . $@);
     }
 
-    if ($exit != 0) {
-        my $exit_code = $exit >> 8;
-        $log->errorf('Pluggable command failed with exit code %d: %s', $exit_code, $stderr);
-        Google::Auth::Error->throw('Pluggable credential command failed with exit code ' . $exit_code . ': ' . $stderr);
+    # Schema Validation
+    unless (defined $data->{version}
+      && defined $data->{success}
+      && defined $data->{expiration_time})
+    {
+      $log->errorf(
+'Pluggable command output missing required schema fields (version, success, expiration_time)'
+      );
+      Google::Auth::Error->throw(
+'Pluggable command output missing required schema fields (version, success, expiration_time)'
+      );
     }
-
-    my $format      = $source->{format} // {};
-    my $format_type = $format->{type} // 'json';
-
-    my $token;
-    if ( $format_type eq 'json' ) {
-        $log->tracef('Parsing JSON output from Pluggable command...');
-        my $clean_stdout = $stdout;
-        $clean_stdout =~ s/^\s*['"]?|['"]?\s*$//g;
-        my $data = eval { decode_json($stdout) } || eval { decode_json($clean_stdout) };
-        if ($@) {
-            $log->errorf('Pluggable JSON parsing failed: %s', $@);
-            Google::Auth::Error->throw('Failed to parse JSON from pluggable command output: ' . $@);
-        }
-
-        # Schema Validation
-        unless ( defined $data->{version} && defined $data->{success} && defined $data->{expiration_time} ) {
-            $log->errorf('Pluggable command output missing required schema fields (version, success, expiration_time)');
-            Google::Auth::Error->throw('Pluggable command output missing required schema fields (version, success, expiration_time)');
-        }
-        unless ( $data->{success} ) {
-            $log->errorf('Pluggable command reported failure (success=false)');
-            Google::Auth::Error->throw('Pluggable command reported failure (success=false)');
-        }
-        my $field = $format->{subject_token_field_name} // 'id_token';
-        $token = $data->{$field};
+    unless ($data->{success}) {
+      $log->errorf('Pluggable command reported failure (success=false)');
+      Google::Auth::Error->throw(
+        'Pluggable command reported failure (success=false)');
     }
-    elsif ( $format_type eq 'text' ) {
-        $log->tracef('Using raw text output from Pluggable command...');
-        $token = $stdout;
-        $token =~ s/\r?\n$//;
-    }
-    else {
-        $log->errorf('Invalid Pluggable credential_source format: %s', $format_type);
-        Google::Auth::Error->throw('Invalid credential_source format: ' . $format_type);
-    }
+    my $field = $format->{subject_token_field_name} // 'id_token';
+    $token = $data->{$field};
+  } elsif ($format_type eq 'text') {
+    $log->tracef('Using raw text output from Pluggable command...');
+    $token = $stdout;
+    $token =~ s/\r?\n$//;
+  } else {
+    $log->errorf('Invalid Pluggable credential_source format: %s',
+      $format_type);
+    Google::Auth::Error->throw(
+      'Invalid credential_source format: ' . $format_type);
+  }
 
-    if ( !defined $token ) {
-        $log->errorf('Pluggable command returned empty subject token.');
-        Google::Auth::Error->throw('Pluggable credential command did not return a valid subject token');
-    }
+  if (!defined $token) {
+    $log->errorf('Pluggable command returned empty subject token.');
+    Google::Auth::Error->throw(
+      'Pluggable credential command did not return a valid subject token');
+  }
 
-    $log->tracef('Pluggable subject token retrieved successfully.');
-    return $token;
+  $log->tracef('Pluggable subject token retrieved successfully.');
+  return $token;
 }
 
 1;
