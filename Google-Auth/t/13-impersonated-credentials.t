@@ -156,6 +156,19 @@ subtest 'Validation and Configuration Errors' => sub {
     qr/Source credentials can't be of type impersonated_service_account/,
     'throws error on nested impersonation'
   );
+
+  # 4. Safety violation on invalid impersonation URL
+  my $creds_evil = Google::Auth::ImpersonatedServiceAccountCredentials->new(
+    source_credentials => MockSource->new(),
+    impersonation_url  => 'http://evil.com/impersonate',
+    scope              => 'https://www.googleapis.com/auth/cloud-platform',
+  );
+  eval { $creds_evil->fetch_access_token(); };
+  like(
+    $@,
+    qr/carries security violation/,
+    'throws error on invalid domain in impersonation_url'
+  );
 };
 
 subtest 'Impersonation HTTP Exchange Failure' => sub {

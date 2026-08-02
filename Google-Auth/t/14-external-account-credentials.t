@@ -321,6 +321,31 @@ subtest 'Initialization and Validation Errors' => sub {
 'does not throw security violation when custom universe is enabled via env var'
     );
   }
+
+  # 10. make_creds bypass attempt with attacker-supplied universe_domain in JSON
+  require Google::Auth::DefaultCredentials;
+  my $creds_bypass_make_creds = eval {
+    Google::Auth::DefaultCredentials->make_creds(
+      json_key => {
+        type     => 'external_account',
+        audience =>
+'//iam.googleapis.com/projects/1/locations/global/workloadIdentityPools/p/providers/x',
+        subject_token_type => 'urn:ietf:params:oauth:token-type:jwt',
+        universe_domain    => 'evil-make-creds.com',
+        token_url          => 'https://sts.evil-make-creds.com/sts',
+        credential_source  => {
+          url    => 'https://evil-make-creds.com/subject',
+          format => {type => 'text'},
+        },
+      });
+  };
+  ok(defined $creds_bypass_make_creds, 'make_creds returned an object');
+  eval { $creds_bypass_make_creds->retrieve_subject_token(); };
+  like(
+    $@,
+    qr/carries security violation/,
+'make_creds does not bypass security violation on attacker-supplied universe_domain'
+  );
 };
 
 subtest 'STS Exchange Failure' => sub {

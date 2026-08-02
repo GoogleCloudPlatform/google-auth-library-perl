@@ -65,6 +65,8 @@ sub fetch_access_token {
   my $refresh_token = $self->refresh_token;
   my $token_uri     = $self->token_uri // 'https://oauth2.googleapis.com/token';
 
+  $self->_validate_url($token_uri, 'token_uri');
+
   if (!defined $client_id || !defined $client_secret || !defined $refresh_token)
   {
     $log->errorf(

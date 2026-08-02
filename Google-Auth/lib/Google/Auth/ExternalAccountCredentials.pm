@@ -70,8 +70,14 @@ has _is_universe_pinned => (
 
 around BUILDARGS => sub {
   my ($orig, $class, @args) = @_;
-  my $args            = $class->$orig(@args);
-  my $pinned_universe = exists $args->{universe_domain};
+  my $args = $class->$orig(@args);
+
+  my $pinned_universe;
+  if (exists $args->{_is_universe_pinned}) {
+    $pinned_universe = $args->{_is_universe_pinned};
+  } else {
+    $pinned_universe = exists $args->{universe_domain};
+  }
 
   if (my $json = $args->{json_key}) {
     $args->{audience}           //= $json->{audience};
@@ -325,48 +331,6 @@ sub fetch_access_token {
   $self->expires_at($expire_iso);
 
   return $sts_token;
-}
-
-sub _validate_url {
-  my ($self, $url_str, $name) = @_;
-  return unless defined $url_str;
-
-  my $uri  = URI->new($url_str);
-  my $host = $uri->host;
-
-  unless ($host) {
-    Google::Auth::Error->throw("Invalid URL for $name: $url_str");
-  }
-
-  my $universe_domain = $self->universe_domain // 'googleapis.com';
-
-  my $is_valid = 0;
-  if ($host eq 'googleapis.com' || $host =~ /\.googleapis.com$/) {
-    $is_valid = 1;
-  } elsif ($host eq $universe_domain || $host =~ /\.\Q$universe_domain\E$/) {
-    if ($self->_is_universe_pinned) {
-      $is_valid = 1;
-    } else {
-      # Not pinned, came from JSON. Only allow if explicitly enabled via env var.
-      if (($ENV{GOOGLE_EXTERNAL_ACCOUNT_ALLOW_CUSTOM_UNIVERSES} // '0') eq '1')
-      {
-        $is_valid = 1;
-      } else {
-        $log->warnf(
-"Custom universe_domain %s detected in JSON but not enabled via GOOGLE_EXTERNAL_ACCOUNT_ALLOW_CUSTOM_UNIVERSES=1",
-          $universe_domain
-        );
-      }
-    }
-  }
-
-  unless ($is_valid) {
-    $log->errorf("URL %s (%s) does not match expected domain (%s)",
-      $name, $url_str, $universe_domain);
-    Google::Auth::Error->throw(
-"URL $name ($url_str) carries security violation: domain does not match $universe_domain or googleapis.com"
-    );
-  }
 }
 
 1;

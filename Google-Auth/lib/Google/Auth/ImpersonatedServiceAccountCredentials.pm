@@ -99,6 +99,8 @@ sub BUILD {
 sub fetch_access_token {
   my ($self, %options) = @_;
 
+  $self->_validate_url($self->impersonation_url, 'impersonation_url');
+
   my $source_creds = $self->source_credentials;
   my $source_token;
 

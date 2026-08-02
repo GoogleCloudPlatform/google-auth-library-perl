@@ -1,5 +1,9 @@
 Revision history for Google-Auth
 
+0.08    Sun Aug 2 2026
+    - Improve safety and validation for external credentials.
+    - Added regression tests for universe domain bypass and sibling class validation gaps.
+
 0.07    Fri Jul 31 2026
     - Hardened credential validation and handling (Custom Universe opt-in safeguards).
     - Added untainting and validation for pluggable credentials commands.
