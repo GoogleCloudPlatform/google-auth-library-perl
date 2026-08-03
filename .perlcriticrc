@@ -13,7 +13,7 @@ severity = 1
 [TestingAndDebugging::ProhibitNoWarnings]
 severity = 1
 
-[BuiltinFunctions::ProhibitStringEval]
+[BuiltinFunctions::ProhibitStringyEval]
 severity = 1
 
 [Modules::RequireBarewordIncludes]

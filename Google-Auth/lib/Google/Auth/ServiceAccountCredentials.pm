@@ -122,6 +122,8 @@ sub fetch_access_token {
   my $client_email = $self->client_email;
   my $token_uri    = $self->token_uri // 'https://oauth2.googleapis.com/token';
 
+  $self->_validate_url($token_uri, 'token_uri');
+
   if (!defined $private_key || !defined $client_email) {
     $log->errorf(
 'Missing private_key or client_email for ServiceAccountCredentials token exchange'

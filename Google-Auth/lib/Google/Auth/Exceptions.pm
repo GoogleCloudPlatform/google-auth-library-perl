@@ -24,7 +24,7 @@ Google::Auth::Exceptions - Exceptions used in the Google::Auth package
 
 =head1 VERSION
 
-Version 0.07
+Version 0.09
 
 =cut
 

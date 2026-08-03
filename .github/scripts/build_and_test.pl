@@ -42,7 +42,7 @@ else {
 my $j_flag = ($num_cores > 1) ? "-j$num_cores" : "";
 
 if ($^O eq 'MSWin32') {
-    $ENV{PERL_CPANM_OPT} = "--prefer-source";
+    # $ENV{PERL_CPANM_OPT} = "--prefer-source";
     for my $lib_dir (@INC) {
         for my $pkg (qw(Package/Stash/XS Clone Params/Util List/MoreUtils/XS Protobuf Auth)) {
             my $xs_dir = File::Spec->catdir($lib_dir, "auto", split(/\//, $pkg));

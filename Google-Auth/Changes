@@ -1,5 +1,10 @@
 Revision history for Google-Auth
 
+0.09    Mon Aug 3 2026
+    - Hardened ServiceAccountCredentials against SSRF by validating token_uri domain.
+    - Added regression test for ServiceAccountCredentials token_uri SSRF.
+    - Corrected typo in .perlcriticrc policy name (ProhibitStringEval -> ProhibitStringyEval).
+
 0.08    Sun Aug 2 2026
     - Improve safety and validation for external credentials.
     - Added regression tests for universe domain bypass and sibling class validation gaps.
@@ -15,7 +20,7 @@ Revision history for Google-Auth
 0.06    Tue Jul 28 2026
     - Added SECURITY.md
     - Pluggable credentials "executable" now require explicit opt-in via GOOGLE_EXTERNAL_ACCOUNT_ALLOW_EXECUTABLES=1.
-    - Added URL Domain Validation to prevent security violations via invalid or compromised domains in credential sources.
+    - Added URL Domain Validation (`ExternalAccountCredentials::_validate_url`) to reject any `credential_source.url`, `token_url`, or `service_account_impersonation_url` whose host is not `googleapis.com`, `*.googleapis.com`, `$universe_domain`, or `*.$universe_domain`.
 
 0.05    Wed Jul 22 2026
         - Fixed POD test failures.
