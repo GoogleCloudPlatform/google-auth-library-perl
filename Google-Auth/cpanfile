@@ -11,3 +11,4 @@ requires 'Test::Perl::Critic';
 requires 'Perl::Critic::Policy::Modules::RequireEndWithOne';
 requires 'Perl::Critic::Policy::Modules::ProhibitMultiplePackages';
 requires 'Perl::Critic::Policy::Subroutines::ProhibitBuiltinHomonyms';
+requires 'Clone';

@@ -26,7 +26,7 @@ Google::Auth::EnvironmentVars - Environment variables used by Google::Auth
 
 =head1 VERSION
 
-Version 0.07
+Version 0.09
 
 =cut
 

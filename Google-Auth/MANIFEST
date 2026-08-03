@@ -39,6 +39,7 @@ t/14-external-account-credentials.t
 t/15-aws-wif-credentials.t
 t/16-pluggable-credentials.t
 t/17-logging-verification.t
+t/18-sa-token-uri-ssrf.t
 t/default-credentials.t
 t/env-vars.t
 t/exceptions.t
