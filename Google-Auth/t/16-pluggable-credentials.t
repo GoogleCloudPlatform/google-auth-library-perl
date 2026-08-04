@@ -66,7 +66,7 @@ subtest 'Pluggable WIF Disabled without Env Var' => sub {
 
 subtest 'Pluggable WIF Success JSON Output' => sub {
   my $command = sprintf(
-'"%s" -e "print q({\"version\":1,\"success\":true,\"expiration_time\":1234567890,\"my_token_field\":\"mock_pluggable_token\"})"',
+    '"%s" -e print+qq({\"version\":1,\"success\":true,\"expiration_time\":1234567890,\"my_token_field\":\"mock_pluggable_token\"})',
     $^X);
   my $creds = Google::Auth::ExternalAccountCredentials->make_creds(
     audience =>
@@ -114,13 +114,9 @@ subtest 'Pluggable WIF Success Text Output' => sub {
 subtest 'Pluggable WIF Environment Variable Injection' => sub {
   # Command that prints a JSON containing the value of the environment variable MOCK_ENV_VAR
   # We use perl to print it portably
-  my $env_sigil = $^O eq 'MSWin32' ? '$' : '\$';
-  my $command =
-    '"' .
-    $^X .
-'" -e "print q({) . chr(34) . q(version) . chr(34) . q(:1,) . chr(34) . q(success) . chr(34) . q(:true,) . chr(34) . q(expiration_time) . chr(34) . q(:1234567890,) . chr(34) . q(id_token) . chr(34) . q(:) . chr(34) . '
-    . $env_sigil .
-    'ENV{MOCK_ENV_VAR} . chr(34) . q(})"';
+  my $command = sprintf(
+    '"%s" -e print+qq({\"version\":1,\"success\":true,\"expiration_time\":1234567890,\"id_token\":\"$ENV{MOCK_ENV_VAR}\"})',
+    $^X);
 
   my $creds = Google::Auth::ExternalAccountCredentials->make_creds(
     audience =>

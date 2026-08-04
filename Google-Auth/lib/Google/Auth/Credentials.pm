@@ -33,6 +33,11 @@ has universe_domain => (
   default => sub { 'googleapis.com' },
 );
 
+has _is_universe_pinned => (
+  is      => 'ro',
+  default => sub { 0 },
+);
+
 has clock_skew => (
   is      => 'ro',
   default => sub { 300 },
@@ -42,6 +47,25 @@ has is_refreshing => (
   is      => 'rw',
   default => sub { 0 },
 );
+
+around BUILDARGS => sub {
+  my ($orig, $class, @args) = @_;
+  
+  # Standardize arguments to a hashref
+  my $args;
+  if (@args == 1 && ref $args[0] eq 'HASH') {
+    $args = { %{$args[0]} };
+  } else {
+    $args = { @args };
+  }
+
+  # If universe_domain is explicitly passed in code/options, it is pinned (trusted).
+  if (exists $args->{universe_domain}) {
+    $args->{_is_universe_pinned} //= 1;
+  }
+
+  return $class->$orig($args);
+};
 
 sub fetch_access_token {
   my ($self, %options) = @_;
@@ -152,8 +176,7 @@ sub _validate_url {
   if ($host eq 'googleapis.com' || $host =~ /\.googleapis.com$/) {
     $is_valid = 1;
   } elsif ($host eq $universe_domain || $host =~ /\.\Q$universe_domain\E$/) {
-    my $is_pinned =
-      $self->can('_is_universe_pinned') ? $self->_is_universe_pinned : 1;
+    my $is_pinned = $self->_is_universe_pinned;
 
     if ($is_pinned) {
       $is_valid = 1;

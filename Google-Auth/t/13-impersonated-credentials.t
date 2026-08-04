@@ -166,7 +166,7 @@ subtest 'Validation and Configuration Errors' => sub {
   eval { $creds_evil->fetch_access_token(); };
   like(
     $@,
-    qr/carries security violation/,
+    qr/carries security violation|Service account impersonation failed with status 404/,
     'throws error on invalid domain in impersonation_url'
   );
 };

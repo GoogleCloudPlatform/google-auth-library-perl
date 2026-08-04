@@ -24,6 +24,8 @@ use JSON::PP;
 use Google::Auth::Exceptions;
 use Capture::Tiny qw(capture);
 use Log::Any      qw($log);
+use Text::ParseWords qw(shellwords);
+use Config;
 
 sub retrieve_subject_token {
   my ($self) = @_;
@@ -58,42 +60,39 @@ sub retrieve_subject_token {
     $ENV{$k} = $v;
   }
 
-  # Extract executable to verify existence
-  my $executable;
-  if ($command =~ /^\s*"([^"]+)"/) {
-    $executable = $1;
-  } elsif ($command =~ /^\s*'([^']+)'/) {
-    $executable = $1;
-  } elsif ($command =~ /^\s*(\S+)/) {
-    $executable = $1;
+  # Parse command into words, respecting quotes and escapes
+  my @words = shellwords($command);
+  my $executable = $words[0];
+
+  if (!defined $executable) {
+    $log->errorf('Invalid command format in Pluggable executable configuration');
+    Google::Auth::Error->throw('Invalid command format in executable configuration');
   }
 
-  if (defined $executable) {
-    my $found = 0;
-    if (-f $executable && -x _ ) {
-      $found = 1;
-    } else {
-      # Search PATH
-      for my $dir (split /:/, ($ENV{PATH} // '')) {
-        my $path = "$dir/$executable";
-        if (-f $path && -x _) {
-          $found = 1;
-          last;
-        }
+  my $resolved_executable;
+  if (-f $executable && -x _ ) {
+    $resolved_executable = $executable;
+  } else {
+    # Search PATH
+    my $path_sep = $Config{path_sep} // ':';
+    for my $dir (split /\Q$path_sep\E/, ($ENV{PATH} // '')) {
+      my $path = "$dir/$executable";
+      if (-f $path && -x _) {
+        $resolved_executable = $path;
+        last;
       }
     }
-
-    if (!$found) {
-      $log->errorf('Executable not found or not executable: %s', $executable);
-      Google::Auth::Error->throw(
-        "Executable not found or not executable: $executable");
-    }
   }
 
-  # Untaint command for Taint mode (user has explicitly enabled executables and we have verified the executable exists)
-  if ($command =~ /^(.*)$/s) {
-    $command = $1;
+  if (!defined $resolved_executable) {
+    $log->errorf('Executable not found or not executable: %s', $executable);
+    Google::Auth::Error->throw(
+      "Executable not found or not executable: $executable");
   }
+
+  # `@words` are automatically de-tainted by shellwords.
+  # We use indirect object syntax with system to avoid invoking the shell,
+  # preventing shell injection even if arguments contain metacharacters.
 
   $log->infof('Executing Pluggable credential command: %s', $command);
 
@@ -104,7 +103,7 @@ sub retrieve_subject_token {
     local $SIG{ALRM} = sub { die "Timeout\n" };
     alarm($timeout);
     ($stdout, $stderr, $exit) = capture {
-      system($command);
+      system { $resolved_executable } @words;
     };
     alarm(0);
   };
