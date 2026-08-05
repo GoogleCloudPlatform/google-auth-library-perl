@@ -224,14 +224,9 @@ $source =
 
 $ua->unmap_all();
 $ua->map_response(qr/\Q$certs_uri\E/, $not_x509_hr);
-TODO:
-{
-  local $TODO = 'return code and content do not match for some reason';
-  throws_ok { $source->refresh_keys }
-  qr/KeySourceError: Unable to retrieve data from/,
-    'raises an error when failing to parse x509 from the site';
-
-}
+throws_ok { $source->refresh_keys }
+  qr/Failed to load X509 certificate for key hi/,
+  'raises an error when failing to parse x509 from the site';
 
 #
 # Positive x509 test
