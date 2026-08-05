@@ -118,6 +118,7 @@ generate_self_signed_cert()
     OUTPUT:
         RETVAL
 
+#if OPENSSL_VERSION_NUMBER >= 0x30000000L
 SV *
 load_rsa_pubkey(SV *n_sv, SV *e_sv)
     PREINIT:
@@ -133,7 +134,6 @@ load_rsa_pubkey(SV *n_sv, SV *e_sv)
         n_bin = (unsigned char *)SvPV(n_sv, n_len);
         e_bin = (unsigned char *)SvPV(e_sv, e_len);
 
- #if OPENSSL_VERSION_NUMBER >= 0x30000000L
         OSSL_PARAM_BLD *bld = OSSL_PARAM_BLD_new();
         OSSL_PARAM *params = NULL;
         EVP_PKEY_CTX *pctx = NULL;
@@ -172,7 +172,32 @@ load_rsa_pubkey(SV *n_sv, SV *e_sv)
         BN_free(e_bn);
 
         if (!pkey) XSRETURN_UNDEF;
- #else
+
+        retval = newSViv(PTR2IV(pkey));
+        retval = newRV_noinc(retval);
+        sv_bless(retval, gv_stashpv("Google::Auth::PublicKey", 1));
+
+        RETVAL = retval;
+    OUTPUT:
+        RETVAL
+
+#else
+
+SV *
+load_rsa_pubkey(SV *n_sv, SV *e_sv)
+    PREINIT:
+        unsigned char *n_bin = NULL;
+        unsigned char *e_bin = NULL;
+        STRLEN n_len, e_len;
+        EVP_PKEY *pkey = NULL;
+        RSA *rsa = NULL;
+        BIGNUM *n_bn = NULL;
+        BIGNUM *e_bn = NULL;
+        SV *retval = NULL;
+    CODE:
+        n_bin = (unsigned char *)SvPV(n_sv, n_len);
+        e_bin = (unsigned char *)SvPV(e_sv, e_len);
+
         rsa = RSA_new();
         if (!rsa) XSRETURN_UNDEF;
 
@@ -203,7 +228,6 @@ load_rsa_pubkey(SV *n_sv, SV *e_sv)
             EVP_PKEY_free(pkey);
             XSRETURN_UNDEF;
         }
- #endif
 
         retval = newSViv(PTR2IV(pkey));
         retval = newRV_noinc(retval);
@@ -213,6 +237,9 @@ load_rsa_pubkey(SV *n_sv, SV *e_sv)
     OUTPUT:
         RETVAL
 
+#endif
+
+#if OPENSSL_VERSION_NUMBER >= 0x30000000L
 SV *
 load_ec_pubkey(const char *curve_name, SV *x_sv, SV *y_sv)
     PREINIT:
@@ -237,7 +264,6 @@ load_ec_pubkey(const char *curve_name, SV *x_sv, SV *y_sv)
         }
         if (nid == NID_undef) XSRETURN_UNDEF;
 
- #if OPENSSL_VERSION_NUMBER >= 0x30000000L
         OSSL_PARAM_BLD *bld = OSSL_PARAM_BLD_new();
         OSSL_PARAM *params = NULL;
         EVP_PKEY_CTX *pctx = NULL;
@@ -272,7 +298,41 @@ load_ec_pubkey(const char *curve_name, SV *x_sv, SV *y_sv)
         if (pctx) EVP_PKEY_CTX_free(pctx);
 
         if (!pkey) XSRETURN_UNDEF;
- #else
+
+        retval = newSViv(PTR2IV(pkey));
+        retval = newRV_noinc(retval);
+        sv_bless(retval, gv_stashpv("Google::Auth::PublicKey", 1));
+
+        RETVAL = retval;
+    OUTPUT:
+        RETVAL
+
+#else
+
+SV *
+load_ec_pubkey(const char *curve_name, SV *x_sv, SV *y_sv)
+    PREINIT:
+        unsigned char *x_bin = NULL;
+        unsigned char *y_bin = NULL;
+        STRLEN x_len, y_len;
+        EVP_PKEY *pkey = NULL;
+        EC_KEY *eckey = NULL;
+        EC_GROUP *group = NULL;
+        EC_POINT *point = NULL;
+        BIGNUM *x_bn = NULL;
+        BIGNUM *y_bn = NULL;
+        int nid;
+        SV *retval = NULL;
+    CODE:
+        x_bin = (unsigned char *)SvPV(x_sv, x_len);
+        y_bin = (unsigned char *)SvPV(y_sv, y_len);
+
+        nid = EC_curve_nist2nid(curve_name);
+        if (nid == NID_undef) {
+            nid = OBJ_txt2nid(curve_name);
+        }
+        if (nid == NID_undef) XSRETURN_UNDEF;
+
         eckey = EC_KEY_new();
         if (!eckey) XSRETURN_UNDEF;
 
@@ -348,7 +408,6 @@ load_ec_pubkey(const char *curve_name, SV *x_sv, SV *y_sv)
         BN_free(y_bn);
         EC_POINT_free(point);
         EC_GROUP_free(group);
- #endif
 
         retval = newSViv(PTR2IV(pkey));
         retval = newRV_noinc(retval);
@@ -357,6 +416,8 @@ load_ec_pubkey(const char *curve_name, SV *x_sv, SV *y_sv)
         RETVAL = retval;
     OUTPUT:
         RETVAL
+
+#endif
 
 SV *
 load_pubkey_from_x509_cert(SV *cert_pem_sv)
