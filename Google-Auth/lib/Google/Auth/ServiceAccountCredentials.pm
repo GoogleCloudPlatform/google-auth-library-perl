@@ -85,7 +85,11 @@ has scope => (
 
 has ua => (
   is      => 'ro',
-  default => sub { LWP::UserAgent->new(timeout => 10) },
+  default => sub {
+    my $ua = LWP::UserAgent->new(timeout => 10);
+    $ua->env_proxy;
+    return $ua;
+  },
 );
 
 around BUILDARGS => sub {

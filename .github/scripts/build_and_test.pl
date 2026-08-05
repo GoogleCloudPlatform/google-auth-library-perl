@@ -9,6 +9,7 @@ use File::Find qw(find);
 use File::Path qw(rmtree);
 
 my $sep = $^O eq 'MSWin32' ? ';' : ':';
+my $devnull = $^O eq 'MSWin32' ? 'nul' : '/dev/null';
 if ($^O eq 'MSWin32') {
     my $perl_dir = dirname($^X);
     my $c_bin = File::Spec->catdir(dirname($perl_dir), "c", "bin");
@@ -30,12 +31,12 @@ if ($^O eq 'MSWin32') {
     $num_cores = $ENV{NUMBER_OF_PROCESSORS} || 1;
 }
 elsif ($^O eq 'darwin') {
-    my $val = `sysctl -n hw.logicalcpu 2>/dev/null`;
+    my $val = `sysctl -n hw.logicalcpu 2>$devnull`;
     chomp $val;
     $num_cores = $val if $val && $val =~ /^\d+$/;
 }
 else {
-    my $val = `nproc 2>/dev/null`;
+    my $val = `nproc 2>$devnull`;
     chomp $val;
     $num_cores = $val if $val && $val =~ /^\d+$/;
 }
@@ -82,19 +83,19 @@ elsif ($ENV{CI_TEST_ALL}) {
 else {
     my $target_ref = $ENV{PRE_PUSH_TARGET_REF} || $ENV{PRE_PUSH_REMOTE_REF};
     if (!$target_ref) {
-        my $upstream = `git rev-parse --verify \@{u} 2>/dev/null`;
+        my $upstream = `git rev-parse --verify \@{u} 2>$devnull`;
         chomp $upstream;
         if ($upstream) {
             $target_ref = $upstream;
         }
         else {
-            my $base = `git merge-base HEAD origin/main 2>/dev/null || git merge-base HEAD origin/master 2>/dev/null`;
+            my $base = `git merge-base HEAD origin/main 2>$devnull || git merge-base HEAD origin/master 2>$devnull`;
             chomp $base;
             $target_ref = $base || 'HEAD~1';
         }
     }
     print "=== Pre-push Delta Detection: Comparing HEAD against last pushed ref [$target_ref] ===\n";
-    my @diff_files = `git diff --name-only $target_ref...HEAD 2>/dev/null`;
+    my @diff_files = `git diff --name-only $target_ref...HEAD 2>$devnull`;
     chomp @diff_files;
     
     my %changed_dirs;

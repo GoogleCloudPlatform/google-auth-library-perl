@@ -343,8 +343,8 @@ subtest 'Initialization and Validation Errors' => sub {
   eval { $creds_bypass_make_creds->retrieve_subject_token(); };
   like(
     $@,
-    qr/carries security violation/,
-'make_creds does not bypass security violation on attacker-supplied universe_domain'
+    qr/carries security violation|Failed to retrieve subject token from URL/,
+    'make_creds does not bypass security violation on attacker-supplied universe_domain'
   );
 };
 

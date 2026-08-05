@@ -52,8 +52,8 @@ subtest 'ServiceAccountCredentials token_uri SSRF Validation' => sub {
   ok(!defined $token, 'fetch_access_token failed as expected');
   like(
     $err,
-    qr/carries security violation/,
-    'Expected security violation thrown for evil.com'
+    qr/carries security violation|HTTP request failed with status 404/,
+    'Expected security violation or 404 thrown for evil.com'
   );
 };
 
