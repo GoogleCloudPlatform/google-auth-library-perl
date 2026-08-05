@@ -13,6 +13,7 @@
 #include <openssl/ec.h>
 #include <openssl/ecdsa.h>
 #include <openssl/obj_mac.h>
+#include <openssl/rand.h>
 #include <string.h>
 
 #if OPENSSL_VERSION_NUMBER >= 0x30000000L
@@ -115,6 +116,27 @@ generate_self_signed_cert()
             XSRETURN_UNDEF;
         }
         RETVAL = result;
+    OUTPUT:
+        RETVAL
+
+SV *
+get_secure_random_bytes(int num_bytes)
+    PREINIT:
+        unsigned char *buf = NULL;
+        SV *retval = NULL;
+    CODE:
+        if (num_bytes <= 0) {
+            XSRETURN_UNDEF;
+        }
+        Newx(buf, num_bytes, unsigned char);
+        if (RAND_bytes(buf, num_bytes) == 1) {
+            retval = newSVpv((char *)buf, num_bytes);
+            RETVAL = retval;
+        } else {
+            Safefree(buf);
+            XSRETURN_UNDEF;
+        }
+        Safefree(buf);
     OUTPUT:
         RETVAL
 
