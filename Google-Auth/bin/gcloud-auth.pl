@@ -18,7 +18,7 @@ use warnings;
 use Getopt::Long;
 use Pod::Usage;
 use File::Spec;
-use JSON::MaybeXS;
+use JSON::MaybeXS qw(encode_json decode_json);
 use Log::Any qw($log);
 use IO::Socket::INET;
 use IO::Select;
@@ -52,6 +52,7 @@ sub run {
     my $verbose = 0;
     my $client_id_file;
     my $store_dir = File::Spec->catdir($ENV{HOME} // '.', '.google-auth-perl', 'tokens');
+    my $port = 0; # Default auto-assign
 
     local @ARGV = @args;
     
@@ -61,6 +62,7 @@ sub run {
         'verbose|v'        => \$verbose,
         'client-id-file=s' => \$client_id_file,
         'store-dir=s'      => \$store_dir,
+        'port=i'           => \$port,
     ) or pod2usage(2);
 
     if ($verbose) {
@@ -81,6 +83,7 @@ sub run {
         do_login(
             client_id_file => $client_id_file,
             store_dir      => $store_dir,
+            port           => $port,
         );
     } elsif ($command eq 'application-default') {
         my $subcommand = shift @ARGV;
@@ -91,6 +94,7 @@ sub run {
             do_adc_login(
                 client_id_file => $client_id_file,
                 store_dir      => $store_dir,
+                port           => $port,
             );
         } else {
             die "Unsupported application-default subcommand: $subcommand\n";
@@ -102,51 +106,24 @@ sub run {
     }
 }
 
-sub do_login {
-    my (%options) = @_;
-    $log->info('Command: login initiated');
-    $log->trace('Entering do_login');
-    
-    my $client_id_file = $options{client_id_file};
-    my $store_dir      = $options{store_dir};
-    
-    unless ($client_id_file && -f $client_id_file) {
-        $log->error('Client ID file is required for login');
-        die "Error: --client-id-file is required and must exist.\n";
-    }
-    
-    my $client_id = Google::Auth::ClientId->from_file($client_id_file);
-    my $token_store = Google::Auth::Stores::FileTokenStore->new(store_dir => $store_dir);
-    
+sub _start_listener {
+    my ($port) = @_;
     my $listener = IO::Socket::INET->new(
         LocalHost => '127.0.0.1',
-        LocalPort => 0, # Auto-assign
+        LocalPort => $port || 0, # Auto-assign if 0
         Proto     => 'tcp',
         Listen    => 1,
         ReuseAddr => 1,
     );
-    
     unless ($listener) {
         $log->errorf('Failed to start loopback listener: %s', $!);
         die "Error: Failed to start loopback listener: $!\n";
     }
-    
-    my $port = $listener->sockport();
-    $log->debugf('Loopback listener started on port %d', $port);
-    
-    my $redirect_uri = "http://127.0.0.1:$port/";
-    
-    my $auth = Google::Auth::UserAuthorizer->new(
-        client_id    => $client_id,
-        scope        => \@DEFAULT_SCOPES,
-        token_store  => $token_store,
-        callback_uri => $redirect_uri,
-    );
-    
-    my $auth_url = $auth->get_authorization_url();
-    
-    print "\nGo to the following link in your browser:\n\n    $auth_url\n\n";
-    $log->info('Waiting for authorization code...');
+    return $listener;
+}
+
+sub _wait_for_code {
+    my ($listener) = @_;
     
     my $select = IO::Select->new($listener);
     my $client;
@@ -182,11 +159,56 @@ sub do_login {
     
     if ($code) {
         $log->info('Authorization code received successfully');
-        
         print $client "HTTP/1.1 200 OK\r\nConnection: close\r\nContent-Type: text/plain\r\n\r\nSuccess! You can close this window.\r\n";
         close $client;
         close $listener;
-        
+        return $code;
+    } else {
+        $log->error('Failed to get authorization code from callback');
+        print $client "HTTP/1.1 400 Bad Request\r\nConnection: close\r\nContent-Type: text/plain\r\n\r\nError: No code received.\r\n";
+        close $client;
+        close $listener;
+        die "Error: Failed to get authorization code.\n";
+    }
+}
+
+sub do_login {
+    my (%options) = @_;
+    $log->info('Command: login initiated');
+    $log->trace('Entering do_login');
+    
+    my $client_id_file = $options{client_id_file};
+    my $store_dir      = $options{store_dir};
+    
+    unless ($client_id_file && -f $client_id_file) {
+        $log->error('Client ID file is required for login');
+        die "Error: --client-id-file is required and must exist.\n";
+    }
+    
+    my $client_id = Google::Auth::ClientId->from_file($client_id_file);
+    my $token_store = Google::Auth::Stores::FileTokenStore->new(store_dir => $store_dir);
+    
+    my $listener = _start_listener($options{port});
+    my $port = $listener->sockport();
+    $log->debugf('Loopback listener started on port %d', $port);
+    
+    my $redirect_uri = "http://127.0.0.1:$port/";
+    
+    my $auth = Google::Auth::UserAuthorizer->new(
+        client_id    => $client_id,
+        scope        => \@DEFAULT_SCOPES,
+        token_store  => $token_store,
+        callback_uri => $redirect_uri,
+    );
+    
+    my $auth_url = $auth->get_authorization_url();
+    
+    print "\nGo to the following link in your browser:\n\n    $auth_url\n\n";
+    $log->info('Waiting for authorization code...');
+    
+    my $code = _wait_for_code($listener);
+    
+    if ($code) {
         $log->info('Exchanging code for credentials...');
         
         my $user_id = 'default'; # TODO: use email if available
@@ -205,24 +227,121 @@ sub do_login {
         
         $log->info('Login successful. Credentials saved.');
         print "Login successful.\n";
-    } else {
-        $log->error('Failed to get authorization code from callback');
-        print $client "HTTP/1.1 400 Bad Request\r\nConnection: close\r\nContent-Type: text/plain\r\n\r\nError: No code received.\r\n";
-        close $client;
-        close $listener;
-        die "Error: Failed to get authorization code.\n";
     }
     
     $log->trace('Leaving do_login');
 }
 
 sub do_adc_login {
+    my (%options) = @_;
     $log->info('Command: application-default login initiated');
     $log->trace('Entering do_adc_login');
     
-    # TODO: Same flow as login, but save to well-known ADC path in 'authorized_user' format
+    my $client_id_file = $options{client_id_file};
+    my $store_dir      = $options{store_dir};
     
-    $log->trace('Leaving do_adc_login with stub completion');
+    unless ($client_id_file && -f $client_id_file) {
+        $log->error('Client ID file is required for ADC login');
+        die "Error: --client-id-file is required and must exist.\n";
+    }
+    
+    my $client_id = Google::Auth::ClientId->from_file($client_id_file);
+    my $token_store = Google::Auth::Stores::FileTokenStore->new(store_dir => $store_dir);
+    
+    my $listener = _start_listener($options{port});
+    my $port = $listener->sockport();
+    $log->debugf('Loopback listener started on port %d', $port);
+    
+    my $redirect_uri = "http://127.0.0.1:$port/";
+    
+    my $auth = Google::Auth::UserAuthorizer->new(
+        client_id    => $client_id,
+        scope        => \@DEFAULT_SCOPES,
+        token_store  => $token_store,
+        callback_uri => $redirect_uri,
+    );
+    
+    my $auth_url = $auth->get_authorization_url();
+    
+    print "\nGo to the following link in your browser:\n\n    $auth_url\n\n";
+    $log->info('Waiting for authorization code...');
+    
+    my $code = _wait_for_code($listener);
+    
+    if ($code) {
+        $log->info('Exchanging code for credentials...');
+        
+        my $creds;
+        eval {
+            $creds = $auth->get_credentials_from_code(
+                code     => $code,
+                base_url => $redirect_uri,
+            );
+        };
+        if ($@) {
+            $log->errorf('Failed to exchange code: %s', $@);
+            die "Error: Failed to exchange code: $@\n";
+        }
+        
+        $log->info('Code exchanged successfully.');
+        
+        my $adc_path = _get_adc_path();
+        unless ($adc_path) {
+            $log->error('Failed to determine ADC path');
+            die "Error: Failed to determine ADC path (HOME or APPDATA not set?)\n";
+        }
+        
+        $log->debugf('Target ADC path: %s', $adc_path);
+        
+        my $adc_data = {
+            type          => 'authorized_user',
+            client_id     => $creds->client_id,
+            client_secret => $creds->client_secret,
+            refresh_token => $creds->refresh_token,
+        };
+        
+        my ($volume, $directories, $file) = File::Spec->splitpath($adc_path);
+        my $adc_dir = File::Spec->catpath($volume, $directories, '');
+        if (!-d $adc_dir) {
+            require File::Path;
+            eval { File::Path::make_path($adc_dir) };
+            if ($@) {
+                $log->errorf('Failed to create ADC directory %s: %s', $adc_dir, $@);
+                die "Error: Failed to create ADC directory: $@\n";
+            }
+        }
+        
+        require Fcntl;
+        sysopen(my $fh, $adc_path, Fcntl::O_CREAT() | Fcntl::O_WRONLY() | Fcntl::O_TRUNC(), 0600) or 
+            die "Error: Failed to write to $adc_path: $!\n";
+        
+        print $fh encode_json($adc_data);
+        close($fh) or die "Error: Failed to close $adc_path: $!\n";
+        
+        $log->info('ADC Login successful. Credentials saved to ' . $adc_path);
+        print "Application Default Credentials saved to $adc_path\n";
+    }
+    
+    $log->trace('Leaving do_adc_login');
+}
+
+sub _get_adc_path {
+    require Google::Auth::EnvironmentVars;
+    my $env = Google::Auth::EnvironmentVars->new();
+    
+    my $home = $ENV{HOME};
+    if ($^O eq 'MSWin32') {
+        $home = $ENV{APPDATA};
+    }
+    
+    return unless $home;
+    
+    if ($^O eq 'MSWin32') {
+        return File::Spec->catfile($home, 'gcloud', 'application_default_credentials.json');
+    } else {
+        my $config_dir = $env->CLOUD_SDK_CONFIG_DIR || File::Spec->catdir($home, '.config');
+        return File::Spec->catfile($config_dir, 'gcloud', 'application_default_credentials.json');
+    }
 }
 
 sub do_print_access_token {
