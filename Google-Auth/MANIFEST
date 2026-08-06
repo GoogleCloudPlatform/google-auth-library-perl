@@ -63,3 +63,4 @@ META.yml
 bin/gcloud-auth.PL
 bin/gcloud-auth.pl
 xt/05_live_e2e.t
+t/19-gcloud-auth-cli-execution.t
