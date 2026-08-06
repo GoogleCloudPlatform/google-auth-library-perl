@@ -100,7 +100,13 @@ sub run {
             die "Unsupported application-default subcommand: $subcommand\n";
         }
     } elsif ($command eq 'print-access-token') {
-        do_print_access_token();
+        do_print_access_token(
+            store_dir => $store_dir,
+        );
+    } elsif ($command eq 'revoke') {
+        do_revoke(
+            store_dir => $store_dir,
+        );
     } else {
         die "Unsupported command: $command\n";
     }
@@ -345,10 +351,105 @@ sub _get_adc_path {
 }
 
 sub do_print_access_token {
+    my (%options) = @_;
     $log->info('Command: print-access-token initiated');
     $log->trace('Entering do_print_access_token');
     
-    $log->trace('Leaving do_print_access_token with stub completion');
+    my $store_dir = $options{store_dir};
+    my $user_id   = 'default'; # TODO: allow specifying user/account
+    
+    require Google::Auth::Stores::FileTokenStore;
+    my $token_store = Google::Auth::Stores::FileTokenStore->new(store_dir => $store_dir);
+    
+    my $json = $token_store->load($user_id);
+    unless ($json) {
+        $log->error("No credentials found for user $user_id");
+        die "Error: No credentials found. Please run 'login' first.\n";
+    }
+    
+    require JSON::MaybeXS;
+    my $creds_data = JSON::MaybeXS::decode_json($json);
+    
+    require Google::Auth::UserRefreshCredentials;
+    my $creds = Google::Auth::UserRefreshCredentials->new(
+        client_id     => $creds_data->{client_id},
+        client_secret => $creds_data->{client_secret},
+        refresh_token => $creds_data->{refresh_token},
+    );
+    
+    my $token;
+    eval {
+        $token = $creds->get_token();
+    };
+    if ($@) {
+        $log->errorf('Failed to fetch access token: %s', $@);
+        die "Error: Failed to fetch access token: $@\n";
+    }
+    
+    if ($token) {
+        print "$token\n";
+        $log->info('Access token printed successfully');
+    } else {
+        $log->error('Failed to obtain access token (empty)');
+        die "Error: Failed to obtain access token.\n";
+    }
+    
+    $log->trace('Leaving do_print_access_token');
+}
+
+sub do_revoke {
+    my (%options) = @_;
+    $log->info('Command: revoke initiated');
+    $log->trace('Entering do_revoke');
+    
+    my $store_dir = $options{store_dir};
+    my $user_id   = 'default'; # TODO: allow specifying user/account
+    
+    require Google::Auth::Stores::FileTokenStore;
+    my $token_store = Google::Auth::Stores::FileTokenStore->new(store_dir => $store_dir);
+    
+    my $json = $token_store->load($user_id);
+    unless ($json) {
+        $log->warn("No credentials found for user $user_id to revoke");
+        print "No credentials found to revoke.\n";
+        return;
+    }
+    
+    require JSON::MaybeXS;
+    my $creds_data = JSON::MaybeXS::decode_json($json);
+    
+    my $refresh_token = $creds_data->{refresh_token};
+    
+    if ($refresh_token) {
+        $log->info('Revoking refresh token...');
+        
+        # Google revocation endpoint
+        my $revoke_uri = 'https://oauth2.googleapis.com/revoke';
+        
+        # We need an LWP::UserAgent or similar.
+        # Let's see if we can use Google::Auth::UserRefreshCredentials->ua or just LWP directly.
+        # UserRefreshCredentials doesn't expose UA easily without instance.
+        # Let's check Google::Auth::RetryHelper or invent one.
+        
+        require LWP::UserAgent;
+        my $ua = LWP::UserAgent->new();
+        
+        my $res = $ua->post($revoke_uri, { token => $refresh_token });
+        
+        if ($res->is_success) {
+            $log->info('Token revocation request successful');
+        } else {
+            $log->warnf('Token revocation request failed: %s', $res->status_line);
+            # We proceed to delete locally anyway? Yes, common practice.
+        }
+    }
+    
+    $log->info('Deleting local credentials...');
+    $token_store->delete($user_id);
+    
+    print "Credentials revoked.\n";
+    
+    $log->trace('Leaving do_revoke');
 }
 
 __END__
@@ -365,6 +466,7 @@ gcloud-auth [options] [command]
    login               Log in using your user credentials
    application-default Login for running applications locally
    print-access-token  Print the current access token
+   revoke              Revoke credentials and delete local copy
 
  Options:
    --help              Show brief help message
