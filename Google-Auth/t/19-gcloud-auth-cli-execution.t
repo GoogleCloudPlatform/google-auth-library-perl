@@ -225,4 +225,89 @@ subtest 'gcloud-auth adc login script execution (Success)' => sub {
     }
 };
 
+subtest 'gcloud-auth print-access-token' => sub {
+    $log->clear();
+    
+    use File::Temp qw(tempdir);
+    my $store_dir = tempdir(CLEANUP => 1);
+    
+    # Pre-create a token file
+    require Google::Auth::Stores::FileTokenStore;
+    my $token_store = Google::Auth::Stores::FileTokenStore->new(store_dir => $store_dir);
+    
+    my $creds_data = {
+        client_id     => 'mock_client_id',
+        client_secret => 'mock_client_secret',
+        refresh_token => 'mock_refresh_token',
+    };
+    
+    $token_store->store('default', encode_json($creds_data));
+    
+    # Mock UserRefreshCredentials to return token without HTTP call
+    require Test::MockModule;
+    my $mock_creds = Test::MockModule->new('Google::Auth::UserRefreshCredentials');
+    $mock_creds->mock('get_token', sub { return 'mock_access_token_XYZ'; });
+    
+    my ($stdout, $stderr, @result);
+    eval {
+        ($stdout, $stderr, @result) = capture {
+            run('print-access-token', '--store-dir', $store_dir);
+        };
+    };
+    my $err = $@;
+    
+    ok(!$err, 'print-access-token completed without error') or diag($err);
+    like($stdout, qr/mock_access_token_XYZ/, 'Stdout contains access token');
+    
+    $log->contains_ok(qr/Access token printed successfully/, 'Logged success');
+};
+
+subtest 'gcloud-auth revoke' => sub {
+    $log->clear();
+    
+    use File::Temp qw(tempdir);
+    my $store_dir = tempdir(CLEANUP => 1);
+    
+    require Google::Auth::Stores::FileTokenStore;
+    my $token_store = Google::Auth::Stores::FileTokenStore->new(store_dir => $store_dir);
+    
+    my $creds_data = {
+        client_id     => 'mock_client_id',
+        client_secret => 'mock_client_secret',
+        refresh_token => 'mock_refresh_token',
+    };
+    
+    $token_store->store('default', encode_json($creds_data));
+    ok(-f File::Spec->catfile($store_dir, 'default.json'), 'Token file exists before revoke');
+    
+    # Mock LWP::UserAgent to avoid real HTTP revoke call
+    require Test::MockModule;
+    my $mock_ua = Test::MockModule->new('LWP::UserAgent');
+    
+    # Mock post to return success
+    $mock_ua->mock('post', sub {
+        my ($self, $uri, $params) = @_;
+        is($uri, 'https://oauth2.googleapis.com/revoke', 'Revocation URI is correct');
+        is($params->{token}, 'mock_refresh_token', 'Correct token sent for revocation');
+        
+        require HTTP::Response;
+        return HTTP::Response->new(200, 'OK');
+    });
+    
+    my ($stdout, $stderr, @result);
+    eval {
+        ($stdout, $stderr, @result) = capture {
+            run('revoke', '--store-dir', $store_dir);
+        };
+    };
+    my $err = $@;
+    
+    ok(!$err, 'Revoke completed without error') or diag($err);
+    like($stdout, qr/Credentials revoked/, 'Stdout contains revocation message');
+    
+    $log->contains_ok(qr/Token revocation request successful/, 'Logged success');
+    
+    ok(!-f File::Spec->catfile($store_dir, 'default.json'), 'Token file was deleted');
+};
+
 done_testing();
