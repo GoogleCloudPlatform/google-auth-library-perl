@@ -56,7 +56,7 @@ sub from_file {
   open my $fh, '<', $file or die "Cannot open $file: $!";
   local $/;
   my $json = <$fh>;
-  close $fh;
+  close $fh or die "Cannot close $file: $!";
   
   my $hash = decode_json($json);
   return $class->from_hash($hash);

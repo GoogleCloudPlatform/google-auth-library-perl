@@ -59,7 +59,7 @@ sub load {
   open(my $fh, '<:encoding(UTF-8)', $path) or return; # Or throw?
   local $/;
   my $value = <$fh>;
-  close($fh);
+  close($fh) or Google::Auth::Error->throw("Failed to close $path: $!");
   
   return $value;
 }
@@ -76,7 +76,7 @@ sub store {
   binmode($fh, ':encoding(UTF-8)');
   
   print $fh $value;
-  close($fh);
+  close($fh) or Google::Auth::Error->throw("Failed to close $path: $!");
   return;
 }
 
