@@ -33,7 +33,6 @@
 ^tmp/
 ^Google-Auth-
 ^MYMETA\.
-^META\.yml$
 ^\[0\],\$
 
 
