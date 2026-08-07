@@ -11,15 +11,15 @@ print "Generating proxy: $target\n";
 open my $fh, '>', $target or die "Cannot open $target for writing: $!";
 
 if ($target =~ /\.ps1$/) {
-    # PowerShell Proxy
-    print $fh <<'EOF';
+  # PowerShell Proxy
+  print $fh <<'EOF';
 # Proxy to the Perl implementation
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 & perl "$scriptDir\gcloud-auth.pl" @Args
 EOF
 } else {
-    # Shell Proxy
-    print $fh <<'EOF';
+  # Shell Proxy
+  print $fh <<'EOF';
 #!/bin/sh
 # Proxy to the Perl implementation
 exec perl "$0.pl" "$@"

@@ -114,9 +114,9 @@ my $not_found_hr =
 $ua->unmap_all();
 $ua->map_response(qr/\Q$certs_uri\E/, $not_found_hr);
 $source = Google::Auth::IDTokens::HttpKeySource->new({uri => $certs_uri});
-throws_ok { $source->refresh_keys } qr/KeySourceError: Unable to retrieve data from/,
-  'raises an error when failing to reach the site, class=' .
-  ref $source;
+throws_ok { $source->refresh_keys }
+qr/KeySourceError: Unable to retrieve data from/,
+  'raises an error when failing to reach the site, class=' . ref $source;
 
 $response = $ua->last_http_response_received;
 is($response->{_rc},      404,           'return code matches');
@@ -225,7 +225,7 @@ $source =
 $ua->unmap_all();
 $ua->map_response(qr/\Q$certs_uri\E/, $not_x509_hr);
 throws_ok { $source->refresh_keys }
-  qr/Failed to load X509 certificate for key hi/,
+qr/Failed to load X509 certificate for key hi/,
   'raises an error when failing to parse x509 from the site';
 
 #
@@ -388,10 +388,9 @@ is(ref $keys->[0]->{key},
   'Google::Auth::PublicKey', 'key type for first key is correct');
 is(ref $keys->[1]->{key},
   'Google::Auth::PublicKey', 'key type for second key is correct');
-is($keys->[0]->{algorithm}, 'RS256', 'first algorithm matches');
-is($keys->[1]->{algorithm}, 'ES256', 'second algorithm matches');
-is($ua->last_http_request_sent->uri,
-  $jwk_uri, 'uri matches the one expected');
+is($keys->[0]->{algorithm},          'RS256',  'first algorithm matches');
+is($keys->[1]->{algorithm},          'ES256',  'second algorithm matches');
+is($ua->last_http_request_sent->uri, $jwk_uri, 'uri matches the one expected');
 
 #diag $obj->{ua};
 

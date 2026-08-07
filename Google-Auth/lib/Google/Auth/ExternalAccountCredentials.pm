@@ -67,9 +67,7 @@ has ua => (
   },
 );
 
-has '+_is_universe_pinned' => (
-  default => sub { 0 },
-);
+has '+_is_universe_pinned' => (default => sub { 0 },);
 
 around BUILDARGS => sub {
   my ($orig, $class, @args) = @_;
@@ -186,7 +184,8 @@ sub retrieve_subject_token {
       'Could not open credential source file ' . $source_name . ': ' . $!);
     local $/;
     $content = <$fh>;
-    close($fh) or Google::Auth::Error->throw(
+    close($fh)
+      or Google::Auth::Error->throw(
       'Could not close credential source file ' . $source_name . ': ' . $!);
   } else {
     $source_name = $source->{url};

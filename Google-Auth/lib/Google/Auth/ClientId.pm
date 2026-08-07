@@ -30,16 +30,16 @@ has secret => (
 
 sub from_hash {
   my ($class, $hash) = @_;
-  
+
   my $config = $hash->{installed} // $hash->{web};
-  
+
   if ($config) {
     return $class->new(
       id     => $config->{client_id},
       secret => $config->{client_secret},
     );
   }
-  
+
   if ($hash->{client_id} && $hash->{client_secret}) {
     return $class->new(
       id     => $hash->{client_id},
@@ -52,12 +52,12 @@ sub from_hash {
 
 sub from_file {
   my ($class, $file) = @_;
-  
+
   open my $fh, '<', $file or die "Cannot open $file: $!";
   local $/;
   my $json = <$fh>;
   close $fh or die "Cannot close $file: $!";
-  
+
   my $hash = decode_json($json);
   return $class->from_hash($hash);
 }

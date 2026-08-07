@@ -203,7 +203,8 @@ sub _read_file {
     'Could not open file ' . $path . ': ' . $!);
   local $/;
   my $content = <$fh>;
-  close($fh) or Google::Auth::DefaultCredentialsError->throw(
+  close($fh)
+    or Google::Auth::DefaultCredentialsError->throw(
     'Could not close file ' . $path . ': ' . $!);
   return $content;
 }

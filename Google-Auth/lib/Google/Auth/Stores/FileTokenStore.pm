@@ -35,7 +35,8 @@ sub BUILD {
   if (!-d $dir) {
     eval { make_path($dir) };
     if ($@) {
-      Google::Auth::Error->throw('Failed to create token store directory ' . $dir . ': ' . $@);
+      Google::Auth::Error->throw(
+        'Failed to create token store directory ' . $dir . ': ' . $@);
     }
   }
 }
@@ -45,7 +46,8 @@ sub _file_path {
   # Sanitize ID to prevent path traversal?
   # Assuming ID is a simple string like email or user_name
   if ($id =~ /[\/\\]/) {
-     Google::Auth::Error->throw('Invalid ID \'' . $id . '\': cannot contain path separators');
+    Google::Auth::Error->throw(
+      'Invalid ID \'' . $id . '\': cannot contain path separators');
   }
   return File::Spec->catfile($self->store_dir, $id . '.json');
 }
@@ -53,28 +55,29 @@ sub _file_path {
 sub load {
   my ($self, $id) = @_;
   my $path = $self->_file_path($id);
-  
+
   return unless -f $path;
-  
-  open(my $fh, '<:encoding(UTF-8)', $path) or return; # Or throw?
+
+  open(my $fh, '<:encoding(UTF-8)', $path) or return;    # Or throw?
   local $/;
   my $value = <$fh>;
   close($fh) or Google::Auth::Error->throw("Failed to close $path: $!");
-  
+
   return $value;
 }
 
 sub store {
   my ($self, $id, $value) = @_;
   my $path = $self->_file_path($id);
-  
+
   require Fcntl;
-  sysopen(my $fh, $path, Fcntl::O_CREAT() | Fcntl::O_WRONLY() | Fcntl::O_TRUNC(), 0600) or 
-    Google::Auth::Error->throw("Failed to write to $path: $!");
-  
+  sysopen(my $fh, $path,
+    Fcntl::O_CREAT() | Fcntl::O_WRONLY() | Fcntl::O_TRUNC(), 0600)
+    or Google::Auth::Error->throw("Failed to write to $path: $!");
+
   # Set binmode for UTF-8 encoding
   binmode($fh, ':encoding(UTF-8)');
-  
+
   print $fh $value;
   close($fh) or Google::Auth::Error->throw("Failed to close $path: $!");
   return;
@@ -83,9 +86,10 @@ sub store {
 sub delete {
   my ($self, $id) = @_;
   my $path = $self->_file_path($id);
-  
+
   if (-f $path) {
-    unlink($path) or Google::Auth::Error->throw('Failed to delete ' . $path . ': ' . $!);
+    unlink($path)
+      or Google::Auth::Error->throw('Failed to delete ' . $path . ': ' . $!);
   }
   return;
 }

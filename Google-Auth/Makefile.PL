@@ -33,7 +33,7 @@ for my $dir (@ssl_search_dirs) {
   }
 }
 
-my $is_win32 = $^O eq 'MSWin32';
+my $is_win32     = $^O eq 'MSWin32';
 my $proxy_target = $is_win32 ? 'bin/gcloud-auth.ps1' : 'bin/gcloud-auth';
 
 WriteMakefile(
@@ -42,7 +42,7 @@ WriteMakefile(
   VERSION_FROM       => 'lib/Google/Auth.pm',
   ABSTRACT_FROM      => 'lib/Google/Auth.pm',
   LICENSE            => 'apache_2_0',
-  PL_FILES           => { 'bin/gcloud-auth.PL' => $proxy_target },
+  PL_FILES           => {'bin/gcloud-auth.PL' => $proxy_target},
   LIBS               => [$libs_flags],
   INC                => $inc_flags,
   OBJECT             => '$(O_FILES)',
@@ -64,8 +64,9 @@ WriteMakefile(
     'URI'           => '0',
   },
   EXE_FILES => ['bin/gcloud-auth.pl', $proxy_target],
-  dist  => {COMPRESS => 'gzip -9f', SUFFIX => 'gz',},
-  clean => {FILES    => 'Google-Auth-Library-Perl-* bin/gcloud-auth bin/gcloud-auth.ps1'},
+  dist      => {COMPRESS => 'gzip -9f', SUFFIX => 'gz',},
+  clean     =>
+    {FILES => 'Google-Auth-Library-Perl-* bin/gcloud-auth bin/gcloud-auth.ps1'},
 );
 
 package MY;

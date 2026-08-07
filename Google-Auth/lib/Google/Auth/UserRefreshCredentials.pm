@@ -46,7 +46,9 @@ has redirect_uri => (
 has token_uri => (
   is       => 'ro',
   required => 0,
-  default  => sub { $ENV{GOOGLE_AUTH_TOKEN_URI} // 'https://oauth2.googleapis.com/token' },
+  default  =>
+    sub { $ENV{GOOGLE_AUTH_TOKEN_URI} // 'https://oauth2.googleapis.com/token' }
+  ,
 );
 
 has code_verifier => (
@@ -93,14 +95,18 @@ sub fetch_access_token {
   $self->_validate_url($token_uri, 'token_uri');
 
   if (!defined $client_id || !defined $client_secret) {
-    $log->errorf('Missing client_id or client_secret for UserRefreshCredentials token exchange');
-    Google::Auth::Error->throw('Missing client_id or client_secret to fetch token');
+    $log->errorf(
+'Missing client_id or client_secret for UserRefreshCredentials token exchange'
+    );
+    Google::Auth::Error->throw(
+      'Missing client_id or client_secret to fetch token');
   }
 
   my $post_body;
   if ($self->code) {
     if (!defined $self->redirect_uri) {
-       Google::Auth::Error->throw('Missing redirect_uri for authorization_code grant');
+      Google::Auth::Error->throw(
+        'Missing redirect_uri for authorization_code grant');
     }
     $post_body = {
       'grant_type'    => 'authorization_code',
@@ -121,14 +127,11 @@ sub fetch_access_token {
     Google::Auth::Error->throw('Missing refresh_token or code to fetch token');
   }
 
-  my $ua        = $self->ua;
+  my $ua = $self->ua;
 
   my $response = Google::Auth::RetryHelper->execute_with_retry(
     sub {
-      my $res = $ua->post(
-        $token_uri,
-        $post_body
-      );
+      my $res = $ua->post($token_uri, $post_body);
       if (!$res->is_success) {
         $log->warnf('Token request failed at %s: status %s',
           $token_uri, $res->code);
@@ -146,7 +149,7 @@ sub fetch_access_token {
 
   $self->access_token($token);
   $self->expires_at(time() + $expires);
-  
+
   if ($res_data->{refresh_token}) {
     $self->refresh_token($res_data->{refresh_token});
   }
