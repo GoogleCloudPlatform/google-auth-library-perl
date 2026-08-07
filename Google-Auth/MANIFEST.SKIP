@@ -40,3 +40,6 @@
 # Avoid cpanm or local testing artifacts.
 ^\.cpanm/
 ^local/
+# Avoid generated proxies
+^bin/gcloud-auth$
+^bin/gcloud-auth\.ps1$

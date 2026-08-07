@@ -60,3 +60,6 @@ xt/00_kwalitee.t
 xt/00_perl-critic.t
 xt/00_perltidy.t
 META.yml
+bin/gcloud-auth.PL
+bin/gcloud-auth.pl
+xt/05_live_e2e.t
