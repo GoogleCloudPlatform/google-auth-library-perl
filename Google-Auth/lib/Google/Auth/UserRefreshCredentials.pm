@@ -29,6 +29,16 @@ has client_secret => (
 );
 
 has refresh_token => (
+  is       => 'rw',
+  required => 0,
+);
+
+has code => (
+  is       => 'rw',
+  required => 0,
+);
+
+has redirect_uri => (
   is       => 'ro',
   required => 0,
 );
@@ -71,24 +81,37 @@ sub fetch_access_token {
 
   $self->_validate_url($token_uri, 'token_uri');
 
-  if (!defined $client_id || !defined $client_secret || !defined $refresh_token)
-  {
-    $log->errorf(
-'Missing client_id, client_secret, or refresh_token for UserRefreshCredentials token exchange'
-    );
-    Google::Auth::Error->throw(
-      'Missing client_id, client_secret, or refresh_token to fetch token');
+  if (!defined $client_id || !defined $client_secret) {
+    $log->errorf('Missing client_id or client_secret for UserRefreshCredentials token exchange');
+    Google::Auth::Error->throw('Missing client_id or client_secret to fetch token');
+  }
+
+  my $post_body;
+  if ($self->code) {
+    if (!defined $self->redirect_uri) {
+       Google::Auth::Error->throw('Missing redirect_uri for authorization_code grant');
+    }
+    $post_body = {
+      'grant_type'    => 'authorization_code',
+      'client_id'     => $client_id,
+      'client_secret' => $client_secret,
+      'code'          => $self->code,
+      'redirect_uri'  => $self->redirect_uri,
+    };
+  } elsif ($refresh_token) {
+    $post_body = {
+      'grant_type'    => 'refresh_token',
+      'client_id'     => $client_id,
+      'client_secret' => $client_secret,
+      'refresh_token' => $refresh_token,
+    };
+  } else {
+    Google::Auth::Error->throw('Missing refresh_token or code to fetch token');
   }
 
   my $ua        = $self->ua;
-  my $post_body = {
-    'grant_type'    => 'refresh_token',
-    'client_id'     => $client_id,
-    'client_secret' => $client_secret,
-    'refresh_token' => $refresh_token,
-  };
 
-  $log->infof('Refreshing access token at %s...', $token_uri);
+  $log->infof('Exchanging credentials for access token at %s...', $token_uri);
   my $response = Google::Auth::RetryHelper->execute_with_retry(
     sub {
       my $res = $ua->post(
@@ -97,7 +120,7 @@ sub fetch_access_token {
         'Content'      => $post_body
       );
       if (!$res->is_success) {
-        $log->warnf('Token refresh request failed at %s: status %s',
+        $log->warnf('Token request failed at %s: status %s',
           $token_uri, $res->code);
         Google::Auth::Error->throw('HTTP request failed with status ' .
             $res->code . ': ' . $res->decoded_content);
@@ -113,6 +136,10 @@ sub fetch_access_token {
 
   $self->access_token($token);
   $self->expires_at(time() + $expires);
+  
+  if ($res_data->{refresh_token}) {
+    $self->refresh_token($res_data->{refresh_token});
+  }
 
   return $token;
 }

@@ -21,7 +21,8 @@ lib/Google/Auth/IDTokens/Verifier.pm
 lib/Google/Auth/ImpersonatedServiceAccountCredentials.pm
 lib/Google/Auth/RetryHelper.pm
 lib/Google/Auth/ServiceAccountCredentials.pm
-lib/Google/Auth/Signet.pm
+lib/Google/Auth/Stores/FileTokenStore.pm
+lib/Google/Auth/Stores/TokenStore.pm
 lib/Google/Auth/UserAuthorizer.pm
 lib/Google/Auth/UserRefreshCredentials.pm
 lib/Google/Auth/WebUserAuthorizer.pm

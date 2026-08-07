@@ -33,11 +33,6 @@ has json_key => (
   required => 0,
 );
 
-has project_id => (
-  is       => 'ro',
-  required => 0,
-);
-
 has private_key_id => (
   is       => 'ro',
   required => 0,

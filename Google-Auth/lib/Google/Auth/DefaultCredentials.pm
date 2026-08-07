@@ -104,7 +104,7 @@ sub from_env {
   my $credentials_path =
     $ENV{GOOGLE_APPLICATION_CREDENTIALS} || $self->environment->CREDENTIALS;
 
-  if ($credentials_path && -f $credentials_path) {
+  if ($credentials_path) {
     return $self->make_creds(
       json_path => $credentials_path,
       scope     => $scopes,
