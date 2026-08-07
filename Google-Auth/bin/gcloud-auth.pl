@@ -34,10 +34,13 @@ my $VERSION = '0.01';
 
 # Default Scopes for GCP
 my @DEFAULT_SCOPES = (
-    'https://www.googleapis.com/auth/cloud-platform',
+    'openid',
     'https://www.googleapis.com/auth/userinfo.email',
-    'https://www.googleapis.com/auth/userinfo.profile',
-    'openid'
+    'https://www.googleapis.com/auth/cloud-platform',
+    'https://www.googleapis.com/auth/appengine.admin',
+    'https://www.googleapis.com/auth/sqlservice.login',
+    'https://www.googleapis.com/auth/compute',
+    'https://www.googleapis.com/auth/accounts.reauth'
 );
 
 unless (caller) {
@@ -53,6 +56,8 @@ sub run {
     my $client_id_file;
     my $store_dir = File::Spec->catdir($ENV{HOME} // '.', '.google-auth-perl', 'tokens');
     my $port = 0; # Default auto-assign
+    my $timeout = 300; # Default 5 minutes for human interaction
+    my $no_browser = 0;
 
     local @ARGV = @args;
     
@@ -63,6 +68,8 @@ sub run {
         'client-id-file=s' => \$client_id_file,
         'store-dir=s'      => \$store_dir,
         'port=i'           => \$port,
+        'timeout=i'        => \$timeout,
+        'no-browser'       => \$no_browser,
     ) or pod2usage(2);
 
     if ($verbose) {
@@ -84,6 +91,8 @@ sub run {
             client_id_file => $client_id_file,
             store_dir      => $store_dir,
             port           => $port,
+            timeout        => $timeout,
+            no_browser     => $no_browser,
         );
     } elsif ($command eq 'application-default') {
         my $subcommand = shift @ARGV;
@@ -95,6 +104,8 @@ sub run {
                 client_id_file => $client_id_file,
                 store_dir      => $store_dir,
                 port           => $port,
+                timeout        => $timeout,
+                no_browser     => $no_browser,
             );
         } else {
             die "Unsupported application-default subcommand: $subcommand\n";
@@ -129,12 +140,13 @@ sub _start_listener {
 }
 
 sub _wait_for_code {
-    my ($listener) = @_;
+    my ($listener, $timeout) = @_;
+    $timeout //= 5; # Fallback default
     
     my $select = IO::Select->new($listener);
     my $client;
     
-    if ($select->can_read(5)) { # 5 seconds timeout for testing/safety
+    if ($select->can_read($timeout)) {
         $client = $listener->accept();
     } else {
         $log->error('Timeout waiting for authorization code');
@@ -186,33 +198,71 @@ sub do_login {
     my $client_id_file = $options{client_id_file};
     my $store_dir      = $options{store_dir};
     
-    unless ($client_id_file && -f $client_id_file) {
-        $log->error('Client ID file is required for login');
-        die "Error: --client-id-file is required and must exist.\n";
+    my $client_id;
+    if ($client_id_file && -f $client_id_file) {
+        $client_id = Google::Auth::ClientId->from_file($client_id_file);
+    } else {
+        $log->info('Using default Gcloud Client ID');
+        $client_id = Google::Auth::ClientId->new(
+            id     => '32555940559.apps.googleusercontent.com',
+            secret => 'ZmssLNjJy2998hD4CTg2ejr2',
+        );
     }
-    
-    my $client_id = Google::Auth::ClientId->from_file($client_id_file);
     my $token_store = Google::Auth::Stores::FileTokenStore->new(store_dir => $store_dir);
     
-    my $listener = _start_listener($options{port});
-    my $port = $listener->sockport();
-    $log->debugf('Loopback listener started on port %d', $port);
+    my $listener;
+    my $redirect_uri;
     
-    my $redirect_uri = "http://127.0.0.1:$port/";
+    my $use_oob = $options{no_browser};
+    unless ($use_oob || $options{port}) {
+        if ($^O eq 'linux' && !$ENV{DISPLAY} && !$ENV{WAYLAND_DISPLAY}) {
+            $log->info('No DISPLAY detected on Linux, defaulting to out-of-band flow');
+            $use_oob = 1;
+        }
+    }
     
-    my $auth = Google::Auth::UserAuthorizer->new(
+    my $code_verifier;
+    if ($use_oob) {
+        $redirect_uri = 'https://sdk.cloud.google.com/authcode.html';
+        my @chars = ('A'..'Z', 'a'..'z', '0'..'9', '-', '.', '_', '~');
+        $code_verifier = join('', map { $chars[rand @chars] } 1..64);
+    } else {
+        $listener = _start_listener($options{port});
+        my $port = $listener->sockport();
+        $log->debugf('Loopback listener started on port %d', $port);
+        $redirect_uri = "http://127.0.0.1:$port/";
+    }
+    
+    my %auth_args = (
         client_id    => $client_id,
         scope        => \@DEFAULT_SCOPES,
         token_store  => $token_store,
         callback_uri => $redirect_uri,
     );
+    $auth_args{code_verifier} = $code_verifier if $code_verifier;
     
-    my $auth_url = $auth->get_authorization_url();
+    my $auth = Google::Auth::UserAuthorizer->new(%auth_args);
+    
+    my %auth_options;
+    $auth_options{additional_parameters} = { token_usage => 'remote' } if $use_oob;
+    
+    my @state_chars = ('A'..'Z', 'a'..'z', '0'..'9');
+    my $state = join('', map { $state_chars[rand @state_chars] } 1..32);
+    $auth_options{state} = $state;
+    
+    my $auth_url = $auth->get_authorization_url(%auth_options);
     
     print "\nGo to the following link in your browser:\n\n    $auth_url\n\n";
-    $log->info('Waiting for authorization code...');
     
-    my $code = _wait_for_code($listener);
+    my $code;
+    if ($use_oob) {
+        print "Enter authorization code: ";
+        $code = <STDIN>;
+        chomp $code if $code;
+    } else {
+        $log->info('Waiting for authorization code...');
+        $code = _wait_for_code($listener, $options{timeout});
+    }
     
     if ($code) {
         $log->info('Exchanging code for credentials...');
@@ -246,33 +296,71 @@ sub do_adc_login {
     my $client_id_file = $options{client_id_file};
     my $store_dir      = $options{store_dir};
     
-    unless ($client_id_file && -f $client_id_file) {
-        $log->error('Client ID file is required for ADC login');
-        die "Error: --client-id-file is required and must exist.\n";
+    my $client_id;
+    if ($client_id_file && -f $client_id_file) {
+        $client_id = Google::Auth::ClientId->from_file($client_id_file);
+    } else {
+        $log->info('Using default ADC Client ID');
+        $client_id = Google::Auth::ClientId->new(
+            id     => '764086051850-6qr4p6gpi6hn506pt8ejuq83di341hur.apps.googleusercontent.com',
+            secret => 'd-FL95Q19q7MQmFpd7hHD0Ty',
+        );
     }
-    
-    my $client_id = Google::Auth::ClientId->from_file($client_id_file);
     my $token_store = Google::Auth::Stores::FileTokenStore->new(store_dir => $store_dir);
     
-    my $listener = _start_listener($options{port});
-    my $port = $listener->sockport();
-    $log->debugf('Loopback listener started on port %d', $port);
+    my $listener;
+    my $redirect_uri;
     
-    my $redirect_uri = "http://127.0.0.1:$port/";
+    my $use_oob = $options{no_browser};
+    unless ($use_oob || $options{port}) {
+        if ($^O eq 'linux' && !$ENV{DISPLAY} && !$ENV{WAYLAND_DISPLAY}) {
+            $log->info('No DISPLAY detected on Linux, defaulting to out-of-band flow');
+            $use_oob = 1;
+        }
+    }
     
-    my $auth = Google::Auth::UserAuthorizer->new(
+    my $code_verifier;
+    if ($use_oob) {
+        $redirect_uri = 'https://sdk.cloud.google.com/applicationdefaultauthcode.html';
+        my @chars = ('A'..'Z', 'a'..'z', '0'..'9', '-', '.', '_', '~');
+        $code_verifier = join('', map { $chars[rand @chars] } 1..64);
+    } else {
+        $listener = _start_listener($options{port});
+        my $port = $listener->sockport();
+        $log->debugf('Loopback listener started on port %d', $port);
+        $redirect_uri = "http://127.0.0.1:$port/";
+    }
+    
+    my %auth_args = (
         client_id    => $client_id,
         scope        => \@DEFAULT_SCOPES,
         token_store  => $token_store,
         callback_uri => $redirect_uri,
     );
+    $auth_args{code_verifier} = $code_verifier if $code_verifier;
     
-    my $auth_url = $auth->get_authorization_url();
+    my $auth = Google::Auth::UserAuthorizer->new(%auth_args);
+    
+    my %auth_options;
+    $auth_options{additional_parameters} = { token_usage => 'remote' } if $use_oob;
+    
+    my @state_chars = ('A'..'Z', 'a'..'z', '0'..'9');
+    my $state = join('', map { $state_chars[rand @state_chars] } 1..32);
+    $auth_options{state} = $state;
+    
+    my $auth_url = $auth->get_authorization_url(%auth_options);
     
     print "\nGo to the following link in your browser:\n\n    $auth_url\n\n";
-    $log->info('Waiting for authorization code...');
     
-    my $code = _wait_for_code($listener);
+    my $code;
+    if ($use_oob) {
+        print "Enter authorization code: ";
+        $code = <STDIN>;
+        chomp $code if $code;
+    } else {
+        $log->info('Waiting for authorization code...');
+        $code = _wait_for_code($listener, $options{timeout});
+    }
     
     if ($code) {
         $log->info('Exchanging code for credentials...');
@@ -424,7 +512,7 @@ sub do_revoke {
         $log->info('Revoking refresh token...');
         
         # Google revocation endpoint
-        my $revoke_uri = 'https://oauth2.googleapis.com/revoke';
+        my $revoke_uri = $ENV{GOOGLE_AUTH_REVOKE_URI} // 'https://oauth2.googleapis.com/revoke';
         
         # We need an LWP::UserAgent or similar.
         # Let's see if we can use Google::Auth::UserRefreshCredentials->ua or just LWP directly.

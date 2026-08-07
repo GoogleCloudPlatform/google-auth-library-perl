@@ -30,14 +30,12 @@ unless (-t STDIN) {
 # This test requires real credentials to be available.
 # It will check GOOGLE_APPLICATION_CREDENTIALS or well-known paths.
 
-use Google::Auth::DefaultCredentials;
+use Google::Auth;
 
-my $maker = Google::Auth::DefaultCredentials->new();
 my $creds;
 
 eval {
-  $creds = $maker->make_creds(
-    scope => ['https://www.googleapis.com/auth/cloud-platform']);
+  $creds = Google::Auth->default(['https://www.googleapis.com/auth/cloud-platform']);
 };
 
 if ($@) {

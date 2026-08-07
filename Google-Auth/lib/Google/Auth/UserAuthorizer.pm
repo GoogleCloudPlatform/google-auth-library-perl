@@ -50,6 +50,16 @@ has code_verifier => (
   required => 0,
 );
 
+has auth_endpoint => (
+  is      => 'ro',
+  default => sub { $ENV{GOOGLE_AUTH_AUTH_ENDPOINT} // 'https://accounts.google.com/o/oauth2/auth' },
+);
+
+has token_uri => (
+  is      => 'ro',
+  default => sub { $ENV{GOOGLE_AUTH_TOKEN_URI} // 'https://oauth2.googleapis.com/token' },
+);
+
 around BUILDARGS => sub {
   my ($orig, $class, @args) = @_;
   
@@ -75,7 +85,7 @@ sub get_authorization_url {
   
   my $redirect_uri = $self->_redirect_uri_for($options{base_url});
   
-  my $uri = URI->new('https://accounts.google.com/o/oauth2/v2/auth');
+  my $uri = URI->new($self->auth_endpoint);
   my %params = (
     client_id => $self->client_id->id,
     redirect_uri => $redirect_uri,
@@ -146,6 +156,8 @@ sub get_credentials_from_code {
     scope => $scope,
     code => $code,
     redirect_uri => $redirect_uri,
+    code_verifier => $self->code_verifier,
+    token_uri => $self->token_uri,
   );
   
   $creds->get_token(); # This will trigger fetch_access_token with code
@@ -174,6 +186,7 @@ sub store_credentials {
     scope => $credentials->scope,
     expiration_time_millis => $credentials->expires_at ? $credentials->expires_at * 1000 : undef,
   };
+  $data->{client_secret} = $credentials->client_secret if $credentials->can('client_secret');
   
   $self->token_store->store($user_id, encode_json($data));
   return $credentials;

@@ -46,6 +46,17 @@ has redirect_uri => (
 has token_uri => (
   is       => 'ro',
   required => 0,
+  default  => sub { $ENV{GOOGLE_AUTH_TOKEN_URI} // 'https://oauth2.googleapis.com/token' },
+);
+
+has code_verifier => (
+  is       => 'ro',
+  required => 0,
+);
+
+has scope => (
+  is       => 'ro',
+  required => 0,
 );
 
 has ua => (
@@ -65,7 +76,7 @@ around BUILDARGS => sub {
     $args->{client_id}     //= $json->{client_id};
     $args->{client_secret} //= $json->{client_secret};
     $args->{refresh_token} //= $json->{refresh_token};
-    $args->{token_uri}     //= $json->{token_uri};
+    $args->{token_uri}     //= $json->{token_uri} if defined $json->{token_uri};
   }
 
   return $args;
@@ -77,7 +88,7 @@ sub fetch_access_token {
   my $client_id     = $self->client_id;
   my $client_secret = $self->client_secret;
   my $refresh_token = $self->refresh_token;
-  my $token_uri     = $self->token_uri // 'https://oauth2.googleapis.com/token';
+  my $token_uri     = $self->token_uri;
 
   $self->_validate_url($token_uri, 'token_uri');
 
@@ -98,6 +109,7 @@ sub fetch_access_token {
       'code'          => $self->code,
       'redirect_uri'  => $self->redirect_uri,
     };
+    $post_body->{code_verifier} = $self->code_verifier if $self->code_verifier;
   } elsif ($refresh_token) {
     $post_body = {
       'grant_type'    => 'refresh_token',
@@ -111,13 +123,11 @@ sub fetch_access_token {
 
   my $ua        = $self->ua;
 
-  $log->infof('Exchanging credentials for access token at %s...', $token_uri);
   my $response = Google::Auth::RetryHelper->execute_with_retry(
     sub {
       my $res = $ua->post(
         $token_uri,
-        'Content-Type' => 'application/x-www-form-urlencoded',
-        'Content'      => $post_body
+        $post_body
       );
       if (!$res->is_success) {
         $log->warnf('Token request failed at %s: status %s',

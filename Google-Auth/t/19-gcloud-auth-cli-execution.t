@@ -50,7 +50,8 @@ subtest 'gcloud-auth login script execution (Timeout)' => sub {
     $log->clear();
     
     my ($stdout, $stderr, @result) = capture {
-        eval { run('login', '--client-id-file', $client_id_file); };
+        local $ENV{DISPLAY} = 'mock_display';
+        eval { run('login', '--client-id-file', $client_id_file, '--timeout', 1); };
     };
     
     # Verify logs captured by Log::Any::Test
@@ -134,7 +135,8 @@ subtest 'gcloud-auth adc login script execution (Timeout)' => sub {
     $log->clear();
     
     my ($stdout, $stderr, @result) = capture {
-        eval { run('application-default', 'login', '--client-id-file', $client_id_file); };
+        local $ENV{DISPLAY} = 'mock_display';
+        eval { run('application-default', 'login', '--client-id-file', $client_id_file, '--timeout', 1); };
     };
     
     $log->contains_ok(qr/Command: application-default login initiated/, 'Logged adc login init');
