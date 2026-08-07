@@ -112,19 +112,15 @@ my $not_found_hr =
   HTTP::Response->new('404', 'Not Found', ['Content-Type' => 'text/plain'],
   'not a found');
 $ua->unmap_all();
-$ua->map_response(qr/\Q$certs_uri\E/, $not_json_hr);
+$ua->map_response(qr/\Q$certs_uri\E/, $not_found_hr);
 $source = Google::Auth::IDTokens::HttpKeySource->new({uri => $certs_uri});
-throws_ok { $source->refresh_keys } qr/KeySourceError: Unable to parse JSON/,
-  'raises an error when failing to parse json from the site, class=' .
+throws_ok { $source->refresh_keys } qr/KeySourceError: Unable to retrieve data from/,
+  'raises an error when failing to reach the site, class=' .
   ref $source;
-TODO:
-{
-  local $TODO = 'return code and content do not match for some reason';
-  eval { $source->refresh_keys };
-  $response = $source->{last_response};
-  is($response->{_rc},      404,           'return code matches');
-  is($response->{_content}, 'not a found', 'content matches');
-}
+
+$response = $ua->last_http_response_received;
+is($response->{_rc},      404,           'return code matches');
+is($response->{_content}, 'not a found', 'content matches');
 
 #
 # X509CertHttpKeySource
@@ -375,13 +371,7 @@ $source = Google::Auth::IDTokens::JwkHttpKeySource->new($params);
 $ua->unmap_all();
 $ua->map_response(qr/\Q$jwk_uri\E/, $correct_hr);
 
-TODO:
-{
-  local $TODO = 'the following tests are incomplete';
-
-  lives_ok { $keys = $source->refresh_keys }
-  'refresh succeeds';
-}
+lives_ok { $keys = $source->refresh_keys } 'refresh succeeds';
 is(ref $keys, 'ARRAY', 'an array of keys is returned');
 
 is(scalar @{$keys}, 2, 'two keys in the results');
@@ -397,25 +387,16 @@ is(
   'second returned key is a blessed hash'
 );
 
-TODO:
-{
-  local $TODO = 'the following tests are incomplete';
-
-  is($keys->[0]->{id}, $id1, 'first key matches');
-  is($keys->[1]->{id}, $id2, 'second key matches');
-  is(ref $keys->[0]->{key},
-    'Google::Auth::PublicKey', 'key type for first key is correct');
-  is(ref $keys->[1]->{key},
-    'Google::Auth::PublicKey', 'key type for second key is correct');
-}
+is($keys->[0]->{id}, $id1, 'first key matches');
+is($keys->[1]->{id}, $id2, 'second key matches');
+is(ref $keys->[0]->{key},
+  'Google::Auth::PublicKey', 'key type for first key is correct');
+is(ref $keys->[1]->{key},
+  'Google::Auth::PublicKey', 'key type for second key is correct');
 is($keys->[0]->{algorithm}, 'RS256', 'first algorithm matches');
-TODO:
-{
-  local $TODO = 'the following tests are incomplete';
-  is($keys->[1]->{algorithm}, 'ES256', 'second algorithm matches');
-  is($ua->last_http_request_sent->uri,
-    $certs_uri, 'uri matches the one expected');
-}
+is($keys->[1]->{algorithm}, 'ES256', 'second algorithm matches');
+is($ua->last_http_request_sent->uri,
+  $jwk_uri, 'uri matches the one expected');
 
 #diag $obj->{ua};
 
