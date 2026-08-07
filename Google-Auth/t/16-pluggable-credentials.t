@@ -112,6 +112,7 @@ subtest 'Pluggable WIF Success Text Output' => sub {
 };
 
 subtest 'Pluggable WIF Environment Variable Injection' => sub {
+
   # Command that prints a JSON containing the value of the environment variable MOCK_ENV_VAR
   # We use perl to print it portably
   my $command = sprintf(
@@ -140,6 +141,7 @@ subtest 'Pluggable WIF Environment Variable Injection' => sub {
 };
 
 subtest 'Pluggable WIF Error Handling' => sub {
+
   # Command that produces invalid JSON
   my $bad_json_command =
     '"' . $^X . '" -e "print q({) . chr(34) . q(invalid_json:)"';

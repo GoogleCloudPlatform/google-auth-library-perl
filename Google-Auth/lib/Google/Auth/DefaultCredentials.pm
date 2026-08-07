@@ -30,6 +30,7 @@ has environment => (
 
 sub make_creds {
   my ($self, %options) = @_;
+
   # Allow calling as class or instance method
   $self = ref $self ? $self : $self->new();
 
@@ -203,7 +204,8 @@ sub _read_file {
     'Could not open file ' . $path . ': ' . $!);
   local $/;
   my $content = <$fh>;
-  close($fh) or Google::Auth::DefaultCredentialsError->throw(
+  close($fh)
+    or Google::Auth::DefaultCredentialsError->throw(
     'Could not close file ' . $path . ': ' . $!);
   return $content;
 }

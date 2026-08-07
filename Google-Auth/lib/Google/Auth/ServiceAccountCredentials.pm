@@ -61,7 +61,9 @@ has auth_uri => (
 has token_uri => (
   is       => 'ro',
   required => 0,
-  default  => sub { $ENV{GOOGLE_AUTH_TOKEN_URI} // 'https://oauth2.googleapis.com/token' },
+  default  => sub {
+    $ENV{GOOGLE_AUTH_TOKEN_URI} // 'https://oauth2.googleapis.com/token';
+  },
 );
 
 has auth_provider_x509_cert_url => (

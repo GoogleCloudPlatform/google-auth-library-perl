@@ -26,13 +26,17 @@ has token => (
 
 sub apply {
   my ($self, $req_or_headers) = @_;
-  
+
   if (ref $req_or_headers eq 'HASH') {
-    $req_or_headers->{'x-goog-iam-authority-selector'} = $self->selector if defined $self->selector;
-    $req_or_headers->{'x-goog-iam-authorization-token'} = $self->token if defined $self->token;
+    $req_or_headers->{'x-goog-iam-authority-selector'} = $self->selector
+      if defined $self->selector;
+    $req_or_headers->{'x-goog-iam-authorization-token'} = $self->token
+      if defined $self->token;
   } elsif (eval { $req_or_headers->isa('HTTP::Request') }) {
-    $req_or_headers->header('x-goog-iam-authority-selector' => $self->selector) if defined $self->selector;
-    $req_or_headers->header('x-goog-iam-authorization-token' => $self->token) if defined $self->token;
+    $req_or_headers->header('x-goog-iam-authority-selector' => $self->selector)
+      if defined $self->selector;
+    $req_or_headers->header('x-goog-iam-authorization-token' => $self->token)
+      if defined $self->token;
   }
 }
 

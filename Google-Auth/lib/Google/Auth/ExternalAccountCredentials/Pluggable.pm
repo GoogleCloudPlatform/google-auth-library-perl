@@ -79,7 +79,7 @@ sub retrieve_subject_token {
     my $path_sep = $Config{path_sep} // ':';
     for my $dir (split /\Q$path_sep\E/, ($ENV{PATH} // '')) {
       my $path = "$dir/$executable";
-      if (-f $path && -x _) {
+      if (-f $path && -x _ ) {
         $resolved_executable = $path;
         last;
       }

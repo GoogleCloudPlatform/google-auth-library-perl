@@ -106,6 +106,7 @@ subtest 'Load from JSON configuration' => sub {
 };
 
 subtest 'Validation and Configuration Errors' => sub {
+
   # 1. Missing base and source credentials
   eval {
     Google::Auth::ImpersonatedServiceAccountCredentials->new(

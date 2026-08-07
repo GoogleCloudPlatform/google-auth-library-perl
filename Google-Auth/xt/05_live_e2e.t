@@ -35,7 +35,8 @@ use Google::Auth;
 my $creds;
 
 eval {
-  $creds = Google::Auth->default(['https://www.googleapis.com/auth/cloud-platform']);
+  $creds =
+    Google::Auth->default(['https://www.googleapis.com/auth/cloud-platform']);
 };
 
 if ($@) {
