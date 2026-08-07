@@ -47,7 +47,7 @@ has token_uri => (
   is       => 'ro',
   required => 0,
   default  =>
-    sub { $ENV{GOOGLE_AUTH_TOKEN_URI} // 'https://oauth2.googleapis.com/token' }
+    sub { $ENV{GOOGLE_AUTH_TOKEN_URI} || 'https://oauth2.googleapis.com/token' }
   ,
 );
 
