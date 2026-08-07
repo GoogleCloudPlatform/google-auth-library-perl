@@ -34,5 +34,32 @@ severity = 1
 [Subroutines::ProhibitExplicitReturnUndef]
 severity = 1
 
-[Subroutines::ProhibitNestedSubs]
-severity = 1
+[ValuesAndExpressions::ProhibitLeadingZeros]
+severity = 5
+
+[InputOutput::ProhibitTwoArgOpen]
+severity = 5
+
+[InputOutput::RequireCheckedOpen]
+severity = 5
+
+[InputOutput::RequireCheckedClose]
+severity = 5
+
+[InputOutput::ProhibitBacktickOperators]
+severity = 5
+
+[InputOutput::ProhibitOneArgSelect]
+severity = 5
+
+[InputOutput::RequireEncodingWithUTF8Layer]
+severity = 5
+
+[Community::PreferredAlternatives]
+severity = 4
+
+[Security::RandBytesFromHash]
+severity = 5
+
+[RegularExpressions::RequireDefault]
+severity = 4

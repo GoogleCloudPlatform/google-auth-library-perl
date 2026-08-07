@@ -1,4 +1,4 @@
-# Copyright 2021 Google LLC and contributors
+# Copyright 2026 Google LLC and contributors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,14 +11,28 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-package Google::Auth::Signet;
+
+package Google::Auth::Stores::TokenStore;
 
 use strict;
 use warnings;
 
-package Google::Auth::Signet::OAuth2;
+use Moo;
+use Google::Auth::Exceptions;
 
-use strict;
-use warnings;
+sub load {
+  my ($self, $id) = @_;
+  Google::Auth::Error->throw('load must be implemented by subclasses');
+}
 
-# to be based on googleapis/google-auth-library-ruby/lib/googleauth/signet.rb
+sub store {
+  my ($self, $id, $value) = @_;
+  Google::Auth::Error->throw('store must be implemented by subclasses');
+}
+
+sub delete {
+  my ($self, $id) = @_;
+  Google::Auth::Error->throw('delete must be implemented by subclasses');
+}
+
+1;

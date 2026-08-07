@@ -78,6 +78,7 @@ subtest 'generating cert and signing/verifying RSA signatures in-process' =>
   };
 
 subtest 'loading RSA JWK components' => sub {
+
   # Decoded binary values for modulus (n) and public exponent (e) from standard JWK
   my $n_bin = pack('H*', 'c0af0f1dffd3675b9d1639d37ce4be79e38bb5ba3506')
     ;    # dummy binary modulus
@@ -90,6 +91,7 @@ subtest 'loading RSA JWK components' => sub {
 };
 
 subtest 'loading EC JWK components' => sub {
+
   # Real, valid P-256 / prime256v1 public key point coordinates decoded from standard JWK
   my $x_bin = decode_base64url('SlXFFkJ3JxMsXyXNrqzE3ozl_0913PmNbccLLWfeQFU');
   my $y_bin = decode_base64url('GLSahrZfBErmMUcHP0MGaeVnJdBwquhrhQ8eP05NfCI');
