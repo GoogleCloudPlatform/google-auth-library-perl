@@ -186,7 +186,8 @@ sub retrieve_subject_token {
       'Could not open credential source file ' . $source_name . ': ' . $!);
     local $/;
     $content = <$fh>;
-    close($fh);
+    close($fh) or Google::Auth::Error->throw(
+      'Could not close credential source file ' . $source_name . ': ' . $!);
   } else {
     $source_name = $source->{url};
     my $headers = $source->{headers} // {};

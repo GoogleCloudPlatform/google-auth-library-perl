@@ -8,5 +8,5 @@ RUN apt-get update && apt-get install -y \
     libwww-perl libjson-xs-perl libjson-maybexs-perl libmoo-perl libtype-tiny-perl \
     libpath-tiny-perl liblog-any-perl libcapture-tiny-perl liburi-perl libfile-which-perl libmodule-starter-perl \
     libtest-exception-perl libtest-deep-perl libtest-mockmodule-perl && \
-    cpanm Protocol::HTTP2 Test::LWP::UserAgent Perl::Tidy Perl::Critic Test::Perl::Critic Test::CPAN::Changes Test::Kwalitee Test::PerlTidy && \
+    cpanm Protocol::HTTP2 Test::LWP::UserAgent Perl::Tidy Perl::Critic Test::Perl::Critic Test::CPAN::Changes Test::Kwalitee Test::PerlTidy Perl::Critic::Community Perl::Critic::Policy::RegularExpressions::RequireDefault Perl::Critic::Policy::Security::RandBytesFromHash && \
     rm -rf ~/.cpanm /var/lib/apt/lists/*
