@@ -33,6 +33,16 @@ has universe_domain => (
   default => sub { 'googleapis.com' },
 );
 
+has quota_project_id => (
+  is       => 'ro',
+  required => 0,
+);
+
+has project_id => (
+  is       => 'ro',
+  required => 0,
+);
+
 has _is_universe_pinned => (
   is      => 'ro',
   default => sub { 0 },
@@ -63,6 +73,13 @@ around BUILDARGS => sub {
   if (exists $args->{universe_domain}) {
     $args->{_is_universe_pinned} //= 1;
   }
+
+  if (my $json = $args->{json_key}) {
+    $args->{quota_project_id} //= $json->{quota_project_id};
+    $args->{project_id}       //= $json->{project_id};
+  }
+
+  $args->{project_id} //= $ENV{GOOGLE_CLOUD_PROJECT};
 
   return $class->$orig($args);
 };
@@ -146,8 +163,10 @@ sub apply {
 
   if (ref $req_or_headers eq 'HASH') {
     $req_or_headers->{Authorization} = 'Bearer ' . $token;
+    $req_or_headers->{'X-Goog-User-Project'} = $self->quota_project_id if $self->quota_project_id;
   } elsif (eval { $req_or_headers->isa('HTTP::Request') }) {
     $req_or_headers->header(Authorization => 'Bearer ' . $token);
+    $req_or_headers->header('X-Goog-User-Project' => $self->quota_project_id) if $self->quota_project_id;
   } else {
     $log->errorf(
       'Invalid apply target type: %s',
