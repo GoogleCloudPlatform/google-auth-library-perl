@@ -1,5 +1,10 @@
 Revision history for Module-Starter-Protobuf
 
+0.05    2026-11-21
+    - Extracted Module::Starter::Protobuf::Base and added compile_types_only mode.
+    - Added strict request construction, fail-closed validation for explicit credentials, and REST transport dispatch support.
+    - Added google3-aware protoc include path handling, README.md, and updated MANIFEST/MANIFEST.SKIP.
+
 0.04    Tue Jul 28 2026
     - Added SECURITY.md
 

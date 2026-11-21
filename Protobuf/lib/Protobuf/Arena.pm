@@ -138,7 +138,7 @@ use Protobuf::Internal; # Ensure audit logging is available
 require Protobuf;
 use Carp qw(croak);
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 has '_arena_ptr' => (
     is       => 'ro',

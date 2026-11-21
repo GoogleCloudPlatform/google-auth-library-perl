@@ -6,7 +6,7 @@ use warnings;
 use Google::Cloud::ClientBase;
 use Google::Cloud::REST::Client;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 1;
 
