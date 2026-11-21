@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use Test::More;
-use Test::Fatal;
+use Test::Exception;
 use Future;
 
 use Google::Cloud::ClientBase::Stream;
@@ -92,9 +92,9 @@ subtest 'Delegation to Low Level Stream' => sub {
 subtest 'Missing Low Level Stream Errors' => sub {
     my $stream = Google::Cloud::ClientBase::Stream->new();
     
-    like(exception { $stream->write("hello") }, qr/Write not supported/, 'Write fails without low level stream');
-    like(exception { $stream->close_write() }, qr/Close write not supported/, 'Close write fails without low level stream');
-    like(exception { $stream->get_metadata('headers') }, qr/Get metadata not supported/, 'Get metadata fails without low level stream');
+    throws_ok { $stream->write('hello') } qr/Write not supported/, 'Write fails without low level stream';
+    throws_ok { $stream->close_write() } qr/Close write not supported/, 'Close write fails without low level stream';
+    throws_ok { $stream->get_metadata('headers') } qr/Get metadata not supported/, 'Get metadata fails without low level stream';
 };
 
 done_testing();

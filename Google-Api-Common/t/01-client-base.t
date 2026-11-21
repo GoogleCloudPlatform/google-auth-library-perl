@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use Test::More;
-use Test::Fatal;
+use Test::Exception;
 use Test::MockModule;
 
 use Google::Cloud::ClientBase;
@@ -34,8 +34,8 @@ subtest 'Encode Payload' => sub {
     is($client->encode_payload(MockProtoPayload->new, 'protobuf'), 'serialized_proto_data', 'Encode Object to Protobuf via serialize');
     
     # Errors
-    like(exception { $client->encode_payload("string", 'protobuf') }, qr/Cannot serialize payload to protobuf/, 'Fail to serialize string to protobuf');
-    like(exception { $client->encode_payload({ key => 'value' }, 'unknown') }, qr/Unsupported format: unknown/, 'Fail on unknown format');
+    throws_ok { $client->encode_payload('string', 'protobuf') } qr/Cannot serialize payload to protobuf/, 'Fail to serialize string to protobuf';
+    throws_ok { $client->encode_payload({ key => 'value' }, 'unknown') } qr/Unsupported format: unknown/, 'Fail on unknown format';
 };
 
 subtest 'Start Stream' => sub {
@@ -97,9 +97,9 @@ subtest 'Decode Payload' => sub {
     is($decoded_new_class->{key}, 'value', 'Correct data');
     
     # Errors
-    like(exception { $client->decode_payload('{"invalid":}', 'json') }, qr/Error decoding JSON response/, 'Fail on invalid JSON');
-    like(exception { $client->decode_payload('data', 'protobuf', 'NonExistentClass') }, qr/Cannot parse protobuf response/, 'Fail to parse protobuf with non-existent class');
-    like(exception { $client->decode_payload('data', 'unknown') }, qr/Unsupported format: unknown/, 'Fail on unknown format');
+    throws_ok { $client->decode_payload('{"invalid":}', 'json') } qr/Error decoding JSON response/, 'Fail on invalid JSON';
+    throws_ok { $client->decode_payload('data', 'protobuf', 'NonExistentClass') } qr/Cannot parse protobuf response/, 'Fail to parse protobuf with non-existent class';
+    throws_ok { $client->decode_payload('data', 'unknown') } qr/Unsupported format: unknown/, 'Fail on unknown format';
 };
 
 done_testing();
