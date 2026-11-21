@@ -157,13 +157,21 @@ has '_pp_pool' => (
 
 has '_pool_ptr' => (
     is       => 'ro',
-    default  => sub { $Protobuf::HAS_XS ? _xs_create_raw() : undef },
+    init_arg => undef,
 );
+
+sub BUILD {
+    my ($self) = @_;
+    if ($Protobuf::HAS_XS) {
+        _xs_alloc_pool($self);
+    }
+    return;
+}
 
 sub DEMOLISH {
     my $self = shift;
-    if ($Protobuf::HAS_XS && exists $self->{_pool_ptr} && $self->{_pool_ptr}) {
-        _xs_destroy_raw($self->{_pool_ptr});
+    if ($Protobuf::HAS_XS) {
+        _xs_destroy($self);
     }
     return;
 }
