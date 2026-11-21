@@ -62,6 +62,13 @@ sub run_script {
     return ($exit_code, $stdout, $stderr);
 }
 
+subtest '--version prints tool version and exits 0' => sub {
+    my ($exit_code, $stdout, $stderr) = run_script('--version');
+    is($exit_code, 0, '--version exits with 0');
+    like($stdout, qr/\Aprotobuf-starter v\d+\.\d+/, 'Prints protobuf-starter version');
+    done_testing();
+};
+
 subtest 'Usage help message on invalid flag' => sub {
     my ($exit_code, $stdout, $stderr) = run_script('--invalid-flag');
     is($exit_code, 2, 'Invalid flag exits with 2');
@@ -105,6 +112,7 @@ subtest 'Successful dry run generation' => sub {
         "--import-path=$import_path",
         '--grpc-target=test.googleapis.com',
         "--dir=$tmp_out",
+        '--module-version=1.23',
         '--force'
     );
     
@@ -112,7 +120,12 @@ subtest 'Successful dry run generation' => sub {
     like($stdout, qr/Created starter directories and files/i, 'Success message displayed on STDOUT');
     
     # Verify key files are generated
-    ok(-f File::Spec->catfile($tmp_out, 'lib', 'Google', 'Cloud', 'Test.pm'), 'Generated client wrapper');
+    my $test_pm = File::Spec->catfile($tmp_out, 'lib', 'Google', 'Cloud', 'Test.pm');
+    ok(-f $test_pm, 'Generated client wrapper');
+    open my $tfh, '<', $test_pm or die $!;
+    my $test_pm_content = do { local $/; <$tfh> };
+    close $tfh;
+    like($test_pm_content, qr/our \$VERSION = '1\.23';/, '--module-version sets generated module VERSION');
     ok(-f File::Spec->catfile($tmp_out, 'lib', 'Google', 'Cloud', 'Test', 'V1', 'Service.pm'), 'Generated compiled messages');
     
     # Clean up

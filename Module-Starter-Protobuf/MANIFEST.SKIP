@@ -26,3 +26,6 @@
 
 # Avoid compiled distribution tarballs
 \.tar\.gz$
+
+# Avoid coverage database
+^cover_db/

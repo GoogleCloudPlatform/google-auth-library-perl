@@ -3,9 +3,11 @@ package Google::Cloud::REST::Client;
 use strict;
 use warnings;
 use Moo;
+extends 'Google::Cloud::ClientBase';
 use LWP::UserAgent;
 use HTTP::Request;
 use JSON::MaybeXS qw(encode_json decode_json);
+use Future;
 use Carp qw(croak);
 use Log::Any qw($log);
 use Time::HiRes qw(sleep);
@@ -47,6 +49,13 @@ has user_agent => (
     builder => '_build_user_agent',
 );
 
+
+sub _build_transport {
+    my ($self) = @_;
+    require Google::Cloud::Transport::Adapter::LWP;
+    return Google::Cloud::Transport::Adapter::LWP->new(user_agent => $self->user_agent);
+}
+
 sub _build_user_agent {
     my ($self) = @_;
     my $ua = LWP::UserAgent->new(
@@ -58,7 +67,7 @@ sub _build_user_agent {
 
 sub ua { my $s = shift; return $s->user_agent(@_); }
 
-sub call {
+sub call_async {
     my ($self, $args) = @_;
     if (@_ > 2 && scalar(@_) % 2 == 1) {
         my ($s, %kw) = @_;
@@ -83,13 +92,15 @@ sub call {
         $base_url .= '/' . $path;
     }
 
-    # Append query parameters if any
+    # Append query parameters safely using URI percent-encoding
     if (keys %$query_params) {
-        my @pairs;
-        for my $k (sort keys %$query_params) {
-            push @pairs, sprintf('%s=%s', $k, $query_params->{$k});
-        }
-        $base_url .= '?' . join('&', @pairs);
+        require URI;
+        my $uri = URI->new($base_url);
+        $uri->query_form(
+            $uri->query_form,
+            map { $_ => $query_params->{$_} } sort keys %$query_params
+        );
+        $base_url = $uri->as_string;
     }
 
     # Build HTTP request
@@ -107,65 +118,93 @@ sub call {
 
     # Encode body
     if ($request_obj) {
-        my $payload = {};
-        if (ref($request_obj) && eval { $request_obj->can('to_hash') }) {
-            $payload = $request_obj->to_hash();
-        } elsif (ref($request_obj) eq 'HASH') {
-            $payload = $request_obj;
-        }
-        if (keys %$payload) {
-            $req->content(encode_json($payload));
-        }
+        my $encoded = $self->encode_payload($request_obj, 'json');
+        $req->content($encoded) if defined $encoded && length $encoded;
     }
 
-    # Execute HTTP request with retries
+    my %headers_hash;
+    $req->headers->scan(sub {
+        my ($k, $v) = @_;
+        $headers_hash{$k} = $v;
+    });
+
+    my %transport_args = (
+        method  => $http_method,
+        url     => $base_url,
+        headers => \%headers_hash,
+        timeout => $self->timeout,
+    );
+    if (defined $req->content && length $req->content) {
+        $transport_args{body} = $req->content;
+    }
+
     my $retries = 0;
-    my $res;
     my $backoff = 0.1;
 
-    while (1) {
+    my $run_attempt = sub {
+        my ($recur) = @_;
         $log->debugf('REST Request: %s %s', $http_method, $base_url);
-        $res = $self->user_agent->request($req);
 
-        if ($res->is_success) {
-            last;
-        }
+        my $future = $self->transport->request(%transport_args);
 
-        my $code = $res->code;
-        if (($code == 502 || $code == 503 || $code == 504) && $retries < $self->max_retries) {
-            $retries++;
-            $log->warnf('REST Transient HTTP %d response, retrying (%d/%d) in %.2fs...', $code, $retries, $self->max_retries, $backoff);
-            sleep($backoff);
-            $backoff *= 2.0;
-            next;
-        }
+        return $future->else(sub {
+            my ($err_msg, $cat, $details) = @_;
+            my $code = 0;
+            my $status_line = $err_msg;
+            my $error_body = '';
 
-        # Unrecoverable error
-        my $err_msg = sprintf('REST API HTTP Error %d: %s', $code, $res->status_line);
-        if ($res->content) {
-            $err_msg .= ' - ' . $res->content;
-        }
-        croak $err_msg;
-    }
+            if (ref($details) eq 'HASH') {
+                $code = $details->{code} // 0;
+                $error_body = $details->{body} // '';
+            } elsif (eval { $details->can('code') }) {
+                $code = $details->code // 0;
+                $status_line = $details->status_line // $err_msg;
+                $error_body = $details->content // '';
+            }
 
-    # Parse response
-    my $content = $res->content;
-    return unless defined $content && length $content;
+            if (($code == 502 || $code == 503 || $code == 504) && $retries < $self->max_retries) {
+                $retries++;
+                my $delay = $backoff;
+                $backoff *= 2;
+                $log->warnf('REST Transient HTTP %d response, retrying (%d/%d) in %.2fs...', $code, $retries, $self->max_retries, $delay);
 
-    my $decoded_json = eval { decode_json($content) };
-    if ($@) {
-        croak 'REST Error decoding JSON response: ' . $@;
-    }
+                if (!$future->is_ready || ($INC{'AnyEvent.pm'} && !$self->transport->isa('Google::Cloud::Transport::Adapter::LWP'))) {
+                    my $delay_f = Google::Cloud::Transport::Adapter::Nghttp2::Future->can('new')
+                        ? Google::Cloud::Transport::Adapter::Nghttp2::Future->new
+                        : Future->new;
+                    my $timer;
+                    $timer = AnyEvent->timer(
+                        after => $delay,
+                        cb    => sub {
+                            undef $timer;
+                            $delay_f->done();
+                        },
+                    );
+                    return $delay_f->then(sub { $recur->($recur) });
+                }
 
-    if ($response_class) {
-        if (eval { $response_class->can('from_hash') }) {
-            return $response_class->from_hash($decoded_json);
-        } elsif (eval { $response_class->can('new') }) {
-            return $response_class->new(ref($decoded_json) eq 'HASH' ? %$decoded_json : ());
-        }
-    }
+                sleep($delay);
+                return $recur->($recur);
+            }
 
-    return $decoded_json;
+            # Unrecoverable error
+            my $final_err_msg = sprintf('REST API HTTP Error %d: %s', $code, $status_line);
+            if ($error_body) {
+                $final_err_msg .= ' - ' . $error_body;
+            }
+            return Future->fail($final_err_msg, 'REST');
+        });
+    };
+
+    return $run_attempt->($run_attempt)->then(sub {
+        my ($body, $headers) = @_;
+        return Future->done($self->decode_payload($body, 'json', $response_class));
+    });
+}
+
+sub call {
+    my $self = shift;
+    return $self->call_async(@_)->get();
 }
 
 *request = \&call;

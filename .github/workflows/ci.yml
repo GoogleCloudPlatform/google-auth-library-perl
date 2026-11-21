@@ -7,6 +7,9 @@ on:
   pull_request:
     branches: [ main, 'feature/*', 'refactor/*' ]
 
+permissions:
+  contents: read
+
 jobs:
   container-matrix:
     name: ${{ matrix.name }}
@@ -17,20 +20,22 @@ jobs:
         include:
           - name: Debian 12
             image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-debian:latest
-            setup-cmd: sudo apt-get update && sudo apt-get install -y perl cpanminus libssl-dev libcrypt-dev libnghttp2-dev libpcre2-dev libabsl-dev pkg-config protobuf-compiler libtemplate-perl liblocal-lib-perl liblog-any-perl libwww-perl libjson-xs-perl libjson-maybexs-perl libmoo-perl libtype-tiny-perl libpath-tiny-perl libcapture-tiny-perl liburi-perl libfile-which-perl libmodule-starter-perl libtest-exception-perl libtest-deep-perl libtest-mockmodule-perl && sudo cpanm --notest Protocol::HTTP2 Test::LWP::UserAgent Perl::Tidy Perl::Critic Test::Perl::Critic
+            setup-cmd: sudo apt-get update && sudo apt-get install -y perl cpanminus libssl-dev libcrypt-dev libnghttp2-dev libcurl4-openssl-dev libpcre2-dev libabsl-dev pkg-config protobuf-compiler libtemplate-perl liblocal-lib-perl liblog-any-perl libwww-perl libjson-xs-perl libjson-maybexs-perl libmoo-perl libtype-tiny-perl libpath-tiny-perl libcapture-tiny-perl liburi-perl libfile-which-perl libmodule-starter-perl libtest-exception-perl libtest-deep-perl libtest-mockmodule-perl && sudo cpanm --notest AnyEvent Net::HTTP2::nghttp2 Net::Curl Protocol::HTTP2 Test::LWP::UserAgent Perl::Tidy Perl::Critic Test::Perl::Critic
           - name: Ubuntu 24.04
             image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-ubuntu:latest
-            setup-cmd: sudo apt-get update && sudo apt-get install -y perl cpanminus libssl-dev libcrypt-dev libnghttp2-dev libpcre2-dev libabsl-dev pkg-config protobuf-compiler libtemplate-perl liblocal-lib-perl liblog-any-perl libwww-perl libjson-xs-perl libjson-maybexs-perl libmoo-perl libtype-tiny-perl libpath-tiny-perl libcapture-tiny-perl liburi-perl libfile-which-perl libmodule-starter-perl libtest-exception-perl libtest-deep-perl libtest-mockmodule-perl && sudo cpanm --notest Protocol::HTTP2 Test::LWP::UserAgent Perl::Tidy Perl::Critic Test::Perl::Critic
+            setup-cmd: sudo apt-get update && sudo apt-get install -y perl cpanminus libssl-dev libcrypt-dev libnghttp2-dev libcurl4-openssl-dev libpcre2-dev libabsl-dev pkg-config protobuf-compiler libtemplate-perl liblocal-lib-perl liblog-any-perl libwww-perl libjson-xs-perl libjson-maybexs-perl libmoo-perl libtype-tiny-perl libpath-tiny-perl libcapture-tiny-perl liburi-perl libfile-which-perl libmodule-starter-perl libtest-exception-perl libtest-deep-perl libtest-mockmodule-perl && sudo cpanm --notest AnyEvent Net::HTTP2::nghttp2 Net::Curl Protocol::HTTP2 Test::LWP::UserAgent Perl::Tidy Perl::Critic Test::Perl::Critic
           - name: Rocky Linux 9
             image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-rocky:latest
-            setup-cmd: sudo apt-get update && sudo apt-get install -y perl cpanminus libssl-dev libcrypt-dev libnghttp2-dev libpcre2-dev libabsl-dev pkg-config protobuf-compiler libtemplate-perl liblocal-lib-perl liblog-any-perl libwww-perl libjson-xs-perl libjson-maybexs-perl libmoo-perl libtype-tiny-perl libpath-tiny-perl libcapture-tiny-perl liburi-perl libfile-which-perl libmodule-starter-perl libtest-exception-perl libtest-deep-perl libtest-mockmodule-perl && sudo cpanm --notest Protocol::HTTP2 Test::LWP::UserAgent Perl::Tidy Perl::Critic Test::Perl::Critic
+            setup-cmd: sudo apt-get update && sudo apt-get install -y perl cpanminus libssl-dev libcrypt-dev libnghttp2-dev libcurl4-openssl-dev libpcre2-dev libabsl-dev pkg-config protobuf-compiler libtemplate-perl liblocal-lib-perl liblog-any-perl libwww-perl libjson-xs-perl libjson-maybexs-perl libmoo-perl libtype-tiny-perl libpath-tiny-perl libcapture-tiny-perl liburi-perl libfile-which-perl libmodule-starter-perl libtest-exception-perl libtest-deep-perl libtest-mockmodule-perl && sudo cpanm --notest AnyEvent Net::HTTP2::nghttp2 Net::Curl Protocol::HTTP2 Test::LWP::UserAgent Perl::Tidy Perl::Critic Test::Perl::Critic
           - name: Perl 5.40
             image: us-docker.pkg.dev/perl-cloud-ci/perl-cloud-ci-images/google-cloud-perl-ci-540:latest
-            setup-cmd: sudo apt-get update && sudo apt-get install -y perl cpanminus libssl-dev libcrypt-dev libnghttp2-dev libpcre2-dev libabsl-dev pkg-config protobuf-compiler libtemplate-perl liblocal-lib-perl liblog-any-perl libwww-perl libjson-xs-perl libjson-maybexs-perl libmoo-perl libtype-tiny-perl libpath-tiny-perl libcapture-tiny-perl liburi-perl libfile-which-perl libmodule-starter-perl libtest-exception-perl libtest-deep-perl libtest-mockmodule-perl && sudo cpanm --notest Protocol::HTTP2 Test::LWP::UserAgent Perl::Tidy Perl::Critic Test::Perl::Critic
+            setup-cmd: sudo apt-get update && sudo apt-get install -y perl cpanminus libssl-dev libcrypt-dev libnghttp2-dev libcurl4-openssl-dev libpcre2-dev libabsl-dev pkg-config protobuf-compiler libtemplate-perl liblocal-lib-perl liblog-any-perl libwww-perl libjson-xs-perl libjson-maybexs-perl libmoo-perl libtype-tiny-perl libpath-tiny-perl libcapture-tiny-perl liburi-perl libfile-which-perl libmodule-starter-perl libtest-exception-perl libtest-deep-perl libtest-mockmodule-perl && sudo cpanm --notest AnyEvent Net::HTTP2::nghttp2 Net::Curl Protocol::HTTP2 Test::LWP::UserAgent Perl::Tidy Perl::Critic Test::Perl::Critic
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
 
       - name: Docker login to Artifact Registry
         id: docker_login

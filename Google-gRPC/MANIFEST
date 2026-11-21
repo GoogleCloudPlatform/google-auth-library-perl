@@ -50,4 +50,3 @@ tmp/proto_src.txt
 tmp/proto_test.txt
 tmp/proto_ver.txt
 typemap
-xs/NGHTTP2.xs

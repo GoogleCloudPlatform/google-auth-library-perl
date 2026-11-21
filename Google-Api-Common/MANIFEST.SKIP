@@ -1,0 +1,35 @@
+# Avoid version control files.
+^\.git/
+^\.gitignore$
+^\.gitmodules$
+
+# Avoid temporary, backup, and editor files.
+~$
+\.bak$
+\.tmp$
+\#$
+\b\.#
+\.swp$
+
+# Avoid build and testing artifacts.
+\bblib/
+\bpm_to_blib$
+^pm_to_blib_protos\.stamp$
+\bMakefile$
+\bMakefile\.old$
+\bblibdirs$
+\bBuild$
+\b_build/
+\bcover_db/
+\bnytprof/
+\bnytprof\.out$
+
+# Avoid local development temporary directories and logs.
+^tmp/
+^Google-Api-Common-
+^MYMETA\.
+
+# Avoid cpanm or local testing artifacts.
+^\.cpanm/
+^local/
+^scratch/

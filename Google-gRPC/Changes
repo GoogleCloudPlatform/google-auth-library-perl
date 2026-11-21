@@ -1,5 +1,10 @@
 Revision history for Google::gRPC
 
+0.07    2026-11-21
+    - Hardened NGHTTP2.xs session lifecycle, data source tracking, callback error capture (G_EVAL), and header/trailer classification.
+    - Added GOOGLE_CLOUD_QUOTA_PROJECT header support.
+    - Removed duplicate xs/NGHTTP2.xs and updated MANIFEST.
+
 0.06    Tue Jul 28 2026
     - Added SECURITY.md
 

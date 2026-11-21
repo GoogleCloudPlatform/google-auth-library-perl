@@ -12,7 +12,7 @@ use Carp qw(croak);
 use Log::Any qw($log);
 use Time::HiRes qw(sleep);
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 has channel_pool => ( is => 'ro', required => 0 );
 has target       => (
@@ -69,12 +69,7 @@ sub call {
     my $max_backoff = $args->{max_backoff_sec} // $self->max_backoff_sec;
     my $factor      = $args->{backoff_factor} // $self->backoff_factor;
 
-    eval {
-        require Net::Curl::Easy;
-        Net::Curl::Easy->import(qw(:constants));
-    };
-
-    if ($@ || $self->offline) {
+    if ($self->offline) {
         my $stream = $self->channel->create_stream(
             service        => $service,
             method         => $method,
@@ -85,6 +80,19 @@ sub call {
         );
         my $msg = $stream->recv_message();
         return $msg;
+    }
+
+    my $curl_err;
+    {
+        local $@;
+        eval {
+            require Net::Curl::Easy;
+            Net::Curl::Easy->import(qw(:constants));
+        };
+        $curl_err = $@;
+    }
+    if ($curl_err) {
+        croak 'Failed to load Net::Curl::Easy for live gRPC transport (set offline => 1 for offline mode): ' . $curl_err;
     }
 
     my $binary_payload = ref($request) && $request->can('serialize') ? $request->serialize() : $request;
@@ -98,12 +106,42 @@ sub call {
 
         my $target_host = $self->target;
         my $ch_ref;
+        my @resolve_entries;
         if ($self->channel_pool) {
             $ch_ref = $self->channel_pool->get_channel();
-            $target_host = $ch_ref->target;
+            $target_host = $self->channel_pool->target;
+
+            my ($logical_host, $logical_port);
+            if ($target_host =~ /^\[([a-fA-F0-9:]+)\](?::(\d+))?$/) {
+                $logical_host = $1;
+                $logical_port = $2 || '443';
+            } elsif ($target_host =~ /^([^:]+):(\d+)$/) {
+                $logical_host = $1;
+                $logical_port = $2;
+            } else {
+                $logical_host = $target_host;
+                $logical_port = '443';
+            }
+
+            my $sub_target = $ch_ref->target;
+            my $pinned_ip;
+            if ($sub_target =~ /^\[([a-fA-F0-9:]+)\](?::\d+)?$/) {
+                $pinned_ip = '[' . $1 . ']';
+            } elsif ($sub_target =~ /^([^:]+):\d+$/) {
+                $pinned_ip = $1;
+            } else {
+                $pinned_ip = $sub_target;
+            }
+
+            if (defined $pinned_ip && $pinned_ip ne $logical_host && $pinned_ip ne ('[' . $logical_host . ']')) {
+                push @resolve_entries, "${logical_host}:${logical_port}:${pinned_ip}";
+            }
         }
 
         my $curl = Net::Curl::Easy->new();
+        if (@resolve_entries && Net::Curl::Easy->can('CURLOPT_RESOLVE')) {
+            $curl->setopt(Net::Curl::Easy::CURLOPT_RESOLVE(), \@resolve_entries);
+        }
         my $url = 'https://' . $target_host . '/' . $service . '/' . $method;
         $curl->setopt(Net::Curl::Easy::CURLOPT_URL(), $url);
         $curl->setopt(Net::Curl::Easy::CURLOPT_POST(), 1);
@@ -117,6 +155,11 @@ sub call {
         if ($self->auth_token) {
             push @headers, 'authorization: Bearer ' . $self->auth_token;
         }
+
+        if ($ENV{GOOGLE_CLOUD_QUOTA_PROJECT}) {
+            push @headers, 'x-goog-user-project: ' . $ENV{GOOGLE_CLOUD_QUOTA_PROJECT};
+        }
+
 
         if (defined $timeout_val) {
             my $sec = Google::gRPC::Deadline::parse_timeout($timeout_val);
@@ -162,17 +205,39 @@ sub call {
         my $ret = eval { $curl->perform(); };
         my $curl_err = $@;
 
-        my $trailers = Google::gRPC::Framing::parse_trailers(\%response_headers);
-        my $grpc_status = $trailers->{status};
+        my $trailers    = Google::gRPC::Framing::parse_trailers(\%response_headers);
+        my $has_status  = $trailers->{has_status};
+        my $grpc_status = $has_status ? $trailers->{status} : undef;
+
+        if (!defined $grpc_status && $http_code != 200) {
+            my %http_to_grpc = (
+                400 => 13,    # INTERNAL
+                401 => 16,    # UNAUTHENTICATED
+                403 => 7,     # PERMISSION_DENIED
+                404 => 12,    # UNIMPLEMENTED
+                429 => 14,    # UNAVAILABLE
+                502 => 14,    # UNAVAILABLE
+                503 => 14,    # UNAVAILABLE
+                504 => 14,    # UNAVAILABLE
+            );
+            $grpc_status = $http_to_grpc{$http_code} // 2;    # UNKNOWN
+        }
 
         my $is_transient = 0;
-        if ($curl_err || $http_code == 503 || $http_code == 504 || $grpc_status == 14) {
+        if ( $curl_err
+            || $http_code == 429
+            || $http_code == 502
+            || $http_code == 503
+            || $http_code == 504
+            || (defined $grpc_status && $grpc_status == 14) )
+        {
             $is_transient = 1;
         }
 
         if ($is_transient && $attempt <= $max_retries) {
-            $last_exception = $curl_err ? 'gRPC perform failed: ' . $curl_err :
-                'gRPC error: status=' . $grpc_status . ', message=' . ($trailers->{message} || 'UNAVAILABLE');
+            $last_exception = $curl_err
+                ? 'gRPC perform failed: ' . $curl_err
+                : 'gRPC error: status=' . ($grpc_status // 'missing') . ', message=' . ($trailers->{message} || 'UNAVAILABLE');
 
             sleep($backoff);
             $backoff = $backoff * $factor;
@@ -184,8 +249,16 @@ sub call {
             croak 'gRPC perform failed: ' . $curl_err;
         }
 
+        if ($http_code != 200 && !defined $grpc_status) {
+            croak 'gRPC HTTP error: http_status=' . $http_code;
+        }
+
+        if (!defined $grpc_status) {
+            croak 'Invalid gRPC response: missing grpc-status trailer (http_status=' . $http_code . ')';
+        }
+
         if ($grpc_status != 0) {
-            my $err_msg = 'gRPC error: status=' . $grpc_status . ', message=' . ($trailers->{message} || 'unknown error');
+            my $err_msg = 'gRPC error: status=' . $grpc_status . ', message=' . ($trailers->{message} || 'HTTP ' . $http_code);
             if ($trailers->{status_details}) {
                 $err_msg .= ', details_code=' . $trailers->{status_details}->code;
             }

@@ -10,8 +10,8 @@ steps:
         echo "=== Testing on Debian Perl 5.40 Pre-baked Container ==="
         mkdir -p /tmp/build1 && cp -a . /tmp/build1 && cd /tmp/build1
         (cd Protobuf && rm -f Makefile && perl Makefile.PL && make && cp -f libprotobufperl.so blib/arch/auto/Protobuf/ && export LD_LIBRARY_PATH=$$(pwd)/blib/arch/auto/Protobuf:$$(pwd):$$LD_LIBRARY_PATH && prove -b -It/lib t/ && make install)
-        (cd Google-Auth && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
         (cd Google-Api-Common && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
+        (cd Google-Auth && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
         (cd Google-gRPC && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
         (cd Module-Starter-Protobuf && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
 
@@ -36,8 +36,8 @@ steps:
         echo "=== Testing on Debian Latest Pre-baked Container ==="
         mkdir -p /tmp/build2 && cp -a . /tmp/build2 && cd /tmp/build2
         (cd Protobuf && rm -f Makefile && perl Makefile.PL && make && cp -f libprotobufperl.so blib/arch/auto/Protobuf/ && export LD_LIBRARY_PATH=$$(pwd)/blib/arch/auto/Protobuf:$$(pwd):$$LD_LIBRARY_PATH && prove -b -It/lib t/ && make install)
-        (cd Google-Auth && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
         (cd Google-Api-Common && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
+        (cd Google-Auth && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
         (cd Google-gRPC && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
         (cd Module-Starter-Protobuf && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
 
@@ -62,8 +62,8 @@ steps:
         echo "=== Testing on Ubuntu Latest Pre-baked Container ==="
         mkdir -p /tmp/build3 && cp -a . /tmp/build3 && cd /tmp/build3
         (cd Protobuf && rm -f Makefile && perl Makefile.PL && make && cp -f libprotobufperl.so blib/arch/auto/Protobuf/ && export LD_LIBRARY_PATH=$$(pwd)/blib/arch/auto/Protobuf:$$(pwd):$$LD_LIBRARY_PATH && prove -b -It/lib t/ && make install)
-        (cd Google-Auth && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
         (cd Google-Api-Common && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
+        (cd Google-Auth && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
         (cd Google-gRPC && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
         (cd Module-Starter-Protobuf && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
 
@@ -88,8 +88,8 @@ steps:
         echo "=== Testing on Rocky Linux 9 Pre-baked Container ==="
         mkdir -p /tmp/build4 && cp -a . /tmp/build4 && cd /tmp/build4
         (cd Protobuf && rm -f Makefile && perl Makefile.PL && make && cp -f libprotobufperl.so blib/arch/auto/Protobuf/ && export LD_LIBRARY_PATH=$$(pwd)/blib/arch/auto/Protobuf:$$(pwd):$$LD_LIBRARY_PATH && prove -b -It/lib t/ && make install)
-        (cd Google-Auth && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
         (cd Google-Api-Common && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
+        (cd Google-Auth && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
         (cd Google-gRPC && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
         (cd Module-Starter-Protobuf && perl Makefile.PL && make -j$(nproc) && AUTHOR_TESTING=0 RELEASE_TESTING=0 prove -b -It/lib t/ && make install)
 
