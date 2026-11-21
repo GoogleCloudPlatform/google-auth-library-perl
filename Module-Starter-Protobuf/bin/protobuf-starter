@@ -14,19 +14,24 @@ my %config = (
 
 # Parse command line options, including our custom ones!
 GetOptions(
-    'module=s@'    => \$config{modules},
-    'dir=s'        => \$config{dir},
-    'protos=s'     => \$config{protos},        # Custom option!
-    'import-path=s'=> \$config{import_path},   # Custom option!
-    'grpc-target=s'=> \$config{grpc_target},   # Custom option!
-    'security-link=s' => \$config{security_link}, # New custom option!
-    'author=s@'    => \$config{author},
-    'email=s'      => \$config{email},
-    'license=s'    => \$config{license},
-    'version=s'    => \$config{version},
-    'force'        => \$config{force},
-    'verbose'      => \$config{verbose},
-    'help'         => sub { pod2usage(1) },
+    'module=s@'        => \$config{modules},
+    'dir=s'            => \$config{dir},
+    'protos=s'         => \$config{protos},        # Custom option!
+    'import-path=s'    => \$config{import_path},   # Custom option!
+    'grpc-target=s'    => \$config{grpc_target},   # Custom option!
+    'security-link=s'  => \$config{security_link}, # New custom option!
+    'author=s@'        => \$config{author},
+    'email=s'          => \$config{email},
+    'license=s'        => \$config{license},
+    'module-version=s' => \$config{version},
+    'version'          => sub {
+        require Module::Starter::Protobuf;
+        print 'protobuf-starter v' . $Module::Starter::Protobuf::VERSION . "\n";
+        exit 0;
+    },
+    'force'            => \$config{force},
+    'verbose'          => \$config{verbose},
+    'help'             => sub { pod2usage(1) },
 ) or pod2usage(2);
 
 # Validate required inputs
@@ -50,7 +55,7 @@ $starter->create_distro;
 $starter->post_create_distro;
 $starter->pre_exit;
 
-print "Created starter directories and files in $config{dir}\n";
+print 'Created starter directories and files in ' . $config{dir} . "\n";
 exit 0;
 
 __END__
@@ -66,12 +71,17 @@ protobuf-starter - bootstrap a gRPC client library Perl distribution from Protoc
                      --import-path=protos \
                      --grpc-target=bigquery.googleapis.com \
                      --dir=Google-Cloud-BigQuery \
-                     --security-link="https://bughunters.google.com/" \
-                     --author="C.J. Collier <cjac@google.com>"
+                     --module-version=0.01 \
+                     --security-link='https://bughunters.google.com/' \
+                     --author='C.J. Collier <cjac@google.com>'
+
+    protobuf-starter --version
 
 =head1 DESCRIPTION
 
-protobuf-starter is a command-line utility that bootstraps a skeletal Perl 
+protobuf-starter is a command-line utility that bootstraps a skeletal Perl
 distribution for a gRPC client library compiled from Protocol Buffers schemas.
+Pass C<--module-version=X.YZ> to override the initial version of the generated
+distribution, or C<--version> to print the C<protobuf-starter> tool version.
 
 =cut

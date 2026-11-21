@@ -21,3 +21,4 @@ xt/00_kwalitee.t
 xt/00_perl-critic.t
 xt/00_perltidy.t
 xt/boilerplate.t
+README.md
