@@ -35,15 +35,17 @@ sub unpack_frame {
 sub parse_trailers {
     my ($headers) = @_;
     my %res = (
-        status  => 0,
-        message => '',
+        status     => 0,
+        has_status => 0,
+        message    => '',
     );
 
     my $details_bin;
 
     if (ref($headers) eq 'HASH') {
-        if (exists $headers->{'grpc-status'}) {
-            $res{status} = int($headers->{'grpc-status'});
+        if (exists $headers->{'grpc-status'} && defined $headers->{'grpc-status'} && $headers->{'grpc-status'} =~ /\A-?\d+\z/) {
+            $res{status}     = int($headers->{'grpc-status'});
+            $res{has_status} = 1;
         }
         if (exists $headers->{'grpc-message'}) {
             $res{message} = $headers->{'grpc-message'};
@@ -56,8 +58,9 @@ sub parse_trailers {
         for (my $i = 0; $i < @$headers; $i += 2) {
             my $k = lc($headers->[$i]);
             my $v = $headers->[$i + 1];
-            if ($k eq 'grpc-status') {
-                $res{status} = int($v);
+            if ($k eq 'grpc-status' && defined $v && $v =~ /\A-?\d+\z/) {
+                $res{status}     = int($v);
+                $res{has_status} = 1;
             }
             elsif ($k eq 'grpc-message') {
                 $res{message} = $v;

@@ -19,11 +19,11 @@ sub create {
         }
     }
 
-    eval {
+    my $eng = eval {
         require Google::gRPC::Engine::NGHTTP2;
-        my $eng = Google::gRPC::Engine::NGHTTP2->new(%args);
-        return $eng if $eng;
+        Google::gRPC::Engine::NGHTTP2->new(%args);
     };
+    return $eng if $eng;
 
     require Google::gRPC::Engine::PP;
     return Google::gRPC::Engine::PP->new(%args);
