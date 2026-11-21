@@ -199,17 +199,28 @@ sub _validate_url {
   my ($self, $url_str, $name) = @_;
   return unless defined $url_str;
 
-  my $uri  = URI->new($url_str);
-  my $host = $uri->host;
+  my $uri    = URI->new($url_str);
+  my $scheme = lc($uri->scheme // '');
+
+  unless ($scheme eq 'https') {
+    $log->errorf('URL %s (%s) uses non-HTTPS scheme (%s)',
+      $name, $url_str, $scheme);
+    Google::Auth::Error->throw('URL ' .
+        $name . ' (' .
+        $url_str .
+        ') carries security violation: scheme must be https');
+  }
+
+  my $host = lc($uri->can('host') ? ($uri->host // '') : '');
 
   unless ($host) {
-    Google::Auth::Error->throw("Invalid URL for $name: $url_str");
+    Google::Auth::Error->throw('Invalid URL for ' . $name . ': ' . $url_str);
   }
 
   my $universe_domain = $self->universe_domain // 'googleapis.com';
 
   my $is_valid = 0;
-  if ($host eq 'googleapis.com' || $host =~ /\.googleapis.com$/) {
+  if ($host eq 'googleapis.com' || $host =~ /\.googleapis\.com$/) {
     $is_valid = 1;
   } elsif ($host eq $universe_domain || $host =~ /\.\Q$universe_domain\E$/) {
     my $is_pinned = $self->_is_universe_pinned;

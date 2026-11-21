@@ -173,9 +173,29 @@ sub fetch_access_token {
 
   my $res_data = decode_json($response_body);
   $self->access_token($res_data->{accessToken});
-  $self->expires_at($res_data->{expireTime});
+  $self->expires_at(_parse_rfc3339_epoch($res_data->{expireTime}));
 
   return $res_data->{accessToken};
+}
+
+sub _parse_rfc3339_epoch {
+  my ($ts) = @_;
+  return unless defined $ts;
+  return $ts + 0 if !ref($ts) && $ts =~ /\A\d+(?:\.\d+)?\z/;
+  if ($ts =~
+/\A(\d{4})-(\d{2})-(\d{2})[Tt ](\d{2}):(\d{2}):(\d{2})(?:\.\d+)?([Zz]|[+-]\d{2}:\d{2})\z/
+    )
+  {
+    my ($y, $mon, $d, $h, $min, $s, $tz) = ($1, $2, $3, $4, $5, $6, $7);
+    require Time::Local;
+    my $epoch = Time::Local::timegm($s, $min, $h, $d, $mon - 1, $y);
+    if (uc($tz) ne 'Z' && $tz =~ /\A([+-])(\d{2}):(\d{2})\z/) {
+      my $offset = ($2 * 3600) + ($3 * 60);
+      $epoch += ($1 eq '+') ? -$offset : $offset;
+    }
+    return $epoch;
+  }
+  Google::Auth::Error->throw('Invalid RFC 3339 expireTime: ' . $ts);
 }
 
 1;
