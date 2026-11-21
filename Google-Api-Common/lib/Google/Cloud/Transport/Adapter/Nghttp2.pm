@@ -97,6 +97,7 @@ sub _create_connection {
         tls_ctx => {
             verify => $self->configuration->ssl_verify_host,
             verify_peername => $self->configuration->ssl_verify_host ? 'http' : undef,
+            (defined $self->configuration->ssl_ca_file ? (ca_file => $self->configuration->ssl_ca_file) : ()),
             prepare => sub {
                 my ($tls) = @_;
                 my $ctx = $tls->ctx;
@@ -177,11 +178,17 @@ sub _setup_session {
             $log->debugf('Stream %d closed with code %d', $stream_id, $error_code) if $log;
             my $stream_data = $session->get_stream_user_data($stream_id);
             if ($stream_data) {
+                my $raw_status = $stream_data->{headers} ? $stream_data->{headers}{':status'} : undef;
+                my $http_status = (defined $raw_status && $raw_status =~ /\A(\d{3})\z/) ? int($1) : undef;
+                my $is_http_err = defined $http_status && ($http_status < 200 || $http_status >= 300);
+
                 if ($stream_data->{is_streaming}) {
-                    if ($error_code == 0) {
-                        $stream_data->{on_eof}->() if $stream_data->{on_eof};
-                    } else {
+                    if ($error_code != 0) {
                         $stream_data->{on_error}->('Stream closed with error: ' . $error_code) if $stream_data->{on_error};
+                    } elsif ($is_http_err) {
+                        $stream_data->{on_error}->('HTTP error: ' . $http_status) if $stream_data->{on_error};
+                    } else {
+                        $stream_data->{on_eof}->() if $stream_data->{on_eof};
                     }
                 } else {
                     if ($error_code == 0) {
@@ -191,7 +198,19 @@ sub _setup_session {
                         } else {
                             $headers_obj = $stream_data->{headers};
                         }
-                        $stream_data->{future}->done($stream_data->{body}, $headers_obj);
+                        if ($is_http_err) {
+                            $stream_data->{future}->fail(
+                                'HTTP ' . $http_status,
+                                'Transport',
+                                {
+                                    code    => $http_status,
+                                    body    => $stream_data->{body},
+                                    headers => $headers_obj,
+                                },
+                            );
+                        } else {
+                            $stream_data->{future}->done($stream_data->{body}, $headers_obj);
+                        }
                     } else {
                         $stream_data->{future}->fail('Stream closed with error: ' . $error_code, 'Transport');
                     }
@@ -273,8 +292,16 @@ sub _submit_request {
     }
     
     if ($log) {
+        my %sensitive = map { $_ => 1 } qw(
+            authorization
+            proxy-authorization
+            x-goog-api-key
+            cookie
+            set-cookie
+        );
         for my $h (@h2_headers) {
-            $log->tracef('Sending H2 Header: %s = %s', $h->[0], $h->[1]);
+            my $val = $sensitive{lc($h->[0])} ? '[REDACTED]' : $h->[1];
+            $log->tracef('Sending H2 Header: %s = %s', $h->[0], $val);
         }
     }
     

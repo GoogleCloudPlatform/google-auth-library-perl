@@ -92,13 +92,15 @@ sub call_async {
         $base_url .= '/' . $path;
     }
 
-    # Append query parameters if any
+    # Append query parameters safely using URI percent-encoding
     if (keys %$query_params) {
-        my @pairs;
-        for my $k (sort keys %$query_params) {
-            push @pairs, sprintf('%s=%s', $k, $query_params->{$k});
-        }
-        $base_url .= '?' . join('&', @pairs);
+        require URI;
+        my $uri = URI->new($base_url);
+        $uri->query_form(
+            $uri->query_form,
+            map { $_ => $query_params->{$_} } sort keys %$query_params
+        );
+        $base_url = $uri->as_string;
     }
 
     # Build HTTP request
@@ -139,12 +141,12 @@ sub call_async {
     my $retries = 0;
     my $backoff = 0.1;
 
-    my $attempt;
-    $attempt = sub {
+    my $run_attempt = sub {
+        my ($recur) = @_;
         $log->debugf('REST Request: %s %s', $http_method, $base_url);
-        
+
         my $future = $self->transport->request(%transport_args);
-        
+
         return $future->else(sub {
             my ($err_msg, $cat, $details) = @_;
             my $code = 0;
@@ -162,12 +164,27 @@ sub call_async {
 
             if (($code == 502 || $code == 503 || $code == 504) && $retries < $self->max_retries) {
                 $retries++;
-                $log->warnf('REST Transient HTTP %d response, retrying (%d/%d) in %.2fs...', $code, $retries, $self->max_retries, $backoff);
-                
-                # TODO: Non-blocking delay
-                # For now, we omit delay in async path to avoid blocking.
-                
-                return $attempt->();
+                my $delay = $backoff;
+                $backoff *= 2;
+                $log->warnf('REST Transient HTTP %d response, retrying (%d/%d) in %.2fs...', $code, $retries, $self->max_retries, $delay);
+
+                if (!$future->is_ready || ($INC{'AnyEvent.pm'} && !$self->transport->isa('Google::Cloud::Transport::Adapter::LWP'))) {
+                    my $delay_f = Google::Cloud::Transport::Adapter::Nghttp2::Future->can('new')
+                        ? Google::Cloud::Transport::Adapter::Nghttp2::Future->new
+                        : Future->new;
+                    my $timer;
+                    $timer = AnyEvent->timer(
+                        after => $delay,
+                        cb    => sub {
+                            undef $timer;
+                            $delay_f->done();
+                        },
+                    );
+                    return $delay_f->then(sub { $recur->($recur) });
+                }
+
+                sleep($delay);
+                return $recur->($recur);
             }
 
             # Unrecoverable error
@@ -179,7 +196,7 @@ sub call_async {
         });
     };
 
-    return $attempt->()->then(sub {
+    return $run_attempt->($run_attempt)->then(sub {
         my ($body, $headers) = @_;
         return Future->done($self->decode_payload($body, 'json', $response_class));
     });

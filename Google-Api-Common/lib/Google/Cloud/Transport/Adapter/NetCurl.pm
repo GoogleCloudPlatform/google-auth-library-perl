@@ -88,8 +88,6 @@ sub request {
     
     if ($method eq 'POST') {
         $easy->setopt(CURLOPT_POST, 1);
-    } elsif ($method eq 'PUT') {
-        $easy->setopt(CURLOPT_PUT, 1); # Note: PUT might need more setup in libcurl
     } elsif ($method ne 'GET') {
         $easy->setopt(CURLOPT_CUSTOMREQUEST, $method);
     }
@@ -242,8 +240,6 @@ sub start_stream {
     
     if ($method eq 'POST') {
         $easy->setopt(CURLOPT_POST, 1);
-    } elsif ($method eq 'PUT') {
-        $easy->setopt(CURLOPT_PUT, 1);
     } elsif ($method ne 'GET') {
         $easy->setopt(CURLOPT_CUSTOMREQUEST, $method);
     }
