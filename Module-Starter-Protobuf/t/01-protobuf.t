@@ -63,7 +63,7 @@ open my $fh_runner, '>', $runner_file or die 'Failed to write run-integration-te
 print {$fh_runner} <<'EOF';
 use strict;
 use warnings;
-use Test::More tests => 8;
+use Test::More tests => 9;
 
 # A. Mock Google::Auth
 package Google::Auth;
@@ -126,8 +126,12 @@ ok(1, 'Skipping legacy class check');
 # Verify low-level compiled service client stub class and methods
 can_ok('Google::Cloud::Test::V1::Service::TestServiceClient', qw(new say_hello)) if Google::Cloud::Test::V1::Service::TestServiceClient->can('new');
 
+# Verify invalid explicit credentials fail closed rather than falling back to default ADC
+eval { Google::Cloud::TestServiceClient->new( credentials => 'dummy' ); };
+like($@, qr/Invalid credentials object/, 'Rejects invalid explicit credentials');
+
 # Verify instantiation and execution
-my $client = Google::Cloud::TestServiceClient->new( credentials => 'dummy' );
+my $client = Google::Cloud::TestServiceClient->new();
 ok($client, 'Instantiated generated client');
 isa_ok($client->transport, 'Google::gRPC::Client', 'Client transport');
 

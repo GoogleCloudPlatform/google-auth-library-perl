@@ -15,15 +15,32 @@ sub _get_methods_code {
     my ($self, $methods) = @_;
     my $code = '';
     for my $m (@$methods) {
-        $code .= sprintf(<<'EOF', $m->{perl_name}, $m->{input_class}, $m->{output_class}, $m->{service_path}, $m->{raw_name});
+        $code .= sprintf(<<'EOF', $m->{perl_name}, $m->{input_class}, $m->{output_class}, $m->{service_path}, $m->{raw_name}, $m->{service_path}, $m->{raw_name});
 
 sub %s {
     my ($self, %%params) = @_;
 
     my $request_class = '%s';
-    my $request = eval { $request_class->new(\%%params) } || eval { $request_class->new(%%params) } || ($request_class->can('encode') ? $request_class->encode(\%%params) : \%%params);
+    my $request = eval { $request_class->new(\%%params) };
+    my $new_err = $@;
+    if (!$request) {
+        $request = eval { $request_class->new(%%params) };
+        $new_err ||= $@;
+    }
+    if (!$request) {
+        croak 'Failed to construct ' . $request_class . ': ' . ($new_err || 'unknown error');
+    }
 
     my $response_class = '%s';
+    if (eval { $self->transport->isa('Google::Cloud::REST::Client') }) {
+        return $self->transport->call({
+            http_method    => 'POST',
+            path           => '/%s/%s',
+            request        => $request,
+            response_class => $response_class,
+        });
+    }
+
     my $response = $self->transport->call({
         service        => '%s',
         method         => '%s',
@@ -74,8 +91,10 @@ sub BUILD {
     my (\$self) = \@_;
 
     my \$auth = \$self->credentials;
-    if (!\$auth || !eval { \$auth->can('get_token') }) {
+    if (!defined \$auth) {
         \$auth = Google::Auth->default();
+    } elsif (!eval { \$auth->can('get_token') }) {
+        croak 'Invalid credentials object: must implement get_token()';
     }
     my \$token = \$auth->get_token();
 
@@ -324,7 +343,7 @@ BEGIN {
 package main;
 use %s;
 
-my $client = %s->new( credentials => 'dummy' );
+my $client = %s->new();
 ok($client, 'Instantiated generated client');
 isa_ok($client->transport, 'Google::gRPC::Client', 'Client transport');
 EOF

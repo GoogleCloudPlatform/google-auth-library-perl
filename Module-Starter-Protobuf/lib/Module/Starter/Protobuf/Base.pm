@@ -39,7 +39,10 @@ sub create_distro {
         $self->{_protobuf_grpc_target} = $grpc_target;
     }
 
-    my $separate = $self->{separate_clients} // $ENV{PROTOBUF_SEPARATE_CLIENTS} // 1; # Default to separate
+    my $types_only = $args{compile_types_only} || $self->{compile_types_only} || 0;
+    $self->{compile_types_only} = $types_only;
+
+    my $separate = $types_only ? 0 : ($self->{separate_clients} // $ENV{PROTOBUF_SEPARATE_CLIENTS} // 1); # Default to separate
     $self->{separate_clients} = $separate;
 
     if ($separate && $self->{_protobuf_files}) {
@@ -47,8 +50,13 @@ sub create_distro {
         $self->{_services_meta_all} = \%services;
 
         my $base_module = $self->{modules}->[0];
-        my ($base_ns) = $base_module =~ /^(.*)::(\w+)$/;
-        $base_ns ||= $base_module; # Fallback
+        my $base_ns;
+        if ($base_module =~ /::V\d+[a-z0-9]*$/i) {
+            $base_ns = $base_module;
+        } else {
+            ($base_ns) = $base_module =~ /^(.*)::(\w+)$/;
+            $base_ns ||= $base_module; # Fallback
+        }
 
         my @new_modules = ($base_module);
         for my $svc (sort keys %services) {
@@ -180,7 +188,7 @@ sub create_modules {
         
         $plugin_path = File::Spec->rel2abs($plugin_path) if -f $plugin_path;
         my $abs_lib_dir = File::Spec->rel2abs($lib_dir);
-        File::Path::make_path($abs_lib_dir) unless -d $abs_lib_dir;
+        path($abs_lib_dir)->mkpath unless -d $abs_lib_dir;
         (my $norm_lib_dir = $abs_lib_dir) =~ s{\\}{/}g;
         (my $norm_plugin_path = $plugin_path) =~ s{\\}{/}g;
         (my $norm_proto_file = $proto_file) =~ s{\\}{/}g;
@@ -192,10 +200,16 @@ sub create_modules {
         my @cmd = ($protoc_bin);
         push @cmd, '--plugin=protoc-gen-perl-pb=' . $norm_plugin_path;
         push @cmd, '--perl-pb_out=' . $norm_lib_dir;
-        push @cmd, '--perl-pb_opt=embed_descriptors,generate_services';
+        my $pb_opt = $self->{compile_types_only} ? 'embed_descriptors' : 'embed_descriptors,generate_services';
+        push @cmd, '--perl-pb_opt=' . $pb_opt;
         push @cmd, ('-I', $norm_import_path);
-        push @cmd, ('-I', '/usr/include') if -d '/usr/include';
-        push @cmd, ('-I', '/usr/local/include') if -d '/usr/local/include';
+        my $in_google3 = $ENV{TEST_SRCDIR}
+            || $norm_import_path =~ m{(?:^|/)google3(?:/|$)}
+            || $protoc_bin =~ m{/google3/};
+        if (!$in_google3) {
+            push @cmd, ('-I', '/usr/include') if -d '/usr/include';
+            push @cmd, ('-I', '/usr/local/include') if -d '/usr/local/include';
+        }
         
         my $temp_deps = Path::Tiny->tempfile();
         push @cmd, '--dependency_out=' . $temp_deps;
@@ -370,7 +384,7 @@ sub _generate_client_wrapper {
                     service_name  => $file_service_name,
                 };
 
-                if (!$service_to_gen || $file_service_name eq $service_to_gen) {
+                if (!$self->{compile_types_only} && (!$service_to_gen || $file_service_name eq $service_to_gen)) {
                     push @methods, $m_info;
                 }
             }
@@ -856,7 +870,7 @@ BEGIN {
 package main;
 use %s;
 
-my $client = %s->new( credentials => 'dummy' );
+my $client = %s->new();
 ok($client, 'Instantiated generated client');
 isa_ok($client->transport, 'Google::gRPC::Client', 'Client transport');
 EOF

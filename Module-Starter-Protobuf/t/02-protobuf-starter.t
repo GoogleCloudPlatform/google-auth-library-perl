@@ -124,7 +124,7 @@ ok(1, 'Skipping legacy class check');
 can_ok('Google::Cloud::Test::V1::Service::TestServiceClient', qw(new say_hello)) if Google::Cloud::Test::V1::Service::TestServiceClient->can('new');
 
 # Verify instantiation and execution
-my $client = Google::Cloud::TestServiceClient->new( credentials => 'dummy' );
+my $client = Google::Cloud::TestServiceClient->new();
 ok($client, 'Instantiated generated client');
 isa_ok($client->transport, 'Google::gRPC::Client', 'Client transport');
 
