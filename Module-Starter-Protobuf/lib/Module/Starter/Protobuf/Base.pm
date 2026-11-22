@@ -563,6 +563,11 @@ sub Makefile_PL_guts {
     my ($self, @args) = @_;
     my $guts = $self->SUPER::Makefile_PL_guts(@args);
 
+    # Default generated distributions to Apache 2.0 to match POD and copyright headers
+    if (!$self->{license} || $self->{license} eq 'apache_2_0') {
+        $guts =~ s/(LICENSE\s*=>\s*)'[^']+'/$1'apache_2_0'/;
+    }
+
     if ($self->{_protobuf_files}) {
         my $has_services = $self->_has_services();
         my $deps = $self->_get_makefile_dependencies($has_services);
