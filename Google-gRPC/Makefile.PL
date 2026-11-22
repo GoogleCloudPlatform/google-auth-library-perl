@@ -55,9 +55,9 @@ else {
 WriteMakefile(
     NAME             => 'Google::gRPC',
     AUTHOR           => q{C.J. Collier <cjac@google.com>},
-    VERSION_FROM     => 'lib/Google/gRPC/Client.pm',
+    VERSION_FROM     => 'lib/Google/gRPC.pm',
     ABSTRACT         => 'Generic, high-performance gRPC client transport over HTTP/2',
-    LICENSE          => 'Apache 2.0',
+    LICENSE          => 'apache_2_0',
     PL_FILES         => {},
     MIN_PERL_VERSION => '5.006',
     CONFIGURE_REQUIRES => {

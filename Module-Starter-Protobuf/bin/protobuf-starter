@@ -43,6 +43,7 @@ pod2usage(-msg => 'No proto files specified. Use --protos', -exitval => 2) unles
 $config{import_path} ||= '.';
 $config{grpc_target} ||= 'localhost:50051';
 $config{author}      ||= ['C.J. Collier <cjac@google.com>'];
+$config{license}     ||= 'apache_2_0';
 
 # Load our plugin into the class
 $config{class}->import(@{ $config{plugins} });

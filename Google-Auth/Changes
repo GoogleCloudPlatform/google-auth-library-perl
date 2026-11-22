@@ -1,5 +1,8 @@
 Revision history for Google-Auth
 
+0.14    2026-11-22
+    - [CPAN RT #180794] Declared Test::MockModule in TEST_REQUIRES and Google::Api::Common (0.05) / Google::Cloud::Transport::Adapter::LWP in PREREQ_PM in Makefile.PL (reported by Slaven Rezic / @srezic).
+
 0.13    2026-11-21
     - [Security / CVE-2026-74759] Hardened Google::Auth::ExternalAccountCredentials::Aws against SSRF and path traversal by pinning IMDSv2 URLs (imdsv2_session_token_url, credential_source.url, credential_source.region_url) to link-local hosts (169.254.169.254 / fd00:ec2::254) and validating/URI-escaping EC2 IAM role names.
     - [Security / CVE-2026-74760] Hardened gcloud-auth CLI loopback OAuth login callback to generate PKCE/state tokens using OpenSSL RAND_bytes CSPRNG (Google::Auth::get_secure_random_bytes) and strictly verify the returned OAuth state parameter before accepting authorization codes.

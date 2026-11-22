@@ -531,11 +531,13 @@ EOF
         );
     }
     else {
+        my @client_modules = sort keys %{ $self->{_module_to_service} || {} };
         $client_code = $self->_get_schema_container_code(
             module_name      => $module_name,
             use_statements   => $use_statements,
             bridge_code      => $bridge_code,
             source_pod_items => $source_pod_items,
+            client_modules   => \@client_modules,
             version          => $version,
         );
     }
@@ -560,6 +562,11 @@ EOF
 sub Makefile_PL_guts {
     my ($self, @args) = @_;
     my $guts = $self->SUPER::Makefile_PL_guts(@args);
+
+    # Default generated distributions to Apache 2.0 to match POD and copyright headers
+    if (!$self->{license} || $self->{license} eq 'apache_2_0') {
+        $guts =~ s/(LICENSE\s*=>\s*)'[^']+'/$1'apache_2_0'/;
+    }
 
     if ($self->{_protobuf_files}) {
         my $has_services = $self->_has_services();
