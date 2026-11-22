@@ -1,5 +1,8 @@
 Revision history for Module-Starter-Protobuf
 
+0.06    2026-11-22
+    - Enhanced top-level schema container POD to include SYNOPSIS, CLIENTS, and SEE ALSO links to generated *Client classes for MetaCPAN/PAUSE discoverability.
+
 0.05    2026-11-21
     - Extracted Module::Starter::Protobuf::Base and added compile_types_only mode.
     - Added strict request construction, fail-closed validation for explicit credentials, and REST transport dispatch support.

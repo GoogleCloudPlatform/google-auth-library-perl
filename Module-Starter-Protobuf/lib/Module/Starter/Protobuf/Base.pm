@@ -531,11 +531,13 @@ EOF
         );
     }
     else {
+        my @client_modules = sort keys %{ $self->{_module_to_service} || {} };
         $client_code = $self->_get_schema_container_code(
             module_name      => $module_name,
             use_statements   => $use_statements,
             bridge_code      => $bridge_code,
             source_pod_items => $source_pod_items,
+            client_modules   => \@client_modules,
             version          => $version,
         );
     }

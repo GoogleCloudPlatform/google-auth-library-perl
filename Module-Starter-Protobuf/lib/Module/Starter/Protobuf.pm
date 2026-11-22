@@ -9,7 +9,7 @@ use Path::Tiny qw(path);
 use File::Spec;
 use Carp qw(croak);
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 sub _get_methods_code {
     my ($self, $methods) = @_;
@@ -204,10 +204,37 @@ sub _get_schema_container_code {
     my $use_statements = $args{use_statements};
     my $version = $args{version};
     my $source_pod_items = $args{source_pod_items};
+    my $client_modules = $args{client_modules} || [];
     
     my $EQ = '=';
+    my $clients_pod = '';
+    if (@$client_modules) {
+        my $primary_client = $client_modules->[0];
+        my $client_items = join '', map { "${EQ}item * L<$_>\n\n" } @$client_modules;
+        my $see_also = join ', ', map { "L<$_>" } @$client_modules;
+        $clients_pod = <<"POD";
+${EQ}head1 SYNOPSIS
 
-    return sprintf(<<"EOF", $module_name, $bridge_code, $use_statements, $version, $module_name, $module_name, $source_pod_items);
+    use $primary_client;
+
+    my \$client = $primary_client->new();
+
+${EQ}head1 CLIENTS
+
+This distribution provides the following service client classes:
+
+${EQ}over 4
+
+$client_items${EQ}back
+
+${EQ}head1 SEE ALSO
+
+$see_also
+
+POD
+    }
+
+    return sprintf(<<"EOF", $module_name, $bridge_code, $use_statements, $version, $module_name, $module_name, $clients_pod, $source_pod_items);
 package %s;
 
 use strict;
@@ -228,7 +255,7 @@ ${EQ}head1 DESCRIPTION
 
 This is an auto-generated Protocol Buffers schema container module for Google Cloud Services.
 
-${EQ}head1 SOURCE
+%s${EQ}head1 SOURCE
 
 Generated from the following Protocol Buffers schemas:
 
