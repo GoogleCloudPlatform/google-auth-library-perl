@@ -3,7 +3,7 @@ package Google::Type::Datetime;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -117,97 +117,181 @@ EOF
     # Field: utc_offset Type: 11 (.google.protobuf.Duration)
     # Field: time_zone Type: 11 (.google.type.TimeZone)
 
-=pod
-
-=head1 NAME
-
-Google::Type::Datetime::DateTime - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Type::Datetime;
-
-    my $msg = Google::Type::Datetime::DateTime->new(
-        year => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<year>
-
-Type: Int32
-
-=item * B<month>
-
-Type: Int32
-
-=item * B<day>
-
-Type: Int32
-
-=item * B<hours>
-
-Type: Int32
-
-=item * B<minutes>
-
-Type: Int32
-
-=item * B<seconds>
-
-Type: Int32
-
-=item * B<nanos>
-
-Type: Int32
-
-=item * B<utc_offset>
-
-Type: Message (.google.protobuf.Duration)
-
-=item * B<time_zone>
-
-Type: Message (.google.type.TimeZone)
-
-=back
-
-=cut
-
 # === Message: Google::Type::Datetime::TimeZone ===
     # Fields for TimeZone
     # Field: id Type: 9 ()
     # Field: version Type: 9 ()
 
-=pod
+1;
+
+__END__
+
+=encoding UTF-8
 
 =head1 NAME
 
-Google::Type::Datetime::TimeZone - Compiled Protocol Buffers message class
+Google::Type::Datetime - Compiled Protocol Buffers messages for google/type/datetime.proto
 
 =head1 SYNOPSIS
 
     use Google::Type::Datetime;
 
-    my $msg = Google::Type::Datetime::TimeZone->new(
-        id => $value,
-    );
+    my $msg = Google::Type::Datetime::DateTime->new({
+        year => $year,
+        month => $month,
+        day => $day,
+        hours => $hours,
+    });
 
-=head1 FIELDS
+    # Read or update a field
+    my $val = $msg->year();
+
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Type::Datetime::DateTime->parse($bytes);
+
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
+
+=head1 DESCRIPTION
+
+Auto-generated L<Protobuf> message classes compiled from C<google/type/datetime.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Type::Datetime::DateTime
+
+Represents civil time (or occasionally physical time).
+
+This type can represent a civil time in one of a few possible ways:
+
+ * When utc_offset is set and time_zone is unset: a civil time on a calendar
+   day with a particular offset from UTC.
+ * When time_zone is set and utc_offset is unset: a civil time on a calendar
+   day in a particular time zone.
+ * When neither time_zone nor utc_offset is set: a civil time on a calendar
+   day in local time.
+
+The date is relative to the Proleptic Gregorian Calendar.
+
+If year, month, or day are 0, the DateTime is considered not to have a
+specific year, month, or day respectively.
+
+This type may also be used to represent a physical time if all the date and
+time fields are set and either case of the `time_offset` oneof is set.
+Consider using `Timestamp` message for physical time instead. If your use
+case also would like to store the user's timezone, that can be done in
+another field.
+
+This type is more flexible than some applications may want. Make sure to
+document and validate your application's limitations.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
 
 =over 4
 
-=item * B<id>
+=item * C<< $msg->year() >> / C<< $msg->year($value) >>
 
-Type: String
+Type: C<Int32>
 
-=item * B<version>
+Optional. Year of date. Must be from 1 to 9999, or 0 if specifying a
+datetime without a year.
 
-Type: String
+=item * C<< $msg->month() >> / C<< $msg->month($value) >>
+
+Type: C<Int32>
+
+Optional. Month of year. Must be from 1 to 12, or 0 if specifying a
+datetime without a month.
+
+=item * C<< $msg->day() >> / C<< $msg->day($value) >>
+
+Type: C<Int32>
+
+Optional. Day of month. Must be from 1 to 31 and valid for the year and
+month, or 0 if specifying a datetime without a day.
+
+=item * C<< $msg->hours() >> / C<< $msg->hours($value) >>
+
+Type: C<Int32>
+
+Optional. Hours of day in 24 hour format. Should be from 0 to 23, defaults
+to 0 (midnight). An API may choose to allow the value "24:00:00" for
+scenarios like business closing time.
+
+=item * C<< $msg->minutes() >> / C<< $msg->minutes($value) >>
+
+Type: C<Int32>
+
+Optional. Minutes of hour of day. Must be from 0 to 59, defaults to 0.
+
+=item * C<< $msg->seconds() >> / C<< $msg->seconds($value) >>
+
+Type: C<Int32>
+
+Optional. Seconds of minutes of the time. Must normally be from 0 to 59,
+defaults to 0. An API may allow the value 60 if it allows leap-seconds.
+
+=item * C<< $msg->nanos() >> / C<< $msg->nanos($value) >>
+
+Type: C<Int32>
+
+Optional. Fractions of seconds in nanoseconds. Must be from 0 to
+999,999,999, defaults to 0.
+
+=item * C<< $msg->utc_offset() >> / C<< $msg->utc_offset($value) >>
+
+Type: C<Message> (L<Google::Protobuf::Duration::Duration>)
+
+UTC offset. Must be whole seconds, between -18 hours and +18 hours.
+For example, a UTC offset of -4:00 would be represented as
+{ seconds: -14400 }.
+
+=item * C<< $msg->time_zone() >> / C<< $msg->time_zone($value) >>
+
+Type: C<Message> (L<Google::Type::Datetime::TimeZone>)
+
+Time zone.
 
 =back
 
-=cut
+=head2 Google::Type::Datetime::TimeZone
 
-1;
+Represents a time zone from the
+[IANA Time Zone Database](https://www.iana.org/time-zones).
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->id() >> / C<< $msg->id($value) >>
+
+Type: C<String>
+
+IANA Time Zone Database time zone. For example "America/New_York".
+
+=item * C<< $msg->version() >> / C<< $msg->version($value) >>
+
+Type: C<String>
+
+Optional. IANA Time Zone Database version number. For example "2019a".
+
+=back
+
+=head1 SEE ALSO
+
+L<Protobuf>, L<Protobuf::Message>, L<Google::Type::Datetime::Types>, L<https://protobuf.dev/>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (C) 2026 Google LLC
+
+This program is released under the Apache 2.0 license.
+
+=cut

@@ -3,7 +3,7 @@ package Google::Type::Date;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -64,38 +64,101 @@ EOF
     # Field: month Type: 5 ()
     # Field: day Type: 5 ()
 
-=pod
+1;
+
+__END__
+
+=encoding UTF-8
 
 =head1 NAME
 
-Google::Type::Date::Date - Compiled Protocol Buffers message class
+Google::Type::Date - Compiled Protocol Buffers messages for google/type/date.proto
 
 =head1 SYNOPSIS
 
     use Google::Type::Date;
 
-    my $msg = Google::Type::Date::Date->new(
-        year => $value,
-    );
+    my $msg = Google::Type::Date::Date->new({
+        year => $year,
+        month => $month,
+        day => $day,
+    });
 
-=head1 FIELDS
+    # Read or update a field
+    my $val = $msg->year();
+
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Type::Date::Date->parse($bytes);
+
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
+
+=head1 DESCRIPTION
+
+Auto-generated L<Protobuf> message classes compiled from C<google/type/date.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Type::Date::Date
+
+Represents a whole or partial calendar date, such as a birthday. The time of
+day and time zone are either specified elsewhere or are insignificant. The
+date is relative to the Gregorian Calendar. This can represent one of the
+following:
+
+* A full date, with non-zero year, month, and day values.
+* A month and day, with a zero year (for example, an anniversary).
+* A year on its own, with a zero month and a zero day.
+* A year and month, with a zero day (for example, a credit card expiration
+  date).
+
+Related types:
+
+* [google.type.TimeOfDay][google.type.TimeOfDay]
+* [google.type.DateTime][google.type.DateTime]
+* [google.protobuf.Timestamp][google.protobuf.Timestamp]
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
 
 =over 4
 
-=item * B<year>
+=item * C<< $msg->year() >> / C<< $msg->year($value) >>
 
-Type: Int32
+Type: C<Int32>
 
-=item * B<month>
+Year of the date. Must be from 1 to 9999, or 0 to specify a date without
+a year.
 
-Type: Int32
+=item * C<< $msg->month() >> / C<< $msg->month($value) >>
 
-=item * B<day>
+Type: C<Int32>
 
-Type: Int32
+Month of a year. Must be from 1 to 12, or 0 to specify a year without a
+month and day.
+
+=item * C<< $msg->day() >> / C<< $msg->day($value) >>
+
+Type: C<Int32>
+
+Day of a month. Must be from 1 to 31 and valid for the year and month, or 0
+to specify a year by itself or a year and month where the day isn't
+significant.
 
 =back
 
-=cut
+=head1 SEE ALSO
 
-1;
+L<Protobuf>, L<Protobuf::Message>, L<Google::Type::Date::Types>, L<https://protobuf.dev/>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (C) 2026 Google LLC
+
+This program is released under the Apache 2.0 license.
+
+=cut

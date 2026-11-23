@@ -3,7 +3,7 @@ package Google::Type::PhoneNumber;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -115,38 +115,137 @@ EOF
     # Field: short_code Type: 11 (.google.type.PhoneNumber.ShortCode)
     # Field: extension Type: 9 ()
 
-=pod
+1;
+
+__END__
+
+=encoding UTF-8
 
 =head1 NAME
 
-Google::Type::PhoneNumber::PhoneNumber - Compiled Protocol Buffers message class
+Google::Type::PhoneNumber - Compiled Protocol Buffers messages for google/type/phone_number.proto
 
 =head1 SYNOPSIS
 
     use Google::Type::PhoneNumber;
 
-    my $msg = Google::Type::PhoneNumber::PhoneNumber->new(
-        e164_number => $value,
-    );
+    my $msg = Google::Type::PhoneNumber::PhoneNumber->new({
+        e164_number => $e164_number,
+        short_code => $short_code,
+        extension => $extension,
+    });
 
-=head1 FIELDS
+    # Read or update a field
+    my $val = $msg->e164_number();
+
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Type::PhoneNumber::PhoneNumber->parse($bytes);
+
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
+
+=head1 DESCRIPTION
+
+Auto-generated L<Protobuf> message classes compiled from C<google/type/phone_number.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Type::PhoneNumber::PhoneNumber
+
+An object representing a phone number, suitable as an API wire format.
+
+This representation:
+
+ - should not be used for locale-specific formatting of a phone number, such
+   as "+1 (650) 253-0000 ext. 123"
+
+ - is not designed for efficient storage
+ - may not be suitable for dialing - specialized libraries (see references)
+   should be used to parse the number for that purpose
+
+To do something meaningful with this number, such as format it for various
+use-cases, convert it to an `i18n.phonenumbers.PhoneNumber` object first.
+
+For instance, in Java this would be:
+
+    com.google.type.PhoneNumber wireProto =
+        com.google.type.PhoneNumber.newBuilder().build();
+    com.google.i18n.phonenumbers.Phonenumber.PhoneNumber phoneNumber =
+        PhoneNumberUtil.getInstance().parse(wireProto.getE164Number(), "ZZ");
+    if (!wireProto.getExtension().isEmpty()) {
+      phoneNumber.setExtension(wireProto.getExtension());
+    }
+
+ Reference(s):
+  - https://github.com/google/libphonenumber
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
 
 =over 4
 
-=item * B<e164_number>
+=item * C<< $msg->e164_number() >> / C<< $msg->e164_number($value) >>
 
-Type: String
+Type: C<String>
 
-=item * B<short_code>
+The phone number, represented as a leading plus sign ('+'), followed by a
+phone number that uses a relaxed ITU E.164 format consisting of the
+country calling code (1 to 3 digits) and the subscriber number, with no
+additional spaces or formatting. For example:
 
-Type: Message (.google.type.PhoneNumber.ShortCode)
+ - correct: "+15552220123"
 
-=item * B<extension>
+ - incorrect: "+1 (555) 222-01234 x123"
 
-Type: String
+The ITU E.164 format limits the latter to 12 digits, but in practice not
+all countries respect that, so we relax that restriction here.
+National-only numbers are not allowed.
+
+References:
+
+ - https://www.itu.int/rec/T-REC-E.164-201011-I
+
+ - https://en.wikipedia.org/wiki/E.164.
+
+ - https://en.wikipedia.org/wiki/List_of_country_calling_codes
+
+=item * C<< $msg->short_code() >> / C<< $msg->short_code($value) >>
+
+Type: C<Message> (L<Google::Type::PhoneNumber::PhoneNumber::ShortCode>)
+
+A short code.
+
+Reference(s):
+ - https://wikipedia.org/wiki/Short_code
+
+=item * C<< $msg->extension() >> / C<< $msg->extension($value) >>
+
+Type: C<String>
+
+The phone number's extension. The extension is not standardized in ITU
+recommendations, except for being defined as a series of numbers with a
+maximum length of 40 digits. Other than digits, some other dialing
+characters such as ',' (indicating a wait) or '#' may be stored here.
+
+Note that no regions currently use extensions with short codes, so this
+field is normally only set in conjunction with an E.164 number. It is held
+separately from the E.164 number to allow for short code extensions in the
+future.
 
 =back
 
-=cut
+=head1 SEE ALSO
 
-1;
+L<Protobuf>, L<Protobuf::Message>, L<Google::Type::PhoneNumber::Types>, L<https://protobuf.dev/>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (C) 2026 Google LLC
+
+This program is released under the Apache 2.0 license.
+
+=cut

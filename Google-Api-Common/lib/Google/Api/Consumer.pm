@@ -3,7 +3,7 @@ package Google::Api::Consumer;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -81,71 +81,11 @@ EOF
     # Fields for ProjectProperties
     # Field: properties Type: 11 (.google.api.Property)
 
-=pod
-
-=head1 NAME
-
-Google::Api::Consumer::ProjectProperties - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::Consumer;
-
-    my $msg = Google::Api::Consumer::ProjectProperties->new(
-        properties => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<properties>
-
-Type: Message (.google.api.Property)
-
-=back
-
-=cut
-
 # === Message: Google::Api::Consumer::Property ===
     # Fields for Property
     # Field: name Type: 9 ()
     # Field: type Type: 14 (.google.api.Property.PropertyType)
     # Field: description Type: 9 ()
-
-=pod
-
-=head1 NAME
-
-Google::Api::Consumer::Property - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::Consumer;
-
-    my $msg = Google::Api::Consumer::Property->new(
-        name => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<name>
-
-Type: String
-
-=item * B<type>
-
-Type: Enum (.google.api.Property.PropertyType)
-
-=item * B<description>
-
-Type: String
-
-=back
-
-=cut
 
 # Enum: Property::PropertyType
 our $Property_UNSPECIFIED = 0;
@@ -154,39 +94,133 @@ our $Property_BOOL = 2;
 our $Property_STRING = 3;
 our $Property_DOUBLE = 4;
 
-=pod
-
-=head2 Enum: Property::PropertyType
-
-Values:
-
-=over 4
-
-=item * C<UNSPECIFIED> => 0
-
-=item * C<INT64> => 1
-
-=item * C<BOOL> => 2
-
-=item * C<STRING> => 3
-
-=item * C<DOUBLE> => 4
-
-=back
-
-=cut
-
 1;
 
 __END__
 
+=encoding UTF-8
+
 =head1 NAME
 
-Google::Api::Consumer - Protocol Buffers schema definition
+Google::Api::Consumer - Compiled Protocol Buffers messages for google/api/consumer.proto
+
+=head1 SYNOPSIS
+
+    use Google::Api::Consumer;
+
+    my $msg = Google::Api::Consumer::ProjectProperties->new({
+        properties => $properties,
+    });
+
+    # Read or update a field
+    my $val = $msg->properties();
+
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Api::Consumer::ProjectProperties->parse($bytes);
+
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
 
 =head1 DESCRIPTION
 
-Auto-generated Protocol Buffers schema definition class.
+Auto-generated L<Protobuf> message classes compiled from C<google/api/consumer.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Api::Consumer::ProjectProperties
+
+A descriptor for defining project properties for a service. One service may
+have many consumer projects, and the service may want to behave differently
+depending on some properties on the project. For example, a project may be
+associated with a school, or a business, or a government agency, a business
+type property on the project may affect how a service responds to the client.
+This descriptor defines which properties are allowed to be set on a project.
+
+Example:
+
+   project_properties:
+     properties:
+     - name: NO_WATERMARK
+       type: BOOL
+       description: Allows usage of the API without watermarks.
+     - name: EXTENDED_TILE_CACHE_PERIOD
+       type: INT64
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->properties() >> / C<< $msg->properties($value) >>
+
+Type: C<Message> (L<Google::Api::Consumer::Property>)
+
+List of per consumer project-specific properties.
+
+=back
+
+=head2 Google::Api::Consumer::Property
+
+Defines project properties.
+
+API services can define properties that can be assigned to consumer projects
+so that backends can perform response customization without having to make
+additional calls or maintain additional storage. For example, Maps API
+defines properties that controls map tile cache period, or whether to embed a
+watermark in a result.
+
+These values can be set via API producer console. Only API providers can
+define and set these properties.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->name() >> / C<< $msg->name($value) >>
+
+Type: C<String>
+
+The name of the property (a.k.a key).
+
+=item * C<< $msg->type() >> / C<< $msg->type($value) >>
+
+Type: C<Enum> (L<Google::Api::Property::PropertyType>)
+
+The type of this property.
+
+=item * C<< $msg->description() >> / C<< $msg->description($value) >>
+
+Type: C<String>
+
+The description of the property
+
+=back
+
+=head3 Enum: Property::PropertyType
+
+=over 4
+
+=item * C<UNSPECIFIED> => C<0>
+
+=item * C<INT64> => C<1>
+
+=item * C<BOOL> => C<2>
+
+=item * C<STRING> => C<3>
+
+=item * C<DOUBLE> => C<4>
+
+=back
+
+=head1 SEE ALSO
+
+L<Protobuf>, L<Protobuf::Message>, L<Google::Api::Consumer::Types>, L<https://protobuf.dev/>
 
 =head1 LICENSE AND COPYRIGHT
 

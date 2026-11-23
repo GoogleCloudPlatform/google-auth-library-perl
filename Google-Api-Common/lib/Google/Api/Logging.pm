@@ -3,7 +3,7 @@ package Google::Api::Logging;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -87,47 +87,104 @@ EOF
     # Field: producer_destinations Type: 11 (.google.api.Logging.LoggingDestination)
     # Field: consumer_destinations Type: 11 (.google.api.Logging.LoggingDestination)
 
-=pod
+1;
+
+__END__
+
+=encoding UTF-8
 
 =head1 NAME
 
-Google::Api::Logging::Logging - Compiled Protocol Buffers message class
+Google::Api::Logging - Compiled Protocol Buffers messages for google/api/logging.proto
 
 =head1 SYNOPSIS
 
     use Google::Api::Logging;
 
-    my $msg = Google::Api::Logging::Logging->new(
-        producer_destinations => $value,
-    );
+    my $msg = Google::Api::Logging::Logging->new({
+        producer_destinations => $producer_destinations,
+        consumer_destinations => $consumer_destinations,
+    });
 
-=head1 FIELDS
+    # Read or update a field
+    my $val = $msg->producer_destinations();
 
-=over 4
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Api::Logging::Logging->parse($bytes);
 
-=item * B<producer_destinations>
-
-Type: Message (.google.api.Logging.LoggingDestination)
-
-=item * B<consumer_destinations>
-
-Type: Message (.google.api.Logging.LoggingDestination)
-
-=back
-
-=cut
-
-1;
-
-__END__
-
-=head1 NAME
-
-Google::Api::Logging - Protocol Buffers schema definition
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
 
 =head1 DESCRIPTION
 
-Auto-generated Protocol Buffers schema definition class.
+Auto-generated L<Protobuf> message classes compiled from C<google/api/logging.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Api::Logging::Logging
+
+Logging configuration of the service.
+
+The following example shows how to configure logs to be sent to the
+producer and consumer projects. In the example, the `activity_history`
+log is sent to both the producer and consumer projects, whereas the
+`purchase_history` log is only sent to the producer project.
+
+    monitored_resources:
+    - type: library.googleapis.com/branch
+      labels:
+      - key: /city
+        description: The city where the library branch is located in.
+      - key: /name
+        description: The name of the branch.
+    logs:
+    - name: activity_history
+      labels:
+      - key: /customer_id
+    - name: purchase_history
+    logging:
+      producer_destinations:
+      - monitored_resource: library.googleapis.com/branch
+        logs:
+        - activity_history
+        - purchase_history
+      consumer_destinations:
+      - monitored_resource: library.googleapis.com/branch
+        logs:
+        - activity_history
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->producer_destinations() >> / C<< $msg->producer_destinations($value) >>
+
+Type: C<Message> (L<Google::Api::Logging::Logging::LoggingDestination>)
+
+Logging configurations for sending logs to the producer project.
+There can be multiple producer destinations, each one must have a
+different monitored resource type. A log can be used in at most
+one producer destination.
+
+=item * C<< $msg->consumer_destinations() >> / C<< $msg->consumer_destinations($value) >>
+
+Type: C<Message> (L<Google::Api::Logging::Logging::LoggingDestination>)
+
+Logging configurations for sending logs to the consumer project.
+There can be multiple consumer destinations, each one must have a
+different monitored resource type. A log can be used in at most
+one consumer destination.
+
+=back
+
+=head1 SEE ALSO
+
+L<Protobuf>, L<Protobuf::Message>, L<Google::Api::Logging::Types>, L<https://protobuf.dev/>
 
 =head1 LICENSE AND COPYRIGHT
 

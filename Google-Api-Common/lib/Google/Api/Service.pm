@@ -3,7 +3,7 @@ package Google::Api::Service;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -227,143 +227,280 @@ EOF
     # Field: publishing Type: 11 (.google.api.Publishing)
     # Field: config_version Type: 11 (.google.protobuf.UInt32Value)
 
-=pod
+1;
+
+__END__
+
+=encoding UTF-8
 
 =head1 NAME
 
-Google::Api::Service::Service - Compiled Protocol Buffers message class
+Google::Api::Service - Compiled Protocol Buffers messages for google/api/service.proto
 
 =head1 SYNOPSIS
 
     use Google::Api::Service;
 
-    my $msg = Google::Api::Service::Service->new(
-        name => $value,
-    );
+    my $msg = Google::Api::Service::Service->new({
+        name => $name,
+        title => $title,
+        producer_project_id => $producer_project_id,
+        id => $id,
+    });
 
-=head1 FIELDS
+    # Read or update a field
+    my $val = $msg->name();
 
-=over 4
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Api::Service::Service->parse($bytes);
 
-=item * B<name>
-
-Type: String
-
-=item * B<title>
-
-Type: String
-
-=item * B<producer_project_id>
-
-Type: String
-
-=item * B<id>
-
-Type: String
-
-=item * B<apis>
-
-Type: Message (.google.protobuf.Api)
-
-=item * B<types>
-
-Type: Message (.google.protobuf.Type)
-
-=item * B<enums>
-
-Type: Message (.google.protobuf.Enum)
-
-=item * B<documentation>
-
-Type: Message (.google.api.Documentation)
-
-=item * B<backend>
-
-Type: Message (.google.api.Backend)
-
-=item * B<http>
-
-Type: Message (.google.api.Http)
-
-=item * B<quota>
-
-Type: Message (.google.api.Quota)
-
-=item * B<authentication>
-
-Type: Message (.google.api.Authentication)
-
-=item * B<context>
-
-Type: Message (.google.api.Context)
-
-=item * B<usage>
-
-Type: Message (.google.api.Usage)
-
-=item * B<endpoints>
-
-Type: Message (.google.api.Endpoint)
-
-=item * B<control>
-
-Type: Message (.google.api.Control)
-
-=item * B<logs>
-
-Type: Message (.google.api.LogDescriptor)
-
-=item * B<metrics>
-
-Type: Message (.google.api.MetricDescriptor)
-
-=item * B<monitored_resources>
-
-Type: Message (.google.api.MonitoredResourceDescriptor)
-
-=item * B<billing>
-
-Type: Message (.google.api.Billing)
-
-=item * B<logging>
-
-Type: Message (.google.api.Logging)
-
-=item * B<monitoring>
-
-Type: Message (.google.api.Monitoring)
-
-=item * B<system_parameters>
-
-Type: Message (.google.api.SystemParameters)
-
-=item * B<source_info>
-
-Type: Message (.google.api.SourceInfo)
-
-=item * B<publishing>
-
-Type: Message (.google.api.Publishing)
-
-=item * B<config_version>
-
-Type: Message (.google.protobuf.UInt32Value)
-
-=back
-
-=cut
-
-1;
-
-__END__
-
-=head1 NAME
-
-Google::Api::Service - Protocol Buffers schema definition
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
 
 =head1 DESCRIPTION
 
-Auto-generated Protocol Buffers schema definition class.
+Auto-generated L<Protobuf> message classes compiled from C<google/api/service.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Api::Service::Service
+
+`Service` is the root object of Google API service configuration (service
+config). It describes the basic information about a logical service,
+such as the service name and the user-facing title, and delegates other
+aspects to sub-sections. Each sub-section is either a proto message or a
+repeated proto message that configures a specific aspect, such as auth.
+For more information, see each proto message definition.
+
+Example:
+
+    type: google.api.Service
+    name: calendar.googleapis.com
+    title: Google Calendar API
+    apis:
+    - name: google.calendar.v3.Calendar
+
+    visibility:
+      rules:
+      - selector: "google.calendar.v3.*"
+        restriction: PREVIEW
+    backend:
+      rules:
+      - selector: "google.calendar.v3.*"
+        address: calendar.example.com
+
+    authentication:
+      providers:
+      - id: google_calendar_auth
+        jwks_uri: https://www.googleapis.com/oauth2/v1/certs
+        issuer: https://securetoken.google.com
+      rules:
+      - selector: "*"
+        requirements:
+          provider_id: google_calendar_auth
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->name() >> / C<< $msg->name($value) >>
+
+Type: C<String>
+
+The service name, which is a DNS-like logical identifier for the
+service, such as `calendar.googleapis.com`. The service name
+typically goes through DNS verification to make sure the owner
+of the service also owns the DNS name.
+
+=item * C<< $msg->title() >> / C<< $msg->title($value) >>
+
+Type: C<String>
+
+The product title for this service, it is the name displayed in Google
+Cloud Console.
+
+=item * C<< $msg->producer_project_id() >> / C<< $msg->producer_project_id($value) >>
+
+Type: C<String>
+
+The Google project that owns this service.
+
+=item * C<< $msg->id() >> / C<< $msg->id($value) >>
+
+Type: C<String>
+
+A unique ID for a specific instance of this message, typically assigned
+by the client for tracking purpose. Must be no longer than 63 characters
+and only lower case letters, digits, '.', '_' and '-' are allowed. If
+empty, the server may choose to generate one instead.
+
+=item * C<< $msg->apis() >> / C<< $msg->apis($value) >>
+
+Type: C<Message> (L<Google::Protobuf::Api::Api>)
+
+A list of API interfaces exported by this service. Only the `name` field
+of the [google.protobuf.Api][google.protobuf.Api] needs to be provided by
+the configuration author, as the remaining fields will be derived from the
+IDL during the normalization process. It is an error to specify an API
+interface here which cannot be resolved against the associated IDL files.
+
+=item * C<< $msg->types() >> / C<< $msg->types($value) >>
+
+Type: C<Message> (L<Google::Protobuf::Type::Type>)
+
+A list of all proto message types included in this API service.
+Types referenced directly or indirectly by the `apis` are automatically
+included.  Messages which are not referenced but shall be included, such as
+types used by the `google.protobuf.Any` type, should be listed here by
+name by the configuration author. Example:
+
+    types:
+    - name: google.protobuf.Int32
+
+=item * C<< $msg->enums() >> / C<< $msg->enums($value) >>
+
+Type: C<Message> (L<Google::Protobuf::Type::Enum>)
+
+A list of all enum types included in this API service.  Enums referenced
+directly or indirectly by the `apis` are automatically included.  Enums
+which are not referenced but shall be included should be listed here by
+name by the configuration author. Example:
+
+    enums:
+    - name: google.someapi.v1.SomeEnum
+
+=item * C<< $msg->documentation() >> / C<< $msg->documentation($value) >>
+
+Type: C<Message> (L<Google::Api::Documentation::Documentation>)
+
+Additional API documentation.
+
+=item * C<< $msg->backend() >> / C<< $msg->backend($value) >>
+
+Type: C<Message> (L<Google::Api::Backend::Backend>)
+
+API backend configuration.
+
+=item * C<< $msg->http() >> / C<< $msg->http($value) >>
+
+Type: C<Message> (L<Google::Api::Http::Http>)
+
+HTTP configuration.
+
+=item * C<< $msg->quota() >> / C<< $msg->quota($value) >>
+
+Type: C<Message> (L<Google::Api::Quota::Quota>)
+
+Quota configuration.
+
+=item * C<< $msg->authentication() >> / C<< $msg->authentication($value) >>
+
+Type: C<Message> (L<Google::Api::Auth::Authentication>)
+
+Auth configuration.
+
+=item * C<< $msg->context() >> / C<< $msg->context($value) >>
+
+Type: C<Message> (L<Google::Api::Context::Context>)
+
+Context configuration.
+
+=item * C<< $msg->usage() >> / C<< $msg->usage($value) >>
+
+Type: C<Message> (L<Google::Api::Usage::Usage>)
+
+Configuration controlling usage of this service.
+
+=item * C<< $msg->endpoints() >> / C<< $msg->endpoints($value) >>
+
+Type: C<Message> (L<Google::Api::Endpoint::Endpoint>)
+
+Configuration for network endpoints.  If this is empty, then an endpoint
+with the same name as the service is automatically generated to service all
+defined APIs.
+
+=item * C<< $msg->control() >> / C<< $msg->control($value) >>
+
+Type: C<Message> (L<Google::Api::Control::Control>)
+
+Configuration for the service control plane.
+
+=item * C<< $msg->logs() >> / C<< $msg->logs($value) >>
+
+Type: C<Message> (L<Google::Api::Log::LogDescriptor>)
+
+Defines the logs used by this service.
+
+=item * C<< $msg->metrics() >> / C<< $msg->metrics($value) >>
+
+Type: C<Message> (L<Google::Api::Metric::MetricDescriptor>)
+
+Defines the metrics used by this service.
+
+=item * C<< $msg->monitored_resources() >> / C<< $msg->monitored_resources($value) >>
+
+Type: C<Message> (L<Google::Api::MonitoredResource::MonitoredResourceDescriptor>)
+
+Defines the monitored resources used by this service. This is required
+by the `Service.monitoring` and `Service.logging` configurations.
+
+=item * C<< $msg->billing() >> / C<< $msg->billing($value) >>
+
+Type: C<Message> (L<Google::Api::Billing::Billing>)
+
+Billing configuration.
+
+=item * C<< $msg->logging() >> / C<< $msg->logging($value) >>
+
+Type: C<Message> (L<Google::Api::Logging::Logging>)
+
+Logging configuration.
+
+=item * C<< $msg->monitoring() >> / C<< $msg->monitoring($value) >>
+
+Type: C<Message> (L<Google::Api::Monitoring::Monitoring>)
+
+Monitoring configuration.
+
+=item * C<< $msg->system_parameters() >> / C<< $msg->system_parameters($value) >>
+
+Type: C<Message> (L<Google::Api::SystemParameter::SystemParameters>)
+
+System parameter configuration.
+
+=item * C<< $msg->source_info() >> / C<< $msg->source_info($value) >>
+
+Type: C<Message> (L<Google::Api::SourceInfo::SourceInfo>)
+
+Output only. The source information for this configuration if available.
+
+=item * C<< $msg->publishing() >> / C<< $msg->publishing($value) >>
+
+Type: C<Message> (L<Google::Api::Client::Publishing>)
+
+Settings for [Google Cloud Client
+libraries](https://cloud.google.com/apis/docs/cloud-client-libraries)
+generated from APIs defined as protocol buffers.
+
+=item * C<< $msg->config_version() >> / C<< $msg->config_version($value) >>
+
+Type: C<Message> (L<Google::Protobuf::Wrappers::UInt32Value>)
+
+Obsolete. Do not use.
+
+This field has no semantic meaning. The service config compiler always
+sets this field to `3`.
+
+=back
+
+=head1 SEE ALSO
+
+L<Protobuf>, L<Protobuf::Message>, L<Google::Api::Service::Types>, L<https://protobuf.dev/>
 
 =head1 LICENSE AND COPYRIGHT
 

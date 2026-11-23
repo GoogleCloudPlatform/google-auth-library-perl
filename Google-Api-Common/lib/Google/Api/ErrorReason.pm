@@ -3,7 +3,7 @@ package Google::Api::ErrorReason;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -566,13 +566,21 @@ EOF
 
 __END__
 
+=encoding UTF-8
+
 =head1 NAME
 
-Google::Api::ErrorReason - Protocol Buffers schema definition
+Google::Api::ErrorReason - Compiled Protocol Buffers messages for google/api/error_reason.proto
 
 =head1 DESCRIPTION
 
-Auto-generated Protocol Buffers schema definition class.
+Auto-generated L<Protobuf> message classes compiled from C<google/api/error_reason.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 SEE ALSO
+
+L<Protobuf>, L<Protobuf::Message>, L<Google::Api::ErrorReason::Types>, L<https://protobuf.dev/>
 
 =head1 LICENSE AND COPYRIGHT
 

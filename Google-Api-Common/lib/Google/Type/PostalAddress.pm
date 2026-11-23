@@ -3,7 +3,7 @@ package Google::Type::PostalAddress;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -158,70 +158,206 @@ EOF
     # Field: recipients Type: 9 ()
     # Field: organization Type: 9 ()
 
-=pod
+1;
+
+__END__
+
+=encoding UTF-8
 
 =head1 NAME
 
-Google::Type::PostalAddress::PostalAddress - Compiled Protocol Buffers message class
+Google::Type::PostalAddress - Compiled Protocol Buffers messages for google/type/postal_address.proto
 
 =head1 SYNOPSIS
 
     use Google::Type::PostalAddress;
 
-    my $msg = Google::Type::PostalAddress::PostalAddress->new(
-        revision => $value,
-    );
+    my $msg = Google::Type::PostalAddress::PostalAddress->new({
+        revision => $revision,
+        region_code => $region_code,
+        language_code => $language_code,
+        postal_code => $postal_code,
+    });
 
-=head1 FIELDS
+    # Read or update a field
+    my $val = $msg->revision();
+
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Type::PostalAddress::PostalAddress->parse($bytes);
+
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
+
+=head1 DESCRIPTION
+
+Auto-generated L<Protobuf> message classes compiled from C<google/type/postal_address.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Type::PostalAddress::PostalAddress
+
+Represents a postal address, such as for postal delivery or payments
+addresses. With a postal address, a postal service can deliver items to a
+premise, P.O. box, or similar. A postal address is not intended to model
+geographical locations like roads, towns, or mountains.
+
+In typical usage, an address would be created by user input or from importing
+existing data, depending on the type of process.
+
+Advice on address input or editing:
+
+ - Use an internationalization-ready address widget such as
+ https://github.com/google/libaddressinput.
+ - Users should not be presented with UI elements for input or editing of
+ fields outside countries where that field is used.
+
+For more guidance on how to use this schema, see:
+https://support.google.com/business/answer/6397478.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
 
 =over 4
 
-=item * B<revision>
+=item * C<< $msg->revision() >> / C<< $msg->revision($value) >>
 
-Type: Int32
+Type: C<Int32>
 
-=item * B<region_code>
+The schema revision of the `PostalAddress`. This must be set to 0, which is
+the latest revision.
 
-Type: String
+All new revisions B<must> be backward compatible with old revisions.
 
-=item * B<language_code>
+=item * C<< $msg->region_code() >> / C<< $msg->region_code($value) >>
 
-Type: String
+Type: C<String>
 
-=item * B<postal_code>
+Required. CLDR region code of the country/region of the address. This
+is never inferred and it is up to the user to ensure the value is
+correct. See https://cldr.unicode.org/ and
+https://www.unicode.org/cldr/charts/30/supplemental/territory_information.html
+for details. Example: "CH" for Switzerland.
 
-Type: String
+=item * C<< $msg->language_code() >> / C<< $msg->language_code($value) >>
 
-=item * B<sorting_code>
+Type: C<String>
 
-Type: String
+Optional. BCP-47 language code of the contents of this address (if
+known). This is often the UI language of the input form or is expected
+to match one of the languages used in the address' country/region, or their
+transliterated equivalents.
+This can affect formatting in certain countries, but is not critical
+to the correctness of the data and will never affect any validation or
+other non-formatting related operations.
 
-=item * B<administrative_area>
+If this value is not known, it should be omitted (rather than specifying a
+possibly incorrect default).
 
-Type: String
+Examples: "zh-Hant", "ja", "ja-Latn", "en".
 
-=item * B<locality>
+=item * C<< $msg->postal_code() >> / C<< $msg->postal_code($value) >>
 
-Type: String
+Type: C<String>
 
-=item * B<sublocality>
+Optional. Postal code of the address. Not all countries use or require
+postal codes to be present, but where they are used, they may trigger
+additional validation with other parts of the address (for example,
+state or zip code validation in the United States).
 
-Type: String
+=item * C<< $msg->sorting_code() >> / C<< $msg->sorting_code($value) >>
 
-=item * B<address_lines>
+Type: C<String>
 
-Type: String
+Optional. Additional, country-specific, sorting code. This is not used
+in most regions. Where it is used, the value is either a string like
+"CEDEX", optionally followed by a number (for example, "CEDEX 7"), or just
+a number alone, representing the "sector code" (Jamaica), "delivery area
+indicator" (Malawi) or "post office indicator" (Côte d'Ivoire).
 
-=item * B<recipients>
+=item * C<< $msg->administrative_area() >> / C<< $msg->administrative_area($value) >>
 
-Type: String
+Type: C<String>
 
-=item * B<organization>
+Optional. Highest administrative subdivision which is used for postal
+addresses of a country or region.
+For example, this can be a state, a province, an oblast, or a prefecture.
+For Spain, this is the province and not the autonomous
+community (for example, "Barcelona" and not "Catalonia").
+Many countries don't use an administrative area in postal addresses. For
+example, in Switzerland, this should be left unpopulated.
 
-Type: String
+=item * C<< $msg->locality() >> / C<< $msg->locality($value) >>
+
+Type: C<String>
+
+Optional. Generally refers to the city or town portion of the address.
+Examples: US city, IT comune, UK post town.
+In regions of the world where localities are not well defined or do not fit
+into this structure well, leave `locality` empty and use `address_lines`.
+
+=item * C<< $msg->sublocality() >> / C<< $msg->sublocality($value) >>
+
+Type: C<String>
+
+Optional. Sublocality of the address.
+For example, this can be a neighborhood, borough, or district.
+
+=item * C<< $msg->address_lines() >> / C<< $msg->address_lines($value) >>
+
+Type: C<String>
+
+Unstructured address lines describing the lower levels of an address.
+
+Because values in `address_lines` do not have type information and may
+sometimes contain multiple values in a single field (for example,
+"Austin, TX"), it is important that the line order is clear. The order of
+address lines should be "envelope order" for the country or region of the
+address. In places where this can vary (for example, Japan),
+`address_language` is used to make it explicit (for example, "ja" for
+large-to-small ordering and "ja-Latn" or "en" for small-to-large). In this
+way, the most specific line of an address can be selected based on the
+language.
+
+The minimum permitted structural representation of an address consists
+of a `region_code` with all remaining information placed in the
+`address_lines`. It would be possible to format such an address very
+approximately without geocoding, but no semantic reasoning could be
+made about any of the address components until it was at least
+partially resolved.
+
+Creating an address only containing a `region_code` and `address_lines` and
+then geocoding is the recommended way to handle completely unstructured
+addresses (as opposed to guessing which parts of the address should be
+localities or administrative areas).
+
+=item * C<< $msg->recipients() >> / C<< $msg->recipients($value) >>
+
+Type: C<String>
+
+Optional. The recipient at the address.
+This field may, under certain circumstances, contain multiline information.
+For example, it might contain "care of" information.
+
+=item * C<< $msg->organization() >> / C<< $msg->organization($value) >>
+
+Type: C<String>
+
+Optional. The name of the organization at the address.
 
 =back
 
-=cut
+=head1 SEE ALSO
 
-1;
+L<Protobuf>, L<Protobuf::Message>, L<Google::Type::PostalAddress::Types>, L<https://protobuf.dev/>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (C) 2026 Google LLC
+
+This program is released under the Apache 2.0 license.
+
+=cut

@@ -574,27 +574,133 @@ sub do_revoke {
 
 __END__
 
+=encoding UTF-8
+
 =head1 NAME
 
-gcloud-auth - CLI utility for Google Cloud Authentication
+gcloud-auth - Manage Google Cloud OAuth 2.0 user credentials and Application Default Credentials (ADC)
 
 =head1 SYNOPSIS
 
-gcloud-auth [options] [command]
+    gcloud-auth [options] <command>
 
- Commands:
-   login               Log in using your user credentials
-   application-default Login for running applications locally
-   print-access-token  Print the current access token
-   revoke              Revoke credentials and delete local copy
+    # Interactive user login
+    gcloud-auth login
 
- Options:
-   --help              Show brief help message
-   --man               Show full documentation
+    # Obtain Application Default Credentials (ADC) for local development
+    gcloud-auth application-default login
+
+    # Print an active OAuth 2.0 Bearer access token
+    gcloud-auth print-access-token
+
+    # Revoke and delete locally stored credentials
+    gcloud-auth revoke
 
 =head1 DESCRIPTION
 
-B<gcloud-auth> provides a CLI interface to manage credentials for Google Cloud Platform,
-emulating core parts of the C<gcloud auth> CLI.
+B<gcloud-auth> is a Perl command-line utility shipped with L<Google::Auth> that
+mirrors core workflows of the Google Cloud CLI C<gcloud auth> command group. It
+supports interactive browser login (via a local loopback listener with CSPRNG
+OAuth C<state> verification) as well as headless/out-of-band PKCE login when no
+display server is available.
+
+=head1 COMMANDS
+
+=over 4
+
+=item B<login>
+
+Authorize access to Google Cloud with user account credentials via OAuth 2.0
+and store the resulting refresh token in the local token store.
+
+=item B<application-default login>
+
+Obtain user credentials for Application Default Credentials (ADC) and write
+them to the standard well-known ADC file
+(C<~/.config/gcloud/application_default_credentials.json> on Unix/Linux/macOS
+or C<%APPDATA%\gcloud\application_default_credentials.json> on Windows) so
+client libraries using C<< Google::Auth->default() >> pick them up
+automatically.
+
+=item B<print-access-token>
+
+Print a fresh OAuth 2.0 Bearer access token for the active credentials to
+standard output (suitable for C<Authorization: Bearer $(gcloud-auth print-access-token)>).
+
+=item B<revoke>
+
+Revoke the stored OAuth 2.0 refresh token against Google's revocation endpoint
+and delete the local credential file.
+
+=back
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<--no-launch-browser>, B<--no-browser>
+
+Use out-of-band / remote PKCE authorization instead of starting a local
+loopback HTTP listener. Automatically enabled on Linux when neither
+C<DISPLAY> nor C<WAYLAND_DISPLAY> is set.
+
+=item B<--port=PORT>
+
+Bind the local OAuth callback listener to a specific loopback port (defaults to
+an ephemeral port on C<127.0.0.1>).
+
+=item B<--timeout=SECONDS>
+
+Maximum time to wait for the OAuth loopback callback before aborting.
+
+=item B<--store-dir=DIR>
+
+Override the local credential token store directory.
+
+=item B<--help>
+
+Show a brief usage summary and exit.
+
+=item B<--man>
+
+Display the full manual page and exit.
+
+=back
+
+=head1 ENVIRONMENT
+
+=over 4
+
+=item C<GOOGLE_APPLICATION_CREDENTIALS>
+
+Path to a service account or external account JSON file used by
+C<print-access-token> and L<Google::Auth>.
+
+=item C<GOOGLE_AUTH_REVOKE_URI>
+
+Override the OAuth 2.0 token revocation endpoint (defaults to
+C<https://oauth2.googleapis.com/revoke>).
+
+=item C<DISPLAY> / C<WAYLAND_DISPLAY>
+
+Checked on Linux to determine whether a browser is available or out-of-band
+login should be used by default.
+
+=back
+
+=head1 SEE ALSO
+
+L<Google::Auth>, L<Google::Auth::UserAuthorizer>,
+L<Google::Auth::DefaultCredentials>, L<Google::Auth::Stores::FileTokenStore>
+
+=head1 AUTHOR
+
+C.J. Collier E<lt>cjac@google.comE<gt>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (c) 2026 Google LLC and contributors.
+
+Licensed under the Apache License, Version 2.0.
 
 =cut

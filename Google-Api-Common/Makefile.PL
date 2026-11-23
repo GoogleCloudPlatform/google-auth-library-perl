@@ -9,7 +9,7 @@ my %WriteMakefileArgs = (
     AUTHOR           => ['Google LLC'],
     VERSION_FROM     => 'lib/Google/Api/Common.pm',
     ABSTRACT_FROM    => 'lib/Google/Api/Common.pm',
-    LICENSE          => 'apache_2',
+    LICENSE          => 'apache_2_0',
     MIN_PERL_VERSION => '5.008003',
     CONFIGURE_REQUIRES => {
         'ExtUtils::MakeMaker' => '0',
@@ -28,6 +28,16 @@ my %WriteMakefileArgs = (
     },
     META_MERGE => {
         'meta-spec' => { version => 2 },
+        resources => {
+            repository => {
+                type => 'git',
+                url  => 'https://github.com/GoogleCloudPlatform/google-auth-library-perl.git',
+                web  => 'https://github.com/GoogleCloudPlatform/google-auth-library-perl',
+            },
+            bugtracker => {
+                web => 'https://github.com/GoogleCloudPlatform/google-auth-library-perl/issues',
+            },
+        },
         prereqs => {
             runtime => {
                 recommends => {

@@ -80,7 +80,14 @@ lib/Google/Cloud/Transport/Role/Adapter.pm
 lib/Google/Cloud/Transport/Role/Stream.pm
 lib/Google/Longrunning/Operations.pm
 lib/Google/Longrunning/Operations/Types.pm
+lib/Google/Rpc/Code.pm
+lib/Google/Rpc/Code/Types.pm
+lib/Google/Rpc/ErrorDetails.pm
+lib/Google/Rpc/ErrorDetails/Types.pm
+lib/Google/Rpc/Http.pm
+lib/Google/Rpc/Http/Types.pm
 lib/Google/Rpc/Status.pm
+lib/Google/Rpc/Status/Types.pm
 lib/Google/Type/CalendarPeriod.pm
 lib/Google/Type/CalendarPeriod/Types.pm
 lib/Google/Type/Color.pm
@@ -120,6 +127,7 @@ MANIFEST			This list of files
 MANIFEST.SKIP
 META.yml
 README
+README.md
 SECURITY.md
 t/00-load.t
 t/01-client-base.t
@@ -142,4 +150,3 @@ xt/00_kwalitee.t
 xt/00_perl-critic.t
 xt/00_perltidy.t
 xt/boilerplate.t
-README.md

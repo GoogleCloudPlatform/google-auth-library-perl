@@ -3,7 +3,7 @@ package Google::Type::Decimal;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -97,30 +97,132 @@ EOF
     # Fields for Decimal
     # Field: value Type: 9 ()
 
-=pod
+1;
+
+__END__
+
+=encoding UTF-8
 
 =head1 NAME
 
-Google::Type::Decimal::Decimal - Compiled Protocol Buffers message class
+Google::Type::Decimal - Compiled Protocol Buffers messages for google/type/decimal.proto
 
 =head1 SYNOPSIS
 
     use Google::Type::Decimal;
 
-    my $msg = Google::Type::Decimal::Decimal->new(
+    my $msg = Google::Type::Decimal::Decimal->new({
         value => $value,
-    );
+    });
 
-=head1 FIELDS
+    # Read or update a field
+    my $val = $msg->value();
+
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Type::Decimal::Decimal->parse($bytes);
+
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
+
+=head1 DESCRIPTION
+
+Auto-generated L<Protobuf> message classes compiled from C<google/type/decimal.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Type::Decimal::Decimal
+
+A representation of a decimal value, such as 2.5. Clients may convert values
+into language-native decimal formats, such as Java's
+[BigDecimal](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html)
+or Python's
+[decimal.Decimal](https://docs.python.org/3/library/decimal.html).
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
 
 =over 4
 
-=item * B<value>
+=item * C<< $msg->value() >> / C<< $msg->value($value) >>
 
-Type: String
+Type: C<String>
+
+The decimal value, as a string.
+
+The string representation consists of an optional sign, `+` (`U+002B`)
+or `-` (`U+002D`), followed by a sequence of zero or more decimal digits
+("the integer"), optionally followed by a fraction, optionally followed
+by an exponent. An empty string B<should> be interpreted as `0`.
+
+The fraction consists of a decimal point followed by zero or more decimal
+digits. The string must contain at least one digit in either the integer
+or the fraction. The number formed by the sign, the integer and the
+fraction is referred to as the significand.
+
+The exponent consists of the character `e` (`U+0065`) or `E` (`U+0045`)
+followed by one or more decimal digits.
+
+Services B<should> normalize decimal values before storing them by:
+
+  - Removing an explicitly-provided `+` sign (`+2.5` -> `2.5`).
+  - Replacing a zero-length integer value with `0` (`.5` -> `0.5`).
+  - Coercing the exponent character to upper-case, with explicit sign
+    (`2.5e8` -> `2.5E+8`).
+  - Removing an explicitly-provided zero exponent (`2.5E0` -> `2.5`).
+
+Services B<may> perform additional normalization based on its own needs
+and the internal decimal implementation selected, such as shifting the
+decimal point and exponent value together (example: `2.5E-1` <-> `0.25`).
+Additionally, services B<may> preserve trailing zeroes in the fraction
+to indicate increased precision, but are not required to do so.
+
+Note that only the `.` character is supported to divide the integer
+and the fraction; `,` B<should not> be supported regardless of locale.
+Additionally, thousand separators B<should not> be supported. If a
+service does support them, values B<must> be normalized.
+
+The ENBF grammar is:
+
+    DecimalString =
+      '' | [Sign] Significand [Exponent];
+
+    Sign = '+' | '-';
+
+    Significand =
+      Digits ['.'] [Digits] | [Digits] '.' Digits;
+
+    Exponent = ('e' | 'E') [Sign] Digits;
+
+    Digits = { '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' };
+
+Services B<should> clearly document the range of supported values, the
+maximum supported precision (total number of digits), and, if applicable,
+the scale (number of digits after the decimal point), as well as how it
+behaves when receiving out-of-bounds values.
+
+Services B<may> choose to accept values passed as input even when the
+value has a higher precision or scale than the service supports, and
+B<should> round the value to fit the supported scale. Alternatively, the
+service B<may> error with `400 Bad Request` (`INVALID_ARGUMENT` in gRPC)
+if precision would be lost.
+
+Services B<should> error with `400 Bad Request` (`INVALID_ARGUMENT` in
+gRPC) if the service receives a value outside of the supported range.
 
 =back
 
-=cut
+=head1 SEE ALSO
 
-1;
+L<Protobuf>, L<Protobuf::Message>, L<Google::Type::Decimal::Types>, L<https://protobuf.dev/>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (C) 2026 Google LLC
+
+This program is released under the Apache 2.0 license.
+
+=cut

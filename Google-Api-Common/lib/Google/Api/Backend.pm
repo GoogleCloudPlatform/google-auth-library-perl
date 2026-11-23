@@ -3,7 +3,7 @@ package Google::Api::Backend;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -175,32 +175,6 @@ EOF
     # Fields for Backend
     # Field: rules Type: 11 (.google.api.BackendRule)
 
-=pod
-
-=head1 NAME
-
-Google::Api::Backend::Backend - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::Backend;
-
-    my $msg = Google::Api::Backend::Backend->new(
-        rules => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<rules>
-
-Type: Message (.google.api.BackendRule)
-
-=back
-
-=cut
-
 # === Message: Google::Api::Backend::BackendRule ===
     # Fields for BackendRule
     # Field: selector Type: 9 ()
@@ -215,106 +189,216 @@ Type: Message (.google.api.BackendRule)
     # Field: overrides_by_request_protocol Type: 11 (.google.api.BackendRule.OverridesByRequestProtocolEntry)
     # Field: load_balancing_policy Type: 9 ()
 
-=pod
-
-=head1 NAME
-
-Google::Api::Backend::BackendRule - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::Backend;
-
-    my $msg = Google::Api::Backend::BackendRule->new(
-        selector => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<selector>
-
-Type: String
-
-=item * B<address>
-
-Type: String
-
-=item * B<deadline>
-
-Type: Double
-
-=item * B<min_deadline>
-
-Type: Double
-
-=item * B<operation_deadline>
-
-Type: Double
-
-=item * B<path_translation>
-
-Type: Enum (.google.api.BackendRule.PathTranslation)
-
-=item * B<jwt_audience>
-
-Type: String
-
-=item * B<disable_auth>
-
-Type: Bool
-
-=item * B<protocol>
-
-Type: String
-
-=item * B<overrides_by_request_protocol>
-
-Type: Message (.google.api.BackendRule.OverridesByRequestProtocolEntry)
-
-=item * B<load_balancing_policy>
-
-Type: String
-
-=back
-
-=cut
-
 # Enum: BackendRule::PathTranslation
 our $BackendRule_PATH_TRANSLATION_UNSPECIFIED = 0;
 our $BackendRule_CONSTANT_ADDRESS = 1;
 our $BackendRule_APPEND_PATH_TO_ADDRESS = 2;
 
-=pod
-
-=head2 Enum: BackendRule::PathTranslation
-
-Values:
-
-=over 4
-
-=item * C<PATH_TRANSLATION_UNSPECIFIED> => 0
-
-=item * C<CONSTANT_ADDRESS> => 1
-
-=item * C<APPEND_PATH_TO_ADDRESS> => 2
-
-=back
-
-=cut
-
 1;
 
 __END__
 
+=encoding UTF-8
+
 =head1 NAME
 
-Google::Api::Backend - Protocol Buffers schema definition
+Google::Api::Backend - Compiled Protocol Buffers messages for google/api/backend.proto
+
+=head1 SYNOPSIS
+
+    use Google::Api::Backend;
+
+    my $msg = Google::Api::Backend::Backend->new({
+        rules => $rules,
+    });
+
+    # Read or update a field
+    my $val = $msg->rules();
+
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Api::Backend::Backend->parse($bytes);
+
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
 
 =head1 DESCRIPTION
 
-Auto-generated Protocol Buffers schema definition class.
+Auto-generated L<Protobuf> message classes compiled from C<google/api/backend.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Api::Backend::Backend
+
+`Backend` defines the backend configuration for a service.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->rules() >> / C<< $msg->rules($value) >>
+
+Type: C<Message> (L<Google::Api::Backend::BackendRule>)
+
+A list of API backend rules that apply to individual API methods.
+
+B<NOTE:> All service configuration rules follow "last one wins" order.
+
+=back
+
+=head2 Google::Api::Backend::BackendRule
+
+A backend rule provides configuration for an individual API element.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->selector() >> / C<< $msg->selector($value) >>
+
+Type: C<String>
+
+Selects the methods to which this rule applies.
+
+Refer to [selector][google.api.DocumentationRule.selector] for syntax
+details.
+
+=item * C<< $msg->address() >> / C<< $msg->address($value) >>
+
+Type: C<String>
+
+The address of the API backend.
+
+The scheme is used to determine the backend protocol and security.
+The following schemes are accepted:
+
+   SCHEME        PROTOCOL    SECURITY
+   http://       HTTP        None
+   https://      HTTP        TLS
+   grpc://       gRPC        None
+   grpcs://      gRPC        TLS
+
+It is recommended to explicitly include a scheme. Leaving out the scheme
+may cause constrasting behaviors across platforms.
+
+If the port is unspecified, the default is:
+- 80 for schemes without TLS
+- 443 for schemes with TLS
+
+For HTTP backends, use [protocol][google.api.BackendRule.protocol]
+to specify the protocol version.
+
+=item * C<< $msg->deadline() >> / C<< $msg->deadline($value) >>
+
+Type: C<Double>
+
+The number of seconds to wait for a response from a request. The default
+varies based on the request protocol and deployment environment.
+
+=item * C<< $msg->min_deadline() >> / C<< $msg->min_deadline($value) >>
+
+Type: C<Double>
+
+Deprecated, do not use.
+
+=item * C<< $msg->operation_deadline() >> / C<< $msg->operation_deadline($value) >>
+
+Type: C<Double>
+
+The number of seconds to wait for the completion of a long running
+operation. The default is no deadline.
+
+=item * C<< $msg->path_translation() >> / C<< $msg->path_translation($value) >>
+
+Type: C<Enum> (L<Google::Api::BackendRule::PathTranslation>)
+
+Path translation specifies how to combine the backend address with the
+request path in order to produce the appropriate forwarding URL for the
+request. See [PathTranslation][google.api.BackendRule.PathTranslation] for
+more details.
+
+=item * C<< $msg->jwt_audience() >> / C<< $msg->jwt_audience($value) >>
+
+Type: C<String>
+
+The JWT audience is used when generating a JWT ID token for the backend.
+This ID token will be added in the HTTP "authorization" header, and sent
+to the backend.
+
+=item * C<< $msg->disable_auth() >> / C<< $msg->disable_auth($value) >>
+
+Type: C<Bool>
+
+When disable_auth is true, a JWT ID token won't be generated and the
+original "Authorization" HTTP header will be preserved. If the header is
+used to carry the original token and is expected by the backend, this
+field must be set to true to preserve the header.
+
+=item * C<< $msg->protocol() >> / C<< $msg->protocol($value) >>
+
+Type: C<String>
+
+The protocol used for sending a request to the backend.
+The supported values are "http/1.1" and "h2".
+
+The default value is inferred from the scheme in the
+[address][google.api.BackendRule.address] field:
+
+   SCHEME        PROTOCOL
+   http://       http/1.1
+   https://      http/1.1
+   grpc://       h2
+   grpcs://      h2
+
+For secure HTTP backends (https://) that support HTTP/2, set this field
+to "h2" for improved performance.
+
+Configuring this field to non-default values is only supported for secure
+HTTP backends. This field will be ignored for all other backends.
+
+See
+https://www.iana.org/assignments/tls-extensiontype-values/tls-extensiontype-values.xhtml#alpn-protocol-ids
+for more details on the supported values.
+
+=item * C<< $msg->overrides_by_request_protocol() >> / C<< $msg->overrides_by_request_protocol($value) >>
+
+Type: C<Message> (L<Google::Api::Backend::BackendRule::OverridesByRequestProtocolEntry>)
+
+The map between request protocol and the backend address.
+
+=item * C<< $msg->load_balancing_policy() >> / C<< $msg->load_balancing_policy($value) >>
+
+Type: C<String>
+
+The load balancing policy used for connection to the application backend.
+
+Defined as an arbitrary string to accomondate custom load balancing
+policies supported by the underlying channel, but suggest most users use
+one of the standard policies, such as the default, "RoundRobin".
+
+=back
+
+=head3 Enum: BackendRule::PathTranslation
+
+=over 4
+
+=item * C<PATH_TRANSLATION_UNSPECIFIED> => C<0>
+
+=item * C<CONSTANT_ADDRESS> => C<1>
+
+=item * C<APPEND_PATH_TO_ADDRESS> => C<2>
+
+=back
+
+=head1 SEE ALSO
+
+L<Protobuf>, L<Protobuf::Message>, L<Google::Api::Backend::Types>, L<https://protobuf.dev/>
 
 =head1 LICENSE AND COPYRIGHT
 

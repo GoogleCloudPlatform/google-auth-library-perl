@@ -36,11 +36,56 @@ __END__
 
 =head1 NAME
 
-Google::Cloud::Transport::Configuration - Configuration for Pluggable Transports
+Google::Cloud::Transport::Configuration - TLS, ALPN, and timeout configuration for Pluggable Transports
+
+=head1 SYNOPSIS
+
+    use Google::Cloud::Transport::Configuration;
+
+    my $config = Google::Cloud::Transport::Configuration->new(
+        ssl_verify_host => 1,
+        ssl_ca_file     => '/etc/ssl/certs/ca-certificates.crt',
+        alpn_protocols  => ['h2', 'http/1.1'],
+        timeout         => 60,
+    );
 
 =head1 DESCRIPTION
 
-This class holds configuration parameters for Pluggable Transport adapters,
-enforcing secure defaults like hostname verification and ALPN preferences.
+C<Google::Cloud::Transport::Configuration> holds shared transport-level
+configuration parameters for L<Google::Cloud::Transport> adapters (such as
+L<Google::Cloud::Transport::Adapter::LWP>,
+L<Google::Cloud::Transport::Adapter::NetCurl>, and
+L<Google::Cloud::Transport::Adapter::Nghttp2>). It enforces secure defaults
+including strict TLS hostname verification and HTTP/2 ALPN negotiation.
+
+=head1 ATTRIBUTES
+
+=over 4
+
+=item C<ssl_verify_host> (read-only, default C<1>)
+
+Enables strict TLS peer and hostname verification when true.
+
+=item C<ssl_ca_file> (optional, read-only)
+
+Path to a custom PEM CA bundle file. When omitted, the adapter uses the
+system trust store or L<Mozilla::CA>.
+
+=item C<alpn_protocols> (read-only, default C<['h2', 'http/1.1']>)
+
+Ordered arrayref of ALPN protocol identifiers to advertise during TLS
+negotiation.
+
+=item C<timeout> (read-only, default C<30>)
+
+Default per-request timeout in seconds.
+
+=back
+
+=head1 SEE ALSO
+
+L<Google::Cloud::Transport::Adapter::LWP>,
+L<Google::Cloud::Transport::Adapter::NetCurl>,
+L<Google::Cloud::Transport::Adapter::Nghttp2>
 
 =cut

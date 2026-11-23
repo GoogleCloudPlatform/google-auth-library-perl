@@ -3,7 +3,7 @@ package Google::Type::Latlng;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -52,34 +52,79 @@ EOF
     # Field: latitude Type: 1 ()
     # Field: longitude Type: 1 ()
 
-=pod
+1;
+
+__END__
+
+=encoding UTF-8
 
 =head1 NAME
 
-Google::Type::Latlng::LatLng - Compiled Protocol Buffers message class
+Google::Type::Latlng - Compiled Protocol Buffers messages for google/type/latlng.proto
 
 =head1 SYNOPSIS
 
     use Google::Type::Latlng;
 
-    my $msg = Google::Type::Latlng::LatLng->new(
-        latitude => $value,
-    );
+    my $msg = Google::Type::Latlng::LatLng->new({
+        latitude => $latitude,
+        longitude => $longitude,
+    });
 
-=head1 FIELDS
+    # Read or update a field
+    my $val = $msg->latitude();
+
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Type::Latlng::LatLng->parse($bytes);
+
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
+
+=head1 DESCRIPTION
+
+Auto-generated L<Protobuf> message classes compiled from C<google/type/latlng.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Type::Latlng::LatLng
+
+An object that represents a latitude/longitude pair. This is expressed as a
+pair of doubles to represent degrees latitude and degrees longitude. Unless
+specified otherwise, this object must conform to the
+<a href="https://en.wikipedia.org/wiki/World_Geodetic_System#1984_version">
+WGS84 standard</a>. Values must be within normalized ranges.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
 
 =over 4
 
-=item * B<latitude>
+=item * C<< $msg->latitude() >> / C<< $msg->latitude($value) >>
 
-Type: Double
+Type: C<Double>
 
-=item * B<longitude>
+The latitude in degrees. It must be in the range [-90.0, +90.0].
 
-Type: Double
+=item * C<< $msg->longitude() >> / C<< $msg->longitude($value) >>
+
+Type: C<Double>
+
+The longitude in degrees. It must be in the range [-180.0, +180.0].
 
 =back
 
-=cut
+=head1 SEE ALSO
 
-1;
+L<Protobuf>, L<Protobuf::Message>, L<Google::Type::Latlng::Types>, L<https://protobuf.dev/>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (C) 2026 Google LLC
+
+This program is released under the Apache 2.0 license.
+
+=cut

@@ -3,7 +3,7 @@ package Google::Api::Distribution;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -217,67 +217,142 @@ EOF
     # Field: bucket_counts Type: 3 ()
     # Field: exemplars Type: 11 (.google.api.Distribution.Exemplar)
 
-=pod
+1;
+
+__END__
+
+=encoding UTF-8
 
 =head1 NAME
 
-Google::Api::Distribution::Distribution - Compiled Protocol Buffers message class
+Google::Api::Distribution - Compiled Protocol Buffers messages for google/api/distribution.proto
 
 =head1 SYNOPSIS
 
     use Google::Api::Distribution;
 
-    my $msg = Google::Api::Distribution::Distribution->new(
-        count => $value,
-    );
+    my $msg = Google::Api::Distribution::Distribution->new({
+        count => $count,
+        mean => $mean,
+        sum_of_squared_deviation => $sum_of_squared_deviation,
+        range => $range,
+    });
 
-=head1 FIELDS
+    # Read or update a field
+    my $val = $msg->count();
 
-=over 4
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Api::Distribution::Distribution->parse($bytes);
 
-=item * B<count>
-
-Type: Int64
-
-=item * B<mean>
-
-Type: Double
-
-=item * B<sum_of_squared_deviation>
-
-Type: Double
-
-=item * B<range>
-
-Type: Message (.google.api.Distribution.Range)
-
-=item * B<bucket_options>
-
-Type: Message (.google.api.Distribution.BucketOptions)
-
-=item * B<bucket_counts>
-
-Type: Int64
-
-=item * B<exemplars>
-
-Type: Message (.google.api.Distribution.Exemplar)
-
-=back
-
-=cut
-
-1;
-
-__END__
-
-=head1 NAME
-
-Google::Api::Distribution - Protocol Buffers schema definition
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
 
 =head1 DESCRIPTION
 
-Auto-generated Protocol Buffers schema definition class.
+Auto-generated L<Protobuf> message classes compiled from C<google/api/distribution.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Api::Distribution::Distribution
+
+`Distribution` contains summary statistics for a population of values. It
+optionally contains a histogram representing the distribution of those values
+across a set of buckets.
+
+The summary statistics are the count, mean, sum of the squared deviation from
+the mean, the minimum, and the maximum of the set of population of values.
+The histogram is based on a sequence of buckets and gives a count of values
+that fall into each bucket. The boundaries of the buckets are given either
+explicitly or by formulas for buckets of fixed or exponentially increasing
+widths.
+
+Although it is not forbidden, it is generally a bad idea to include
+non-finite values (infinities or NaNs) in the population of values, as this
+will render the `mean` and `sum_of_squared_deviation` fields meaningless.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->count() >> / C<< $msg->count($value) >>
+
+Type: C<Int64>
+
+The number of values in the population. Must be non-negative. This value
+must equal the sum of the values in `bucket_counts` if a histogram is
+provided.
+
+=item * C<< $msg->mean() >> / C<< $msg->mean($value) >>
+
+Type: C<Double>
+
+The arithmetic mean of the values in the population. If `count` is zero
+then this field must be zero.
+
+=item * C<< $msg->sum_of_squared_deviation() >> / C<< $msg->sum_of_squared_deviation($value) >>
+
+Type: C<Double>
+
+The sum of squared deviations from the mean of the values in the
+population. For values x_i this is:
+
+    Sum[i=1..n]((x_i - mean)^2)
+
+Knuth, "The Art of Computer Programming", Vol. 2, page 232, 3rd edition
+describes Welford's method for accumulating this sum in one pass.
+
+If `count` is zero then this field must be zero.
+
+=item * C<< $msg->range() >> / C<< $msg->range($value) >>
+
+Type: C<Message> (L<Google::Api::Distribution::Distribution::Range>)
+
+If specified, contains the range of the population values. The field
+must not be present if the `count` is zero.
+
+=item * C<< $msg->bucket_options() >> / C<< $msg->bucket_options($value) >>
+
+Type: C<Message> (L<Google::Api::Distribution::Distribution::BucketOptions>)
+
+Defines the histogram bucket boundaries. If the distribution does not
+contain a histogram, then omit this field.
+
+=item * C<< $msg->bucket_counts() >> / C<< $msg->bucket_counts($value) >>
+
+Type: C<Int64>
+
+The number of values in each bucket of the histogram, as described in
+`bucket_options`. If the distribution does not have a histogram, then omit
+this field. If there is a histogram, then the sum of the values in
+`bucket_counts` must equal the value in the `count` field of the
+distribution.
+
+If present, `bucket_counts` should contain N values, where N is the number
+of buckets specified in `bucket_options`. If you supply fewer than N
+values, the remaining values are assumed to be 0.
+
+The order of the values in `bucket_counts` follows the bucket numbering
+schemes described for the three bucket types. The first value must be the
+count for the underflow bucket (number 0). The next N-2 values are the
+counts for the finite buckets (number 1 through N-2). The N'th value in
+`bucket_counts` is the count for the overflow bucket (number N-1).
+
+=item * C<< $msg->exemplars() >> / C<< $msg->exemplars($value) >>
+
+Type: C<Message> (L<Google::Api::Distribution::Distribution::Exemplar>)
+
+Must be in increasing order of `value` field.
+
+=back
+
+=head1 SEE ALSO
+
+L<Protobuf>, L<Protobuf::Message>, L<Google::Api::Distribution::Types>, L<https://protobuf.dev/>
 
 =head1 LICENSE AND COPYRIGHT
 

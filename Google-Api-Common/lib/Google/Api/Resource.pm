@@ -3,7 +3,7 @@ package Google::Api::Resource;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -207,145 +207,296 @@ EOF
     # Field: singular Type: 9 ()
     # Field: style Type: 14 (.google.api.ResourceDescriptor.Style)
 
-=pod
-
-=head1 NAME
-
-Google::Api::Resource::ResourceDescriptor - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::Resource;
-
-    my $msg = Google::Api::Resource::ResourceDescriptor->new(
-        type => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<type>
-
-Type: String
-
-=item * B<pattern>
-
-Type: String
-
-=item * B<name_field>
-
-Type: String
-
-=item * B<history>
-
-Type: Enum (.google.api.ResourceDescriptor.History)
-
-=item * B<plural>
-
-Type: String
-
-=item * B<singular>
-
-Type: String
-
-=item * B<style>
-
-Type: Enum (.google.api.ResourceDescriptor.Style)
-
-=back
-
-=cut
-
 # Enum: ResourceDescriptor::History
 our $ResourceDescriptor_HISTORY_UNSPECIFIED = 0;
 our $ResourceDescriptor_ORIGINALLY_SINGLE_PATTERN = 1;
 our $ResourceDescriptor_FUTURE_MULTI_PATTERN = 2;
 
-=pod
-
-=head2 Enum: ResourceDescriptor::History
-
-Values:
-
-=over 4
-
-=item * C<HISTORY_UNSPECIFIED> => 0
-
-=item * C<ORIGINALLY_SINGLE_PATTERN> => 1
-
-=item * C<FUTURE_MULTI_PATTERN> => 2
-
-=back
-
-=cut
-
 # Enum: ResourceDescriptor::Style
 our $ResourceDescriptor_STYLE_UNSPECIFIED = 0;
 our $ResourceDescriptor_DECLARATIVE_FRIENDLY = 1;
-
-=pod
-
-=head2 Enum: ResourceDescriptor::Style
-
-Values:
-
-=over 4
-
-=item * C<STYLE_UNSPECIFIED> => 0
-
-=item * C<DECLARATIVE_FRIENDLY> => 1
-
-=back
-
-=cut
 
 # === Message: Google::Api::Resource::ResourceReference ===
     # Fields for ResourceReference
     # Field: type Type: 9 ()
     # Field: child_type Type: 9 ()
 
-=pod
+1;
+
+__END__
+
+=encoding UTF-8
 
 =head1 NAME
 
-Google::Api::Resource::ResourceReference - Compiled Protocol Buffers message class
+Google::Api::Resource - Compiled Protocol Buffers messages for google/api/resource.proto
 
 =head1 SYNOPSIS
 
     use Google::Api::Resource;
 
-    my $msg = Google::Api::Resource::ResourceReference->new(
-        type => $value,
-    );
+    my $msg = Google::Api::Resource::ResourceDescriptor->new({
+        type => $type,
+        pattern => $pattern,
+        name_field => $name_field,
+        history => $history,
+    });
 
-=head1 FIELDS
+    # Read or update a field
+    my $val = $msg->type();
 
-=over 4
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Api::Resource::ResourceDescriptor->parse($bytes);
 
-=item * B<type>
-
-Type: String
-
-=item * B<child_type>
-
-Type: String
-
-=back
-
-=cut
-
-1;
-
-__END__
-
-=head1 NAME
-
-Google::Api::Resource - Protocol Buffers schema definition
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
 
 =head1 DESCRIPTION
 
-Auto-generated Protocol Buffers schema definition class.
+Auto-generated L<Protobuf> message classes compiled from C<google/api/resource.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Api::Resource::ResourceDescriptor
+
+A simple descriptor of a resource type.
+
+ResourceDescriptor annotates a resource message (either by means of a
+protobuf annotation or use in the service config), and associates the
+resource's schema, the resource type, and the pattern of the resource name.
+
+Example:
+
+    message Topic {
+      // Indicates this message defines a resource schema.
+      // Declares the resource type in the format of {service}/{kind}.
+      // For Kubernetes resources, the format is {api group}/{kind}.
+      option (google.api.resource) = {
+        type: "pubsub.googleapis.com/Topic"
+        pattern: "projects/{project}/topics/{topic}"
+      };
+    }
+
+The ResourceDescriptor Yaml config will look like:
+
+    resources:
+    - type: "pubsub.googleapis.com/Topic"
+      pattern: "projects/{project}/topics/{topic}"
+
+Sometimes, resources have multiple patterns, typically because they can
+live under multiple parents.
+
+Example:
+
+    message LogEntry {
+      option (google.api.resource) = {
+        type: "logging.googleapis.com/LogEntry"
+        pattern: "projects/{project}/logs/{log}"
+        pattern: "folders/{folder}/logs/{log}"
+        pattern: "organizations/{organization}/logs/{log}"
+        pattern: "billingAccounts/{billing_account}/logs/{log}"
+      };
+    }
+
+The ResourceDescriptor Yaml config will look like:
+
+    resources:
+    - type: 'logging.googleapis.com/LogEntry'
+      pattern: "projects/{project}/logs/{log}"
+      pattern: "folders/{folder}/logs/{log}"
+      pattern: "organizations/{organization}/logs/{log}"
+      pattern: "billingAccounts/{billing_account}/logs/{log}"
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->type() >> / C<< $msg->type($value) >>
+
+Type: C<String>
+
+The resource type. It must be in the format of
+{service_name}/{resource_type_kind}. The `resource_type_kind` must be
+singular and must not include version numbers.
+
+Example: `storage.googleapis.com/Bucket`
+
+The value of the resource_type_kind must follow the regular expression
+/[A-Za-z][a-zA-Z0-9]+/. It should start with an upper case character and
+should use PascalCase (UpperCamelCase). The maximum number of
+characters allowed for the `resource_type_kind` is 100.
+
+=item * C<< $msg->pattern() >> / C<< $msg->pattern($value) >>
+
+Type: C<String>
+
+Optional. The relative resource name pattern associated with this resource
+type. The DNS prefix of the full resource name shouldn't be specified here.
+
+The path pattern must follow the syntax, which aligns with HTTP binding
+syntax:
+
+    Template = Segment { "/" Segment } ;
+    Segment = LITERAL | Variable ;
+    Variable = "{" LITERAL "}" ;
+
+Examples:
+
+    - "projects/{project}/topics/{topic}"
+    - "projects/{project}/knowledgeBases/{knowledge_base}"
+
+The components in braces correspond to the IDs for each resource in the
+hierarchy. It is expected that, if multiple patterns are provided,
+the same component name (e.g. "project") refers to IDs of the same
+type of resource.
+
+=item * C<< $msg->name_field() >> / C<< $msg->name_field($value) >>
+
+Type: C<String>
+
+Optional. The field on the resource that designates the resource name
+field. If omitted, this is assumed to be "name".
+
+=item * C<< $msg->history() >> / C<< $msg->history($value) >>
+
+Type: C<Enum> (L<Google::Api::ResourceDescriptor::History>)
+
+Optional. The historical or future-looking state of the resource pattern.
+
+Example:
+
+    // The InspectTemplate message originally only supported resource
+    // names with organization, and project was added later.
+    message InspectTemplate {
+      option (google.api.resource) = {
+        type: "dlp.googleapis.com/InspectTemplate"
+        pattern:
+        "organizations/{organization}/inspectTemplates/{inspect_template}"
+        pattern: "projects/{project}/inspectTemplates/{inspect_template}"
+        history: ORIGINALLY_SINGLE_PATTERN
+      };
+    }
+
+=item * C<< $msg->plural() >> / C<< $msg->plural($value) >>
+
+Type: C<String>
+
+The plural name used in the resource name and permission names, such as
+'projects' for the resource name of 'projects/{project}' and the permission
+name of 'cloudresourcemanager.googleapis.com/projects.get'. One exception
+to this is for Nested Collections that have stuttering names, as defined
+in [AIP-122](https://google.aip.dev/122#nested-collections), where the
+collection ID in the resource name pattern does not necessarily directly
+match the `plural` value.
+
+It is the same concept of the `plural` field in k8s CRD spec
+https://kubernetes.io/docs/tasks/access-kubernetes-api/custom-resources/custom-resource-definitions/
+
+Note: The plural form is required even for singleton resources. See
+https://aip.dev/156
+
+=item * C<< $msg->singular() >> / C<< $msg->singular($value) >>
+
+Type: C<String>
+
+The same concept of the `singular` field in k8s CRD spec
+https://kubernetes.io/docs/tasks/access-kubernetes-api/custom-resources/custom-resource-definitions/
+Such as "project" for the `resourcemanager.googleapis.com/Project` type.
+
+=item * C<< $msg->style() >> / C<< $msg->style($value) >>
+
+Type: C<Enum> (L<Google::Api::ResourceDescriptor::Style>)
+
+Style flag(s) for this resource.
+These indicate that a resource is expected to conform to a given
+style. See the specific style flags for additional information.
+
+=back
+
+=head3 Enum: ResourceDescriptor::History
+
+=over 4
+
+=item * C<HISTORY_UNSPECIFIED> => C<0>
+
+=item * C<ORIGINALLY_SINGLE_PATTERN> => C<1>
+
+=item * C<FUTURE_MULTI_PATTERN> => C<2>
+
+=back
+
+=head3 Enum: ResourceDescriptor::Style
+
+=over 4
+
+=item * C<STYLE_UNSPECIFIED> => C<0>
+
+=item * C<DECLARATIVE_FRIENDLY> => C<1>
+
+=back
+
+=head2 Google::Api::Resource::ResourceReference
+
+Defines a proto annotation that describes a string field that refers to
+an API resource.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->type() >> / C<< $msg->type($value) >>
+
+Type: C<String>
+
+The resource type that the annotated field references.
+
+Example:
+
+    message Subscription {
+      string topic = 2 [(google.api.resource_reference) = {
+        type: "pubsub.googleapis.com/Topic"
+      }];
+    }
+
+Occasionally, a field may reference an arbitrary resource. In this case,
+APIs use the special value * in their resource reference.
+
+Example:
+
+    message GetIamPolicyRequest {
+      string resource = 2 [(google.api.resource_reference) = {
+        type: "*"
+      }];
+    }
+
+=item * C<< $msg->child_type() >> / C<< $msg->child_type($value) >>
+
+Type: C<String>
+
+The resource type of a child collection that the annotated field
+references. This is useful for annotating the `parent` field that
+doesn't have a fixed resource type.
+
+Example:
+
+    message ListLogEntriesRequest {
+      string parent = 1 [(google.api.resource_reference) = {
+        child_type: "logging.googleapis.com/LogEntry"
+      };
+    }
+
+=back
+
+=head1 SEE ALSO
+
+L<Protobuf>, L<Protobuf::Message>, L<Google::Api::Resource::Types>, L<https://protobuf.dev/>
 
 =head1 LICENSE AND COPYRIGHT
 

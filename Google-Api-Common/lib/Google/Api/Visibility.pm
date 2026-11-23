@@ -3,7 +3,7 @@ package Google::Api::Visibility;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -103,78 +103,134 @@ EOF
     # Fields for Visibility
     # Field: rules Type: 11 (.google.api.VisibilityRule)
 
-=pod
-
-=head1 NAME
-
-Google::Api::Visibility::Visibility - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::Visibility;
-
-    my $msg = Google::Api::Visibility::Visibility->new(
-        rules => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<rules>
-
-Type: Message (.google.api.VisibilityRule)
-
-=back
-
-=cut
-
 # === Message: Google::Api::Visibility::VisibilityRule ===
     # Fields for VisibilityRule
     # Field: selector Type: 9 ()
     # Field: restriction Type: 9 ()
 
-=pod
+1;
+
+__END__
+
+=encoding UTF-8
 
 =head1 NAME
 
-Google::Api::Visibility::VisibilityRule - Compiled Protocol Buffers message class
+Google::Api::Visibility - Compiled Protocol Buffers messages for google/api/visibility.proto
 
 =head1 SYNOPSIS
 
     use Google::Api::Visibility;
 
-    my $msg = Google::Api::Visibility::VisibilityRule->new(
-        selector => $value,
-    );
+    my $msg = Google::Api::Visibility::Visibility->new({
+        rules => $rules,
+    });
 
-=head1 FIELDS
+    # Read or update a field
+    my $val = $msg->rules();
 
-=over 4
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Api::Visibility::Visibility->parse($bytes);
 
-=item * B<selector>
-
-Type: String
-
-=item * B<restriction>
-
-Type: String
-
-=back
-
-=cut
-
-1;
-
-__END__
-
-=head1 NAME
-
-Google::Api::Visibility - Protocol Buffers schema definition
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
 
 =head1 DESCRIPTION
 
-Auto-generated Protocol Buffers schema definition class.
+Auto-generated L<Protobuf> message classes compiled from C<google/api/visibility.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Api::Visibility::Visibility
+
+`Visibility` restricts service consumer's access to service elements,
+such as whether an application can call a visibility-restricted method.
+The restriction is expressed by applying visibility labels on service
+elements. The visibility labels are elsewhere linked to service consumers.
+
+A service can define multiple visibility labels, but a service consumer
+should be granted at most one visibility label. Multiple visibility
+labels for a single service consumer are not supported.
+
+If an element and all its parents have no visibility label, its visibility
+is unconditionally granted.
+
+Example:
+
+    visibility:
+      rules:
+      - selector: google.calendar.Calendar.EnhancedSearch
+        restriction: PREVIEW
+      - selector: google.calendar.Calendar.Delegate
+        restriction: INTERNAL
+
+Here, all methods are publicly visible except for the restricted methods
+EnhancedSearch and Delegate.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->rules() >> / C<< $msg->rules($value) >>
+
+Type: C<Message> (L<Google::Api::Visibility::VisibilityRule>)
+
+A list of visibility rules that apply to individual API elements.
+
+B<NOTE:> All service configuration rules follow "last one wins" order.
+
+=back
+
+=head2 Google::Api::Visibility::VisibilityRule
+
+A visibility rule provides visibility configuration for an individual API
+element.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->selector() >> / C<< $msg->selector($value) >>
+
+Type: C<String>
+
+Selects methods, messages, fields, enums, etc. to which this rule applies.
+
+Refer to [selector][google.api.DocumentationRule.selector] for syntax
+details.
+
+=item * C<< $msg->restriction() >> / C<< $msg->restriction($value) >>
+
+Type: C<String>
+
+A comma-separated list of visibility labels that apply to the `selector`.
+Any of the listed labels can be used to grant the visibility.
+
+If a rule has multiple labels, removing one of the labels but not all of
+them can break clients.
+
+Example:
+
+    visibility:
+      rules:
+      - selector: google.calendar.Calendar.EnhancedSearch
+        restriction: INTERNAL, PREVIEW
+
+Removing INTERNAL from this restriction will break clients that rely on
+this method and only had access to it through INTERNAL.
+
+=back
+
+=head1 SEE ALSO
+
+L<Protobuf>, L<Protobuf::Message>, L<Google::Api::Visibility::Types>, L<https://protobuf.dev/>
 
 =head1 LICENSE AND COPYRIGHT
 

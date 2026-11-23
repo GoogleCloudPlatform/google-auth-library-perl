@@ -3,7 +3,7 @@ package Google::Api::SystemParameter;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -92,66 +92,10 @@ EOF
     # Fields for SystemParameters
     # Field: rules Type: 11 (.google.api.SystemParameterRule)
 
-=pod
-
-=head1 NAME
-
-Google::Api::SystemParameter::SystemParameters - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::SystemParameter;
-
-    my $msg = Google::Api::SystemParameter::SystemParameters->new(
-        rules => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<rules>
-
-Type: Message (.google.api.SystemParameterRule)
-
-=back
-
-=cut
-
 # === Message: Google::Api::SystemParameter::SystemParameterRule ===
     # Fields for SystemParameterRule
     # Field: selector Type: 9 ()
     # Field: parameters Type: 11 (.google.api.SystemParameter)
-
-=pod
-
-=head1 NAME
-
-Google::Api::SystemParameter::SystemParameterRule - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::SystemParameter;
-
-    my $msg = Google::Api::SystemParameter::SystemParameterRule->new(
-        selector => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<selector>
-
-Type: String
-
-=item * B<parameters>
-
-Type: Message (.google.api.SystemParameter)
-
-=back
-
-=cut
 
 # === Message: Google::Api::SystemParameter::SystemParameter ===
     # Fields for SystemParameter
@@ -159,51 +103,163 @@ Type: Message (.google.api.SystemParameter)
     # Field: http_header Type: 9 ()
     # Field: url_query_parameter Type: 9 ()
 
-=pod
+1;
+
+__END__
+
+=encoding UTF-8
 
 =head1 NAME
 
-Google::Api::SystemParameter::SystemParameter - Compiled Protocol Buffers message class
+Google::Api::SystemParameter - Compiled Protocol Buffers messages for google/api/system_parameter.proto
 
 =head1 SYNOPSIS
 
     use Google::Api::SystemParameter;
 
-    my $msg = Google::Api::SystemParameter::SystemParameter->new(
-        name => $value,
-    );
+    my $msg = Google::Api::SystemParameter::SystemParameters->new({
+        rules => $rules,
+    });
 
-=head1 FIELDS
+    # Read or update a field
+    my $val = $msg->rules();
 
-=over 4
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Api::SystemParameter::SystemParameters->parse($bytes);
 
-=item * B<name>
-
-Type: String
-
-=item * B<http_header>
-
-Type: String
-
-=item * B<url_query_parameter>
-
-Type: String
-
-=back
-
-=cut
-
-1;
-
-__END__
-
-=head1 NAME
-
-Google::Api::SystemParameter - Protocol Buffers schema definition
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
 
 =head1 DESCRIPTION
 
-Auto-generated Protocol Buffers schema definition class.
+Auto-generated L<Protobuf> message classes compiled from C<google/api/system_parameter.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Api::SystemParameter::SystemParameters
+
+### System parameter configuration
+
+A system parameter is a special kind of parameter defined by the API
+system, not by an individual API. It is typically mapped to an HTTP header
+and/or a URL query parameter. This configuration specifies which methods
+change the names of the system parameters.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->rules() >> / C<< $msg->rules($value) >>
+
+Type: C<Message> (L<Google::Api::SystemParameter::SystemParameterRule>)
+
+Define system parameters.
+
+The parameters defined here will override the default parameters
+implemented by the system. If this field is missing from the service
+config, default system parameters will be used. Default system parameters
+and names is implementation-dependent.
+
+Example: define api key for all methods
+
+    system_parameters
+      rules:
+        - selector: "*"
+          parameters:
+            - name: api_key
+              url_query_parameter: api_key
+
+
+Example: define 2 api key names for a specific method.
+
+    system_parameters
+      rules:
+        - selector: "/ListShelves"
+          parameters:
+            - name: api_key
+              http_header: Api-Key1
+            - name: api_key
+              http_header: Api-Key2
+
+B<NOTE:> All service configuration rules follow "last one wins" order.
+
+=back
+
+=head2 Google::Api::SystemParameter::SystemParameterRule
+
+Define a system parameter rule mapping system parameter definitions to
+methods.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->selector() >> / C<< $msg->selector($value) >>
+
+Type: C<String>
+
+Selects the methods to which this rule applies. Use '*' to indicate all
+methods in all APIs.
+
+Refer to [selector][google.api.DocumentationRule.selector] for syntax
+details.
+
+=item * C<< $msg->parameters() >> / C<< $msg->parameters($value) >>
+
+Type: C<Message> (L<Google::Api::SystemParameter::SystemParameter>)
+
+Define parameters. Multiple names may be defined for a parameter.
+For a given method call, only one of them should be used. If multiple
+names are used the behavior is implementation-dependent.
+If none of the specified names are present the behavior is
+parameter-dependent.
+
+=back
+
+=head2 Google::Api::SystemParameter::SystemParameter
+
+Define a parameter's name and location. The parameter may be passed as either
+an HTTP header or a URL query parameter, and if both are passed the behavior
+is implementation-dependent.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->name() >> / C<< $msg->name($value) >>
+
+Type: C<String>
+
+Define the name of the parameter, such as "api_key" . It is case sensitive.
+
+=item * C<< $msg->http_header() >> / C<< $msg->http_header($value) >>
+
+Type: C<String>
+
+Define the HTTP header name to use for the parameter. It is case
+insensitive.
+
+=item * C<< $msg->url_query_parameter() >> / C<< $msg->url_query_parameter($value) >>
+
+Type: C<String>
+
+Define the URL query parameter name to use for the parameter. It is case
+sensitive.
+
+=back
+
+=head1 SEE ALSO
+
+L<Protobuf>, L<Protobuf::Message>, L<Google::Api::SystemParameter::Types>, L<https://protobuf.dev/>
 
 =head1 LICENSE AND COPYRIGHT
 

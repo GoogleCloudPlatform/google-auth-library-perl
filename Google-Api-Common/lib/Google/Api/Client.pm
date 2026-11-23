@@ -3,7 +3,7 @@ package Google::Api::Client;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -540,40 +540,6 @@ EOF
     # Field: destinations Type: 14 (.google.api.ClientLibraryDestination)
     # Field: selective_gapic_generation Type: 11 (.google.api.SelectiveGapicGeneration)
 
-=pod
-
-=head1 NAME
-
-Google::Api::Client::CommonLanguageSettings - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::Client;
-
-    my $msg = Google::Api::Client::CommonLanguageSettings->new(
-        reference_docs_uri => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<reference_docs_uri>
-
-Type: String
-
-=item * B<destinations>
-
-Type: Enum (.google.api.ClientLibraryDestination)
-
-=item * B<selective_gapic_generation>
-
-Type: Message (.google.api.SelectiveGapicGeneration)
-
-=back
-
-=cut
-
 # === Message: Google::Api::Client::ClientLibrarySettings ===
     # Fields for ClientLibrarySettings
     # Field: version Type: 9 ()
@@ -587,72 +553,6 @@ Type: Message (.google.api.SelectiveGapicGeneration)
     # Field: dotnet_settings Type: 11 (.google.api.DotnetSettings)
     # Field: ruby_settings Type: 11 (.google.api.RubySettings)
     # Field: go_settings Type: 11 (.google.api.GoSettings)
-
-=pod
-
-=head1 NAME
-
-Google::Api::Client::ClientLibrarySettings - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::Client;
-
-    my $msg = Google::Api::Client::ClientLibrarySettings->new(
-        version => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<version>
-
-Type: String
-
-=item * B<launch_stage>
-
-Type: Enum (.google.api.LaunchStage)
-
-=item * B<rest_numeric_enums>
-
-Type: Bool
-
-=item * B<java_settings>
-
-Type: Message (.google.api.JavaSettings)
-
-=item * B<cpp_settings>
-
-Type: Message (.google.api.CppSettings)
-
-=item * B<php_settings>
-
-Type: Message (.google.api.PhpSettings)
-
-=item * B<python_settings>
-
-Type: Message (.google.api.PythonSettings)
-
-=item * B<node_settings>
-
-Type: Message (.google.api.NodeSettings)
-
-=item * B<dotnet_settings>
-
-Type: Message (.google.api.DotnetSettings)
-
-=item * B<ruby_settings>
-
-Type: Message (.google.api.RubySettings)
-
-=item * B<go_settings>
-
-Type: Message (.google.api.GoSettings)
-
-=back
-
-=cut
 
 # === Message: Google::Api::Client::Publishing ===
     # Fields for Publishing
@@ -668,241 +568,29 @@ Type: Message (.google.api.GoSettings)
     # Field: proto_reference_documentation_uri Type: 9 ()
     # Field: rest_reference_documentation_uri Type: 9 ()
 
-=pod
-
-=head1 NAME
-
-Google::Api::Client::Publishing - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::Client;
-
-    my $msg = Google::Api::Client::Publishing->new(
-        method_settings => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<method_settings>
-
-Type: Message (.google.api.MethodSettings)
-
-=item * B<new_issue_uri>
-
-Type: String
-
-=item * B<documentation_uri>
-
-Type: String
-
-=item * B<api_short_name>
-
-Type: String
-
-=item * B<github_label>
-
-Type: String
-
-=item * B<codeowner_github_teams>
-
-Type: String
-
-=item * B<doc_tag_prefix>
-
-Type: String
-
-=item * B<organization>
-
-Type: Enum (.google.api.ClientLibraryOrganization)
-
-=item * B<library_settings>
-
-Type: Message (.google.api.ClientLibrarySettings)
-
-=item * B<proto_reference_documentation_uri>
-
-Type: String
-
-=item * B<rest_reference_documentation_uri>
-
-Type: String
-
-=back
-
-=cut
-
 # === Message: Google::Api::Client::JavaSettings ===
     # Fields for JavaSettings
     # Field: library_package Type: 9 ()
     # Field: service_class_names Type: 11 (.google.api.JavaSettings.ServiceClassNamesEntry)
     # Field: common Type: 11 (.google.api.CommonLanguageSettings)
 
-=pod
-
-=head1 NAME
-
-Google::Api::Client::JavaSettings - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::Client;
-
-    my $msg = Google::Api::Client::JavaSettings->new(
-        library_package => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<library_package>
-
-Type: String
-
-=item * B<service_class_names>
-
-Type: Message (.google.api.JavaSettings.ServiceClassNamesEntry)
-
-=item * B<common>
-
-Type: Message (.google.api.CommonLanguageSettings)
-
-=back
-
-=cut
-
 # === Message: Google::Api::Client::CppSettings ===
     # Fields for CppSettings
     # Field: common Type: 11 (.google.api.CommonLanguageSettings)
-
-=pod
-
-=head1 NAME
-
-Google::Api::Client::CppSettings - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::Client;
-
-    my $msg = Google::Api::Client::CppSettings->new(
-        common => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<common>
-
-Type: Message (.google.api.CommonLanguageSettings)
-
-=back
-
-=cut
 
 # === Message: Google::Api::Client::PhpSettings ===
     # Fields for PhpSettings
     # Field: common Type: 11 (.google.api.CommonLanguageSettings)
     # Field: library_package Type: 9 ()
 
-=pod
-
-=head1 NAME
-
-Google::Api::Client::PhpSettings - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::Client;
-
-    my $msg = Google::Api::Client::PhpSettings->new(
-        common => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<common>
-
-Type: Message (.google.api.CommonLanguageSettings)
-
-=item * B<library_package>
-
-Type: String
-
-=back
-
-=cut
-
 # === Message: Google::Api::Client::PythonSettings ===
     # Fields for PythonSettings
     # Field: common Type: 11 (.google.api.CommonLanguageSettings)
     # Field: experimental_features Type: 11 (.google.api.PythonSettings.ExperimentalFeatures)
 
-=pod
-
-=head1 NAME
-
-Google::Api::Client::PythonSettings - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::Client;
-
-    my $msg = Google::Api::Client::PythonSettings->new(
-        common => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<common>
-
-Type: Message (.google.api.CommonLanguageSettings)
-
-=item * B<experimental_features>
-
-Type: Message (.google.api.PythonSettings.ExperimentalFeatures)
-
-=back
-
-=cut
-
 # === Message: Google::Api::Client::NodeSettings ===
     # Fields for NodeSettings
     # Field: common Type: 11 (.google.api.CommonLanguageSettings)
-
-=pod
-
-=head1 NAME
-
-Google::Api::Client::NodeSettings - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::Client;
-
-    my $msg = Google::Api::Client::NodeSettings->new(
-        common => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<common>
-
-Type: Message (.google.api.CommonLanguageSettings)
-
-=back
-
-=cut
 
 # === Message: Google::Api::Client::DotnetSettings ===
     # Fields for DotnetSettings
@@ -913,116 +601,14 @@ Type: Message (.google.api.CommonLanguageSettings)
     # Field: forced_namespace_aliases Type: 9 ()
     # Field: handwritten_signatures Type: 9 ()
 
-=pod
-
-=head1 NAME
-
-Google::Api::Client::DotnetSettings - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::Client;
-
-    my $msg = Google::Api::Client::DotnetSettings->new(
-        common => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<common>
-
-Type: Message (.google.api.CommonLanguageSettings)
-
-=item * B<renamed_services>
-
-Type: Message (.google.api.DotnetSettings.RenamedServicesEntry)
-
-=item * B<renamed_resources>
-
-Type: Message (.google.api.DotnetSettings.RenamedResourcesEntry)
-
-=item * B<ignored_resources>
-
-Type: String
-
-=item * B<forced_namespace_aliases>
-
-Type: String
-
-=item * B<handwritten_signatures>
-
-Type: String
-
-=back
-
-=cut
-
 # === Message: Google::Api::Client::RubySettings ===
     # Fields for RubySettings
     # Field: common Type: 11 (.google.api.CommonLanguageSettings)
-
-=pod
-
-=head1 NAME
-
-Google::Api::Client::RubySettings - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::Client;
-
-    my $msg = Google::Api::Client::RubySettings->new(
-        common => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<common>
-
-Type: Message (.google.api.CommonLanguageSettings)
-
-=back
-
-=cut
 
 # === Message: Google::Api::Client::GoSettings ===
     # Fields for GoSettings
     # Field: common Type: 11 (.google.api.CommonLanguageSettings)
     # Field: renamed_services Type: 11 (.google.api.GoSettings.RenamedServicesEntry)
-
-=pod
-
-=head1 NAME
-
-Google::Api::Client::GoSettings - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::Client;
-
-    my $msg = Google::Api::Client::GoSettings->new(
-        common => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<common>
-
-Type: Message (.google.api.CommonLanguageSettings)
-
-=item * B<renamed_services>
-
-Type: Message (.google.api.GoSettings.RenamedServicesEntry)
-
-=back
-
-=cut
 
 # === Message: Google::Api::Client::MethodSettings ===
     # Fields for MethodSettings
@@ -1031,113 +617,15 @@ Type: Message (.google.api.GoSettings.RenamedServicesEntry)
     # Field: auto_populated_fields Type: 9 ()
     # Field: batching Type: 11 (.google.api.BatchingConfigProto)
 
-=pod
-
-=head1 NAME
-
-Google::Api::Client::MethodSettings - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::Client;
-
-    my $msg = Google::Api::Client::MethodSettings->new(
-        selector => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<selector>
-
-Type: String
-
-=item * B<long_running>
-
-Type: Message (.google.api.MethodSettings.LongRunning)
-
-=item * B<auto_populated_fields>
-
-Type: String
-
-=item * B<batching>
-
-Type: Message (.google.api.BatchingConfigProto)
-
-=back
-
-=cut
-
 # === Message: Google::Api::Client::SelectiveGapicGeneration ===
     # Fields for SelectiveGapicGeneration
     # Field: methods Type: 9 ()
     # Field: generate_omitted_as_internal Type: 8 ()
 
-=pod
-
-=head1 NAME
-
-Google::Api::Client::SelectiveGapicGeneration - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::Client;
-
-    my $msg = Google::Api::Client::SelectiveGapicGeneration->new(
-        methods => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<methods>
-
-Type: String
-
-=item * B<generate_omitted_as_internal>
-
-Type: Bool
-
-=back
-
-=cut
-
 # === Message: Google::Api::Client::BatchingConfigProto ===
     # Fields for BatchingConfigProto
     # Field: thresholds Type: 11 (.google.api.BatchingSettingsProto)
     # Field: batch_descriptor Type: 11 (.google.api.BatchingDescriptorProto)
-
-=pod
-
-=head1 NAME
-
-Google::Api::Client::BatchingConfigProto - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::Client;
-
-    my $msg = Google::Api::Client::BatchingConfigProto->new(
-        thresholds => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<thresholds>
-
-Type: Message (.google.api.BatchingSettingsProto)
-
-=item * B<batch_descriptor>
-
-Type: Message (.google.api.BatchingDescriptorProto)
-
-=back
-
-=cut
 
 # === Message: Google::Api::Client::BatchingSettingsProto ===
     # Fields for BatchingSettingsProto
@@ -1150,111 +638,759 @@ Type: Message (.google.api.BatchingDescriptorProto)
     # Field: flow_control_byte_limit Type: 5 ()
     # Field: flow_control_limit_exceeded_behavior Type: 14 (.google.api.FlowControlLimitExceededBehaviorProto)
 
-=pod
-
-=head1 NAME
-
-Google::Api::Client::BatchingSettingsProto - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::Client;
-
-    my $msg = Google::Api::Client::BatchingSettingsProto->new(
-        element_count_threshold => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<element_count_threshold>
-
-Type: Int32
-
-=item * B<request_byte_threshold>
-
-Type: Int64
-
-=item * B<delay_threshold>
-
-Type: Message (.google.protobuf.Duration)
-
-=item * B<element_count_limit>
-
-Type: Int32
-
-=item * B<request_byte_limit>
-
-Type: Int32
-
-=item * B<flow_control_element_limit>
-
-Type: Int32
-
-=item * B<flow_control_byte_limit>
-
-Type: Int32
-
-=item * B<flow_control_limit_exceeded_behavior>
-
-Type: Enum (.google.api.FlowControlLimitExceededBehaviorProto)
-
-=back
-
-=cut
-
 # === Message: Google::Api::Client::BatchingDescriptorProto ===
     # Fields for BatchingDescriptorProto
     # Field: batched_field Type: 9 ()
     # Field: discriminator_fields Type: 9 ()
     # Field: subresponse_field Type: 9 ()
 
-=pod
+1;
+
+__END__
+
+=encoding UTF-8
 
 =head1 NAME
 
-Google::Api::Client::BatchingDescriptorProto - Compiled Protocol Buffers message class
+Google::Api::Client - Compiled Protocol Buffers messages for google/api/client.proto
 
 =head1 SYNOPSIS
 
     use Google::Api::Client;
 
-    my $msg = Google::Api::Client::BatchingDescriptorProto->new(
-        batched_field => $value,
-    );
+    my $msg = Google::Api::Client::CommonLanguageSettings->new({
+        reference_docs_uri => $reference_docs_uri,
+        destinations => $destinations,
+        selective_gapic_generation => $selective_gapic_generation,
+    });
 
-=head1 FIELDS
+    # Read or update a field
+    my $val = $msg->reference_docs_uri();
 
-=over 4
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Api::Client::CommonLanguageSettings->parse($bytes);
 
-=item * B<batched_field>
-
-Type: String
-
-=item * B<discriminator_fields>
-
-Type: String
-
-=item * B<subresponse_field>
-
-Type: String
-
-=back
-
-=cut
-
-1;
-
-__END__
-
-=head1 NAME
-
-Google::Api::Client - Protocol Buffers schema definition
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
 
 =head1 DESCRIPTION
 
-Auto-generated Protocol Buffers schema definition class.
+Auto-generated L<Protobuf> message classes compiled from C<google/api/client.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Api::Client::CommonLanguageSettings
+
+Required information for every language.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->reference_docs_uri() >> / C<< $msg->reference_docs_uri($value) >>
+
+Type: C<String>
+
+Link to automatically generated reference documentation.  Example:
+https://cloud.google.com/nodejs/docs/reference/asset/latest
+
+=item * C<< $msg->destinations() >> / C<< $msg->destinations($value) >>
+
+Type: C<Enum> (L<Google::Api::ClientLibraryDestination>)
+
+The destination where API teams want this client library to be published.
+
+=item * C<< $msg->selective_gapic_generation() >> / C<< $msg->selective_gapic_generation($value) >>
+
+Type: C<Message> (L<Google::Api::Client::SelectiveGapicGeneration>)
+
+Configuration for which RPCs should be generated in the GAPIC client.
+
+Note: This field should not be used in most cases.
+
+=back
+
+=head2 Google::Api::Client::ClientLibrarySettings
+
+Details about how and where to publish client libraries.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->version() >> / C<< $msg->version($value) >>
+
+Type: C<String>
+
+Version of the API to apply these settings to. This is the full protobuf
+package for the API, ending in the version element.
+Examples: "google.cloud.speech.v1" and "google.spanner.admin.database.v1".
+
+=item * C<< $msg->launch_stage() >> / C<< $msg->launch_stage($value) >>
+
+Type: C<Enum> (L<Google::Api::LaunchStage>)
+
+Launch stage of this version of the API.
+
+=item * C<< $msg->rest_numeric_enums() >> / C<< $msg->rest_numeric_enums($value) >>
+
+Type: C<Bool>
+
+When using transport=rest, the client request will encode enums as
+numbers rather than strings.
+
+=item * C<< $msg->java_settings() >> / C<< $msg->java_settings($value) >>
+
+Type: C<Message> (L<Google::Api::Client::JavaSettings>)
+
+Settings for legacy Java features, supported in the Service YAML.
+
+=item * C<< $msg->cpp_settings() >> / C<< $msg->cpp_settings($value) >>
+
+Type: C<Message> (L<Google::Api::Client::CppSettings>)
+
+Settings for C++ client libraries.
+
+=item * C<< $msg->php_settings() >> / C<< $msg->php_settings($value) >>
+
+Type: C<Message> (L<Google::Api::Client::PhpSettings>)
+
+Settings for PHP client libraries.
+
+=item * C<< $msg->python_settings() >> / C<< $msg->python_settings($value) >>
+
+Type: C<Message> (L<Google::Api::Client::PythonSettings>)
+
+Settings for Python client libraries.
+
+=item * C<< $msg->node_settings() >> / C<< $msg->node_settings($value) >>
+
+Type: C<Message> (L<Google::Api::Client::NodeSettings>)
+
+Settings for Node client libraries.
+
+=item * C<< $msg->dotnet_settings() >> / C<< $msg->dotnet_settings($value) >>
+
+Type: C<Message> (L<Google::Api::Client::DotnetSettings>)
+
+Settings for .NET client libraries.
+
+=item * C<< $msg->ruby_settings() >> / C<< $msg->ruby_settings($value) >>
+
+Type: C<Message> (L<Google::Api::Client::RubySettings>)
+
+Settings for Ruby client libraries.
+
+=item * C<< $msg->go_settings() >> / C<< $msg->go_settings($value) >>
+
+Type: C<Message> (L<Google::Api::Client::GoSettings>)
+
+Settings for Go client libraries.
+
+=back
+
+=head2 Google::Api::Client::Publishing
+
+This message configures the settings for publishing [Google Cloud Client
+libraries](https://cloud.google.com/apis/docs/cloud-client-libraries)
+generated from the service config.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->method_settings() >> / C<< $msg->method_settings($value) >>
+
+Type: C<Message> (L<Google::Api::Client::MethodSettings>)
+
+A list of API method settings, e.g. the behavior for methods that use the
+long-running operation pattern.
+
+=item * C<< $msg->new_issue_uri() >> / C<< $msg->new_issue_uri($value) >>
+
+Type: C<String>
+
+Link to a *public* URI where users can report issues.  Example:
+https://issuetracker.google.com/issues/new?component=190865&template=1161103
+
+=item * C<< $msg->documentation_uri() >> / C<< $msg->documentation_uri($value) >>
+
+Type: C<String>
+
+Link to product home page.  Example:
+https://cloud.google.com/asset-inventory/docs/overview
+
+=item * C<< $msg->api_short_name() >> / C<< $msg->api_short_name($value) >>
+
+Type: C<String>
+
+Used as a tracking tag when collecting data about the APIs developer
+relations artifacts like docs, packages delivered to package managers,
+etc.  Example: "speech".
+
+=item * C<< $msg->github_label() >> / C<< $msg->github_label($value) >>
+
+Type: C<String>
+
+GitHub label to apply to issues and pull requests opened for this API.
+
+=item * C<< $msg->codeowner_github_teams() >> / C<< $msg->codeowner_github_teams($value) >>
+
+Type: C<String>
+
+GitHub teams to be added to CODEOWNERS in the directory in GitHub
+containing source code for the client libraries for this API.
+
+=item * C<< $msg->doc_tag_prefix() >> / C<< $msg->doc_tag_prefix($value) >>
+
+Type: C<String>
+
+A prefix used in sample code when demarking regions to be included in
+documentation.
+
+=item * C<< $msg->organization() >> / C<< $msg->organization($value) >>
+
+Type: C<Enum> (L<Google::Api::ClientLibraryOrganization>)
+
+For whom the client library is being published.
+
+=item * C<< $msg->library_settings() >> / C<< $msg->library_settings($value) >>
+
+Type: C<Message> (L<Google::Api::Client::ClientLibrarySettings>)
+
+Client library settings.  If the same version string appears multiple
+times in this list, then the last one wins.  Settings from earlier
+settings with the same version string are discarded.
+
+=item * C<< $msg->proto_reference_documentation_uri() >> / C<< $msg->proto_reference_documentation_uri($value) >>
+
+Type: C<String>
+
+Optional link to proto reference documentation.  Example:
+https://cloud.google.com/pubsub/lite/docs/reference/rpc
+
+=item * C<< $msg->rest_reference_documentation_uri() >> / C<< $msg->rest_reference_documentation_uri($value) >>
+
+Type: C<String>
+
+Optional link to REST reference documentation.  Example:
+https://cloud.google.com/pubsub/lite/docs/reference/rest
+
+=back
+
+=head2 Google::Api::Client::JavaSettings
+
+Settings for Java client libraries.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->library_package() >> / C<< $msg->library_package($value) >>
+
+Type: C<String>
+
+The package name to use in Java. Clobbers the java_package option
+set in the protobuf. This should be used B<only> by APIs
+who have already set the language_settings.java.package_name" field
+in gapic.yaml. API teams should use the protobuf java_package option
+where possible.
+
+Example of a YAML configuration::
+
+    publishing:
+      library_settings:
+        java_settings:
+          library_package: com.google.cloud.pubsub.v1
+
+=item * C<< $msg->service_class_names() >> / C<< $msg->service_class_names($value) >>
+
+Type: C<Message> (L<Google::Api::Client::JavaSettings::ServiceClassNamesEntry>)
+
+Configure the Java class name to use instead of the service's for its
+corresponding generated GAPIC client. Keys are fully-qualified
+service names as they appear in the protobuf (including the full
+the language_settings.java.interface_names" field in gapic.yaml. API
+teams should otherwise use the service name as it appears in the
+protobuf.
+
+Example of a YAML configuration::
+
+    publishing:
+      java_settings:
+        service_class_names:
+          - google.pubsub.v1.Publisher: TopicAdmin
+          - google.pubsub.v1.Subscriber: SubscriptionAdmin
+
+=item * C<< $msg->common() >> / C<< $msg->common($value) >>
+
+Type: C<Message> (L<Google::Api::Client::CommonLanguageSettings>)
+
+Some settings.
+
+=back
+
+=head2 Google::Api::Client::CppSettings
+
+Settings for C++ client libraries.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->common() >> / C<< $msg->common($value) >>
+
+Type: C<Message> (L<Google::Api::Client::CommonLanguageSettings>)
+
+Some settings.
+
+=back
+
+=head2 Google::Api::Client::PhpSettings
+
+Settings for Php client libraries.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->common() >> / C<< $msg->common($value) >>
+
+Type: C<Message> (L<Google::Api::Client::CommonLanguageSettings>)
+
+Some settings.
+
+=item * C<< $msg->library_package() >> / C<< $msg->library_package($value) >>
+
+Type: C<String>
+
+The package name to use in Php. Clobbers the php_namespace option
+set in the protobuf. This should be used B<only> by APIs
+who have already set the language_settings.php.package_name" field
+in gapic.yaml. API teams should use the protobuf php_namespace option
+where possible.
+
+Example of a YAML configuration::
+
+    publishing:
+      library_settings:
+        php_settings:
+          library_package: Google\Cloud\PubSub\V1
+
+=back
+
+=head2 Google::Api::Client::PythonSettings
+
+Settings for Python client libraries.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->common() >> / C<< $msg->common($value) >>
+
+Type: C<Message> (L<Google::Api::Client::CommonLanguageSettings>)
+
+Some settings.
+
+=item * C<< $msg->experimental_features() >> / C<< $msg->experimental_features($value) >>
+
+Type: C<Message> (L<Google::Api::Client::PythonSettings::ExperimentalFeatures>)
+
+Experimental features to be included during client library generation.
+
+=back
+
+=head2 Google::Api::Client::NodeSettings
+
+Settings for Node client libraries.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->common() >> / C<< $msg->common($value) >>
+
+Type: C<Message> (L<Google::Api::Client::CommonLanguageSettings>)
+
+Some settings.
+
+=back
+
+=head2 Google::Api::Client::DotnetSettings
+
+Settings for Dotnet client libraries.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->common() >> / C<< $msg->common($value) >>
+
+Type: C<Message> (L<Google::Api::Client::CommonLanguageSettings>)
+
+Some settings.
+
+=item * C<< $msg->renamed_services() >> / C<< $msg->renamed_services($value) >>
+
+Type: C<Message> (L<Google::Api::Client::DotnetSettings::RenamedServicesEntry>)
+
+Map from original service names to renamed versions.
+This is used when the default generated types
+would cause a naming conflict. (Neither name is
+fully-qualified.)
+Example: Subscriber to SubscriberServiceApi.
+
+=item * C<< $msg->renamed_resources() >> / C<< $msg->renamed_resources($value) >>
+
+Type: C<Message> (L<Google::Api::Client::DotnetSettings::RenamedResourcesEntry>)
+
+Map from full resource types to the effective short name
+for the resource. This is used when otherwise resource
+named from different services would cause naming collisions.
+Example entry:
+"datalabeling.googleapis.com/Dataset": "DataLabelingDataset"
+
+=item * C<< $msg->ignored_resources() >> / C<< $msg->ignored_resources($value) >>
+
+Type: C<String>
+
+List of full resource types to ignore during generation.
+This is typically used for API-specific Location resources,
+which should be handled by the generator as if they were actually
+the common Location resources.
+Example entry: "documentai.googleapis.com/Location"
+
+=item * C<< $msg->forced_namespace_aliases() >> / C<< $msg->forced_namespace_aliases($value) >>
+
+Type: C<String>
+
+Namespaces which must be aliased in snippets due to
+a known (but non-generator-predictable) naming collision
+
+=item * C<< $msg->handwritten_signatures() >> / C<< $msg->handwritten_signatures($value) >>
+
+Type: C<String>
+
+Method signatures (in the form "service.method(signature)")
+which are provided separately, so shouldn't be generated.
+Snippets *calling* these methods are still generated, however.
+
+=back
+
+=head2 Google::Api::Client::RubySettings
+
+Settings for Ruby client libraries.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->common() >> / C<< $msg->common($value) >>
+
+Type: C<Message> (L<Google::Api::Client::CommonLanguageSettings>)
+
+Some settings.
+
+=back
+
+=head2 Google::Api::Client::GoSettings
+
+Settings for Go client libraries.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->common() >> / C<< $msg->common($value) >>
+
+Type: C<Message> (L<Google::Api::Client::CommonLanguageSettings>)
+
+Some settings.
+
+=item * C<< $msg->renamed_services() >> / C<< $msg->renamed_services($value) >>
+
+Type: C<Message> (L<Google::Api::Client::GoSettings::RenamedServicesEntry>)
+
+Map of service names to renamed services. Keys are the package relative
+service names and values are the name to be used for the service client
+and call options.
+
+Example:
+
+    publishing:
+      go_settings:
+        renamed_services:
+          Publisher: TopicAdmin
+
+=back
+
+=head2 Google::Api::Client::MethodSettings
+
+Describes the generator configuration for a method.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->selector() >> / C<< $msg->selector($value) >>
+
+Type: C<String>
+
+The fully qualified name of the method, for which the options below apply.
+This is used to find the method to apply the options.
+
+Example:
+
+    publishing:
+      method_settings:
+      - selector: google.storage.control.v2.StorageControl.CreateFolder
+        # method settings for CreateFolder...
+
+=item * C<< $msg->long_running() >> / C<< $msg->long_running($value) >>
+
+Type: C<Message> (L<Google::Api::Client::MethodSettings::LongRunning>)
+
+Describes settings to use for long-running operations when generating
+API methods for RPCs. Complements RPCs that use the annotations in
+google/longrunning/operations.proto.
+
+Example of a YAML configuration::
+
+    publishing:
+      method_settings:
+      - selector: google.cloud.speech.v2.Speech.BatchRecognize
+        long_running:
+          initial_poll_delay: 60s # 1 minute
+          poll_delay_multiplier: 1.5
+          max_poll_delay: 360s # 6 minutes
+          total_poll_timeout: 54000s # 90 minutes
+
+=item * C<< $msg->auto_populated_fields() >> / C<< $msg->auto_populated_fields($value) >>
+
+Type: C<String>
+
+List of top-level fields of the request message, that should be
+automatically populated by the client libraries based on their
+(google.api.field_info).format. Currently supported format: UUID4.
+
+Example of a YAML configuration:
+
+    publishing:
+      method_settings:
+      - selector: google.example.v1.ExampleService.CreateExample
+        auto_populated_fields:
+        - request_id
+
+=item * C<< $msg->batching() >> / C<< $msg->batching($value) >>
+
+Type: C<Message> (L<Google::Api::Client::BatchingConfigProto>)
+
+Batching configuration for an API method in client libraries.
+
+Example of a YAML configuration:
+
+    publishing:
+      method_settings:
+      - selector: google.example.v1.ExampleService.BatchCreateExample
+        batching:
+          element_count_threshold: 1000
+          request_byte_threshold: 100000000
+          delay_threshold_millis: 10
+
+=back
+
+=head2 Google::Api::Client::SelectiveGapicGeneration
+
+This message is used to configure the generation of a subset of the RPCs in
+a service for client libraries.
+
+Note: This feature should not be used in most cases.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->methods() >> / C<< $msg->methods($value) >>
+
+Type: C<String>
+
+An allowlist of the fully qualified names of RPCs that should be included
+on public client surfaces.
+
+=item * C<< $msg->generate_omitted_as_internal() >> / C<< $msg->generate_omitted_as_internal($value) >>
+
+Type: C<Bool>
+
+Setting this to true indicates to the client generators that methods
+that would be excluded from the generation should instead be generated
+in a way that indicates these methods should not be consumed by
+end users. How this is expressed is up to individual language
+implementations to decide. Some examples may be: added annotations,
+obfuscated identifiers, or other language idiomatic patterns.
+
+=back
+
+=head2 Google::Api::Client::BatchingConfigProto
+
+`BatchingConfigProto` defines the batching configuration for an API method.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->thresholds() >> / C<< $msg->thresholds($value) >>
+
+Type: C<Message> (L<Google::Api::Client::BatchingSettingsProto>)
+
+The thresholds which trigger a batched request to be sent.
+
+=item * C<< $msg->batch_descriptor() >> / C<< $msg->batch_descriptor($value) >>
+
+Type: C<Message> (L<Google::Api::Client::BatchingDescriptorProto>)
+
+The request and response fields used in batching.
+
+=back
+
+=head2 Google::Api::Client::BatchingSettingsProto
+
+`BatchingSettingsProto` specifies a set of batching thresholds, each of
+which acts as a trigger to send a batch of messages as a request. At least
+one threshold must be positive nonzero.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->element_count_threshold() >> / C<< $msg->element_count_threshold($value) >>
+
+Type: C<Int32>
+
+The number of elements of a field collected into a batch which, if
+exceeded, causes the batch to be sent.
+
+=item * C<< $msg->request_byte_threshold() >> / C<< $msg->request_byte_threshold($value) >>
+
+Type: C<Int64>
+
+The aggregated size of the batched field which, if exceeded, causes the
+batch to be sent. This size is computed by aggregating the sizes of the
+request field to be batched, not of the entire request message.
+
+=item * C<< $msg->delay_threshold() >> / C<< $msg->delay_threshold($value) >>
+
+Type: C<Message> (L<Google::Protobuf::Duration::Duration>)
+
+The duration after which a batch should be sent, starting from the addition
+of the first message to that batch.
+
+=item * C<< $msg->element_count_limit() >> / C<< $msg->element_count_limit($value) >>
+
+Type: C<Int32>
+
+The maximum number of elements collected in a batch that could be accepted
+by server.
+
+=item * C<< $msg->request_byte_limit() >> / C<< $msg->request_byte_limit($value) >>
+
+Type: C<Int32>
+
+The maximum size of the request that could be accepted by server.
+
+=item * C<< $msg->flow_control_element_limit() >> / C<< $msg->flow_control_element_limit($value) >>
+
+Type: C<Int32>
+
+The maximum number of elements allowed by flow control.
+
+=item * C<< $msg->flow_control_byte_limit() >> / C<< $msg->flow_control_byte_limit($value) >>
+
+Type: C<Int32>
+
+The maximum size of data allowed by flow control.
+
+=item * C<< $msg->flow_control_limit_exceeded_behavior() >> / C<< $msg->flow_control_limit_exceeded_behavior($value) >>
+
+Type: C<Enum> (L<Google::Api::FlowControlLimitExceededBehaviorProto>)
+
+The behavior to take when the flow control limit is exceeded.
+
+=back
+
+=head2 Google::Api::Client::BatchingDescriptorProto
+
+`BatchingDescriptorProto` specifies the fields of the request message to be
+used for batching, and, optionally, the fields of the response message to be
+used for demultiplexing.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->batched_field() >> / C<< $msg->batched_field($value) >>
+
+Type: C<String>
+
+The repeated field in the request message to be aggregated by batching.
+
+=item * C<< $msg->discriminator_fields() >> / C<< $msg->discriminator_fields($value) >>
+
+Type: C<String>
+
+A list of the fields in the request message. Two requests will be batched
+together only if the values of every field specified in
+`request_discriminator_fields` is equal between the two requests.
+
+=item * C<< $msg->subresponse_field() >> / C<< $msg->subresponse_field($value) >>
+
+Type: C<String>
+
+Optional. When present, indicates the field in the response message to be
+used to demultiplex the response into multiple response messages, in
+correspondence with the multiple request messages originally batched
+together.
+
+=back
+
+=head1 SEE ALSO
+
+L<Protobuf>, L<Protobuf::Message>, L<Google::Api::Client::Types>, L<https://protobuf.dev/>
 
 =head1 LICENSE AND COPYRIGHT
 

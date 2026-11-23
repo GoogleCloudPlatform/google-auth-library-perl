@@ -545,3 +545,95 @@ sub await {
 }
 
 1;
+
+__END__
+
+=encoding UTF-8
+
+=head1 NAME
+
+Google::Cloud::Transport::Adapter::Nghttp2 - Non-blocking HTTP/2 transport adapter backed by Net::HTTP2::nghttp2 and AnyEvent
+
+=head1 SYNOPSIS
+
+    use Google::Cloud::Transport::Configuration;
+    use Google::Cloud::Transport::Adapter::Nghttp2;
+
+    my $config = Google::Cloud::Transport::Configuration->new(
+        timeout         => 30,
+        ssl_verify_host => 1,
+    );
+
+    my $adapter = Google::Cloud::Transport::Adapter::Nghttp2->new(
+        configuration => $config,
+    );
+
+    # Unary HTTP/2 request returning a Future
+    my $future = $adapter->request(
+        method  => 'GET',
+        url     => 'https://storage.googleapis.com/storage/v1/b/my-bucket',
+        headers => { Authorization => 'Bearer ' . $token },
+    );
+    my ($body, $headers) = $future->get();
+
+    # Streaming HTTP/2 request
+    my $handle = $adapter->start_stream(
+        method   => 'GET',
+        url      => 'https://storage.googleapis.com/storage/v1/b/my-bucket/o/file?alt=media',
+        headers  => { Authorization => 'Bearer ' . $token },
+        on_data  => sub { my ($chunk) = @_; ... },
+        on_eof   => sub { ... },
+        on_error => sub { my ($err) = @_; ... },
+    );
+
+=head1 DESCRIPTION
+
+C<Google::Cloud::Transport::Adapter::Nghttp2> implements
+L<Google::Cloud::Transport::Role::Adapter> over native HTTP/2 multiplexing
+using L<Net::HTTP2::nghttp2> and L<AnyEvent>. It pools persistent TLS+ALPN
+(C<h2>) connections per C<scheme://host:port>, supports both unary requests and
+bi-directional streaming uploads/downloads, fails Futures / triggers C<on_error>
+on non-2xx HTTP status codes, and redacts sensitive headers
+(C<authorization>, C<proxy-authorization>, C<x-goog-api-key>, C<cookie>,
+C<set-cookie>) in trace logs.
+
+=head1 ATTRIBUTES
+
+=over 4
+
+=item * B<configuration> - L<Google::Cloud::Transport::Configuration> object controlling TLS verification (C<ssl_verify_host>, C<ssl_ca_file>) and timeouts.
+
+=back
+
+=head1 METHODS
+
+=head2 request( %args )
+
+Dispatches a unary HTTP/2 request (C<method>, C<url>, C<headers>, C<body>) and
+returns a L<Future> resolving to C<($body, $headers)>.
+
+=head2 start_stream( %args )
+
+Initiates a streaming HTTP/2 request with C<on_data>, C<on_eof>, and
+C<on_error> callbacks and returns a stream handle supporting C<write()>,
+C<close_write()>, and C<get_metadata('headers')>.
+
+=head1 SEE ALSO
+
+L<Google::Api::Common>, L<Google::Cloud::ClientBase>,
+L<Google::Cloud::Transport::Configuration>,
+L<Google::Cloud::Transport::Role::Adapter>,
+L<Google::Cloud::Transport::Adapter::LWP>,
+L<Google::Cloud::Transport::Adapter::NetCurl>
+
+=head1 AUTHOR
+
+C.J. Collier E<lt>cjac@google.comE<gt>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (c) 2026 Google LLC and contributors.
+
+Licensed under the Apache License, Version 2.0.
+
+=cut

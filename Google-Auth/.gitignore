@@ -19,5 +19,4 @@ tmp/
 Google-Auth-[0-9]*.[0-9]*/
 
 # Generated proxies
-bin/gcloud-auth
 bin/gcloud-auth.ps1

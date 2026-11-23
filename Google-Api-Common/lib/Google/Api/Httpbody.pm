@@ -3,7 +3,7 @@ package Google::Api::Httpbody;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -77,51 +77,120 @@ EOF
     # Field: data Type: 12 ()
     # Field: extensions Type: 11 (.google.protobuf.Any)
 
-=pod
+1;
+
+__END__
+
+=encoding UTF-8
 
 =head1 NAME
 
-Google::Api::Httpbody::HttpBody - Compiled Protocol Buffers message class
+Google::Api::Httpbody - Compiled Protocol Buffers messages for google/api/httpbody.proto
 
 =head1 SYNOPSIS
 
     use Google::Api::Httpbody;
 
-    my $msg = Google::Api::Httpbody::HttpBody->new(
-        content_type => $value,
-    );
+    my $msg = Google::Api::Httpbody::HttpBody->new({
+        content_type => $content_type,
+        data => $data,
+        extensions => $extensions,
+    });
 
-=head1 FIELDS
+    # Read or update a field
+    my $val = $msg->content_type();
 
-=over 4
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Api::Httpbody::HttpBody->parse($bytes);
 
-=item * B<content_type>
-
-Type: String
-
-=item * B<data>
-
-Type: Bytes
-
-=item * B<extensions>
-
-Type: Message (.google.protobuf.Any)
-
-=back
-
-=cut
-
-1;
-
-__END__
-
-=head1 NAME
-
-Google::Api::Httpbody - Protocol Buffers schema definition
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
 
 =head1 DESCRIPTION
 
-Auto-generated Protocol Buffers schema definition class.
+Auto-generated L<Protobuf> message classes compiled from C<google/api/httpbody.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Api::Httpbody::HttpBody
+
+Message that represents an arbitrary HTTP body. It should only be used for
+payload formats that can't be represented as JSON, such as raw binary or
+an HTML page.
+
+
+This message can be used both in streaming and non-streaming API methods in
+the request as well as the response.
+
+It can be used as a top-level request field, which is convenient if one
+wants to extract parameters from either the URL or HTTP template into the
+request fields and also want access to the raw HTTP body.
+
+Example:
+
+    message GetResourceRequest {
+      // A unique request id.
+      string request_id = 1;
+
+      // The raw HTTP body is bound to this field.
+      google.api.HttpBody http_body = 2;
+
+    }
+
+    service ResourceService {
+      rpc GetResource(GetResourceRequest)
+        returns (google.api.HttpBody);
+      rpc UpdateResource(google.api.HttpBody)
+        returns (google.protobuf.Empty);
+
+    }
+
+Example with streaming methods:
+
+    service CaldavService {
+      rpc GetCalendar(stream google.api.HttpBody)
+        returns (stream google.api.HttpBody);
+      rpc UpdateCalendar(stream google.api.HttpBody)
+        returns (stream google.api.HttpBody);
+
+    }
+
+Use of this type only changes how the request and response bodies are
+handled, all other features will continue to work unchanged.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->content_type() >> / C<< $msg->content_type($value) >>
+
+Type: C<String>
+
+The HTTP Content-Type header value specifying the content type of the body.
+
+=item * C<< $msg->data() >> / C<< $msg->data($value) >>
+
+Type: C<Bytes>
+
+The HTTP request/response body as raw binary.
+
+=item * C<< $msg->extensions() >> / C<< $msg->extensions($value) >>
+
+Type: C<Message> (L<Google::Protobuf::Any::Any>)
+
+Application specific response metadata. Must be set in the first response
+for streaming APIs.
+
+=back
+
+=head1 SEE ALSO
+
+L<Protobuf>, L<Protobuf::Message>, L<Google::Api::Httpbody::Types>, L<https://protobuf.dev/>
 
 =head1 LICENSE AND COPYRIGHT
 

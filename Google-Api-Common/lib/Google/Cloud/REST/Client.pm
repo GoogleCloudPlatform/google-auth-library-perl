@@ -210,3 +210,123 @@ sub call {
 *request = \&call;
 
 1;
+
+__END__
+
+=encoding UTF-8
+
+=head1 NAME
+
+Google::Cloud::REST::Client - Synchronous and asynchronous HTTP/REST client for Google Cloud APIs
+
+=head1 SYNOPSIS
+
+    use Google::Auth;
+    use Google::Cloud::REST::Client;
+
+    my $auth  = Google::Auth->default();
+    my $token = $auth->get_token();
+
+    my $client = Google::Cloud::REST::Client->new(
+        target      => 'storage.googleapis.com',
+        auth_token  => $token,
+        max_retries => 3,
+    );
+
+    # Synchronous call
+    my $bucket = $client->call({
+        http_method => 'GET',
+        path        => '/storage/v1/b/my-bucket',
+        query       => { projection => 'full' },
+    });
+
+    # Asynchronous call returning a Future
+    my $future = $client->call_async({
+        http_method    => 'POST',
+        path           => '/storage/v1/b/my-bucket/o',
+        request        => { name => 'hello.txt' },
+        response_class => 'Google::Cloud::Storage::V2::Object',
+    });
+    my $obj = $future->get();
+
+=head1 DESCRIPTION
+
+C<Google::Cloud::REST::Client> extends L<Google::Cloud::ClientBase> to provide
+a unified HTTP/REST client for Google Cloud APIs. It supports both synchronous
+(C<call>) and asynchronous (C<call_async> returning a L<Future>) execution over
+any pluggable transport adapter (L<Google::Cloud::Transport::Adapter::LWP>,
+L<Google::Cloud::Transport::Adapter::NetCurl>, or
+L<Google::Cloud::Transport::Adapter::Nghttp2>).
+
+Requests automatically inject OAuth 2.0 Bearer tokens, percent-encode query
+parameters via L<URI>, encode/decode JSON payloads, and retry transient HTTP
+errors (502, 503, 504) with exponential backoff (non-blocking via L<AnyEvent>
+when using an async transport).
+
+=head1 ATTRIBUTES
+
+Inherits C<transport> from L<Google::Cloud::ClientBase>.
+
+=over 4
+
+=item * B<target> (required) - Target API host or base URL (e.g., C<'storage.googleapis.com'> or C<'https://storage.googleapis.com'>).
+
+=item * B<auth_token> - Optional OAuth 2.0 Bearer access token.
+
+=item * B<timeout> - Request timeout in seconds. Defaults to C<30>.
+
+=item * B<max_retries> - Maximum retry attempts on transient HTTP 502/503/504 responses. Defaults to C<3>.
+
+=item * B<user_agent> - Optional L<LWP::UserAgent> instance (alias: C<ua> in constructor) passed to the default LWP transport adapter.
+
+=back
+
+=head1 METHODS
+
+=head2 call_async( \%args )
+
+    my $future = $client->call_async({
+        http_method    => 'POST',
+        path           => '/v1/projects/my-proj/resources',
+        query          => { alt => 'json' },
+        headers        => { 'X-Custom' => 'val' },
+        request        => \%payload_or_object,
+        response_class => 'My::Response::Class',
+    });
+
+Dispatches an HTTP request asynchronously and returns a L<Future> resolving to
+the decoded response (HashRef or C<response_class> instance).
+
+=head2 call( \%args )
+
+Synchronous convenience wrapper around C<< $client->call_async(\%args)->get() >>.
+
+=head2 request( \%args )
+
+Alias for C<call()>.
+
+=head2 BUILDARGS
+
+Standard L<Moo> constructor argument normalizer; maps the legacy C<ua> option
+to C<user_agent>.
+
+=head1 SEE ALSO
+
+L<Google::Api::Common>, L<Google::Cloud::ClientBase>,
+L<Google::Cloud::Transport::Configuration>,
+L<Google::Cloud::Transport::Adapter::LWP>,
+L<Google::Cloud::Transport::Adapter::NetCurl>,
+L<Google::Cloud::Transport::Adapter::Nghttp2>,
+L<Google::Auth>, L<Future>
+
+=head1 AUTHOR
+
+C.J. Collier E<lt>cjac@google.comE<gt>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (c) 2026 Google LLC and contributors.
+
+Licensed under the Apache License, Version 2.0.
+
+=cut

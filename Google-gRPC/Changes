@@ -1,5 +1,9 @@
 Revision history for Google::gRPC
 
+0.09    2026-11-23
+    - Overhauled POD documentation (modeled on grpc.io language docs) across Google::gRPC and all submodules: Client, Channel, ChannelPool, Engine, Engine::NGHTTP2, Engine::PP, Stream, Deadline, Status, and Framing.
+    - Added META_MERGE resources in Makefile.PL for CPAN and Debian upstream/metadata compliance.
+
 0.08    2026-11-22
     - Fixed CPAN/PAUSE indexing metadata in Makefile.PL (LICENSE => 'apache_2_0', VERSION_FROM => 'lib/Google/gRPC.pm').
     - Cleaned compiled artifacts (gRPC.bs, NGHTTP2.c, NGHTTP2.o) and tmp/ scratch files from MANIFEST.

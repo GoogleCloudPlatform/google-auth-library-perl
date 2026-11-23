@@ -3,7 +3,7 @@ package Google::Api::Log;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -68,55 +68,98 @@ EOF
     # Field: description Type: 9 ()
     # Field: display_name Type: 9 ()
 
-=pod
+1;
+
+__END__
+
+=encoding UTF-8
 
 =head1 NAME
 
-Google::Api::Log::LogDescriptor - Compiled Protocol Buffers message class
+Google::Api::Log - Compiled Protocol Buffers messages for google/api/log.proto
 
 =head1 SYNOPSIS
 
     use Google::Api::Log;
 
-    my $msg = Google::Api::Log::LogDescriptor->new(
-        name => $value,
-    );
+    my $msg = Google::Api::Log::LogDescriptor->new({
+        name => $name,
+        labels => $labels,
+        description => $description,
+        display_name => $display_name,
+    });
 
-=head1 FIELDS
+    # Read or update a field
+    my $val = $msg->name();
 
-=over 4
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Api::Log::LogDescriptor->parse($bytes);
 
-=item * B<name>
-
-Type: String
-
-=item * B<labels>
-
-Type: Message (.google.api.LabelDescriptor)
-
-=item * B<description>
-
-Type: String
-
-=item * B<display_name>
-
-Type: String
-
-=back
-
-=cut
-
-1;
-
-__END__
-
-=head1 NAME
-
-Google::Api::Log - Protocol Buffers schema definition
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
 
 =head1 DESCRIPTION
 
-Auto-generated Protocol Buffers schema definition class.
+Auto-generated L<Protobuf> message classes compiled from C<google/api/log.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Api::Log::LogDescriptor
+
+A description of a log type. Example in YAML format:
+
+    - name: library.googleapis.com/activity_history
+      description: The history of borrowing and returning library items.
+      display_name: Activity
+      labels:
+      - key: /customer_id
+        description: Identifier of a library customer
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->name() >> / C<< $msg->name($value) >>
+
+Type: C<String>
+
+The name of the log. It must be less than 512 characters long and can
+include the following characters: upper- and lower-case alphanumeric
+characters [A-Za-z0-9], and punctuation characters including
+slash, underscore, hyphen, period [/_-.].
+
+=item * C<< $msg->labels() >> / C<< $msg->labels($value) >>
+
+Type: C<Message> (L<Google::Api::Label::LabelDescriptor>)
+
+The set of labels that are available to describe a specific log entry.
+Runtime requests that contain labels not specified here are
+considered invalid.
+
+=item * C<< $msg->description() >> / C<< $msg->description($value) >>
+
+Type: C<String>
+
+A human-readable description of this log. This information appears in
+the documentation and can contain details.
+
+=item * C<< $msg->display_name() >> / C<< $msg->display_name($value) >>
+
+Type: C<String>
+
+The human-readable name for this log. This information appears on
+the user interface and should be concise.
+
+=back
+
+=head1 SEE ALSO
+
+L<Protobuf>, L<Protobuf::Message>, L<Google::Api::Log::Types>, L<https://protobuf.dev/>
 
 =head1 LICENSE AND COPYRIGHT
 
