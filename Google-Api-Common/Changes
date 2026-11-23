@@ -1,7 +1,9 @@
 Revision history for Google-Api-Common
 
 0.06    2026-11-23
-    - Overhauled Google::Api::Common POD modeled on google-api-core / gapic-common (SYNOPSIS, architecture overview, transport adapters, REST/streaming client reference, and bundled googleapis schemas).
+    - Overhauled POD across Google::Api::Common, Google::Cloud::ClientBase, ClientBase::Stream, REST::Client, Transport::Configuration, and Transport::Adapter::{LWP,NetCurl,Nghttp2}.
+    - Regenerated bundled Google::{Api,Type,Longrunning,Rpc} modules with SourceCodeInfo .proto POD and B<> formatting.
+    - Fixed Debian lintian metadata: LICENSE => 'apache_2_0', added META_MERGE resources, shortened ABSTRACT, and fixed POD wording typo in Google::Type::Expr.
 
 0.05    2026-11-21
     - Implemented Pluggable Transport Architecture (Google::Cloud::ClientBase, Google::Cloud::Transport::Adapter::LWP, NetCurl, Nghttp2) with streaming and configuration support.

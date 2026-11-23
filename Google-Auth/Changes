@@ -1,7 +1,9 @@
 Revision history for Google-Auth
 
 0.15    2026-11-23
-    - Removed Module::Starter boilerplate from Google::Auth POD, fixed NAME whatis entry, and added comprehensive SYNOPSIS, DESCRIPTION, METHODS, CONFIGURATION AND ENVIRONMENT, and SEE ALSO documentation.
+    - Removed Module::Starter boilerplate from Google::Auth POD, added full POD to all 11 Google::Auth::* credential/verifier/authorizer/store modules, synced stale =head1 VERSION headers, and brought bin/gcloud-auth POD to parity with gcloud auth.
+    - Renamed bin/gcloud-auth.pl to bin/gcloud-auth (Debian Policy 10.4 / lintian script-with-language-extension and manpage fixes).
+    - Added META_MERGE resources in Makefile.PL and shortened ABSTRACT for Debian lintian compliance.
 
 0.14    2026-11-22
     - [CPAN RT #180794] Declared Test::MockModule in TEST_REQUIRES and Google::Api::Common (0.05) / Google::Cloud::Transport::Adapter::LWP in PREREQ_PM in Makefile.PL (reported by Slaven Rezic / @srezic).
