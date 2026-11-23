@@ -9,7 +9,7 @@ use Path::Tiny qw(path);
 use File::Spec;
 use Carp qw(croak);
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 sub _get_methods_code {
     my ($self, $methods) = @_;
@@ -477,3 +477,59 @@ EOF
 }
 
 1;
+
+__END__
+
+=encoding UTF-8
+
+=head1 NAME
+
+Module::Starter::Protobuf - Generate Perl Protobuf and gRPC/REST distributions
+
+=head1 VERSION
+
+Version 0.07
+
+=head1 SYNOPSIS
+
+    # Via the bundled CLI tool:
+    protobuf-starter \
+      --module=Google::Cloud::Spanner::V1 \
+      --protos=googleapis/google/spanner/v1/spanner.proto \
+      --import-path=googleapis \
+      --grpc-target=spanner.googleapis.com:443 \
+      --dir=Google-Cloud-Spanner-V1 \
+      --module-version=0.05 \
+      --license=apache_2_0
+
+    # Or via module-starter:
+    module-starter --plugin=Module::Starter::Protobuf ...
+
+=head1 DESCRIPTION
+
+C<Module::Starter::Protobuf> extends L<Module::Starter> (via
+L<Module::Starter::Protobuf::Base>) to scaffold complete CPAN-ready Perl
+distributions from Protocol Buffers (C<.proto>) definitions.
+
+It invokes C<protoc> with C<protoc-gen-perl-pb> (from L<Protobuf>) to compile
+message and enum classes, generates high-level gRPC/REST service client
+wrappers backed by L<Google::gRPC::Client>, L<Google::Cloud::REST::Client>, and
+L<Google::Auth>, and emits C<Makefile.PL>, unit/integration tests, and POD
+documentation.
+
+=head1 SEE ALSO
+
+L<Module::Starter::Protobuf::Base>, L<Protobuf>, L<Google::gRPC::Client>,
+L<Google::Api::Common>, L<Google::Auth>, L<Module::Starter>
+
+=head1 AUTHOR
+
+C.J. Collier E<lt>cjac@google.comE<gt>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (c) 2026 Google LLC and contributors.
+
+This program is released under the Apache License, Version 2.0.
+
+=cut

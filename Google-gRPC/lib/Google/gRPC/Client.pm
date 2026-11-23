@@ -12,7 +12,7 @@ use Carp qw(croak);
 use Log::Any qw($log);
 use Time::HiRes qw(sleep);
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 has channel_pool => ( is => 'ro', required => 0 );
 has target       => (
@@ -292,15 +292,170 @@ sub stream {
 
 =head1 NAME
 
-Google::gRPC::Client - gRPC Client Interface
+Google::gRPC::Client - Unary and streaming gRPC client interface over HTTP/2
 
 =head1 SYNOPSIS
 
+    use Google::Auth;
     use Google::gRPC::Client;
+    use Google::Cloud::Spanner::V1::Spanner; # or any Protobuf message classes
+
+    my $auth  = Google::Auth->default();
+    my $token = $auth->get_token();
+
+    my $client = Google::gRPC::Client->new(
+        target      => 'spanner.googleapis.com:443',
+        auth_token  => $token,
+        timeout     => 30,    # seconds (or gRPC duration string such as '30S')
+        max_retries => 3,
+    );
+
+    # Unary RPC call
+    my $response = $client->call({
+        service        => 'google.spanner.v1.Spanner',
+        method         => 'CreateSession',
+        request        => $request_msg,
+        response_class => 'Google::Cloud::Spanner::V1::Session',
+    });
+
+    # Streaming RPC call
+    my $stream = $client->stream(
+        service        => 'google.spanner.v1.Spanner',
+        method         => 'ExecuteStreamingSql',
+        request        => $sql_request_msg,
+        response_class => 'Google::Cloud::Spanner::V1::PartialResultSet',
+        type           => 'server_streaming',
+    );
+    while (my $chunk = $stream->recv_message()) {
+        ...
+    }
 
 =head1 DESCRIPTION
 
-This module provides grpc client interface functionality for the Google gRPC Perl client SDK.
+C<Google::gRPC::Client> implements the high-level gRPC client interface for
+Google Cloud Perl SDKs. It handles gRPC length-prefixed framing, HTTP/2
+transport via L<Net::Curl::Easy> (or L<Google::gRPC::Channel> in offline mode),
+Bearer token and quota-project header injection, deadline propagation
+(C<grpc-timeout>), exponential backoff retries on transient HTTP/gRPC errors,
+and optional connection pooling via L<Google::gRPC::ChannelPool>.
+
+=head1 CONSTRUCTOR / ATTRIBUTES
+
+Pass these options to C<< Google::gRPC::Client->new(...) >>. Either C<target>
+or C<channel_pool> is required.
+
+=over 4
+
+=item * B<target>
+
+The C<host:port> endpoint to connect to (e.g., C<'spanner.googleapis.com:443'>).
+Optional if C<channel_pool> is provided (defaults to the pool's target).
+
+=item * B<channel_pool>
+
+An optional L<Google::gRPC::ChannelPool> instance for load-balancing and
+pinning resolved IPs across multiple subchannels.
+
+=item * B<auth_token>
+
+Optional OAuth 2.0 Bearer access token sent in the C<authorization> header.
+
+=item * B<proxy>
+
+Optional HTTP/HTTPS proxy URL passed to C<CURLOPT_PROXY>.
+
+=item * B<engine_type>
+
+Optional HTTP/2 engine selection passed to L<Google::gRPC::Channel> (e.g.,
+C<'nghttp2'> or C<'pp'>).
+
+=item * B<timeout>
+
+Optional default per-RPC deadline in seconds or gRPC timeout format (parsed via
+L<Google::gRPC::Deadline>).
+
+=item * B<max_retries>
+
+Maximum number of retry attempts on transient transport errors (HTTP 429, 502,
+503, 504 or gRPC status C<UNAVAILABLE> / 14). Defaults to C<3>.
+
+=item * B<initial_backoff_sec>
+
+Initial retry backoff delay in seconds. Defaults to C<0.1>.
+
+=item * B<max_backoff_sec>
+
+Maximum retry backoff delay in seconds. Defaults to C<1.0>.
+
+=item * B<backoff_factor>
+
+Multiplier applied to the backoff delay after each retry. Defaults to C<2.0>.
+
+=item * B<offline>
+
+Boolean flag enabling offline/in-memory channel execution via
+L<Google::gRPC::Channel> without requiring L<Net::Curl::Easy>. Defaults to true
+when C<$ENV{PERL_GRPC_OFFLINE}> is set.
+
+=item * B<channel>
+
+Lazy-built L<Google::gRPC::Channel> (or the configured C<channel_pool>).
+
+=back
+
+=head1 METHODS
+
+=head2 call
+
+    my $response = $client->call({
+        service             => 'google.spanner.v1.Spanner',
+        method              => 'CreateSession',
+        request             => $request_obj_or_bytes,
+        response_class      => 'Google::Cloud::Spanner::V1::Session',
+        timeout             => 15,   # optional override
+        max_retries         => 3,    # optional override
+        initial_backoff_sec => 0.1,  # optional override
+        max_backoff_sec     => 1.0,  # optional override
+        backoff_factor      => 2.0,  # optional override
+    });
+
+Executes a unary gRPC call. C<request> may be a Protobuf message object
+implementing C<serialize()> or raw serialized protobuf bytes. Returns an
+instance of C<response_class> decoded via C<< $response_class->parse($bytes) >>.
+Croaks on transport errors, missing C<grpc-status> trailers, or non-zero gRPC
+status codes after exhausting retries.
+
+=head2 stream
+
+    my $stream = $client->stream(
+        service        => 'google.spanner.v1.Spanner',
+        method         => 'ExecuteStreamingSql',
+        request        => $request_obj,
+        response_class => 'Google::Cloud::Spanner::V1::PartialResultSet',
+        type           => 'server_streaming',
+    );
+
+Creates and returns a L<Google::gRPC::Stream> via the underlying channel.
+
+=head1 ENVIRONMENT VARIABLES
+
+=over 4
+
+=item * C<GOOGLE_CLOUD_QUOTA_PROJECT>
+
+When set, sent as the C<x-goog-user-project> gRPC metadata header on every call.
+
+=item * C<PERL_GRPC_OFFLINE>
+
+When set to a true value, defaults C<offline> to C<1>.
+
+=back
+
+=head1 SEE ALSO
+
+L<Google::gRPC>, L<Google::gRPC::Channel>, L<Google::gRPC::ChannelPool>,
+L<Google::gRPC::Stream>, L<Google::gRPC::Deadline>, L<Google::gRPC::Status>,
+L<Google::Auth>
 
 =head1 AUTHOR
 

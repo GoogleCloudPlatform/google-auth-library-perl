@@ -11,7 +11,7 @@ use File::Spec;
 use File::Basename qw(basename);
 use File::Which qw(which);
 
-our $VERSION = '0.04';
+our $VERSION = '0.07';
 
 sub create_distro {
     my ($self, %args) = @_;
@@ -306,8 +306,11 @@ sub _generate_client_wrapper {
     my $service_to_gen = $self->{_module_to_service}->{$module_name};
     $service_name = $service_to_gen if $service_to_gen;
 
-    # Pre-scan messages across all files to build a dictionary
+    # Pre-scan messages across all files ONCE per instance to build a dictionary (and capture direct fields for POD)
+    if (!$self->{_messages_prescanned}) {
+    $self->{_messages_prescanned} = 1;
     $self->{_message_file_base} = {};
+    $self->{_message_fields}    = {};
     for my $proto_file (@{$self->{_protobuf_files}}) {
         my $content = path($proto_file)->slurp_utf8();
         $content =~ s{ // .*? $ }{}gmx;
@@ -320,74 +323,146 @@ sub _generate_client_wrapper {
         
         my $fname = basename($proto_file);
         $fname =~ s/\.proto$//;
-        my $pm_base = join '', map { ucfirst($_) } split /_/, $fname;
+        my $pm_base = join '', map { ucfirst($_) } split /[_.\-]/, $fname;
+        my $msg_prefix = _proto_to_perl_namespace($pkg) . '::' . $pm_base;
         
-        while ($content =~ /^\s*message\s+(\w+)/gmx) {
+        while ($content =~ /^\s*message\s+(\w+)\s*\{/gmx) {
             my $msg = $1;
             $self->{_message_file_base}->{"$pkg.$msg"} = $pm_base;
             $self->{_message_file_base}->{$msg} = $pm_base; # Fallback
+
+            # Extract top-level body of this message using fast brace-jump scanning
+            my $start_pos = pos($content);
+            my $depth     = 1;
+            my $body      = '';
+            my $seg_start = $start_pos;
+            while ($content =~ /([{}])/g) {
+                if ($1 eq '{') {
+                    if ($depth == 1) {
+                        $body .= substr($content, $seg_start, pos($content) - 1 - $seg_start);
+                    }
+                    $depth++;
+                } else {
+                    $depth--;
+                    if ($depth == 1) {
+                        $seg_start = pos($content);
+                    } elsif ($depth == 0) {
+                        $body .= substr($content, $seg_start, pos($content) - 1 - $seg_start);
+                        last;
+                    }
+                }
+            }
+
+            my @fields;
+            for my $line (split /\n/, $body) {
+                next if $line =~ /^\s*(?:option|reserved|extensions|extend|syntax|package|import|oneof|enum|message)\b/;
+                if ($line =~ /^\s*map\s*<\s*([\w\.]+)\s*,\s*([\w\.]+)\s*>\s+(\w+)\s*=\s*\d+/) {
+                    push @fields, {
+                        name           => $3,
+                        type           => "map<$1, $2>",
+                        raw_type       => $2,
+                        is_map         => 1,
+                        repeated       => 0,
+                        proto_package  => $pkg,
+                        message_prefix => $msg_prefix,
+                    };
+                } elsif ($line =~ /^\s*(?:(repeated|optional|required)\s+)?([\w\.]+)\s+(\w+)\s*=\s*\d+/) {
+                    my ($qual, $ftype, $fname_f) = ($1 || '', $2, $3);
+                    push @fields, {
+                        name           => $fname_f,
+                        type           => $ftype,
+                        raw_type       => $ftype,
+                        is_map         => 0,
+                        repeated       => ($qual eq 'repeated' ? 1 : 0),
+                        proto_package  => $pkg,
+                        message_prefix => $msg_prefix,
+                    };
+                }
+            }
+            $self->{_message_fields}->{"$pkg.$msg"} = \@fields;
+            $self->{_message_fields}->{$msg}        = \@fields;
+        }
+    }
+    }
+
+    # Loop over and parse all proto files ONCE per instance!
+    if (!$self->{_services_methods_prescanned}) {
+        $self->{_services_methods_prescanned} = 1;
+        $self->{_parsed_all_methods}          = [];
+        $self->{_parsed_package_name}         = '';
+        $self->{_parsed_first_service}        = '';
+
+        for my $proto_file (@{$self->{_protobuf_files}}) {
+            my $proto_content = path($proto_file)->slurp_utf8();
+            
+            # Strip all single-line and multi-line comments to avoid parsing docs!
+            $proto_content =~ s{ // .*? $ }{}gmx;
+            $proto_content =~ s{ /\* .*? \*/ }{}gsx;
+            
+            my $file_package = '';
+            if ($proto_content =~ /^\s*package\s+([\w\.]+)\s*;/mx) {
+                $file_package = $1;
+                $self->{_parsed_package_name} ||= $file_package;
+            }
+            
+            my $perl_package_prefix = _proto_to_perl_namespace($file_package);
+            
+            # Derive the proto file name base to match the compiler's nested namespace
+            my $proto_filename = basename($proto_file);
+            $proto_filename =~ s/\.proto$//;
+            my $pm_base = join '', map { ucfirst($_) } split /[_.\-]/, $proto_filename;
+            my $message_prefix = $perl_package_prefix . '::' . $pm_base;
+            
+            # Find services and their RPC methods using a robust token scanner
+            my $file_service_name = '';
+            while ($proto_content =~ /
+                (?: service \s+ (\w+) \s* \{ )
+                |
+                (?: rpc \s+ (\w+) \s*
+                    \( \s* (?:stream\s+)? ([\w\.]+) \s* \) \s*
+                    returns \s* \( \s* (?:stream\s+)? ([\w\.]+) \s* \)
+                )
+            /gsx) {
+                if ($1) {
+                    $file_service_name = $1;
+                    $self->{_parsed_first_service} ||= $file_service_name;
+                }
+                elsif ($file_service_name && $2) {
+                    my ($method_name, $input_type, $output_type) = ($2, $3, $4);
+                    
+                    my $input_class = $self->_resolve_perl_type($input_type, $file_package, $message_prefix);
+                    my $output_class = $self->_resolve_perl_type($output_type, $file_package, $message_prefix);
+                    
+                    my $perl_method_name = _camel_to_snake($method_name);
+                    if ($perl_method_name =~ /^(?:import|unimport|new|DESTROY|AUTOLOAD|BEGIN|END|CHECK|INIT|UNITCHECK)$/) {
+                        $perl_method_name .= '_rpc';
+                    }
+                    my $grpc_service_path = $file_package . '.' . $file_service_name;
+
+                    push @{$self->{_parsed_all_methods}}, {
+                        raw_name      => $method_name,
+                        perl_name     => $perl_method_name,
+                        input_type    => $input_type,
+                        input_class   => $input_class,
+                        output_class  => $output_class,
+                        service_path  => $grpc_service_path,
+                        proto_package => $file_package,
+                        service_name  => $file_service_name,
+                    };
+                }
+            }
         }
     }
 
-    # Loop over and parse all proto files in the list!
-    for my $proto_file (@{$self->{_protobuf_files}}) {
-        my $proto_content = path($proto_file)->slurp_utf8();
-        
-        # Strip all single-line and multi-line comments to avoid parsing docs!
-        $proto_content =~ s{ // .*? $ }{}gmx;
-        $proto_content =~ s{ /\* .*? \*/ }{}gsx;
-        
-        my $file_package = '';
-        if ($proto_content =~ /^\s*package\s+([\w\.]+)\s*;/mx) {
-            $file_package = $1;
-            $package_name ||= $file_package; # Use the first package name as primary
-        }
-        
-        my $perl_package_prefix = _proto_to_perl_namespace($file_package);
-        
-        # Derive the proto file name base to match the compiler's nested namespace
-        my $proto_filename = basename($proto_file);
-        $proto_filename =~ s/\.proto$//;
-        my $pm_base = join '', map { ucfirst($_) } split /_/, $proto_filename;
-        my $message_prefix = $perl_package_prefix . '::' . $pm_base;
-        
-        # Find services and their RPC methods using a robust token scanner
-        my $file_service_name = '';
-        while ($proto_content =~ /
-            (?: service \s+ (\w+) \s* \{ )
-            |
-            (?: rpc \s+ (\w+) \s*
-                \( \s* (?:stream\s+)? ([\w\.]+) \s* \) \s*
-                returns \s* \( \s* (?:stream\s+)? ([\w\.]+) \s* \)
-            )
-        /gsx) {
-            if ($1) {
-                $file_service_name = $1;
-                $service_name ||= $file_service_name unless $service_to_gen; # Keep track of the first service name for metadata
-            }
-            elsif ($file_service_name && $2) {
-                my ($method_name, $input_type, $output_type) = ($2, $3, $4);
-                
-                my $input_class = $self->_resolve_perl_type($input_type, $file_package, $message_prefix);
-                my $output_class = $self->_resolve_perl_type($output_type, $file_package, $message_prefix);
-                
-                my $perl_method_name = _camel_to_snake($method_name);
-                my $grpc_service_path = $file_package . '.' . $file_service_name;
+    $package_name ||= $self->{_parsed_package_name};
+    $service_name ||= $self->{_parsed_first_service} unless $service_to_gen;
 
-                my $m_info = {
-                    raw_name => $method_name,
-                    perl_name => $perl_method_name,
-                    input_class => $input_class,
-                    output_class => $output_class,
-                    service_path => $grpc_service_path,
-                    proto_package => $file_package,
-                    service_name  => $file_service_name,
-                };
-
-                if (!$self->{compile_types_only} && (!$service_to_gen || $file_service_name eq $service_to_gen)) {
-                    push @methods, $m_info;
-                }
-            }
+    if (!$self->{compile_types_only}) {
+        my %seen_method;
+        for my $m_info (@{$self->{_parsed_all_methods}}) {
+            next if $service_to_gen && $m_info->{service_name} ne $service_to_gen;
+            next if !$service_to_gen && $seen_method{$m_info->{perl_name}}++;
+            push @methods, $m_info;
         }
     }
 
@@ -443,17 +518,20 @@ sub _generate_client_wrapper {
         # Only generate 'use' for files in the local processing set
         next unless exists $local_files{$proto_file}; 
         
-        my $content = path($proto_file)->slurp_utf8();
-        my $pkg = '';
-        if ($content =~ / package \s+ ([\w\.]+) ; /x) {
-            $pkg = $1;
-        } else {
-            die "Failed to extract package name from $proto_file using heuristic regex";
+        my $pkg = $self->{_file_pkg_cache}{$proto_file};
+        if (!defined $pkg) {
+            my $content = path($proto_file)->slurp_utf8();
+            if ($content =~ / package \s+ ([\w\.]+) ; /x) {
+                $pkg = $1;
+                $self->{_file_pkg_cache}{$proto_file} = $pkg;
+            } else {
+                die "Failed to extract package name from $proto_file using heuristic regex";
+            }
         }
         my $prefix = _proto_to_perl_namespace($pkg);
         my $fname = basename($proto_file);
         $fname =~ s/\.proto$//;
-        my $camel_fname = join '', map { ucfirst($_) } split /_/, $fname;
+        my $camel_fname = join '', map { ucfirst($_) } split /[_.\-]/, $fname;
         push @use_modules, $prefix . '::' . $camel_fname;
     }
     my $use_statements = join "\n", map { "use $_;" } @use_modules;
@@ -511,10 +589,61 @@ EOF
 
 
     if (@methods) {
-        # Generate methods POD block dynamically
+        my %proto_scalars = map { $_ => 1 } qw(
+            double float int32 int64 uint32 uint64 sint32 sint64
+            fixed32 fixed64 sfixed32 sfixed64 bool string bytes
+        );
+
+        # Generate methods POD block dynamically with signatures, parameter links, and return types
         $methods_pod = "${EQ}head2 METHODS\n\nThe following RPC methods are available in this client:\n\n${EQ}over 4\n\n";
         for my $m (@methods) {
-            $methods_pod .= sprintf("${EQ}item * B<%s>\n\nCalls the RPC method C<%s> on the service. Takes a hash of parameters representing the request.\n\n", $m->{perl_name}, $m->{raw_name});
+            my $in_key = ($m->{input_type} && $m->{input_type} =~ /\./)
+                ? $m->{input_type}
+                : ($m->{proto_package} ? "$m->{proto_package}.$m->{input_type}" : $m->{input_type});
+            my $fields = $self->{_message_fields}->{$in_key}
+                || ($m->{input_type} ? $self->{_message_fields}->{$m->{input_type}} : undef)
+                || [];
+
+            my $example = "    my \$response = \$client->$m->{perl_name}(";
+            if (@$fields) {
+                $example .= "\n";
+                for my $f (@$fields) {
+                    my $placeholder = $f->{is_map} ? '{ ... }' : ($f->{repeated} ? '[ ... ]' : "\$$f->{name}");
+                    $example .= sprintf("        %-24s => %s,\n", $f->{name}, $placeholder);
+                }
+                $example .= "    );\n";
+            } else {
+                $example .= ");\n";
+            }
+
+            my $params_pod = '';
+            if (@$fields) {
+                $params_pod = "Parameters:\n\n${EQ}over 4\n\n";
+                for my $f (@$fields) {
+                    my $type_doc;
+                    if ($f->{is_map}) {
+                        $type_doc = "C<$f->{type}> (HashRef)";
+                    } elsif ($proto_scalars{$f->{raw_type}}) {
+                        $type_doc = $f->{repeated} ? "ArrayRef of C<$f->{raw_type}>" : "C<$f->{raw_type}>";
+                    } else {
+                        my $perl_cls = $self->_resolve_perl_type($f->{raw_type}, $f->{proto_package}, $f->{message_prefix});
+                        $type_doc = $f->{repeated} ? "ArrayRef of L<$perl_cls>" : "L<$perl_cls>";
+                    }
+                    $params_pod .= "${EQ}item * C<$f->{name}> - $type_doc\n\n";
+                }
+                $params_pod .= "${EQ}back\n\n";
+            }
+
+            $methods_pod .= sprintf(
+                "${EQ}item * B<%s>\n\n%s\nCalls the RPC method C<%s> on C<%s>.\n\nRequest: L<%s>\n\nReturns: L<%s>\n\n%s",
+                $m->{perl_name},
+                $example,
+                $m->{raw_name},
+                $m->{service_path},
+                $m->{input_class},
+                $m->{output_class},
+                $params_pod,
+            );
         }
         $methods_pod .= "${EQ}back\n\n";
 
@@ -573,6 +702,26 @@ sub Makefile_PL_guts {
         my $deps = $self->_get_makefile_dependencies($has_services);
         
         $guts =~ s/(PREREQ_PM\s*=>\s*\{)/$1\n$deps/x;
+    }
+
+    # Inject valid META_MERGE resources so CPAN/Debian upstream metadata is valid
+    if ($guts !~ /META_MERGE/) {
+        my $meta_merge = <<'META';
+    META_MERGE => {
+        'meta-spec' => { version => 2 },
+        resources => {
+            repository => {
+                type => 'git',
+                url  => 'https://github.com/GoogleCloudPlatform/google-auth-library-perl.git',
+                web  => 'https://github.com/GoogleCloudPlatform/google-auth-library-perl',
+            },
+            bugtracker => {
+                web => 'https://github.com/GoogleCloudPlatform/google-auth-library-perl/issues',
+            },
+        },
+    },
+META
+        $guts =~ s/(dist\s*=>\s*\{)/$meta_merge    $1/;
     }
 
     return $guts;
@@ -791,6 +940,17 @@ sub _resolve_perl_type {
         elsif ($package eq 'google.longrunning') {
             # Standard long running operations are in operations.proto -> Operations
             $file_base = 'Operations';
+        }
+        elsif ($package eq 'google.iam.v1') {
+            if ($message_name =~ /^(?:GetIamPolicyRequest|SetIamPolicyRequest|TestIamPermissionsRequest|TestIamPermissionsResponse)$/) {
+                $file_base = 'IamPolicy';
+            } elsif ($message_name =~ /^(?:Policy|Binding|AuditConfig|AuditLogConfig|PolicyDelta|BindingDelta|AuditConfigDelta)$/) {
+                $file_base = 'Policy';
+            } elsif ($message_name eq 'GetPolicyOptions') {
+                $file_base = 'Options';
+            } else {
+                $file_base = $message_name;
+            }
         }
         else {
             # For all other packages (like google.type or custom packages),
@@ -1013,11 +1173,11 @@ sub _get_schema_container_code {
 
 =head1 NAME
 
-Module::Starter::Protobuf - A Module::Starter plugin for generating Protocol Buffers client libraries
+Module::Starter::Protobuf::Base - Shared base class for Module::Starter::Protobuf code generation plugins
 
 =head1 VERSION
 
-Version 0.03
+Version 0.07
 
 =head1 SYNOPSIS
 

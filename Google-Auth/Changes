@@ -1,5 +1,8 @@
 Revision history for Google-Auth
 
+0.15    2026-11-23
+    - Removed Module::Starter boilerplate from Google::Auth POD, fixed NAME whatis entry, and added comprehensive SYNOPSIS, DESCRIPTION, METHODS, CONFIGURATION AND ENVIRONMENT, and SEE ALSO documentation.
+
 0.14    2026-11-22
     - [CPAN RT #180794] Declared Test::MockModule in TEST_REQUIRES and Google::Api::Common (0.05) / Google::Cloud::Transport::Adapter::LWP in PREREQ_PM in Makefile.PL (reported by Slaven Rezic / @srezic).
 

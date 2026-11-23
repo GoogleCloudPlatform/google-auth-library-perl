@@ -72,6 +72,19 @@ WriteMakefile(
         'Protobuf'        => '0.01',
         'Log::Any'        => '0',
     },
+    META_MERGE => {
+        'meta-spec' => { version => 2 },
+        resources => {
+            repository => {
+                type => 'git',
+                url  => 'https://github.com/GoogleCloudPlatform/google-auth-library-perl.git',
+                web  => 'https://github.com/GoogleCloudPlatform/google-auth-library-perl',
+            },
+            bugtracker => {
+                web => 'https://github.com/GoogleCloudPlatform/google-auth-library-perl/issues',
+            },
+        },
+    },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES => 'Google-gRPC-* xs/*.o xs/*.c *.o NGHTTP2.c' },
     %extra_params,

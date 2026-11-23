@@ -61,28 +61,133 @@ exit 0;
 
 __END__
 
+=encoding UTF-8
+
 =head1 NAME
 
-protobuf-starter - bootstrap a gRPC client library Perl distribution from Protocol Buffers
+protobuf-starter - Bootstrap a CPAN-ready Perl Protobuf & gRPC/REST client distribution from C<.proto> schemas
 
 =head1 SYNOPSIS
 
-    protobuf-starter --module=Google::Cloud::BigQuery \
-                     --protos=protos/bigquery.proto \
-                     --import-path=protos \
-                     --grpc-target=bigquery.googleapis.com \
-                     --dir=Google-Cloud-BigQuery \
-                     --module-version=0.01 \
-                     --security-link='https://bughunters.google.com/' \
-                     --author='C.J. Collier <cjac@google.com>'
+    protobuf-starter \
+      --module=Google::Cloud::Spanner::V1 \
+      --protos=googleapis/google/spanner/v1/spanner.proto \
+      --import-path=googleapis \
+      --grpc-target=spanner.googleapis.com:443 \
+      --dir=Google-Cloud-Spanner-V1 \
+      --module-version=0.05 \
+      --security-link='https://bughunters.google.com/' \
+      --author='C.J. Collier <cjac@google.com>'
 
     protobuf-starter --version
+    protobuf-starter --help
 
 =head1 DESCRIPTION
 
-protobuf-starter is a command-line utility that bootstraps a skeletal Perl
-distribution for a gRPC client library compiled from Protocol Buffers schemas.
-Pass C<--module-version=X.YZ> to override the initial version of the generated
-distribution, or C<--version> to print the C<protobuf-starter> tool version.
+C<protobuf-starter> is a command-line wrapper around L<Module::Starter> and
+L<Module::Starter::Protobuf> (analogous to C<module-starter>). Given one or
+more Protocol Buffers (C<.proto>) definitions, it compiles message and enum
+classes using C<protoc> + C<protoc-gen-perl-pb>, generates high-level gRPC and
+REST client wrapper classes backed by L<Google::gRPC::Client>,
+L<Google::Cloud::REST::Client>, and L<Google::Auth>, and scaffolds a complete
+CPAN distribution (C<Makefile.PL>, C<MANIFEST>, C<Changes>, C<README>,
+C<SECURITY.md>, unit/integration tests, and POD documentation).
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<--module=MODULE> (required, repeatable)
+
+Primary Perl module name for the distribution (e.g.,
+C<Google::Cloud::Spanner::V1>).
+
+=item B<--dir=DIRECTORY> (required)
+
+Output directory in which to create the distribution tree.
+
+=item B<--protos=FILE[,FILE,...]> (required)
+
+Comma-separated list of C<.proto> files to compile into Perl message, enum, and
+service client classes.
+
+=item B<--import-path=DIR>
+
+Root import path passed to C<protoc -I>. Defaults to C<.>.
+
+=item B<--grpc-target=HOST:PORT>
+
+Default gRPC/REST endpoint hostname (and optional port) embedded in generated
+client classes (e.g., C<spanner.googleapis.com:443>). Defaults to
+C<localhost:50051>.
+
+=item B<--module-version=VERSION>
+
+Initial distribution C<$VERSION> (e.g., C<0.05>).
+
+=item B<--license=LICENSE>
+
+CPAN::Meta license identifier written to C<Makefile.PL>. Defaults to
+C<apache_2_0>.
+
+=item B<--author=NAME>
+
+Author name and email (repeatable). Defaults to
+C<C.J. Collier E<lt>cjac@google.comE<gt>>.
+
+=item B<--email=EMAIL>
+
+Author email address.
+
+=item B<--security-link=URL>
+
+Security reporting URL included in the generated C<SECURITY.md>.
+
+=item B<--force>
+
+Overwrite existing files in C<--dir> if the directory already exists.
+
+=item B<--verbose>
+
+Print verbose progress messages during generation.
+
+=item B<--version>
+
+Print the C<protobuf-starter> / L<Module::Starter::Protobuf> version and exit.
+
+=item B<--help>
+
+Display usage summary and exit.
+
+=back
+
+=head1 EXAMPLES
+
+Generate a multi-proto Google Cloud client SDK from public C<googleapis>:
+
+    protobuf-starter \
+      --module=Google::Cloud::Dataproc::V1 \
+      --protos="$(find /tmp/googleapis/google/cloud/dataproc/v1 -maxdepth 1 -name '*.proto' | sort | paste -sd, -)" \
+      --import-path=/tmp/googleapis \
+      --grpc-target=dataproc.googleapis.com:443 \
+      --dir=Google-Cloud-Dataproc-V1 \
+      --module-version=0.05 \
+      --force
+
+=head1 SEE ALSO
+
+L<Module::Starter::Protobuf>, L<Module::Starter::Protobuf::Base>,
+L<Module::Starter>, L<Protobuf>, L<Google::gRPC::Client>,
+L<Google::Api::Common>, L<Google::Auth>
+
+=head1 AUTHOR
+
+C.J. Collier E<lt>cjac@google.comE<gt>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (c) 2026 Google LLC and contributors.
+
+Licensed under the Apache License, Version 2.0.
 
 =cut

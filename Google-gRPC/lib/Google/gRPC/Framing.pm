@@ -82,17 +82,59 @@ sub parse_trailers {
 }
 
 
+=encoding UTF-8
+
 =head1 NAME
 
-Google::gRPC::Framing - gRPC Wire Framing Utilities
+Google::gRPC::Framing - gRPC 5-byte length-prefixed wire framing and trailer parsing
 
 =head1 SYNOPSIS
 
     use Google::gRPC::Framing;
 
+    # Pack a serialized Protobuf payload into a gRPC frame
+    my $frame = Google::gRPC::Framing::pack_frame($proto_bytes);
+
+    # Unpack complete frames from a streaming byte buffer (mutates $buf)
+    my @frames = Google::gRPC::Framing::unpack_frame(\$buf);
+    for my $f (@frames) {
+        my $payload = $f->{payload};
+    }
+
+    # Parse gRPC HTTP/2 trailers
+    my $trailers = Google::gRPC::Framing::parse_trailers(\%response_headers);
+    if ($trailers->{has_status} && $trailers->{status} != 0) {
+        die "gRPC error $trailers->{status}: $trailers->{message}";
+    }
+
 =head1 DESCRIPTION
 
-This module provides grpc wire framing utilities functionality for the Google gRPC Perl client SDK.
+C<Google::gRPC::Framing> implements the gRPC-over-HTTP/2 wire framing format
+(1-byte compression flag + 4-byte big-endian message length + payload) and
+parses C<grpc-status>, C<grpc-message>, and C<grpc-status-details-bin>
+trailers.
+
+=head1 FUNCTIONS
+
+=head2 pack_frame( $payload, %opts )
+
+Packs C<$payload> with a 5-byte gRPC header (C<compressed => 1> optional).
+
+=head2 unpack_frame( \$buffer )
+
+Consumes all complete gRPC frames from C<$$buffer> in place and returns a list
+of C<{ compressed => $flag, payload => $bytes }> HashRefs. Partial trailing
+bytes remain in C<$$buffer>.
+
+=head2 parse_trailers( $headers )
+
+Accepts either a HashRef or flat key/value ArrayRef of HTTP/2 headers/trailers
+and returns C<{ status => $int, has_status => $bool, message => $str, status_details => $obj }>.
+
+=head1 SEE ALSO
+
+L<Google::gRPC>, L<Google::gRPC::Status>, L<Google::gRPC::Client>,
+L<Google::gRPC::Stream>
 
 =head1 AUTHOR
 
