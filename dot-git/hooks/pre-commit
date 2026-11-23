@@ -15,7 +15,7 @@ if [ -z "$CHANGED_DIRS" ]; then
     exit 0
 fi
 
-CORE_DIRS="Protobuf Google-Auth Google-Api-Common Google-gRPC"
+CORE_DIRS="Protobuf Google-Api-Common Google-Auth Google-gRPC PDL-IO-Protobuf"
 UNIQUE_DIRS=""
 for d in $CORE_DIRS $CHANGED_DIRS; do
     if [[ ! " $UNIQUE_DIRS " =~ " $d " ]]; then
