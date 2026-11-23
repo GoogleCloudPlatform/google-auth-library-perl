@@ -3,7 +3,7 @@ package Google::Type::Expr;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -79,42 +79,124 @@ EOF
     # Field: description Type: 9 ()
     # Field: location Type: 9 ()
 
-=pod
+1;
+
+__END__
+
+=encoding UTF-8
 
 =head1 NAME
 
-Google::Type::Expr::Expr - Compiled Protocol Buffers message class
+Google::Type::Expr - Compiled Protocol Buffers messages for google/type/expr.proto
 
 =head1 SYNOPSIS
 
     use Google::Type::Expr;
 
-    my $msg = Google::Type::Expr::Expr->new(
-        expression => $value,
-    );
+    my $msg = Google::Type::Expr::Expr->new({
+        expression => $expression,
+        title => $title,
+        description => $description,
+        location => $location,
+    });
 
-=head1 FIELDS
+    # Read or update a field
+    my $val = $msg->expression();
+
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Type::Expr::Expr->parse($bytes);
+
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
+
+=head1 DESCRIPTION
+
+Auto-generated L<Protobuf> message classes compiled from C<google/type/expr.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Type::Expr::Expr
+
+Represents a textual expression in the Common Expression Language (CEL)
+syntax. CEL is a C-like expression language. The syntax and semantics of CEL
+are documented at https://github.com/google/cel-spec.
+
+Example (Comparison):
+
+    title: "Summary size limit"
+    description: "Determines if a summary is less than 100 chars"
+    expression: "document.summary.size() < 100"
+
+Example (Equality):
+
+    title: "Requestor is owner"
+    description: "Determines if requestor is the document owner"
+    expression: "document.owner == request.auth.claims.email"
+
+Example (Logic):
+
+    title: "Public documents"
+    description: "Determine whether the document should be publicly visible"
+    expression: "document.type != 'private' && document.type != 'internal'"
+
+Example (Data Manipulation):
+
+    title: "Notification string"
+    description: "Create a notification string with a timestamp."
+    expression: "'New message received at ' + string(document.create_time)"
+
+The exact variables and functions that may be referenced within an expression
+are determined by the service that evaluates it. See the service
+documentation for additional information.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
 
 =over 4
 
-=item * B<expression>
+=item * C<< $msg->expression() >> / C<< $msg->expression($value) >>
 
-Type: String
+Type: C<String>
 
-=item * B<title>
+Textual representation of an expression in Common Expression Language
+syntax.
 
-Type: String
+=item * C<< $msg->title() >> / C<< $msg->title($value) >>
 
-=item * B<description>
+Type: C<String>
 
-Type: String
+Optional. Title for the expression, i.e. a short string describing
+its purpose. This can be used e.g. in UIs which allow one to enter the
+expression.
 
-=item * B<location>
+=item * C<< $msg->description() >> / C<< $msg->description($value) >>
 
-Type: String
+Type: C<String>
+
+Optional. Description of the expression. This is a longer text which
+describes the expression, e.g. when hovered over it in a UI.
+
+=item * C<< $msg->location() >> / C<< $msg->location($value) >>
+
+Type: C<String>
+
+Optional. String indicating the location of the expression for error
+reporting, e.g. a file name and a position in the file.
 
 =back
 
-=cut
+=head1 SEE ALSO
 
-1;
+L<Protobuf>, L<Protobuf::Message>, L<Google::Type::Expr::Types>, L<https://protobuf.dev/>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (C) 2026 Google LLC
+
+This program is released under the Apache 2.0 license.
+
+=cut

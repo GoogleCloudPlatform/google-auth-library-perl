@@ -3,7 +3,7 @@ package Google::Api::Label;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -56,74 +56,94 @@ EOF
     # Field: value_type Type: 14 (.google.api.LabelDescriptor.ValueType)
     # Field: description Type: 9 ()
 
-=pod
-
-=head1 NAME
-
-Google::Api::Label::LabelDescriptor - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::Label;
-
-    my $msg = Google::Api::Label::LabelDescriptor->new(
-        key => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<key>
-
-Type: String
-
-=item * B<value_type>
-
-Type: Enum (.google.api.LabelDescriptor.ValueType)
-
-=item * B<description>
-
-Type: String
-
-=back
-
-=cut
-
 # Enum: LabelDescriptor::ValueType
 our $LabelDescriptor_STRING = 0;
 our $LabelDescriptor_BOOL = 1;
 our $LabelDescriptor_INT64 = 2;
 
-=pod
-
-=head2 Enum: LabelDescriptor::ValueType
-
-Values:
-
-=over 4
-
-=item * C<STRING> => 0
-
-=item * C<BOOL> => 1
-
-=item * C<INT64> => 2
-
-=back
-
-=cut
-
 1;
 
 __END__
 
+=encoding UTF-8
+
 =head1 NAME
 
-Google::Api::Label - Protocol Buffers schema definition
+Google::Api::Label - Compiled Protocol Buffers messages for google/api/label.proto
+
+=head1 SYNOPSIS
+
+    use Google::Api::Label;
+
+    my $msg = Google::Api::Label::LabelDescriptor->new({
+        key => $key,
+        value_type => $value_type,
+        description => $description,
+    });
+
+    # Read or update a field
+    my $val = $msg->key();
+
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Api::Label::LabelDescriptor->parse($bytes);
+
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
 
 =head1 DESCRIPTION
 
-Auto-generated Protocol Buffers schema definition class.
+Auto-generated L<Protobuf> message classes compiled from C<google/api/label.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Api::Label::LabelDescriptor
+
+A description of a label.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->key() >> / C<< $msg->key($value) >>
+
+Type: C<String>
+
+The label key.
+
+=item * C<< $msg->value_type() >> / C<< $msg->value_type($value) >>
+
+Type: C<Enum> (L<Google::Api::LabelDescriptor::ValueType>)
+
+The type of data that can be assigned to the label.
+
+=item * C<< $msg->description() >> / C<< $msg->description($value) >>
+
+Type: C<String>
+
+A human-readable description for the label.
+
+=back
+
+=head3 Enum: LabelDescriptor::ValueType
+
+=over 4
+
+=item * C<STRING> => C<0>
+
+=item * C<BOOL> => C<1>
+
+=item * C<INT64> => C<2>
+
+=back
+
+=head1 SEE ALSO
+
+L<Protobuf>, L<Protobuf::Message>, L<Google::Api::Label::Types>, L<https://protobuf.dev/>
 
 =head1 LICENSE AND COPYRIGHT
 

@@ -3,7 +3,7 @@ package Google::Api::SourceInfo;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -45,43 +45,63 @@ EOF
     # Fields for SourceInfo
     # Field: source_files Type: 11 (.google.protobuf.Any)
 
-=pod
+1;
+
+__END__
+
+=encoding UTF-8
 
 =head1 NAME
 
-Google::Api::SourceInfo::SourceInfo - Compiled Protocol Buffers message class
+Google::Api::SourceInfo - Compiled Protocol Buffers messages for google/api/source_info.proto
 
 =head1 SYNOPSIS
 
     use Google::Api::SourceInfo;
 
-    my $msg = Google::Api::SourceInfo::SourceInfo->new(
-        source_files => $value,
-    );
+    my $msg = Google::Api::SourceInfo::SourceInfo->new({
+        source_files => $source_files,
+    });
 
-=head1 FIELDS
+    # Read or update a field
+    my $val = $msg->source_files();
 
-=over 4
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Api::SourceInfo::SourceInfo->parse($bytes);
 
-=item * B<source_files>
-
-Type: Message (.google.protobuf.Any)
-
-=back
-
-=cut
-
-1;
-
-__END__
-
-=head1 NAME
-
-Google::Api::SourceInfo - Protocol Buffers schema definition
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
 
 =head1 DESCRIPTION
 
-Auto-generated Protocol Buffers schema definition class.
+Auto-generated L<Protobuf> message classes compiled from C<google/api/source_info.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Api::SourceInfo::SourceInfo
+
+Source information used to create a Service Config
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->source_files() >> / C<< $msg->source_files($value) >>
+
+Type: C<Message> (L<Google::Protobuf::Any::Any>)
+
+All files used during config generation.
+
+=back
+
+=head1 SEE ALSO
+
+L<Protobuf>, L<Protobuf::Message>, L<Google::Api::SourceInfo::Types>, L<https://protobuf.dev/>
 
 =head1 LICENSE AND COPYRIGHT
 

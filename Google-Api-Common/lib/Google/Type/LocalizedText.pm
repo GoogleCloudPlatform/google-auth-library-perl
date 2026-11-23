@@ -3,7 +3,7 @@ package Google::Type::LocalizedText;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -50,34 +50,79 @@ EOF
     # Field: text Type: 9 ()
     # Field: language_code Type: 9 ()
 
-=pod
+1;
+
+__END__
+
+=encoding UTF-8
 
 =head1 NAME
 
-Google::Type::LocalizedText::LocalizedText - Compiled Protocol Buffers message class
+Google::Type::LocalizedText - Compiled Protocol Buffers messages for google/type/localized_text.proto
 
 =head1 SYNOPSIS
 
     use Google::Type::LocalizedText;
 
-    my $msg = Google::Type::LocalizedText::LocalizedText->new(
-        text => $value,
-    );
+    my $msg = Google::Type::LocalizedText::LocalizedText->new({
+        text => $text,
+        language_code => $language_code,
+    });
 
-=head1 FIELDS
+    # Read or update a field
+    my $val = $msg->text();
+
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Type::LocalizedText::LocalizedText->parse($bytes);
+
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
+
+=head1 DESCRIPTION
+
+Auto-generated L<Protobuf> message classes compiled from C<google/type/localized_text.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Type::LocalizedText::LocalizedText
+
+Localized variant of a text in a particular language.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
 
 =over 4
 
-=item * B<text>
+=item * C<< $msg->text() >> / C<< $msg->text($value) >>
 
-Type: String
+Type: C<String>
 
-=item * B<language_code>
+Localized string in the language corresponding to
+[language_code][google.type.LocalizedText.language_code] below.
 
-Type: String
+=item * C<< $msg->language_code() >> / C<< $msg->language_code($value) >>
+
+Type: C<String>
+
+The text's BCP-47 language code, such as "en-US" or "sr-Latn".
+
+For more information, see
+http://www.unicode.org/reports/tr35/#Unicode_locale_identifier.
 
 =back
 
-=cut
+=head1 SEE ALSO
 
-1;
+L<Protobuf>, L<Protobuf::Message>, L<Google::Type::LocalizedText::Types>, L<https://protobuf.dev/>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (C) 2026 Google LLC
+
+This program is released under the Apache 2.0 license.
+
+=cut

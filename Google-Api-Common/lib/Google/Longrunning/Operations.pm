@@ -3,7 +3,7 @@ package Google::Longrunning::Operations;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -264,77 +264,9 @@ EOF
     # Field: error Type: 11 (.google.rpc.Status)
     # Field: response Type: 11 (.google.protobuf.Any)
 
-=pod
-
-=head1 NAME
-
-Google::Longrunning::Operations::Operation - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Longrunning::Operations;
-
-    my $msg = Google::Longrunning::Operations::Operation->new(
-        name => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<name>
-
-Type: String
-
-=item * B<metadata>
-
-Type: Message (.google.protobuf.Any)
-
-=item * B<done>
-
-Type: Bool
-
-=item * B<error>
-
-Type: Message (.google.rpc.Status)
-
-=item * B<response>
-
-Type: Message (.google.protobuf.Any)
-
-=back
-
-=cut
-
 # === Message: Google::Longrunning::Operations::GetOperationRequest ===
     # Fields for GetOperationRequest
     # Field: name Type: 9 ()
-
-=pod
-
-=head1 NAME
-
-Google::Longrunning::Operations::GetOperationRequest - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Longrunning::Operations;
-
-    my $msg = Google::Longrunning::Operations::GetOperationRequest->new(
-        name => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<name>
-
-Type: String
-
-=back
-
-=cut
 
 # === Message: Google::Longrunning::Operations::ListOperationsRequest ===
     # Fields for ListOperationsRequest
@@ -344,240 +276,44 @@ Type: String
     # Field: page_token Type: 9 ()
     # Field: return_partial_success Type: 8 ()
 
-=pod
-
-=head1 NAME
-
-Google::Longrunning::Operations::ListOperationsRequest - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Longrunning::Operations;
-
-    my $msg = Google::Longrunning::Operations::ListOperationsRequest->new(
-        name => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<name>
-
-Type: String
-
-=item * B<filter>
-
-Type: String
-
-=item * B<page_size>
-
-Type: Int32
-
-=item * B<page_token>
-
-Type: String
-
-=item * B<return_partial_success>
-
-Type: Bool
-
-=back
-
-=cut
-
 # === Message: Google::Longrunning::Operations::ListOperationsResponse ===
     # Fields for ListOperationsResponse
     # Field: operations Type: 11 (.google.longrunning.Operation)
     # Field: next_page_token Type: 9 ()
     # Field: unreachable Type: 9 ()
 
-=pod
-
-=head1 NAME
-
-Google::Longrunning::Operations::ListOperationsResponse - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Longrunning::Operations;
-
-    my $msg = Google::Longrunning::Operations::ListOperationsResponse->new(
-        operations => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<operations>
-
-Type: Message (.google.longrunning.Operation)
-
-=item * B<next_page_token>
-
-Type: String
-
-=item * B<unreachable>
-
-Type: String
-
-=back
-
-=cut
-
 # === Message: Google::Longrunning::Operations::CancelOperationRequest ===
     # Fields for CancelOperationRequest
     # Field: name Type: 9 ()
 
-=pod
-
-=head1 NAME
-
-Google::Longrunning::Operations::CancelOperationRequest - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Longrunning::Operations;
-
-    my $msg = Google::Longrunning::Operations::CancelOperationRequest->new(
-        name => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<name>
-
-Type: String
-
-=back
-
-=cut
-
 # === Message: Google::Longrunning::Operations::DeleteOperationRequest ===
     # Fields for DeleteOperationRequest
     # Field: name Type: 9 ()
-
-=pod
-
-=head1 NAME
-
-Google::Longrunning::Operations::DeleteOperationRequest - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Longrunning::Operations;
-
-    my $msg = Google::Longrunning::Operations::DeleteOperationRequest->new(
-        name => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<name>
-
-Type: String
-
-=back
-
-=cut
 
 # === Message: Google::Longrunning::Operations::WaitOperationRequest ===
     # Fields for WaitOperationRequest
     # Field: name Type: 9 ()
     # Field: timeout Type: 11 (.google.protobuf.Duration)
 
-=pod
-
-=head1 NAME
-
-Google::Longrunning::Operations::WaitOperationRequest - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Longrunning::Operations;
-
-    my $msg = Google::Longrunning::Operations::WaitOperationRequest->new(
-        name => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<name>
-
-Type: String
-
-=item * B<timeout>
-
-Type: Message (.google.protobuf.Duration)
-
-=back
-
-=cut
-
 # === Message: Google::Longrunning::Operations::OperationInfo ===
     # Fields for OperationInfo
     # Field: response_type Type: 9 ()
     # Field: metadata_type Type: 9 ()
-
-=pod
-
-=head1 NAME
-
-Google::Longrunning::Operations::OperationInfo - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Longrunning::Operations;
-
-    my $msg = Google::Longrunning::Operations::OperationInfo->new(
-        response_type => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<response_type>
-
-Type: String
-
-=item * B<metadata_type>
-
-Type: String
-
-=back
-
-=cut
 
 # === Service Client: Google::Longrunning::Operations::OperationsClient ===
 package Google::Longrunning::Operations::OperationsClient;
 
 =pod
 
-=head1 NAME
+=head2 Service Client: Google::Longrunning::Operations::OperationsClient
 
-Google::Longrunning::Operations::OperationsClient - Client stub representing the remote Operations service
+Client stub representing the remote C<Operations> gRPC service. Delegates call dispatching to L<Google::gRPC::Client>.
 
-=head1 DESCRIPTION
-
-This class acts as a local client stub for the remote gRPC service.
-It delegates call dispatching to an underlying L<Google::gRPC::Client>
-instance, ensuring type-safe request parsing and response mapping.
-
-=head1 CONFIGURATION AND ENVIRONMENT
-
-=head2 target
+=head3 target
 
 The endpoint target address. Defaults to C<localhost:443>.
 
-=head2 credentials
+=head3 credentials
 
 The authentication credentials provider. Defaults to application default credentials via L<Google::Auth>.
 
@@ -671,13 +407,317 @@ sub wait_operation {
 
 __END__
 
+=encoding UTF-8
+
 =head1 NAME
 
-Google::Longrunning::Operations - Protocol Buffers schema definition
+Google::Longrunning::Operations - Compiled Protocol Buffers messages for google/longrunning/operations.proto
+
+=head1 SYNOPSIS
+
+    use Google::Longrunning::Operations;
+
+    my $msg = Google::Longrunning::Operations::Operation->new({
+        name => $name,
+        metadata => $metadata,
+        done => $done,
+        error => $error,
+    });
+
+    # Read or update a field
+    my $val = $msg->name();
+
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Longrunning::Operations::Operation->parse($bytes);
+
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
 
 =head1 DESCRIPTION
 
-Auto-generated Protocol Buffers schema definition class.
+Auto-generated L<Protobuf> message classes compiled from C<google/longrunning/operations.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Longrunning::Operations::Operation
+
+This resource represents a long-running operation that is the result of a
+network API call.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->name() >> / C<< $msg->name($value) >>
+
+Type: C<String>
+
+The server-assigned name, which is only unique within the same service that
+originally returns it. If you use the default HTTP mapping, the
+`name` should be a resource name ending with `operations/{unique_id}`.
+
+=item * C<< $msg->metadata() >> / C<< $msg->metadata($value) >>
+
+Type: C<Message> (L<Google::Protobuf::Any::Any>)
+
+Service-specific metadata associated with the operation.  It typically
+contains progress information and common metadata such as create time.
+Some services might not provide such metadata.  Any method that returns a
+long-running operation should document the metadata type, if any.
+
+=item * C<< $msg->done() >> / C<< $msg->done($value) >>
+
+Type: C<Bool>
+
+If the value is `false`, it means the operation is still in progress.
+If `true`, the operation is completed, and either `error` or `response` is
+available.
+
+=item * C<< $msg->error() >> / C<< $msg->error($value) >>
+
+Type: C<Message> (L<Google::Rpc::Status::Status>)
+
+The error result of the operation in case of failure or cancellation.
+
+=item * C<< $msg->response() >> / C<< $msg->response($value) >>
+
+Type: C<Message> (L<Google::Protobuf::Any::Any>)
+
+The normal, successful response of the operation.  If the original
+method returns no data on success, such as `Delete`, the response is
+`google.protobuf.Empty`.  If the original method is standard
+`Get`/`Create`/`Update`, the response should be the resource.  For other
+methods, the response should have the type `XxxResponse`, where `Xxx`
+is the original method name.  For example, if the original method name
+is `TakeSnapshot()`, the inferred response type is
+`TakeSnapshotResponse`.
+
+=back
+
+=head2 Google::Longrunning::Operations::GetOperationRequest
+
+The request message for
+[Operations.GetOperation][google.longrunning.Operations.GetOperation].
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->name() >> / C<< $msg->name($value) >>
+
+Type: C<String>
+
+The name of the operation resource.
+
+=back
+
+=head2 Google::Longrunning::Operations::ListOperationsRequest
+
+The request message for
+[Operations.ListOperations][google.longrunning.Operations.ListOperations].
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->name() >> / C<< $msg->name($value) >>
+
+Type: C<String>
+
+The name of the operation's parent resource.
+
+=item * C<< $msg->filter() >> / C<< $msg->filter($value) >>
+
+Type: C<String>
+
+The standard list filter.
+
+=item * C<< $msg->page_size() >> / C<< $msg->page_size($value) >>
+
+Type: C<Int32>
+
+The standard list page size.
+
+=item * C<< $msg->page_token() >> / C<< $msg->page_token($value) >>
+
+Type: C<String>
+
+The standard list page token.
+
+=item * C<< $msg->return_partial_success() >> / C<< $msg->return_partial_success($value) >>
+
+Type: C<Bool>
+
+When set to `true`, operations that are reachable are returned as normal,
+and those that are unreachable are returned in the
+[ListOperationsResponse.unreachable] field.
+
+This can only be `true` when reading across collections e.g. when `parent`
+is set to `"projects/example/locations/-"`.
+
+This field is not by default supported and will result in an
+`UNIMPLEMENTED` error if set unless explicitly documented otherwise in
+service or product specific documentation.
+
+=back
+
+=head2 Google::Longrunning::Operations::ListOperationsResponse
+
+The response message for
+[Operations.ListOperations][google.longrunning.Operations.ListOperations].
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->operations() >> / C<< $msg->operations($value) >>
+
+Type: C<Message> (L<Google::Longrunning::Operations::Operation>)
+
+A list of operations that matches the specified filter in the request.
+
+=item * C<< $msg->next_page_token() >> / C<< $msg->next_page_token($value) >>
+
+Type: C<String>
+
+The standard List next-page token.
+
+=item * C<< $msg->unreachable() >> / C<< $msg->unreachable($value) >>
+
+Type: C<String>
+
+Unordered list. Unreachable resources. Populated when the request sets
+`ListOperationsRequest.return_partial_success` and reads across
+collections e.g. when attempting to list all resources across all supported
+locations.
+
+=back
+
+=head2 Google::Longrunning::Operations::CancelOperationRequest
+
+The request message for
+[Operations.CancelOperation][google.longrunning.Operations.CancelOperation].
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->name() >> / C<< $msg->name($value) >>
+
+Type: C<String>
+
+The name of the operation resource to be cancelled.
+
+=back
+
+=head2 Google::Longrunning::Operations::DeleteOperationRequest
+
+The request message for
+[Operations.DeleteOperation][google.longrunning.Operations.DeleteOperation].
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->name() >> / C<< $msg->name($value) >>
+
+Type: C<String>
+
+The name of the operation resource to be deleted.
+
+=back
+
+=head2 Google::Longrunning::Operations::WaitOperationRequest
+
+The request message for
+[Operations.WaitOperation][google.longrunning.Operations.WaitOperation].
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->name() >> / C<< $msg->name($value) >>
+
+Type: C<String>
+
+The name of the operation resource to wait on.
+
+=item * C<< $msg->timeout() >> / C<< $msg->timeout($value) >>
+
+Type: C<Message> (L<Google::Protobuf::Duration::Duration>)
+
+The maximum duration to wait before timing out. If left blank, the wait
+will be at most the time permitted by the underlying HTTP/RPC protocol.
+If RPC context deadline is also specified, the shorter one will be used.
+
+=back
+
+=head2 Google::Longrunning::Operations::OperationInfo
+
+A message representing the message types used by a long-running operation.
+
+Example:
+
+    rpc Export(ExportRequest) returns (google.longrunning.Operation) {
+      option (google.longrunning.operation_info) = {
+        response_type: "ExportResponse"
+        metadata_type: "ExportMetadata"
+      };
+    }
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->response_type() >> / C<< $msg->response_type($value) >>
+
+Type: C<String>
+
+Required. The message name of the primary return type for this
+long-running operation.
+This type will be used to deserialize the LRO's response.
+
+If the response is in a different package from the rpc, a fully-qualified
+message name must be used (e.g. `google.protobuf.Struct`).
+
+Note: Altering this value constitutes a breaking change.
+
+=item * C<< $msg->metadata_type() >> / C<< $msg->metadata_type($value) >>
+
+Type: C<String>
+
+Required. The message name of the metadata type for this long-running
+operation.
+
+If the response is in a different package from the rpc, a fully-qualified
+message name must be used (e.g. `google.protobuf.Struct`).
+
+Note: Altering this value constitutes a breaking change.
+
+=back
+
+=head1 SEE ALSO
+
+L<Protobuf>, L<Protobuf::Message>, L<Google::Longrunning::Operations::Types>, L<https://protobuf.dev/>
 
 =head1 LICENSE AND COPYRIGHT
 

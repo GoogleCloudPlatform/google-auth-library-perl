@@ -3,7 +3,7 @@ package Google::Api::Documentation;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -166,91 +166,11 @@ EOF
     # Field: service_root_url Type: 9 ()
     # Field: overview Type: 9 ()
 
-=pod
-
-=head1 NAME
-
-Google::Api::Documentation::Documentation - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::Documentation;
-
-    my $msg = Google::Api::Documentation::Documentation->new(
-        summary => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<summary>
-
-Type: String
-
-=item * B<pages>
-
-Type: Message (.google.api.Page)
-
-=item * B<rules>
-
-Type: Message (.google.api.DocumentationRule)
-
-=item * B<documentation_root_url>
-
-Type: String
-
-=item * B<service_root_url>
-
-Type: String
-
-=item * B<overview>
-
-Type: String
-
-=back
-
-=cut
-
 # === Message: Google::Api::Documentation::DocumentationRule ===
     # Fields for DocumentationRule
     # Field: selector Type: 9 ()
     # Field: description Type: 9 ()
     # Field: deprecation_description Type: 9 ()
-
-=pod
-
-=head1 NAME
-
-Google::Api::Documentation::DocumentationRule - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::Documentation;
-
-    my $msg = Google::Api::Documentation::DocumentationRule->new(
-        selector => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<selector>
-
-Type: String
-
-=item * B<description>
-
-Type: String
-
-=item * B<deprecation_description>
-
-Type: String
-
-=back
-
-=cut
 
 # === Message: Google::Api::Documentation::Page ===
     # Fields for Page
@@ -258,51 +178,256 @@ Type: String
     # Field: content Type: 9 ()
     # Field: subpages Type: 11 (.google.api.Page)
 
-=pod
+1;
+
+__END__
+
+=encoding UTF-8
 
 =head1 NAME
 
-Google::Api::Documentation::Page - Compiled Protocol Buffers message class
+Google::Api::Documentation - Compiled Protocol Buffers messages for google/api/documentation.proto
 
 =head1 SYNOPSIS
 
     use Google::Api::Documentation;
 
-    my $msg = Google::Api::Documentation::Page->new(
-        name => $value,
-    );
+    my $msg = Google::Api::Documentation::Documentation->new({
+        summary => $summary,
+        pages => $pages,
+        rules => $rules,
+        documentation_root_url => $documentation_root_url,
+    });
 
-=head1 FIELDS
+    # Read or update a field
+    my $val = $msg->summary();
 
-=over 4
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Api::Documentation::Documentation->parse($bytes);
 
-=item * B<name>
-
-Type: String
-
-=item * B<content>
-
-Type: String
-
-=item * B<subpages>
-
-Type: Message (.google.api.Page)
-
-=back
-
-=cut
-
-1;
-
-__END__
-
-=head1 NAME
-
-Google::Api::Documentation - Protocol Buffers schema definition
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
 
 =head1 DESCRIPTION
 
-Auto-generated Protocol Buffers schema definition class.
+Auto-generated L<Protobuf> message classes compiled from C<google/api/documentation.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Api::Documentation::Documentation
+
+`Documentation` provides the information for describing a service.
+
+Example:
+<pre><code>documentation:
+  summary: >
+    The Google Calendar API gives access
+    to most calendar features.
+  pages:
+  - name: Overview
+    content: &#40;== include google/foo/overview.md ==&#41;
+  - name: Tutorial
+    content: &#40;== include google/foo/tutorial.md ==&#41;
+    subpages:
+    - name: Java
+      content: &#40;== include google/foo/tutorial_java.md ==&#41;
+  rules:
+  - selector: google.calendar.Calendar.Get
+    description: >
+      ...
+  - selector: google.calendar.Calendar.Put
+    description: >
+      ...
+</code></pre>
+Documentation is provided in markdown syntax. In addition to
+standard markdown features, definition lists, tables and fenced
+code blocks are supported. Section headers can be provided and are
+interpreted relative to the section nesting of the context where
+a documentation fragment is embedded.
+
+Documentation from the IDL is merged with documentation defined
+via the config at normalization time, where documentation provided
+by config rules overrides IDL provided.
+
+A number of constructs specific to the API platform are supported
+in documentation text.
+
+In order to reference a proto element, the following
+notation can be used:
+<pre><code>&#91;fully.qualified.proto.name]&#91;]</code></pre>
+To override the display text used for the link, this can be used:
+<pre><code>&#91;display text]&#91;fully.qualified.proto.name]</code></pre>
+Text can be excluded from doc using the following notation:
+<pre><code>&#40;-- internal comment --&#41;</code></pre>
+
+A few directives are available in documentation. Note that
+directives must appear on a single line to be properly
+identified. The `include` directive includes a markdown file from
+an external source:
+<pre><code>&#40;== include path/to/file ==&#41;</code></pre>
+The `resource_for` directive marks a message to be the resource of
+a collection in REST view. If it is not specified, tools attempt
+to infer the resource from the operations in a collection:
+<pre><code>&#40;== resource_for v1.shelves.books ==&#41;</code></pre>
+The directive `suppress_warning` does not directly affect documentation
+and is documented together with service config validation.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->summary() >> / C<< $msg->summary($value) >>
+
+Type: C<String>
+
+A short description of what the service does. The summary must be plain
+text. It becomes the overview of the service displayed in Google Cloud
+Console.
+NOTE: This field is equivalent to the standard field `description`.
+
+=item * C<< $msg->pages() >> / C<< $msg->pages($value) >>
+
+Type: C<Message> (L<Google::Api::Documentation::Page>)
+
+The top level pages for the documentation set.
+
+=item * C<< $msg->rules() >> / C<< $msg->rules($value) >>
+
+Type: C<Message> (L<Google::Api::Documentation::DocumentationRule>)
+
+A list of documentation rules that apply to individual API elements.
+
+B<NOTE:> All service configuration rules follow "last one wins" order.
+
+=item * C<< $msg->documentation_root_url() >> / C<< $msg->documentation_root_url($value) >>
+
+Type: C<String>
+
+The URL to the root of documentation.
+
+=item * C<< $msg->service_root_url() >> / C<< $msg->service_root_url($value) >>
+
+Type: C<String>
+
+Specifies the service root url if the default one (the service name
+from the yaml file) is not suitable. This can be seen in any fully
+specified service urls as well as sections that show a base that other
+urls are relative to.
+
+=item * C<< $msg->overview() >> / C<< $msg->overview($value) >>
+
+Type: C<String>
+
+Declares a single overview page. For example:
+<pre><code>documentation:
+  summary: ...
+  overview: &#40;== include overview.md ==&#41;
+</code></pre>
+This is a shortcut for the following declaration (using pages style):
+<pre><code>documentation:
+  summary: ...
+  pages:
+  - name: Overview
+    content: &#40;== include overview.md ==&#41;
+</code></pre>
+Note: you cannot specify both `overview` field and `pages` field.
+
+=back
+
+=head2 Google::Api::Documentation::DocumentationRule
+
+A documentation rule provides information about individual API elements.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->selector() >> / C<< $msg->selector($value) >>
+
+Type: C<String>
+
+The selector is a comma-separated list of patterns for any element such as
+a method, a field, an enum value. Each pattern is a qualified name of the
+element which may end in "*", indicating a wildcard. Wildcards are only
+allowed at the end and for a whole component of the qualified name,
+i.e. "foo.*" is ok, but not "foo.b*" or "foo.*.bar". A wildcard will match
+one or more components. To specify a default for all applicable elements,
+the whole pattern "*" is used.
+
+=item * C<< $msg->description() >> / C<< $msg->description($value) >>
+
+Type: C<String>
+
+Description of the selected proto element (e.g. a message, a method, a
+'service' definition, or a field). Defaults to leading & trailing comments
+taken from the proto source definition of the proto element.
+
+=item * C<< $msg->deprecation_description() >> / C<< $msg->deprecation_description($value) >>
+
+Type: C<String>
+
+Deprecation description of the selected element(s). It can be provided if
+an element is marked as `deprecated`.
+
+=back
+
+=head2 Google::Api::Documentation::Page
+
+Represents a documentation page. A page can contain subpages to represent
+nested documentation set structure.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->name() >> / C<< $msg->name($value) >>
+
+Type: C<String>
+
+The name of the page. It will be used as an identity of the page to
+generate URI of the page, text of the link to this page in navigation,
+etc. The full page name (start from the root page name to this page
+concatenated with `.`) can be used as reference to the page in your
+documentation. For example:
+<pre><code>pages:
+- name: Tutorial
+  content: &#40;== include tutorial.md ==&#41;
+  subpages:
+  - name: Java
+    content: &#40;== include tutorial_java.md ==&#41;
+</code></pre>
+You can reference `Java` page using Markdown reference link syntax:
+`[Java][Tutorial.Java]`.
+
+=item * C<< $msg->content() >> / C<< $msg->content($value) >>
+
+Type: C<String>
+
+The Markdown content of the page. You can use ```(== include {path}
+ ==)``` to include content from a Markdown file. The content can be used
+to produce the documentation page such as HTML format page.
+
+=item * C<< $msg->subpages() >> / C<< $msg->subpages($value) >>
+
+Type: C<Message> (L<Google::Api::Documentation::Page>)
+
+Subpages of this page. The order of subpages specified here will be
+honored in the generated docset.
+
+=back
+
+=head1 SEE ALSO
+
+L<Protobuf>, L<Protobuf::Message>, L<Google::Api::Documentation::Types>, L<https://protobuf.dev/>
 
 =head1 LICENSE AND COPYRIGHT
 

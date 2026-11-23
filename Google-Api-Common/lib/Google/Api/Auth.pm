@@ -3,7 +3,7 @@ package Google::Api::Auth;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -212,36 +212,6 @@ EOF
     # Field: rules Type: 11 (.google.api.AuthenticationRule)
     # Field: providers Type: 11 (.google.api.AuthProvider)
 
-=pod
-
-=head1 NAME
-
-Google::Api::Auth::Authentication - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::Auth;
-
-    my $msg = Google::Api::Auth::Authentication->new(
-        rules => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<rules>
-
-Type: Message (.google.api.AuthenticationRule)
-
-=item * B<providers>
-
-Type: Message (.google.api.AuthProvider)
-
-=back
-
-=cut
-
 # === Message: Google::Api::Auth::AuthenticationRule ===
     # Fields for AuthenticationRule
     # Field: selector Type: 9 ()
@@ -249,88 +219,12 @@ Type: Message (.google.api.AuthProvider)
     # Field: allow_without_credential Type: 8 ()
     # Field: requirements Type: 11 (.google.api.AuthRequirement)
 
-=pod
-
-=head1 NAME
-
-Google::Api::Auth::AuthenticationRule - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::Auth;
-
-    my $msg = Google::Api::Auth::AuthenticationRule->new(
-        selector => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<selector>
-
-Type: String
-
-=item * B<oauth>
-
-Type: Message (.google.api.OAuthRequirements)
-
-=item * B<allow_without_credential>
-
-Type: Bool
-
-=item * B<requirements>
-
-Type: Message (.google.api.AuthRequirement)
-
-=back
-
-=cut
-
 # === Message: Google::Api::Auth::JwtLocation ===
     # Fields for JwtLocation
     # Field: header Type: 9 ()
     # Field: query Type: 9 ()
     # Field: cookie Type: 9 ()
     # Field: value_prefix Type: 9 ()
-
-=pod
-
-=head1 NAME
-
-Google::Api::Auth::JwtLocation - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::Auth;
-
-    my $msg = Google::Api::Auth::JwtLocation->new(
-        header => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<header>
-
-Type: String
-
-=item * B<query>
-
-Type: String
-
-=item * B<cookie>
-
-Type: String
-
-=item * B<value_prefix>
-
-Type: String
-
-=back
-
-=cut
 
 # === Message: Google::Api::Auth::AuthProvider ===
     # Fields for AuthProvider
@@ -341,128 +235,379 @@ Type: String
     # Field: authorization_url Type: 9 ()
     # Field: jwt_locations Type: 11 (.google.api.JwtLocation)
 
-=pod
-
-=head1 NAME
-
-Google::Api::Auth::AuthProvider - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::Auth;
-
-    my $msg = Google::Api::Auth::AuthProvider->new(
-        id => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<id>
-
-Type: String
-
-=item * B<issuer>
-
-Type: String
-
-=item * B<jwks_uri>
-
-Type: String
-
-=item * B<audiences>
-
-Type: String
-
-=item * B<authorization_url>
-
-Type: String
-
-=item * B<jwt_locations>
-
-Type: Message (.google.api.JwtLocation)
-
-=back
-
-=cut
-
 # === Message: Google::Api::Auth::OAuthRequirements ===
     # Fields for OAuthRequirements
     # Field: canonical_scopes Type: 9 ()
-
-=pod
-
-=head1 NAME
-
-Google::Api::Auth::OAuthRequirements - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::Auth;
-
-    my $msg = Google::Api::Auth::OAuthRequirements->new(
-        canonical_scopes => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<canonical_scopes>
-
-Type: String
-
-=back
-
-=cut
 
 # === Message: Google::Api::Auth::AuthRequirement ===
     # Fields for AuthRequirement
     # Field: provider_id Type: 9 ()
     # Field: audiences Type: 9 ()
 
-=pod
+1;
+
+__END__
+
+=encoding UTF-8
 
 =head1 NAME
 
-Google::Api::Auth::AuthRequirement - Compiled Protocol Buffers message class
+Google::Api::Auth - Compiled Protocol Buffers messages for google/api/auth.proto
 
 =head1 SYNOPSIS
 
     use Google::Api::Auth;
 
-    my $msg = Google::Api::Auth::AuthRequirement->new(
-        provider_id => $value,
-    );
+    my $msg = Google::Api::Auth::Authentication->new({
+        rules => $rules,
+        providers => $providers,
+    });
 
-=head1 FIELDS
+    # Read or update a field
+    my $val = $msg->rules();
 
-=over 4
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Api::Auth::Authentication->parse($bytes);
 
-=item * B<provider_id>
-
-Type: String
-
-=item * B<audiences>
-
-Type: String
-
-=back
-
-=cut
-
-1;
-
-__END__
-
-=head1 NAME
-
-Google::Api::Auth - Protocol Buffers schema definition
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
 
 =head1 DESCRIPTION
 
-Auto-generated Protocol Buffers schema definition class.
+Auto-generated L<Protobuf> message classes compiled from C<google/api/auth.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Api::Auth::Authentication
+
+`Authentication` defines the authentication configuration for API methods
+provided by an API service.
+
+Example:
+
+    name: calendar.googleapis.com
+    authentication:
+      providers:
+      - id: google_calendar_auth
+        jwks_uri: https://www.googleapis.com/oauth2/v1/certs
+        issuer: https://securetoken.google.com
+      rules:
+      - selector: "*"
+        requirements:
+          provider_id: google_calendar_auth
+      - selector: google.calendar.Delegate
+        oauth:
+          canonical_scopes: https://www.googleapis.com/auth/calendar.read
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->rules() >> / C<< $msg->rules($value) >>
+
+Type: C<Message> (L<Google::Api::Auth::AuthenticationRule>)
+
+A list of authentication rules that apply to individual API methods.
+
+B<NOTE:> All service configuration rules follow "last one wins" order.
+
+=item * C<< $msg->providers() >> / C<< $msg->providers($value) >>
+
+Type: C<Message> (L<Google::Api::Auth::AuthProvider>)
+
+Defines a set of authentication providers that a service supports.
+
+=back
+
+=head2 Google::Api::Auth::AuthenticationRule
+
+Authentication rules for the service.
+
+By default, if a method has any authentication requirements, every request
+must include a valid credential matching one of the requirements.
+It's an error to include more than one kind of credential in a single
+request.
+
+If a method doesn't have any auth requirements, request credentials will be
+ignored.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->selector() >> / C<< $msg->selector($value) >>
+
+Type: C<String>
+
+Selects the methods to which this rule applies.
+
+Refer to [selector][google.api.DocumentationRule.selector] for syntax
+details.
+
+=item * C<< $msg->oauth() >> / C<< $msg->oauth($value) >>
+
+Type: C<Message> (L<Google::Api::Auth::OAuthRequirements>)
+
+The requirements for OAuth credentials.
+
+=item * C<< $msg->allow_without_credential() >> / C<< $msg->allow_without_credential($value) >>
+
+Type: C<Bool>
+
+If true, the service accepts API keys without any other credential.
+This flag only applies to HTTP and gRPC requests.
+
+=item * C<< $msg->requirements() >> / C<< $msg->requirements($value) >>
+
+Type: C<Message> (L<Google::Api::Auth::AuthRequirement>)
+
+Requirements for additional authentication providers.
+
+=back
+
+=head2 Google::Api::Auth::JwtLocation
+
+Specifies a location to extract JWT from an API request.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->header() >> / C<< $msg->header($value) >>
+
+Type: C<String>
+
+Specifies HTTP header name to extract JWT token.
+
+=item * C<< $msg->query() >> / C<< $msg->query($value) >>
+
+Type: C<String>
+
+Specifies URL query parameter name to extract JWT token.
+
+=item * C<< $msg->cookie() >> / C<< $msg->cookie($value) >>
+
+Type: C<String>
+
+Specifies cookie name to extract JWT token.
+
+=item * C<< $msg->value_prefix() >> / C<< $msg->value_prefix($value) >>
+
+Type: C<String>
+
+The value prefix. The value format is "value_prefix{token}"
+Only applies to "in" header type. Must be empty for "in" query type.
+If not empty, the header value has to match (case sensitive) this prefix.
+If not matched, JWT will not be extracted. If matched, JWT will be
+extracted after the prefix is removed.
+
+For example, for "Authorization: Bearer {JWT}",
+value_prefix="Bearer " with a space at the end.
+
+=back
+
+=head2 Google::Api::Auth::AuthProvider
+
+Configuration for an authentication provider, including support for
+[JSON Web Token
+(JWT)](https://tools.ietf.org/html/draft-ietf-oauth-json-web-token-32).
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->id() >> / C<< $msg->id($value) >>
+
+Type: C<String>
+
+The unique identifier of the auth provider. It will be referred to by
+`AuthRequirement.provider_id`.
+
+Example: "bookstore_auth".
+
+=item * C<< $msg->issuer() >> / C<< $msg->issuer($value) >>
+
+Type: C<String>
+
+Identifies the principal that issued the JWT. See
+https://tools.ietf.org/html/draft-ietf-oauth-json-web-token-32#section-4.1.1
+Usually a URL or an email address.
+
+Example: https://securetoken.google.com
+Example: 1234567-compute@developer.gserviceaccount.com
+
+=item * C<< $msg->jwks_uri() >> / C<< $msg->jwks_uri($value) >>
+
+Type: C<String>
+
+URL of the provider's public key set to validate signature of the JWT. See
+[OpenID
+Discovery](https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata).
+Optional if the key set document:
+ - can be retrieved from
+   [OpenID
+   Discovery](https://openid.net/specs/openid-connect-discovery-1_0.html)
+   of the issuer.
+ - can be inferred from the email domain of the issuer (e.g. a Google
+ service account).
+
+Example: https://www.googleapis.com/oauth2/v1/certs
+
+=item * C<< $msg->audiences() >> / C<< $msg->audiences($value) >>
+
+Type: C<String>
+
+The list of JWT
+[audiences](https://tools.ietf.org/html/draft-ietf-oauth-json-web-token-32#section-4.1.3).
+that are allowed to access. A JWT containing any of these audiences will
+be accepted. When this setting is absent, JWTs with audiences:
+  - "https://[service.name]/[google.protobuf.Api.name]"
+  - "https://[service.name]/"
+will be accepted.
+For example, if no audiences are in the setting, LibraryService API will
+accept JWTs with the following audiences:
+  -
+  https://library-example.googleapis.com/google.example.library.v1.LibraryService
+  - https://library-example.googleapis.com/
+
+Example:
+
+    audiences: bookstore_android.apps.googleusercontent.com,
+               bookstore_web.apps.googleusercontent.com
+
+=item * C<< $msg->authorization_url() >> / C<< $msg->authorization_url($value) >>
+
+Type: C<String>
+
+Redirect URL if JWT token is required but not present or is expired.
+Implement authorizationUrl of securityDefinitions in OpenAPI spec.
+
+=item * C<< $msg->jwt_locations() >> / C<< $msg->jwt_locations($value) >>
+
+Type: C<Message> (L<Google::Api::Auth::JwtLocation>)
+
+Defines the locations to extract the JWT.  For now it is only used by the
+Cloud Endpoints to store the OpenAPI extension [x-google-jwt-locations]
+(https://cloud.google.com/endpoints/docs/openapi/openapi-extensions#x-google-jwt-locations)
+
+JWT locations can be one of HTTP headers, URL query parameters or
+cookies. The rule is that the first match wins.
+
+If not specified,  default to use following 3 locations:
+   1) Authorization: Bearer
+   2) x-goog-iap-jwt-assertion
+   3) access_token query parameter
+
+Default locations can be specified as followings:
+   jwt_locations:
+   - header: Authorization
+     value_prefix: "Bearer "
+   - header: x-goog-iap-jwt-assertion
+   - query: access_token
+
+=back
+
+=head2 Google::Api::Auth::OAuthRequirements
+
+OAuth scopes are a way to define data and permissions on data. For example,
+there are scopes defined for "Read-only access to Google Calendar" and
+"Access to Cloud Platform". Users can consent to a scope for an application,
+giving it permission to access that data on their behalf.
+
+OAuth scope specifications should be fairly coarse grained; a user will need
+to see and understand the text description of what your scope means.
+
+In most cases: use one or at most two OAuth scopes for an entire family of
+products. If your product has multiple APIs, you should probably be sharing
+the OAuth scope across all of those APIs.
+
+When you need finer grained OAuth consent screens: talk with your product
+management about how developers will use them in practice.
+
+Please note that even though each of the canonical scopes is enough for a
+request to be accepted and passed to the backend, a request can still fail
+due to the backend requiring additional scopes or permissions.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->canonical_scopes() >> / C<< $msg->canonical_scopes($value) >>
+
+Type: C<String>
+
+The list of publicly documented OAuth scopes that are allowed access. An
+OAuth token containing any of these scopes will be accepted.
+
+
+Example:
+
+     canonical_scopes: https://www.googleapis.com/auth/calendar,
+                       https://www.googleapis.com/auth/calendar.read
+
+=back
+
+=head2 Google::Api::Auth::AuthRequirement
+
+User-defined authentication requirements, including support for
+[JSON Web Token
+(JWT)](https://tools.ietf.org/html/draft-ietf-oauth-json-web-token-32).
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->provider_id() >> / C<< $msg->provider_id($value) >>
+
+Type: C<String>
+
+[id][google.api.AuthProvider.id] from authentication provider.
+
+Example:
+
+    provider_id: bookstore_auth
+
+=item * C<< $msg->audiences() >> / C<< $msg->audiences($value) >>
+
+Type: C<String>
+
+NOTE: This will be deprecated soon, once AuthProvider.audiences is
+implemented and accepted in all the runtime components.
+
+The list of JWT
+[audiences](https://tools.ietf.org/html/draft-ietf-oauth-json-web-token-32#section-4.1.3).
+that are allowed to access. A JWT containing any of these audiences will
+be accepted. When this setting is absent, only JWTs with audience
+"https://[Service_name][google.api.Service.name]/[API_name][google.protobuf.Api.name]"
+will be accepted. For example, if no audiences are in the setting,
+LibraryService API will only accept JWTs with the following audience
+"https://library-example.googleapis.com/google.example.library.v1.LibraryService".
+
+Example:
+
+    audiences: bookstore_android.apps.googleusercontent.com,
+               bookstore_web.apps.googleusercontent.com
+
+=back
+
+=head1 SEE ALSO
+
+L<Protobuf>, L<Protobuf::Message>, L<Google::Api::Auth::Types>, L<https://protobuf.dev/>
 
 =head1 LICENSE AND COPYRIGHT
 

@@ -3,7 +3,7 @@ package Google::Api::Context;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -88,32 +88,6 @@ EOF
     # Fields for Context
     # Field: rules Type: 11 (.google.api.ContextRule)
 
-=pod
-
-=head1 NAME
-
-Google::Api::Context::Context - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::Context;
-
-    my $msg = Google::Api::Context::Context->new(
-        rules => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<rules>
-
-Type: Message (.google.api.ContextRule)
-
-=back
-
-=cut
-
 # === Message: Google::Api::Context::ContextRule ===
     # Fields for ContextRule
     # Field: selector Type: 9 ()
@@ -122,59 +96,150 @@ Type: Message (.google.api.ContextRule)
     # Field: allowed_request_extensions Type: 9 ()
     # Field: allowed_response_extensions Type: 9 ()
 
-=pod
+1;
+
+__END__
+
+=encoding UTF-8
 
 =head1 NAME
 
-Google::Api::Context::ContextRule - Compiled Protocol Buffers message class
+Google::Api::Context - Compiled Protocol Buffers messages for google/api/context.proto
 
 =head1 SYNOPSIS
 
     use Google::Api::Context;
 
-    my $msg = Google::Api::Context::ContextRule->new(
-        selector => $value,
-    );
+    my $msg = Google::Api::Context::Context->new({
+        rules => $rules,
+    });
 
-=head1 FIELDS
+    # Read or update a field
+    my $val = $msg->rules();
 
-=over 4
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Api::Context::Context->parse($bytes);
 
-=item * B<selector>
-
-Type: String
-
-=item * B<requested>
-
-Type: String
-
-=item * B<provided>
-
-Type: String
-
-=item * B<allowed_request_extensions>
-
-Type: String
-
-=item * B<allowed_response_extensions>
-
-Type: String
-
-=back
-
-=cut
-
-1;
-
-__END__
-
-=head1 NAME
-
-Google::Api::Context - Protocol Buffers schema definition
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
 
 =head1 DESCRIPTION
 
-Auto-generated Protocol Buffers schema definition class.
+Auto-generated L<Protobuf> message classes compiled from C<google/api/context.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Api::Context::Context
+
+`Context` defines which contexts an API requests.
+
+Example:
+
+    context:
+      rules:
+      - selector: "*"
+        requested:
+        - google.rpc.context.ProjectContext
+        - google.rpc.context.OriginContext
+
+The above specifies that all methods in the API request
+`google.rpc.context.ProjectContext` and
+`google.rpc.context.OriginContext`.
+
+Available context types are defined in package
+`google.rpc.context`.
+
+This also provides mechanism to allowlist any protobuf message extension that
+can be sent in grpc metadata using “x-goog-ext-<extension_id>-bin” and
+“x-goog-ext-<extension_id>-jspb” format. For example, list any service
+specific protobuf types that can appear in grpc metadata as follows in your
+yaml file:
+
+Example:
+
+    context:
+      rules:
+       - selector: "google.example.library.v1.LibraryService.CreateBook"
+         allowed_request_extensions:
+         - google.foo.v1.NewExtension
+         allowed_response_extensions:
+         - google.foo.v1.NewExtension
+
+You can also specify extension ID instead of fully qualified extension name
+here.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->rules() >> / C<< $msg->rules($value) >>
+
+Type: C<Message> (L<Google::Api::Context::ContextRule>)
+
+A list of RPC context rules that apply to individual API methods.
+
+B<NOTE:> All service configuration rules follow "last one wins" order.
+
+=back
+
+=head2 Google::Api::Context::ContextRule
+
+A context rule provides information about the context for an individual API
+element.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->selector() >> / C<< $msg->selector($value) >>
+
+Type: C<String>
+
+Selects the methods to which this rule applies.
+
+Refer to [selector][google.api.DocumentationRule.selector] for syntax
+details.
+
+=item * C<< $msg->requested() >> / C<< $msg->requested($value) >>
+
+Type: C<String>
+
+A list of full type names of requested contexts, only the requested context
+will be made available to the backend.
+
+=item * C<< $msg->provided() >> / C<< $msg->provided($value) >>
+
+Type: C<String>
+
+A list of full type names of provided contexts. It is used to support
+propagating HTTP headers and ETags from the response extension.
+
+=item * C<< $msg->allowed_request_extensions() >> / C<< $msg->allowed_request_extensions($value) >>
+
+Type: C<String>
+
+A list of full type names or extension IDs of extensions allowed in grpc
+side channel from client to backend.
+
+=item * C<< $msg->allowed_response_extensions() >> / C<< $msg->allowed_response_extensions($value) >>
+
+Type: C<String>
+
+A list of full type names or extension IDs of extensions allowed in grpc
+side channel from backend to client.
+
+=back
+
+=head1 SEE ALSO
+
+L<Protobuf>, L<Protobuf::Message>, L<Google::Api::Context::Types>, L<https://protobuf.dev/>
 
 =head1 LICENSE AND COPYRIGHT
 

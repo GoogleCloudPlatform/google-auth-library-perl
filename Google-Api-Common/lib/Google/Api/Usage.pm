@@ -3,7 +3,7 @@ package Google::Api::Usage;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -90,91 +90,142 @@ EOF
     # Field: rules Type: 11 (.google.api.UsageRule)
     # Field: producer_notification_channel Type: 9 ()
 
-=pod
-
-=head1 NAME
-
-Google::Api::Usage::Usage - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::Usage;
-
-    my $msg = Google::Api::Usage::Usage->new(
-        requirements => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<requirements>
-
-Type: String
-
-=item * B<rules>
-
-Type: Message (.google.api.UsageRule)
-
-=item * B<producer_notification_channel>
-
-Type: String
-
-=back
-
-=cut
-
 # === Message: Google::Api::Usage::UsageRule ===
     # Fields for UsageRule
     # Field: selector Type: 9 ()
     # Field: allow_unregistered_calls Type: 8 ()
     # Field: skip_service_control Type: 8 ()
 
-=pod
+1;
+
+__END__
+
+=encoding UTF-8
 
 =head1 NAME
 
-Google::Api::Usage::UsageRule - Compiled Protocol Buffers message class
+Google::Api::Usage - Compiled Protocol Buffers messages for google/api/usage.proto
 
 =head1 SYNOPSIS
 
     use Google::Api::Usage;
 
-    my $msg = Google::Api::Usage::UsageRule->new(
-        selector => $value,
-    );
+    my $msg = Google::Api::Usage::Usage->new({
+        requirements => $requirements,
+        rules => $rules,
+        producer_notification_channel => $producer_notification_channel,
+    });
 
-=head1 FIELDS
+    # Read or update a field
+    my $val = $msg->requirements();
 
-=over 4
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Api::Usage::Usage->parse($bytes);
 
-=item * B<selector>
-
-Type: String
-
-=item * B<allow_unregistered_calls>
-
-Type: Bool
-
-=item * B<skip_service_control>
-
-Type: Bool
-
-=back
-
-=cut
-
-1;
-
-__END__
-
-=head1 NAME
-
-Google::Api::Usage - Protocol Buffers schema definition
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
 
 =head1 DESCRIPTION
 
-Auto-generated Protocol Buffers schema definition class.
+Auto-generated L<Protobuf> message classes compiled from C<google/api/usage.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Api::Usage::Usage
+
+Configuration controlling usage of a service.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->requirements() >> / C<< $msg->requirements($value) >>
+
+Type: C<String>
+
+Requirements that must be satisfied before a consumer project can use the
+service. Each requirement is of the form <service.name>/<requirement-id>;
+for example 'serviceusage.googleapis.com/billing-enabled'.
+
+For Google APIs, a Terms of Service requirement must be included here.
+Google Cloud APIs must include "serviceusage.googleapis.com/tos/cloud".
+Other Google APIs should include
+"serviceusage.googleapis.com/tos/universal". Additional ToS can be
+included based on the business needs.
+
+=item * C<< $msg->rules() >> / C<< $msg->rules($value) >>
+
+Type: C<Message> (L<Google::Api::Usage::UsageRule>)
+
+A list of usage rules that apply to individual API methods.
+
+B<NOTE:> All service configuration rules follow "last one wins" order.
+
+=item * C<< $msg->producer_notification_channel() >> / C<< $msg->producer_notification_channel($value) >>
+
+Type: C<String>
+
+The full resource name of a channel used for sending notifications to the
+service producer.
+
+Google Service Management currently only supports
+[Google Cloud Pub/Sub](https://cloud.google.com/pubsub) as a notification
+channel. To use Google Cloud Pub/Sub as the channel, this must be the name
+of a Cloud Pub/Sub topic that uses the Cloud Pub/Sub topic name format
+documented in https://cloud.google.com/pubsub/docs/overview.
+
+=back
+
+=head2 Google::Api::Usage::UsageRule
+
+Usage configuration rules for the service.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->selector() >> / C<< $msg->selector($value) >>
+
+Type: C<String>
+
+Selects the methods to which this rule applies. Use '*' to indicate all
+methods in all APIs.
+
+Refer to [selector][google.api.DocumentationRule.selector] for syntax
+details.
+
+=item * C<< $msg->allow_unregistered_calls() >> / C<< $msg->allow_unregistered_calls($value) >>
+
+Type: C<Bool>
+
+Use this rule to configure unregistered calls for the service. Unregistered
+calls are calls that do not contain consumer project identity.
+(Example: calls that do not contain an API key).
+
+WARNING: By default, API methods do not allow unregistered calls, and each
+method call must be identified by a consumer project identity.
+
+=item * C<< $msg->skip_service_control() >> / C<< $msg->skip_service_control($value) >>
+
+Type: C<Bool>
+
+If true, the selected method should skip service control and the control
+plane features, such as quota and billing, will not be available.
+This flag is used by Google Cloud Endpoints to bypass checks for internal
+methods, such as service health check methods.
+
+=back
+
+=head1 SEE ALSO
+
+L<Protobuf>, L<Protobuf::Message>, L<Google::Api::Usage::Types>, L<https://protobuf.dev/>
 
 =head1 LICENSE AND COPYRIGHT
 

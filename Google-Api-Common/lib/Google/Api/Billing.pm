@@ -3,7 +3,7 @@ package Google::Api::Billing;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -82,43 +82,97 @@ EOF
     # Fields for Billing
     # Field: consumer_destinations Type: 11 (.google.api.Billing.BillingDestination)
 
-=pod
+1;
+
+__END__
+
+=encoding UTF-8
 
 =head1 NAME
 
-Google::Api::Billing::Billing - Compiled Protocol Buffers message class
+Google::Api::Billing - Compiled Protocol Buffers messages for google/api/billing.proto
 
 =head1 SYNOPSIS
 
     use Google::Api::Billing;
 
-    my $msg = Google::Api::Billing::Billing->new(
-        consumer_destinations => $value,
-    );
+    my $msg = Google::Api::Billing::Billing->new({
+        consumer_destinations => $consumer_destinations,
+    });
 
-=head1 FIELDS
+    # Read or update a field
+    my $val = $msg->consumer_destinations();
 
-=over 4
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Api::Billing::Billing->parse($bytes);
 
-=item * B<consumer_destinations>
-
-Type: Message (.google.api.Billing.BillingDestination)
-
-=back
-
-=cut
-
-1;
-
-__END__
-
-=head1 NAME
-
-Google::Api::Billing - Protocol Buffers schema definition
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
 
 =head1 DESCRIPTION
 
-Auto-generated Protocol Buffers schema definition class.
+Auto-generated L<Protobuf> message classes compiled from C<google/api/billing.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Api::Billing::Billing
+
+Billing related configuration of the service.
+
+The following example shows how to configure monitored resources and metrics
+for billing, `consumer_destinations` is the only supported destination and
+the monitored resources need at least one label key
+`cloud.googleapis.com/location` to indicate the location of the billing
+usage, using different monitored resources between monitoring and billing is
+recommended so they can be evolved independently:
+
+
+    monitored_resources:
+    - type: library.googleapis.com/billing_branch
+      labels:
+      - key: cloud.googleapis.com/location
+        description: |
+          Predefined label to support billing location restriction.
+      - key: city
+        description: |
+          Custom label to define the city where the library branch is located
+          in.
+      - key: name
+        description: Custom label to define the name of the library branch.
+    metrics:
+    - name: library.googleapis.com/book/borrowed_count
+      metric_kind: DELTA
+      value_type: INT64
+      unit: "1"
+    billing:
+      consumer_destinations:
+      - monitored_resource: library.googleapis.com/billing_branch
+        metrics:
+        - library.googleapis.com/book/borrowed_count
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->consumer_destinations() >> / C<< $msg->consumer_destinations($value) >>
+
+Type: C<Message> (L<Google::Api::Billing::Billing::BillingDestination>)
+
+Billing configurations for sending metrics to the consumer project.
+There can be multiple consumer destinations per service, each one must have
+a different monitored resource type. A metric can be used in at most
+one consumer destination.
+
+=back
+
+=head1 SEE ALSO
+
+L<Protobuf>, L<Protobuf::Message>, L<Google::Api::Billing::Types>, L<https://protobuf.dev/>
 
 =head1 LICENSE AND COPYRIGHT
 

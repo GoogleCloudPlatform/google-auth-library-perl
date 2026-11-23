@@ -3,7 +3,7 @@ package Google::Type::Money;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -56,38 +56,88 @@ EOF
     # Field: units Type: 3 ()
     # Field: nanos Type: 5 ()
 
-=pod
+1;
+
+__END__
+
+=encoding UTF-8
 
 =head1 NAME
 
-Google::Type::Money::Money - Compiled Protocol Buffers message class
+Google::Type::Money - Compiled Protocol Buffers messages for google/type/money.proto
 
 =head1 SYNOPSIS
 
     use Google::Type::Money;
 
-    my $msg = Google::Type::Money::Money->new(
-        currency_code => $value,
-    );
+    my $msg = Google::Type::Money::Money->new({
+        currency_code => $currency_code,
+        units => $units,
+        nanos => $nanos,
+    });
 
-=head1 FIELDS
+    # Read or update a field
+    my $val = $msg->currency_code();
+
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Type::Money::Money->parse($bytes);
+
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
+
+=head1 DESCRIPTION
+
+Auto-generated L<Protobuf> message classes compiled from C<google/type/money.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Type::Money::Money
+
+Represents an amount of money with its currency type.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
 
 =over 4
 
-=item * B<currency_code>
+=item * C<< $msg->currency_code() >> / C<< $msg->currency_code($value) >>
 
-Type: String
+Type: C<String>
 
-=item * B<units>
+The three-letter currency code defined in ISO 4217.
 
-Type: Int64
+=item * C<< $msg->units() >> / C<< $msg->units($value) >>
 
-=item * B<nanos>
+Type: C<Int64>
 
-Type: Int32
+The whole units of the amount.
+For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.
+
+=item * C<< $msg->nanos() >> / C<< $msg->nanos($value) >>
+
+Type: C<Int32>
+
+Number of nano (10^-9) units of the amount.
+The value must be between -999,999,999 and +999,999,999 inclusive.
+If `units` is positive, `nanos` must be positive or zero.
+If `units` is zero, `nanos` can be positive, zero, or negative.
+If `units` is negative, `nanos` must be negative or zero.
+For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.
 
 =back
 
-=cut
+=head1 SEE ALSO
 
-1;
+L<Protobuf>, L<Protobuf::Message>, L<Google::Type::Money::Types>, L<https://protobuf.dev/>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (C) 2026 Google LLC
+
+This program is released under the Apache 2.0 license.
+
+=cut

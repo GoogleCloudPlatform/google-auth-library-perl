@@ -3,7 +3,7 @@ package Google::Api::Policy;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -91,86 +91,132 @@ EOF
     # Field: resource_permission Type: 9 ()
     # Field: resource_type Type: 9 ()
 
-=pod
-
-=head1 NAME
-
-Google::Api::Policy::FieldPolicy - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::Policy;
-
-    my $msg = Google::Api::Policy::FieldPolicy->new(
-        selector => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<selector>
-
-Type: String
-
-=item * B<resource_permission>
-
-Type: String
-
-=item * B<resource_type>
-
-Type: String
-
-=back
-
-=cut
-
 # === Message: Google::Api::Policy::MethodPolicy ===
     # Fields for MethodPolicy
     # Field: selector Type: 9 ()
     # Field: request_policies Type: 11 (.google.api.FieldPolicy)
 
-=pod
+1;
+
+__END__
+
+=encoding UTF-8
 
 =head1 NAME
 
-Google::Api::Policy::MethodPolicy - Compiled Protocol Buffers message class
+Google::Api::Policy - Compiled Protocol Buffers messages for google/api/policy.proto
 
 =head1 SYNOPSIS
 
     use Google::Api::Policy;
 
-    my $msg = Google::Api::Policy::MethodPolicy->new(
-        selector => $value,
-    );
+    my $msg = Google::Api::Policy::FieldPolicy->new({
+        selector => $selector,
+        resource_permission => $resource_permission,
+        resource_type => $resource_type,
+    });
 
-=head1 FIELDS
+    # Read or update a field
+    my $val = $msg->selector();
 
-=over 4
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Api::Policy::FieldPolicy->parse($bytes);
 
-=item * B<selector>
-
-Type: String
-
-=item * B<request_policies>
-
-Type: Message (.google.api.FieldPolicy)
-
-=back
-
-=cut
-
-1;
-
-__END__
-
-=head1 NAME
-
-Google::Api::Policy - Protocol Buffers schema definition
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
 
 =head1 DESCRIPTION
 
-Auto-generated Protocol Buffers schema definition class.
+Auto-generated L<Protobuf> message classes compiled from C<google/api/policy.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Api::Policy::FieldPolicy
+
+Google API Policy Annotation
+
+This message defines a simple API policy annotation that can be used to
+annotate API request and response message fields with applicable policies.
+One field may have multiple applicable policies that must all be satisfied
+before a request can be processed. This policy annotation is used to
+generate the overall policy that will be used for automatic runtime
+policy enforcement and documentation generation.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->selector() >> / C<< $msg->selector($value) >>
+
+Type: C<String>
+
+Selects one or more request or response message fields to apply this
+`FieldPolicy`.
+
+When a `FieldPolicy` is used in proto annotation, the selector must
+be left as empty. The service config generator will automatically fill
+the correct value.
+
+When a `FieldPolicy` is used in service config, the selector must be a
+comma-separated string with valid request or response field paths,
+such as "foo.bar" or "foo.bar,foo.baz".
+
+=item * C<< $msg->resource_permission() >> / C<< $msg->resource_permission($value) >>
+
+Type: C<String>
+
+Specifies the required permission(s) for the resource referred to by the
+field. It requires the field contains a valid resource reference, and
+the request must pass the permission checks to proceed. For example,
+"resourcemanager.projects.get".
+
+=item * C<< $msg->resource_type() >> / C<< $msg->resource_type($value) >>
+
+Type: C<String>
+
+Specifies the resource type for the resource referred to by the field.
+
+=back
+
+=head2 Google::Api::Policy::MethodPolicy
+
+Defines policies applying to an RPC method.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->selector() >> / C<< $msg->selector($value) >>
+
+Type: C<String>
+
+Selects a method to which these policies should be enforced, for example,
+"google.pubsub.v1.Subscriber.CreateSubscription".
+
+Refer to [selector][google.api.DocumentationRule.selector] for syntax
+details.
+
+NOTE: This field must not be set in the proto annotation. It will be
+automatically filled by the service config compiler .
+
+=item * C<< $msg->request_policies() >> / C<< $msg->request_policies($value) >>
+
+Type: C<Message> (L<Google::Api::Policy::FieldPolicy>)
+
+Policies that are applicable to the request message.
+
+=back
+
+=head1 SEE ALSO
+
+L<Protobuf>, L<Protobuf::Message>, L<Google::Api::Policy::Types>, L<https://protobuf.dev/>
 
 =head1 LICENSE AND COPYRIGHT
 

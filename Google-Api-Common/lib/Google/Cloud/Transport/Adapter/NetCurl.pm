@@ -350,23 +350,83 @@ sub get_metadata {
 
 =head1 NAME
 
-Google::Cloud::Transport::Adapter::NetCurl - Net::Curl Backend for Pluggable Transport
+Google::Cloud::Transport::Adapter::NetCurl - Net::Curl HTTP/1.1 and HTTP/2 backend for Pluggable Transport
 
 =head1 SYNOPSIS
 
     use Google::Cloud::Transport::Adapter::NetCurl;
+
     my $transport = Google::Cloud::Transport::Adapter::NetCurl->new();
-    
+
     my $future = $transport->request(
-        method => 'GET',
-        url    => 'https://example.com',
+        method  => 'GET',
+        url     => 'https://storage.googleapis.com/storage/v1/b',
+        headers => { Authorization => "Bearer $token" },
     );
-    
+
     my ($body, $headers) = $future->get();
 
 =head1 DESCRIPTION
 
-This adapter provides a transport implementation using Net::Curl.
-It supports HTTP/2 if libcurl was compiled with it.
+C<Google::Cloud::Transport::Adapter::NetCurl> implements the
+L<Google::Cloud::Transport::Role::Adapter> role using L<Net::Curl::Easy> and
+L<Net::Curl::Multi>. It supports HTTP/2 when C<libcurl> is compiled with
+HTTP/2 support, enforces TLS settings from
+L<Google::Cloud::Transport::Configuration>, isolates C<Net::Curl::Multi>
+handles per C<auth_context_id>, and detects C<fork()> to safely re-initialize
+handles in child processes.
+
+=head1 ATTRIBUTES
+
+=over 4
+
+=item C<configuration> (read-only)
+
+A L<Google::Cloud::Transport::Configuration> instance controlling TLS
+verification, CA bundle, ALPN protocols, and default timeout.
+
+=back
+
+=head1 METHODS
+
+=head2 timeout()
+
+Returns the default request timeout in seconds from C<configuration>.
+
+=head2 request(%args)
+
+    my $future = $transport->request(
+        method          => 'POST',
+        url             => $url,
+        headers         => \%headers,
+        body            => $payload,
+        timeout         => 30,
+        auth_context_id => $ctx_id,
+    );
+
+Executes an HTTP request and returns a L<Future> resolving to
+C<($response_body, $headers)> on 2xx responses, or failing with
+C<($error, 'Transport', \%details)> on transport or non-2xx HTTP errors.
+
+=head2 start_stream(%args)
+
+    my $handle = $transport->start_stream(
+        method   => 'GET',
+        url      => $url,
+        headers  => \%headers,
+        on_data  => sub { my ($chunk) = @_; ... },
+        on_eof   => sub { ... },
+        on_error => sub { my ($err, $info) = @_; ... },
+    );
+
+Executes a streaming HTTP request, invoking C<on_data> as response chunks
+arrive, followed by C<on_eof> or C<on_error>. Returns a stream handle
+implementing L<Google::Cloud::Transport::Role::Stream>.
+
+=head1 SEE ALSO
+
+L<Google::Cloud::Transport::Configuration>,
+L<Google::Cloud::Transport::Adapter::LWP>,
+L<Google::Cloud::Transport::Adapter::Nghttp2>
 
 =cut

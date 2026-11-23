@@ -3,7 +3,7 @@ package Google::Api::Endpoint;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -82,55 +82,115 @@ EOF
     # Field: target Type: 9 ()
     # Field: allow_cors Type: 8 ()
 
-=pod
+1;
+
+__END__
+
+=encoding UTF-8
 
 =head1 NAME
 
-Google::Api::Endpoint::Endpoint - Compiled Protocol Buffers message class
+Google::Api::Endpoint - Compiled Protocol Buffers messages for google/api/endpoint.proto
 
 =head1 SYNOPSIS
 
     use Google::Api::Endpoint;
 
-    my $msg = Google::Api::Endpoint::Endpoint->new(
-        name => $value,
-    );
+    my $msg = Google::Api::Endpoint::Endpoint->new({
+        name => $name,
+        aliases => $aliases,
+        target => $target,
+        allow_cors => $allow_cors,
+    });
 
-=head1 FIELDS
+    # Read or update a field
+    my $val = $msg->name();
 
-=over 4
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Api::Endpoint::Endpoint->parse($bytes);
 
-=item * B<name>
-
-Type: String
-
-=item * B<aliases>
-
-Type: String
-
-=item * B<target>
-
-Type: String
-
-=item * B<allow_cors>
-
-Type: Bool
-
-=back
-
-=cut
-
-1;
-
-__END__
-
-=head1 NAME
-
-Google::Api::Endpoint - Protocol Buffers schema definition
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
 
 =head1 DESCRIPTION
 
-Auto-generated Protocol Buffers schema definition class.
+Auto-generated L<Protobuf> message classes compiled from C<google/api/endpoint.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Api::Endpoint::Endpoint
+
+`Endpoint` describes a network address of a service that serves a set of
+APIs. It is commonly known as a service endpoint. A service may expose
+any number of service endpoints, and all service endpoints share the same
+service definition, such as quota limits and monitoring metrics.
+
+Example:
+
+    type: google.api.Service
+    name: library-example.googleapis.com
+    endpoints:
+      # Declares network address `https://library-example.googleapis.com`
+      # for service `library-example.googleapis.com`. The `https` scheme
+      # is implicit for all service endpoints. Other schemes may be
+      # supported in the future.
+    - name: library-example.googleapis.com
+      allow_cors: false
+    - name: content-staging-library-example.googleapis.com
+      # Allows HTTP OPTIONS calls to be passed to the API frontend, for it
+      # to decide whether the subsequent cross-origin request is allowed
+      # to proceed.
+      allow_cors: true
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->name() >> / C<< $msg->name($value) >>
+
+Type: C<String>
+
+The canonical name of this endpoint.
+
+=item * C<< $msg->aliases() >> / C<< $msg->aliases($value) >>
+
+Type: C<String>
+
+Aliases for this endpoint, these will be served by the same UrlMap as the
+parent endpoint, and will be provisioned in the GCP stack for the Regional
+Endpoints.
+
+=item * C<< $msg->target() >> / C<< $msg->target($value) >>
+
+Type: C<String>
+
+The specification of an Internet routable address of API frontend that will
+handle requests to this [API
+Endpoint](https://cloud.google.com/apis/design/glossary). It should be
+either a valid IPv4 address or a fully-qualified domain name. For example,
+"8.8.8.8" or "myservice.appspot.com".
+
+=item * C<< $msg->allow_cors() >> / C<< $msg->allow_cors($value) >>
+
+Type: C<Bool>
+
+Allowing
+[CORS](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing), aka
+cross-domain traffic, would allow the backends served from this endpoint to
+receive and respond to HTTP OPTIONS requests. The response will be used by
+the browser to determine whether the subsequent cross-origin request is
+allowed to proceed.
+
+=back
+
+=head1 SEE ALSO
+
+L<Protobuf>, L<Protobuf::Message>, L<Google::Api::Endpoint::Types>, L<https://protobuf.dev/>
 
 =head1 LICENSE AND COPYRIGHT
 

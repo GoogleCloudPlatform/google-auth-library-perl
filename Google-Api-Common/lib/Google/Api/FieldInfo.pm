@@ -3,7 +3,7 @@ package Google::Api::FieldInfo;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -113,36 +113,6 @@ EOF
     # Field: format Type: 14 (.google.api.FieldInfo.Format)
     # Field: referenced_types Type: 11 (.google.api.TypeReference)
 
-=pod
-
-=head1 NAME
-
-Google::Api::FieldInfo::FieldInfo - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::FieldInfo;
-
-    my $msg = Google::Api::FieldInfo::FieldInfo->new(
-        format => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<format>
-
-Type: Enum (.google.api.FieldInfo.Format)
-
-=item * B<referenced_types>
-
-Type: Message (.google.api.TypeReference)
-
-=back
-
-=cut
-
 # Enum: FieldInfo::Format
 our $FieldInfo_FORMAT_UNSPECIFIED = 0;
 our $FieldInfo_UUID4 = 1;
@@ -150,69 +120,121 @@ our $FieldInfo_IPV4 = 2;
 our $FieldInfo_IPV6 = 3;
 our $FieldInfo_IPV4_OR_IPV6 = 4;
 
-=pod
-
-=head2 Enum: FieldInfo::Format
-
-Values:
-
-=over 4
-
-=item * C<FORMAT_UNSPECIFIED> => 0
-
-=item * C<UUID4> => 1
-
-=item * C<IPV4> => 2
-
-=item * C<IPV6> => 3
-
-=item * C<IPV4_OR_IPV6> => 4
-
-=back
-
-=cut
-
 # === Message: Google::Api::FieldInfo::TypeReference ===
     # Fields for TypeReference
     # Field: type_name Type: 9 ()
-
-=pod
-
-=head1 NAME
-
-Google::Api::FieldInfo::TypeReference - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::FieldInfo;
-
-    my $msg = Google::Api::FieldInfo::TypeReference->new(
-        type_name => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<type_name>
-
-Type: String
-
-=back
-
-=cut
 
 1;
 
 __END__
 
+=encoding UTF-8
+
 =head1 NAME
 
-Google::Api::FieldInfo - Protocol Buffers schema definition
+Google::Api::FieldInfo - Compiled Protocol Buffers messages for google/api/field_info.proto
+
+=head1 SYNOPSIS
+
+    use Google::Api::FieldInfo;
+
+    my $msg = Google::Api::FieldInfo::FieldInfo->new({
+        format => $format,
+        referenced_types => $referenced_types,
+    });
+
+    # Read or update a field
+    my $val = $msg->format();
+
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Api::FieldInfo::FieldInfo->parse($bytes);
+
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
 
 =head1 DESCRIPTION
 
-Auto-generated Protocol Buffers schema definition class.
+Auto-generated L<Protobuf> message classes compiled from C<google/api/field_info.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Api::FieldInfo::FieldInfo
+
+Rich semantic information of an API field beyond basic typing.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->format() >> / C<< $msg->format($value) >>
+
+Type: C<Enum> (L<Google::Api::FieldInfo::Format>)
+
+The standard format of a field value. This does not explicitly configure
+any API consumer, just documents the API's format for the field it is
+applied to.
+
+=item * C<< $msg->referenced_types() >> / C<< $msg->referenced_types($value) >>
+
+Type: C<Message> (L<Google::Api::FieldInfo::TypeReference>)
+
+The type(s) that the annotated, generic field may represent.
+
+Currently, this must only be used on fields of type `google.protobuf.Any`.
+Supporting other generic types may be considered in the future.
+
+=back
+
+=head3 Enum: FieldInfo::Format
+
+=over 4
+
+=item * C<FORMAT_UNSPECIFIED> => C<0>
+
+=item * C<UUID4> => C<1>
+
+=item * C<IPV4> => C<2>
+
+=item * C<IPV6> => C<3>
+
+=item * C<IPV4_OR_IPV6> => C<4>
+
+=back
+
+=head2 Google::Api::FieldInfo::TypeReference
+
+A reference to a message type, for use in [FieldInfo][google.api.FieldInfo].
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->type_name() >> / C<< $msg->type_name($value) >>
+
+Type: C<String>
+
+The name of the type that the annotated, generic field may represent.
+If the type is in the same protobuf package, the value can be the simple
+message name e.g., `"MyMessage"`. Otherwise, the value must be the
+fully-qualified message name e.g., `"google.library.v1.Book"`.
+
+If the type(s) are unknown to the service (e.g. the field accepts generic
+user input), use the wildcard `"*"` to denote this behavior.
+
+See [AIP-202](https://google.aip.dev/202#type-references) for more details.
+
+=back
+
+=head1 SEE ALSO
+
+L<Protobuf>, L<Protobuf::Message>, L<Google::Api::FieldInfo::Types>, L<https://protobuf.dev/>
 
 =head1 LICENSE AND COPYRIGHT
 

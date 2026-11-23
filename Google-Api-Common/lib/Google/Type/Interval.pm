@@ -3,7 +3,7 @@ package Google::Type::Interval;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -57,34 +57,86 @@ EOF
     # Field: start_time Type: 11 (.google.protobuf.Timestamp)
     # Field: end_time Type: 11 (.google.protobuf.Timestamp)
 
-=pod
+1;
+
+__END__
+
+=encoding UTF-8
 
 =head1 NAME
 
-Google::Type::Interval::Interval - Compiled Protocol Buffers message class
+Google::Type::Interval - Compiled Protocol Buffers messages for google/type/interval.proto
 
 =head1 SYNOPSIS
 
     use Google::Type::Interval;
 
-    my $msg = Google::Type::Interval::Interval->new(
-        start_time => $value,
-    );
+    my $msg = Google::Type::Interval::Interval->new({
+        start_time => $start_time,
+        end_time => $end_time,
+    });
 
-=head1 FIELDS
+    # Read or update a field
+    my $val = $msg->start_time();
+
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Type::Interval::Interval->parse($bytes);
+
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
+
+=head1 DESCRIPTION
+
+Auto-generated L<Protobuf> message classes compiled from C<google/type/interval.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Type::Interval::Interval
+
+Represents a time interval, encoded as a Timestamp start (inclusive) and a
+Timestamp end (exclusive).
+
+The start must be less than or equal to the end.
+When the start equals the end, the interval is empty (matches no time).
+When both start and end are unspecified, the interval matches any time.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
 
 =over 4
 
-=item * B<start_time>
+=item * C<< $msg->start_time() >> / C<< $msg->start_time($value) >>
 
-Type: Message (.google.protobuf.Timestamp)
+Type: C<Message> (L<Google::Protobuf::Timestamp::Timestamp>)
 
-=item * B<end_time>
+Optional. Inclusive start of the interval.
 
-Type: Message (.google.protobuf.Timestamp)
+If specified, a Timestamp matching this interval will have to be the same
+or after the start.
+
+=item * C<< $msg->end_time() >> / C<< $msg->end_time($value) >>
+
+Type: C<Message> (L<Google::Protobuf::Timestamp::Timestamp>)
+
+Optional. Exclusive end of the interval.
+
+If specified, a Timestamp matching this interval will have to be before the
+end.
 
 =back
 
-=cut
+=head1 SEE ALSO
 
-1;
+L<Protobuf>, L<Protobuf::Message>, L<Google::Type::Interval::Types>, L<https://protobuf.dev/>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (C) 2026 Google LLC
+
+This program is released under the Apache 2.0 license.
+
+=cut

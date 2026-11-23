@@ -1,5 +1,8 @@
 Revision history for Google-Api-Common
 
+0.06    2026-11-23
+    - Overhauled Google::Api::Common POD modeled on google-api-core / gapic-common (SYNOPSIS, architecture overview, transport adapters, REST/streaming client reference, and bundled googleapis schemas).
+
 0.05    2026-11-21
     - Implemented Pluggable Transport Architecture (Google::Cloud::ClientBase, Google::Cloud::Transport::Adapter::LWP, NetCurl, Nghttp2) with streaming and configuration support.
     - Made Google::Cloud::REST::Client async-ready (call_async) with safe URI percent-encoding and non-blocking exponential backoff retries.

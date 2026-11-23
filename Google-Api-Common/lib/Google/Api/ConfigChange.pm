@@ -3,7 +3,7 @@ package Google::Api::ConfigChange;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -95,89 +95,130 @@ EOF
     # Field: change_type Type: 14 (.google.api.ChangeType)
     # Field: advices Type: 11 (.google.api.Advice)
 
-=pod
-
-=head1 NAME
-
-Google::Api::ConfigChange::ConfigChange - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::ConfigChange;
-
-    my $msg = Google::Api::ConfigChange::ConfigChange->new(
-        element => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<element>
-
-Type: String
-
-=item * B<old_value>
-
-Type: String
-
-=item * B<new_value>
-
-Type: String
-
-=item * B<change_type>
-
-Type: Enum (.google.api.ChangeType)
-
-=item * B<advices>
-
-Type: Message (.google.api.Advice)
-
-=back
-
-=cut
-
 # === Message: Google::Api::ConfigChange::Advice ===
     # Fields for Advice
     # Field: description Type: 9 ()
-
-=pod
-
-=head1 NAME
-
-Google::Api::ConfigChange::Advice - Compiled Protocol Buffers message class
-
-=head1 SYNOPSIS
-
-    use Google::Api::ConfigChange;
-
-    my $msg = Google::Api::ConfigChange::Advice->new(
-        description => $value,
-    );
-
-=head1 FIELDS
-
-=over 4
-
-=item * B<description>
-
-Type: String
-
-=back
-
-=cut
 
 1;
 
 __END__
 
+=encoding UTF-8
+
 =head1 NAME
 
-Google::Api::ConfigChange - Protocol Buffers schema definition
+Google::Api::ConfigChange - Compiled Protocol Buffers messages for google/api/config_change.proto
+
+=head1 SYNOPSIS
+
+    use Google::Api::ConfigChange;
+
+    my $msg = Google::Api::ConfigChange::ConfigChange->new({
+        element => $element,
+        old_value => $old_value,
+        new_value => $new_value,
+        change_type => $change_type,
+    });
+
+    # Read or update a field
+    my $val = $msg->element();
+
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Api::ConfigChange::ConfigChange->parse($bytes);
+
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
 
 =head1 DESCRIPTION
 
-Auto-generated Protocol Buffers schema definition class.
+Auto-generated L<Protobuf> message classes compiled from C<google/api/config_change.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Api::ConfigChange::ConfigChange
+
+Output generated from semantically comparing two versions of a service
+configuration.
+
+Includes detailed information about a field that have changed with
+applicable advice about potential consequences for the change, such as
+backwards-incompatibility.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->element() >> / C<< $msg->element($value) >>
+
+Type: C<String>
+
+Object hierarchy path to the change, with levels separated by a '.'
+character. For repeated fields, an applicable unique identifier field is
+used for the index (usually selector, name, or id). For maps, the term
+'key' is used. If the field has no unique identifier, the numeric index
+is used.
+Examples:
+- visibility.rules[selector=="google.LibraryService.ListBooks"].restriction
+- quota.metric_rules[selector=="google"].metric_costs[key=="reads"].value
+- logging.producer_destinations[0]
+
+=item * C<< $msg->old_value() >> / C<< $msg->old_value($value) >>
+
+Type: C<String>
+
+Value of the changed object in the old Service configuration,
+in JSON format. This field will not be populated if ChangeType == ADDED.
+
+=item * C<< $msg->new_value() >> / C<< $msg->new_value($value) >>
+
+Type: C<String>
+
+Value of the changed object in the new Service configuration,
+in JSON format. This field will not be populated if ChangeType == REMOVED.
+
+=item * C<< $msg->change_type() >> / C<< $msg->change_type($value) >>
+
+Type: C<Enum> (L<Google::Api::ChangeType>)
+
+The type for this change, either ADDED, REMOVED, or MODIFIED.
+
+=item * C<< $msg->advices() >> / C<< $msg->advices($value) >>
+
+Type: C<Message> (L<Google::Api::ConfigChange::Advice>)
+
+Collection of advice provided for this change, useful for determining the
+possible impact of this change.
+
+=back
+
+=head2 Google::Api::ConfigChange::Advice
+
+Generated advice about this change, used for providing more
+information about how a change will affect the existing service.
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->description() >> / C<< $msg->description($value) >>
+
+Type: C<String>
+
+Useful description for why this advice was applied and what actions should
+be taken to mitigate any implied risks.
+
+=back
+
+=head1 SEE ALSO
+
+L<Protobuf>, L<Protobuf::Message>, L<Google::Api::ConfigChange::Types>, L<https://protobuf.dev/>
 
 =head1 LICENSE AND COPYRIGHT
 

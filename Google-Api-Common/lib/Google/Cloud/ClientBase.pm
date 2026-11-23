@@ -78,12 +78,6 @@ sub decode_payload {
     }
 }
 
-=head2 start_stream
-
-Initiates a stream and returns a high-level Google::Cloud::ClientBase::Stream object.
-
-=cut
-
 sub start_stream {
     my ($self, %args) = @_;
     
@@ -105,13 +99,105 @@ sub start_stream {
 
 1;
 
+__END__
+
+=encoding UTF-8
+
 =head1 NAME
 
-Google::Cloud::ClientBase - Base class for Google Cloud API clients
+Google::Cloud::ClientBase - Reference base class for Google Cloud API clients (serialization and pluggable transport)
+
+=head1 SYNOPSIS
+
+    package My::Google::Cloud::Client;
+    use Moo;
+    extends 'Google::Cloud::ClientBase';
+
+    sub get_resource {
+        my ($self, $url) = @_;
+        my $future = $self->transport->request(
+            method => 'GET',
+            url    => $url,
+        );
+        my ($body, $headers) = $future->get();
+        return $self->decode_payload($body, 'json');
+    }
+
+    # Streaming downloads / uploads
+    my $stream = $client->start_stream(
+        method => 'GET',
+        url    => 'https://storage.googleapis.com/storage/v1/b/my-bucket/o/file?alt=media',
+    );
+    while (defined(my $chunk = $stream->read()->get())) {
+        ...
+    }
 
 =head1 DESCRIPTION
 
-This module provides common functionality for Google Cloud API clients,
-including serialization/deserialization and transport management.
+C<Google::Cloud::ClientBase> is the reference base class for Google Cloud Perl
+client libraries (such as L<Google::Cloud::REST::Client>). It keeps the
+transport layer strictly bytes-only by centralizing JSON and Protocol Buffers
+serialization/deserialization in the calling layer, and wraps low-level
+transport streams into L<Google::Cloud::ClientBase::Stream> handles.
+
+=head1 ATTRIBUTES
+
+=head2 transport
+
+An object implementing L<Google::Cloud::Transport::Role::Adapter>. Defaults to
+a lazily constructed L<Google::Cloud::Transport::Adapter::LWP> instance, and
+may be swapped for L<Google::Cloud::Transport::Adapter::NetCurl> or
+L<Google::Cloud::Transport::Adapter::Nghttp2>.
+
+=head1 METHODS
+
+=head2 encode_payload( $payload, $format )
+
+    my $json_bytes  = $client->encode_payload({ key => 'value' }, 'json');
+    my $proto_bytes = $client->encode_payload($proto_msg, 'protobuf');
+
+Serializes C<$payload> according to C<$format> (C<'json'>, the default, or
+C<'protobuf'>). For C<'json'>, accepts a HashRef or an object implementing
+C<to_hash()>. For C<'protobuf'>, requires an object implementing C<serialize()>.
+
+=head2 decode_payload( $body, $format, $response_class )
+
+    my $hash = $client->decode_payload($json_bytes, 'json');
+    my $obj  = $client->decode_payload($proto_bytes, 'protobuf', 'My::Response');
+
+Deserializes raw response bytes according to C<$format> (C<'json'> or
+C<'protobuf'>). When C<$response_class> is supplied, constructs an instance via
+C<from_hash()>, C<new()>, or C<parse()> (for Protobuf).
+
+=head2 start_stream( %args )
+
+    my $stream = $client->start_stream(
+        method  => 'GET',
+        url     => $url,
+        headers => \%headers,
+    );
+
+Initiates a streaming request on C<< $self->transport >> and returns a
+high-level L<Google::Cloud::ClientBase::Stream> object whose C<read()> method
+returns a L<Future> for each incoming chunk (or C<undef> on EOF).
+
+=head1 SEE ALSO
+
+L<Google::Api::Common>, L<Google::Cloud::REST::Client>,
+L<Google::Cloud::ClientBase::Stream>,
+L<Google::Cloud::Transport::Role::Adapter>,
+L<Google::Cloud::Transport::Adapter::LWP>,
+L<Google::Cloud::Transport::Adapter::NetCurl>,
+L<Google::Cloud::Transport::Adapter::Nghttp2>
+
+=head1 AUTHOR
+
+C.J. Collier E<lt>cjac@google.comE<gt>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (c) 2026 Google LLC and contributors.
+
+Licensed under the Apache License, Version 2.0.
 
 =cut

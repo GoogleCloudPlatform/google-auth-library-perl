@@ -182,23 +182,80 @@ sub get_metadata {
 
 =head1 NAME
 
-Google::Cloud::Transport::Adapter::LWP - LWP Backend for Pluggable Transport
+Google::Cloud::Transport::Adapter::LWP - LWP::UserAgent backend for Pluggable Transport
 
 =head1 SYNOPSIS
 
     use Google::Cloud::Transport::Adapter::LWP;
+
     my $transport = Google::Cloud::Transport::Adapter::LWP->new();
-    
+
     my $future = $transport->request(
-        method => 'GET',
-        url    => 'https://example.com',
+        method  => 'GET',
+        url     => 'https://storage.googleapis.com/storage/v1/b',
+        headers => { Authorization => "Bearer $token" },
     );
-    
+
     my ($body, $headers) = $future->get();
 
 =head1 DESCRIPTION
 
-This adapter provides a blocking transport implementation using LWP::UserAgent.
-It is intended for backward compatibility and environments without async requirements.
+C<Google::Cloud::Transport::Adapter::LWP> implements the
+L<Google::Cloud::Transport::Role::Adapter> role using L<LWP::UserAgent>. It
+provides a portable, pure-Perl blocking HTTP/1.1 transport suitable for
+environments without C<libcurl> or C<libnghttp2>, while applying the TLS and
+timeout settings from L<Google::Cloud::Transport::Configuration>.
+
+=head1 ATTRIBUTES
+
+=over 4
+
+=item C<configuration> (read-only)
+
+A L<Google::Cloud::Transport::Configuration> instance controlling TLS
+verification, CA bundle, and default timeout.
+
+=item C<user_agent> (read-write, lazy)
+
+The underlying L<LWP::UserAgent> instance.
+
+=back
+
+=head1 METHODS
+
+=head2 request(%args)
+
+    my $future = $transport->request(
+        method  => 'POST',
+        url     => $url,
+        headers => \%headers,
+        body    => $payload,
+        timeout => 30,
+    );
+
+Executes an HTTP request and returns a L<Future> resolving to
+C<($response_body, $http_headers)> on 2xx responses, or failing with
+C<($status_line, 'Transport', $http_response)> on error.
+
+=head2 start_stream(%args)
+
+    my $handle = $transport->start_stream(
+        method   => 'GET',
+        url      => $url,
+        headers  => \%headers,
+        on_data  => sub { my ($chunk) = @_; ... },
+        on_eof   => sub { ... },
+        on_error => sub { my ($status_line, $res) = @_; ... },
+    );
+
+Streams the HTTP response body to C<on_data> in chunks, invoking C<on_eof> on
+completion or C<on_error> on failure. Returns a stream handle implementing
+L<Google::Cloud::Transport::Role::Stream>.
+
+=head1 SEE ALSO
+
+L<Google::Cloud::Transport::Configuration>,
+L<Google::Cloud::Transport::Adapter::NetCurl>,
+L<Google::Cloud::Transport::Adapter::Nghttp2>
 
 =cut

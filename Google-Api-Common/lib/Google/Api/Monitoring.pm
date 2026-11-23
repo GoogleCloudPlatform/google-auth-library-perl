@@ -3,7 +3,7 @@ package Google::Api::Monitoring;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -110,47 +110,131 @@ EOF
     # Field: producer_destinations Type: 11 (.google.api.Monitoring.MonitoringDestination)
     # Field: consumer_destinations Type: 11 (.google.api.Monitoring.MonitoringDestination)
 
-=pod
+1;
+
+__END__
+
+=encoding UTF-8
 
 =head1 NAME
 
-Google::Api::Monitoring::Monitoring - Compiled Protocol Buffers message class
+Google::Api::Monitoring - Compiled Protocol Buffers messages for google/api/monitoring.proto
 
 =head1 SYNOPSIS
 
     use Google::Api::Monitoring;
 
-    my $msg = Google::Api::Monitoring::Monitoring->new(
-        producer_destinations => $value,
-    );
+    my $msg = Google::Api::Monitoring::Monitoring->new({
+        producer_destinations => $producer_destinations,
+        consumer_destinations => $consumer_destinations,
+    });
 
-=head1 FIELDS
+    # Read or update a field
+    my $val = $msg->producer_destinations();
 
-=over 4
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Api::Monitoring::Monitoring->parse($bytes);
 
-=item * B<producer_destinations>
-
-Type: Message (.google.api.Monitoring.MonitoringDestination)
-
-=item * B<consumer_destinations>
-
-Type: Message (.google.api.Monitoring.MonitoringDestination)
-
-=back
-
-=cut
-
-1;
-
-__END__
-
-=head1 NAME
-
-Google::Api::Monitoring - Protocol Buffers schema definition
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
 
 =head1 DESCRIPTION
 
-Auto-generated Protocol Buffers schema definition class.
+Auto-generated L<Protobuf> message classes compiled from C<google/api/monitoring.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Api::Monitoring::Monitoring
+
+Monitoring configuration of the service.
+
+The example below shows how to configure monitored resources and metrics
+for monitoring. In the example, a monitored resource and two metrics are
+defined. The `library.googleapis.com/book/returned_count` metric is sent
+to both producer and consumer projects, whereas the
+`library.googleapis.com/book/num_overdue` metric is only sent to the
+consumer project.
+
+    monitored_resources:
+    - type: library.googleapis.com/Branch
+      display_name: "Library Branch"
+      description: "A branch of a library."
+      launch_stage: GA
+      labels:
+      - key: resource_container
+        description: "The Cloud container (ie. project id) for the Branch."
+      - key: location
+        description: "The location of the library branch."
+      - key: branch_id
+        description: "The id of the branch."
+    metrics:
+    - name: library.googleapis.com/book/returned_count
+      display_name: "Books Returned"
+      description: "The count of books that have been returned."
+      launch_stage: GA
+      metric_kind: DELTA
+      value_type: INT64
+      unit: "1"
+      labels:
+      - key: customer_id
+        description: "The id of the customer."
+    - name: library.googleapis.com/book/num_overdue
+      display_name: "Books Overdue"
+      description: "The current number of overdue books."
+      launch_stage: GA
+      metric_kind: GAUGE
+      value_type: INT64
+      unit: "1"
+      labels:
+      - key: customer_id
+        description: "The id of the customer."
+    monitoring:
+      producer_destinations:
+      - monitored_resource: library.googleapis.com/Branch
+        metrics:
+        - library.googleapis.com/book/returned_count
+      consumer_destinations:
+      - monitored_resource: library.googleapis.com/Branch
+        metrics:
+        - library.googleapis.com/book/returned_count
+        - library.googleapis.com/book/num_overdue
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->producer_destinations() >> / C<< $msg->producer_destinations($value) >>
+
+Type: C<Message> (L<Google::Api::Monitoring::Monitoring::MonitoringDestination>)
+
+Monitoring configurations for sending metrics to the producer project.
+There can be multiple producer destinations. A monitored resource type may
+appear in multiple monitoring destinations if different aggregations are
+needed for different sets of metrics associated with that monitored
+resource type. A monitored resource and metric pair may only be used once
+in the Monitoring configuration.
+
+=item * C<< $msg->consumer_destinations() >> / C<< $msg->consumer_destinations($value) >>
+
+Type: C<Message> (L<Google::Api::Monitoring::Monitoring::MonitoringDestination>)
+
+Monitoring configurations for sending metrics to the consumer project.
+There can be multiple consumer destinations. A monitored resource type may
+appear in multiple monitoring destinations if different aggregations are
+needed for different sets of metrics associated with that monitored
+resource type. A monitored resource and metric pair may only be used once
+in the Monitoring configuration.
+
+=back
+
+=head1 SEE ALSO
+
+L<Protobuf>, L<Protobuf::Message>, L<Google::Api::Monitoring::Types>, L<https://protobuf.dev/>
 
 =head1 LICENSE AND COPYRIGHT
 

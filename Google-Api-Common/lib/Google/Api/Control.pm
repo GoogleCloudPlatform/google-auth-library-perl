@@ -3,7 +3,7 @@ package Google::Api::Control;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.14';
 
 use Protobuf::Message;
 use Protobuf::DescriptorPool;
@@ -54,47 +54,77 @@ EOF
     # Field: environment Type: 9 ()
     # Field: method_policies Type: 11 (.google.api.MethodPolicy)
 
-=pod
+1;
+
+__END__
+
+=encoding UTF-8
 
 =head1 NAME
 
-Google::Api::Control::Control - Compiled Protocol Buffers message class
+Google::Api::Control - Compiled Protocol Buffers messages for google/api/control.proto
 
 =head1 SYNOPSIS
 
     use Google::Api::Control;
 
-    my $msg = Google::Api::Control::Control->new(
-        environment => $value,
-    );
+    my $msg = Google::Api::Control::Control->new({
+        environment => $environment,
+        method_policies => $method_policies,
+    });
 
-=head1 FIELDS
+    # Read or update a field
+    my $val = $msg->environment();
 
-=over 4
+    # Binary wire-format roundtrip
+    my $bytes   = $msg->serialize();
+    my $decoded = Google::Api::Control::Control->parse($bytes);
 
-=item * B<environment>
-
-Type: String
-
-=item * B<method_policies>
-
-Type: Message (.google.api.MethodPolicy)
-
-=back
-
-=cut
-
-1;
-
-__END__
-
-=head1 NAME
-
-Google::Api::Control - Protocol Buffers schema definition
+    # Canonical ProtoJSON
+    my $json = $msg->to_json();
 
 =head1 DESCRIPTION
 
-Auto-generated Protocol Buffers schema definition class.
+Auto-generated L<Protobuf> message classes compiled from C<google/api/control.proto>. All message classes inherit from
+L<Protobuf::Message> and support C<new()>, C<serialize()>, C<parse()>,
+C<to_json()>, C<from_json()>, C<to_text()>, and C<to_perl()>.
+
+=head1 MESSAGES
+
+=head2 Google::Api::Control::Control
+
+Selects and configures the service controller used by the service.
+
+Example:
+
+    control:
+      environment: servicecontrol.googleapis.com
+
+Inherits from L<Protobuf::Message>.
+
+=head3 Accessors
+
+=over 4
+
+=item * C<< $msg->environment() >> / C<< $msg->environment($value) >>
+
+Type: C<String>
+
+The service controller environment to use. If empty, no control plane
+features (like quota and billing) will be enabled. The recommended value
+for most services is servicecontrol.googleapis.com.
+
+=item * C<< $msg->method_policies() >> / C<< $msg->method_policies($value) >>
+
+Type: C<Message> (L<Google::Api::Policy::MethodPolicy>)
+
+Defines policies applying to the API methods of the service.
+
+=back
+
+=head1 SEE ALSO
+
+L<Protobuf>, L<Protobuf::Message>, L<Google::Api::Control::Types>, L<https://protobuf.dev/>
 
 =head1 LICENSE AND COPYRIGHT
 
