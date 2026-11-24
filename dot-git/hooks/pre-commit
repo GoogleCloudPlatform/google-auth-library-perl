@@ -15,7 +15,7 @@ if [ "${#CHANGED_DIRS[@]}" -eq 0 ]; then
     exit 0
 fi
 
-CORE_DIRS=(Protobuf Google-Api-Common Google-Auth Google-gRPC Module-Starter-Protobuf PDL-IO-Protobuf PDL-IO-Arrow PDL-Torch)
+CORE_DIRS=(Protobuf Google-Api-Common Google-Auth Google-gRPC Module-Starter-Protobuf PDL-IO-Protobuf PDL-IO-Arrow PDL-Torch PDL-XGBoost)
 UNIQUE_DIRS=()
 declare -A SEEN_DIRS=()
 for d in "${CORE_DIRS[@]}" "${CHANGED_DIRS[@]}"; do

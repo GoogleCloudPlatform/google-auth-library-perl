@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use Test::More tests => 7;
 use File::Spec;
-use File::Path qw(remove_tree);
+use File::Path qw(make_path remove_tree);
 
 # 1. Define paths
 my $tmp_dir = File::Spec->catdir('tmp', 'test-dist');
@@ -19,10 +19,8 @@ if (-f $runner_file) {
     unlink($runner_file);
 }
 
-# Ensure tmp directory exists
-unless (-d 'tmp') {
-    mkdir 'tmp' or die 'Failed to create tmp directory: ' . $!;
-}
+# Ensure tmp directory exists (race-safe under parallel prove -j)
+make_path('tmp');
 
 ok(-f $proto_file, 'Official test service proto exists');
 
