@@ -8,7 +8,7 @@ use JSON::MaybeXS qw(decode_json);
 use PDL::Core ();
 use PDL::Lite ();
 
-our $VERSION = '0.01';
+our $VERSION = '0.011';
 
 sub new {
     my ($class, %args) = @_;

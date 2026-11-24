@@ -9,7 +9,7 @@ use PDL::Core;
 use PDL::Types;
 use PDL::Slices;
 
-our $VERSION = '0.01';
+our $VERSION = '0.011';
 
 our @EXPORT_OK = qw(
     mlpack_version

@@ -8,7 +8,7 @@ use XSLoader;
 use PDL::Core ();
 use PDL::Lite ();
 
-our $VERSION = '0.01';
+our $VERSION = '0.011';
 
 XSLoader::load('PDL::ML::Token::SentencePiece', $VERSION);
 

@@ -9,7 +9,7 @@ use PDL::Types;
 use PDL::Slices;
 use PDL::Ufunc;
 
-our $VERSION = '0.01';
+our $VERSION = '0.011';
 
 our @EXPORT_OK = qw(
     chunk_text

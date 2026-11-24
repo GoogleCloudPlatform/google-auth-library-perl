@@ -1,4 +1,4 @@
 Revision history for PDL-ML-Engine-MLPack
 
-0.01    2026-11-24
+0.011    2026-11-24
     - Initial release: mlpack C++17 classical ML bindings for PDL (linear_regression, kmeans).
