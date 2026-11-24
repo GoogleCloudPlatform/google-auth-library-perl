@@ -1,0 +1,11 @@
+^blib/
+^Makefile$
+^Makefile\.old$
+^MYMETA\.
+^pm_to_blib$
+^SentencePiece\.c$
+^SentencePiece\.bs$
+\.o$
+^PDL-ML-Token-SentencePiece-.*\.tar\.gz$
+\.bak$
+\.swp$

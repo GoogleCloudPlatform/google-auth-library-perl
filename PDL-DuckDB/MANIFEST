@@ -1,8 +1,0 @@
-Changes
-DuckDB.xs
-lib/PDL/DuckDB.pm
-Makefile.PL
-MANIFEST
-MANIFEST.SKIP
-README.md
-t/00-load.t

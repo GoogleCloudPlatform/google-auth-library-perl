@@ -1,7 +1,0 @@
-Changes
-lib/PDL/RAG.pm
-Makefile.PL
-MANIFEST
-MANIFEST.SKIP
-README.md
-t/00-load.t

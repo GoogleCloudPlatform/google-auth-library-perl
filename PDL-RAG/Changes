@@ -1,4 +1,0 @@
-Revision history for PDL-RAG
-
-0.01    2026-11-24
-    - Initial release: sliding-window chunking, PDL cosine-similarity vector store, prompt templating, and pluggable RAG pipeline.

@@ -1,7 +1,0 @@
-Changes
-lib/PDL/SentencePiece.pm
-Makefile.PL
-MANIFEST
-MANIFEST.SKIP
-SentencePiece.xs
-t/01-sentencepiece.t
