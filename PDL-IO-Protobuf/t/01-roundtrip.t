@@ -3,10 +3,8 @@ use warnings;
 use Test::More;
 use File::Temp qw(tempfile);
 
-BEGIN {
-    eval { require PDL; 1 }
-        or plan skip_all => 'PDL is not installed';
-}
+use PDL::Core;
+use PDL::Types;
 
 use PDL::IO::Protobuf qw(rprotobuf wprotobuf from_protobuf to_protobuf);
 
@@ -32,7 +30,7 @@ use PDL::IO::Protobuf qw(rprotobuf wprotobuf from_protobuf to_protobuf);
     }
 }
 
-my $pdl = PDL::double([1.5, 2.5, 3.5, 4.5]);
+my $pdl = PDL::Core::pdl(PDL::Type->new('double'), [1.5, 2.5, 3.5, 4.5]);
 my ($fh, $tmp) = tempfile('pdl_pb_XXXXXX', SUFFIX => '.pb', UNLINK => 1);
 close $fh;
 
