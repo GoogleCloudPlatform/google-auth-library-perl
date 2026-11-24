@@ -9,7 +9,7 @@ use Protocol::HTTP2::Server;
 use Google::gRPC::Framing;
 use Google::gRPC::Status;
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 has host => (
     is      => 'ro',
