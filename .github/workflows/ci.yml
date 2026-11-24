@@ -14,6 +14,9 @@ jobs:
   container-matrix:
     name: ${{ matrix.name }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     strategy:
       fail-fast: false
       matrix:
@@ -37,16 +40,40 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Authenticate to Google Cloud (WIF)
+        id: gcp_wif_auth
+        if: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER != '' && vars.GCP_SERVICE_ACCOUNT != '' }}
+        continue-on-error: true
+        uses: google-github-actions/auth@6fc4af4b145ae7821d527454aa9bd537d1f2dc5f # v2.1.7
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+
       - name: Docker login to Artifact Registry
         id: docker_login
         env:
           GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+          WIF_OUTCOME: ${{ steps.gcp_wif_auth.outcome }}
+          MATRIX_IMAGE: ${{ matrix.image }}
         run: |
+          if [ "$WIF_OUTCOME" = "success" ]; then
+            if gcloud auth configure-docker us-docker.pkg.dev --quiet; then
+              echo "authenticated=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          fi
           if [ -n "$GCP_SA_KEY" ]; then
-            printf '%s' "$GCP_SA_KEY" | docker login -u _json_key --password-stdin us-docker.pkg.dev
+            if printf '%s' "$GCP_SA_KEY" | docker login -u _json_key --password-stdin us-docker.pkg.dev; then
+              echo "authenticated=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            else
+              echo "::warning::GCP_SA_KEY docker login failed (expired or revoked). Trying anonymous pull / host fallback."
+            fi
+          fi
+          if docker manifest inspect "$MATRIX_IMAGE" >/dev/null 2>&1; then
             echo "authenticated=true" >> "$GITHUB_OUTPUT"
           else
-            echo "::notice::GCP_SA_KEY secret not available (forked PR). Skipping Artifact Registry and executing on runner host."
+            echo "::notice::Artifact Registry image unavailable without auth. Falling back to runner host."
             echo "authenticated=false" >> "$GITHUB_OUTPUT"
           fi
 

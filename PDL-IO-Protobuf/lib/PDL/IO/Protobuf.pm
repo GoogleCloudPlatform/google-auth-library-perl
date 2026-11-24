@@ -46,15 +46,16 @@ sub pdl_type_for_proto_type {
 sub _require_pdl {
     require PDL::Core;
     require PDL::Types;
+    require PDL::Slices;
     return;
 }
 
 sub _pdl_type_obj {
     my ($type_name) = @_;
     _require_pdl();
-    my $ctor = PDL::Types->can($type_name);
-    croak 'Unsupported PDL type: ' . $type_name unless $ctor;
-    return $ctor->();
+    my $type = eval { PDL::Type->new($type_name) };
+    croak 'Unsupported PDL type: ' . $type_name unless $type;
+    return $type;
 }
 
 sub from_protobuf {

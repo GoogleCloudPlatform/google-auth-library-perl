@@ -140,6 +140,11 @@ sub build_package {
         system(@cpanm_cmd, '--notest', '--installdeps', '.');
     }
     system("$^X Makefile.PL") == 0 or die "Makefile.PL failed in $d";
+    unless (-f 'Makefile') {
+        print "=== Skipping $d (Makefile.PL exited 0 without generating Makefile) ===\n";
+        chdir '..';
+        next;
+    }
     system("$make $j_flag") == 0 or die "$make failed in $d";
 
     my %seen;

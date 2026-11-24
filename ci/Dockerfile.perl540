@@ -3,6 +3,18 @@ FROM docker.io/library/perl:5.40
 RUN apt-get update && apt-get install -y \
     perl-modules cpanminus liblocal-lib-perl libtemplate-perl \
     gcc g++ make libssl-dev libcrypt-dev libnghttp2-dev libcurl4-openssl-dev libpcre2-dev libabsl-dev pkg-config protobuf-compiler && \
-    cpanm AnyEvent Net::HTTP2::nghttp2 Net::Curl Future Moo Type::Tiny Protocol::HTTP2 JSON::MaybeXS JSON::XS Template Path::Tiny Log::Any Capture::Tiny URI File::Which Module::Starter LWP::Protocol::https Test::More Test::Pod Test::Pod::Coverage Test::Exception Test::Deep Test::MockModule Test::LWP::UserAgent Perl::Tidy Perl::Critic Test::Perl::Critic Test::CPAN::Changes Test::Kwalitee Test::PerlTidy Perl::Critic::Community Perl::Critic::Policy::RegularExpressions::RequireDefault Perl::Critic::Policy::Security::RandBytesFromHash && \
+    rm -rf /var/lib/apt/lists/*
 
-    rm -rf ~/.cpanm /var/lib/apt/lists/*
+# Separate layer so PDL is built once and cached across future CPAN module updates.
+RUN cpanm PDL && rm -rf ~/.cpanm
+
+RUN cpanm ExtUtils::CppGuess AnyEvent Net::HTTP2::nghttp2 Net::Curl Future Moo Type::Tiny Protocol::HTTP2 JSON::MaybeXS JSON::XS Template Path::Tiny Log::Any Capture::Tiny URI File::Which Module::Starter LWP::Protocol::https Test::More Test::Pod Test::Pod::Coverage Test::Exception Test::Deep Test::MockModule Test::LWP::UserAgent Perl::Tidy Perl::Critic Test::Perl::Critic Test::CPAN::Changes Test::Kwalitee Test::PerlTidy Perl::Critic::Community Perl::Critic::Policy::RegularExpressions::RequireDefault Perl::Critic::Policy::Security::RandBytesFromHash && \
+    rm -rf ~/.cpanm
+
+RUN apt-get update && apt-get install -y ca-certificates lsb-release wget && \
+    wget -qO /tmp/apache-arrow-apt-source.deb "https://packages.apache.org/artifactory/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/apache-arrow-apt-source-latest-$(lsb_release --codename --short).deb" && \
+    apt-get install -y /tmp/apache-arrow-apt-source.deb && \
+    rm -f /tmp/apache-arrow-apt-source.deb && \
+    apt-get update && \
+    apt-get install -y libarrow-dev libparquet-dev && \
+    rm -rf /var/lib/apt/lists/*
