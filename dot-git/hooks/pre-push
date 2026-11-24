@@ -61,7 +61,7 @@ for d in $(git diff --name-only $MERGE_BASE...HEAD | awk -F/ '{if (NF > 1) print
     fi
 done
 
-CORE_DIRS="Protobuf Google-Api-Common Google-Auth Google-gRPC Module-Starter-Protobuf PDL-IO-Protobuf PDL-IO-Arrow PDL-Torch PDL-XGBoost PDL-ONNX PDL-FAISS PDL-GGML PDL-IO-Safetensors PDL-IO-GGUF PDL-ML-Preprocess PDL-ML-Metrics PDL-Tokenizers PDL-SentencePiece PDL-Llama PDL-DuckDB"
+CORE_DIRS="Protobuf Google-Api-Common Google-Auth Google-gRPC Module-Starter-Protobuf PDL-IO-Protobuf PDL-IO-Arrow PDL-Torch PDL-XGBoost PDL-ONNX PDL-FAISS PDL-GGML PDL-IO-Safetensors PDL-IO-GGUF PDL-ML-Preprocess PDL-ML-Metrics PDL-Tokenizers PDL-SentencePiece PDL-Llama PDL-DuckDB PDL-MLPack"
 UNIQUE_DIRS=""
 for d in $CORE_DIRS $CHANGED_DIRS; do
     if [ -f "$d/Makefile.PL" ] && [[ ! " $UNIQUE_DIRS " =~ " $d " ]]; then

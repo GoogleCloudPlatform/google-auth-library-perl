@@ -1,0 +1,10 @@
+Changes
+lib/PDL/MLPack.pm
+Makefile.PL
+MANIFEST
+MANIFEST.SKIP
+MLPack.xs
+mlpack_bridge.cc
+mlpack_bridge.h
+README.md
+t/00-load.t
