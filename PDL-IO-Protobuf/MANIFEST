@@ -1,8 +1,0 @@
-Changes
-lib/PDL/IO/Protobuf.pm
-Makefile.PL
-MANIFEST
-MANIFEST.SKIP
-README.md
-t/00-load.t
-t/01-roundtrip.t
