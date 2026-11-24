@@ -11,3 +11,5 @@ We would like to especially thank:
 *   **Max Maischein** ([@Corion](https://github.com/Corion)) - For his extensive work on asynchronous patterns in `WWW::Mechanize::Chrome`. Our collaboration on that project inspired the interest in producing a functional async implementation here, driving our modernization goals alongside the primitives provided by Paul Evans.
 
 *   **John Napiorkowski** - For his work on `Net::HTTP2::nghttp2` bindings which demonstrated beautiful HTTP/2 handling and inspired modern low-level transport integration.
+
+*   **Dean Hamstead** ([@djzort](https://github.com/djzort)) - For publicity, encouragement, build system feedback, and suggesting implementing the gRPC server components (`Google::gRPC::Server`) in addition to the client.

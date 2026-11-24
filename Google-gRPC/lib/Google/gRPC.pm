@@ -82,6 +82,8 @@ It provides:
 
 =item * L<Google::gRPC::Client> - High-level unary (C<call>) and streaming (C<stream>) gRPC client with retries, auth headers, and deadlines.
 
+=item * L<Google::gRPC::Server> - HTTP/2 gRPC server supporting service/method registration, Protobuf framing, and L<AnyEvent> TCP listeners.
+
 =item * L<Google::gRPC::Channel> - Single HTTP/2 channel managing multiplexed gRPC streams and keepalive state.
 
 =item * L<Google::gRPC::ChannelPool> - Pool of subchannels for connection reuse and load distribution.
