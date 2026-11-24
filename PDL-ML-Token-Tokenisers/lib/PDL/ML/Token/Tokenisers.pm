@@ -1,4 +1,4 @@
-package PDL::ML::Token::Tokenizers;
+package PDL::ML::Token::Tokenisers;
 
 use 5.010;
 use strict;
@@ -106,19 +106,19 @@ __END__
 
 =head1 NAME
 
-PDL::ML::Token::Tokenizers - Pure-Perl BPE and HuggingFace tokenizer.json support for PDL
+PDL::ML::Token::Tokenisers - Pure-Perl BPE and HuggingFace tokenizer.json support for PDL
 
 =head1 SYNOPSIS
 
-    use PDL::ML::Token::Tokenizers;
+    use PDL::ML::Token::Tokenisers;
 
-    my $tok = PDL::ML::Token::Tokenizers->from_file('tokenizer.json');
+    my $tok = PDL::ML::Token::Tokenisers->from_file('tokenizer.json');
     my $ids = $tok->encode('hello world');   # PDL long ndarray
     my $txt = $tok->decode($ids);
 
 =head1 DESCRIPTION
 
-C<PDL::ML::Token::Tokenizers> provides BPE tokenization and HuggingFace C<tokenizer.json>
+C<PDL::ML::Token::Tokenisers> provides BPE tokenization and HuggingFace C<tokenizer.json>
 loading in pure Perl, encoding text directly into L<PDL> C<long> token-ID
 ndarrays for downstream inference in L<PDL::Torch>, L<PDL::ONNX>, or L<PDL::GGML>.
 

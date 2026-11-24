@@ -1,5 +1,5 @@
 Changes
-lib/PDL/ML/Token/Tokenizers.pm
+lib/PDL/ML/Token/Tokenisers.pm
 Makefile.PL
 MANIFEST
 MANIFEST.SKIP

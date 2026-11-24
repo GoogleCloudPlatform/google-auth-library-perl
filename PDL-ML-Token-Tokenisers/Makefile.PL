@@ -4,10 +4,10 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 WriteMakefile(
-    NAME               => 'PDL::ML::Token::Tokenizers',
+    NAME               => 'PDL::ML::Token::Tokenisers',
     AUTHOR             => q{C.J. Collier <cjac@google.com>},
-    VERSION_FROM       => 'lib/PDL/ML/Token/Tokenizers.pm',
-    ABSTRACT_FROM      => 'lib/PDL/ML/Token/Tokenizers.pm',
+    VERSION_FROM       => 'lib/PDL/ML/Token/Tokenisers.pm',
+    ABSTRACT_FROM      => 'lib/PDL/ML/Token/Tokenisers.pm',
     LICENSE            => 'apache_2_0',
     MIN_PERL_VERSION   => '5.010',
     CONFIGURE_REQUIRES => { 'ExtUtils::MakeMaker' => '0' },
@@ -31,5 +31,5 @@ WriteMakefile(
         },
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz' },
-    clean => { FILES => 'PDL-ML-Token-Tokenizers-*' },
+    clean => { FILES => 'PDL-ML-Token-Tokenisers-*' },
 );

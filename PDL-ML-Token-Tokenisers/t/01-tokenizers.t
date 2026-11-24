@@ -3,9 +3,9 @@ use warnings;
 use Test::More;
 use File::Temp qw(tempfile);
 use JSON::MaybeXS qw(encode_json);
-use PDL::ML::Token::Tokenizers;
+use PDL::ML::Token::Tokenisers;
 
-my $tok = PDL::ML::Token::Tokenizers->new(
+my $tok = PDL::ML::Token::Tokenisers->new(
     vocab => {
         '<unk>' => 0,
         'h'     => 1,
@@ -31,7 +31,7 @@ open my $fh, '>', $jf or die $!;
 print {$fh} encode_json({ model => { vocab => { '<unk>' => 0, 'perl' => 1 }, merges => [] } });
 close $fh;
 
-my $tok2 = PDL::ML::Token::Tokenizers->from_file($jf);
+my $tok2 = PDL::ML::Token::Tokenisers->from_file($jf);
 is_deeply([ $tok2->encode('perl')->list ], [1], 'from_file loads tokenizer.json');
 
 done_testing();
