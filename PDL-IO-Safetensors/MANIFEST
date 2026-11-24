@@ -1,0 +1,6 @@
+Changes
+lib/PDL/IO/Safetensors.pm
+Makefile.PL
+MANIFEST
+MANIFEST.SKIP
+t/01-roundtrip.t

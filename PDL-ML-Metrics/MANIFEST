@@ -1,0 +1,6 @@
+Changes
+lib/PDL/ML/Metrics.pm
+Makefile.PL
+MANIFEST
+MANIFEST.SKIP
+t/01-metrics.t

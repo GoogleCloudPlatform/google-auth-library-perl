@@ -21,5 +21,5 @@ RUN apt-get update && apt-get install -y ca-certificates lsb-release wget && \
 RUN apt-get update && apt-get install -y libtorch-dev && \
     rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && apt-get install -y libxgboost-dev libonnxruntime-dev libfaiss-dev && \
+RUN apt-get update && apt-get install -y libxgboost-dev libonnxruntime-dev libfaiss-dev libsentencepiece-dev && \
     rm -rf /var/lib/apt/lists/*

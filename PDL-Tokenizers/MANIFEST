@@ -1,0 +1,6 @@
+Changes
+lib/PDL/Tokenizers.pm
+Makefile.PL
+MANIFEST
+MANIFEST.SKIP
+t/01-tokenizers.t
