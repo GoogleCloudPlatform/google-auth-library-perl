@@ -10,9 +10,10 @@ We would like to especially thank:
 
 *   **Dean Hamstead** ([@djzort](https://github.com/djzort)) - For publicity,
     encouragement, valuable build system feedback (identifying issues with
-    missing `cpanfile` and `Makefile.PL` dependencies), and testing the
-    `README.md` instructions on different environments, which led to significant
-    improvements in the build process.
+    missing `cpanfile` and `Makefile.PL` dependencies), testing the
+    `README.md` instructions on different environments (which led to significant
+    improvements in the build process), and suggesting implementing the gRPC
+    server components (`Google::gRPC::Server`) in addition to the client.
 
 *   **Leon Timmermans** ([@Leont](https://github.com/Leont)) - For expressing
     interest and willingness to contribute, and for authoritative guidance on
