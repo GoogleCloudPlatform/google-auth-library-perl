@@ -1,0 +1,8 @@
+Changes
+GGML.xs
+lib/PDL/GGML.pm
+Makefile.PL
+MANIFEST
+MANIFEST.SKIP
+README.md
+t/00-load.t

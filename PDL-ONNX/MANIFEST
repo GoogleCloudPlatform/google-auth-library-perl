@@ -1,0 +1,8 @@
+Changes
+lib/PDL/ONNX.pm
+Makefile.PL
+MANIFEST
+MANIFEST.SKIP
+ONNX.xs
+README.md
+t/00-load.t
