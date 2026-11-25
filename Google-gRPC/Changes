@@ -1,5 +1,15 @@
 Revision history for Google::gRPC
 
+0.11    2026-11-25
+    - Google::gRPC::Server protocol compliance & robustness fixes (contributed by Dean Hamstead):
+      - Send grpc-status/grpc-message in HTTP/2 trailers (or Trailers-Only for errors) with flow-control ordering via Google::gRPC::Server::Session.
+      - Update Google::gRPC::Engine::PP to dispatch trailing HEADERS blocks to on_trailers.
+      - Percent-encode UTF-8 grpc-message values per RFC 9113 / gRPC HTTP/2 spec and strip Perl file/line suffixes on plain die.
+      - Align gRPC status codes (UNKNOWN=2 for plain die, INTERNAL=13 for decode/encode failures, UNIMPLEMENTED=12 for framing/encoding errors).
+      - Catch response encode() exceptions, fix session reference cycle leak with weaken(), validate unary request framing, and add t/11-server-protocol.t.
+    - Added configurable max_receive_message_length (default 4 MiB, returns RESOURCE_EXHAUSTED=8).
+    - Declared AnyEvent prerequisite and raised Protocol::HTTP2 minimum to 1.14 (fixes CVE-2026-10725 and CVE-2026-16028).
+
 0.10    2026-11-24
     - Added Google::gRPC::Server with HTTP/2 framing, Protobuf request/response dispatch, gRPC status/error handling, and AnyEvent TCP listener support (t/10-server.t).
 

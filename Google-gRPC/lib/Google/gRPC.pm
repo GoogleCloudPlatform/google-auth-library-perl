@@ -3,7 +3,7 @@ package Google::gRPC;
 use strict;
 use warnings;
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 1;
 
@@ -17,7 +17,7 @@ Google::gRPC - High-performance gRPC client library for Perl over HTTP/2
 
 =head1 VERSION
 
-Version 0.10
+Version 0.11
 
 =head1 SYNOPSIS
 
