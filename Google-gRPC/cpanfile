@@ -1,5 +1,6 @@
+requires 'AnyEvent', '0';
 requires 'Moo', '0';
-requires 'Protocol::HTTP2', '0.13';
+requires 'Protocol::HTTP2', '1.14';
 requires 'Log::Any', '0';
 
 on 'test' => sub {

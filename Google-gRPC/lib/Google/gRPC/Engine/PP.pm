@@ -59,6 +59,8 @@ sub submit_request {
     my $on_close_cb    = $self->on_stream_close;
 
     my $req_id;
+    my $headers_seen  = 0;
+    my $trailers_seen = 0;
     $req_id = $self->client->request(
         ':method'    => $pseudo{':method'} || 'POST',
         ':path'      => $pseudo{':path'} || '/',
@@ -68,6 +70,12 @@ sub submit_request {
         defined($data) ? ( data => $data ) : (),
         on_headers => sub {
             my ($headers_ref) = @_;
+            # A second header block on the stream is the trailers
+            if ($headers_seen++) {
+                $trailers_seen = 1;
+                $on_trailers_cb->($req_id, $headers_ref) if $on_trailers_cb && defined $req_id;
+                return 1;
+            }
             if ($on_headers_cb && defined $req_id) {
                 $on_headers_cb->($req_id, $headers_ref);
             }
@@ -80,7 +88,7 @@ sub submit_request {
         },
         on_done => sub {
             my ($headers_ref, $body) = @_;
-            if ($on_trailers_cb && $headers_ref && defined $req_id) {
+            if ($on_trailers_cb && $headers_ref && defined $req_id && !$trailers_seen) {
                 $on_trailers_cb->($req_id, $headers_ref);
             }
             if ($on_close_cb && defined $req_id) {

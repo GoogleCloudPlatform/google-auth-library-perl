@@ -12,4 +12,4 @@ We would like to especially thank:
 
 *   **John Napiorkowski** - For his work on `Net::HTTP2::nghttp2` bindings which demonstrated beautiful HTTP/2 handling and inspired modern low-level transport integration.
 
-*   **Dean Hamstead** ([@djzort](https://github.com/djzort)) - For publicity, encouragement, build system feedback, and suggesting implementing the gRPC server components (`Google::gRPC::Server`) in addition to the client.
+*   **Dean Hamstead** ([@djzort](https://github.com/djzort)) - For publicity, encouragement, build system feedback, and suggesting implementing the gRPC server components (`Google::gRPC::Server`) in addition to the client, as well as his thorough HTTP/2 protocol compliance review and fixes for `Google::gRPC::Server` (trailers, RFC 9113 `grpc-message` encoding, request framing, and `Protocol::HTTP2` CVE remediation).

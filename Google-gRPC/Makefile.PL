@@ -67,8 +67,9 @@ WriteMakefile(
         'Test::More' => '0',
     },
     PREREQ_PM => {
+        'AnyEvent'        => '0',
         'Moo'             => '0',
-        'Protocol::HTTP2' => '0.13',
+        'Protocol::HTTP2' => '1.14',
         'Protobuf'        => '0.01',
         'Log::Any'        => '0',
     },

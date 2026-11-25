@@ -4,12 +4,16 @@ use strict;
 use warnings;
 use Moo;
 use Carp qw(croak);
-use Scalar::Util qw(blessed);
+use Scalar::Util qw(blessed weaken);
 use Protocol::HTTP2::Server;
 use Google::gRPC::Framing;
 use Google::gRPC::Status;
 
-our $VERSION = '0.10';
+my $GRPC_CONTENT_TYPE = 'application/grpc';
+my $PERL_LOCATION_RE  = qr/ at \S+ line [0-9]+\.?\z/;
+my $TRAILER_NAMES     = 'grpc-status, grpc-message';
+
+our $VERSION = '0.11';
 
 has host => (
     is      => 'ro',
@@ -19,6 +23,11 @@ has host => (
 has port => (
     is      => 'rw',
     default => sub { 0 },
+);
+
+has max_receive_message_length => (
+    is      => 'ro',
+    default => sub { 4 * 1024 * 1024 },
 );
 
 has _handlers => (
@@ -90,9 +99,7 @@ sub handle_unary {
     if (my $req_class = $spec->{request_class}) {
         my $decoded = eval { $req_class->decode($payload) };
         if ($@) {
-            my $err = $@;
-            $err =~ s/\s+\z//;
-            return (3, 'Invalid request payload: ' . $err, undef);
+            return (13, 'Invalid request payload: ' . _client_message($@), undef);
         }
         $req = $decoded;
     }
@@ -110,21 +117,67 @@ sub handle_unary {
         if (blessed($err) && $err->isa('Google::gRPC::Status')) {
             return ($err->code, $err->message, undef);
         }
-        $err =~ s/\s+\z//;
-        return (13, $err, undef);
+        return (2, _client_message($err), undef);
     }
 
-    my $resp_bytes = '';
-    if (defined $resp) {
-        if (blessed($resp) && $resp->can('encode')) {
-            $resp_bytes = $resp->encode();
-        }
-        else {
-            $resp_bytes = $resp;
-        }
+    # An encode failure becomes a status instead of escaping into the event loop
+    my $resp_bytes = eval {
+        !defined $resp                             ? ''
+            : blessed($resp) && $resp->can('encode') ? $resp->encode()
+            :                                          $resp;
+    };
+    if ($@) {
+        return (13, 'Failed to encode response: ' . _client_message($@), undef);
     }
 
     return (0, '', $resp_bytes);
+}
+
+# First line of a Perl error, without the " at FILE line N." suffix
+sub _client_message {
+    my ($err) = @_;
+    my ($first) = split /\n/, "$err";
+    $first //= '';
+    $first =~ s/$PERL_LOCATION_RE//;
+    return $first;
+}
+
+# The grpc-message value is percent-encoded UTF-8 (gRPC over HTTP/2, Responses)
+sub _percent_encode {
+    my ($text) = @_;
+    my $bytes = $text;
+    utf8::encode($bytes) if utf8::is_utf8($bytes);
+    $bytes =~ s/([^\x20-\x24\x26-\x7e])/sprintf '%%%02X', ord $1/ge;
+    # A field value must not start or end with a space (RFC 9113, 8.2.1)
+    $bytes =~ s/\A /%20/;
+    $bytes =~ s/ \z/%20/;
+    return $bytes;
+}
+
+# A unary request body must be exactly one complete, uncompressed message
+sub _read_unary_request {
+    my ($body, $encoding, $max_len) = @_;
+    my $buf = defined $body ? $body : '';
+    if ($max_len && length($buf) > $max_len + 5) {
+        return (8, 'Received message larger than max (' . length($buf) . ' vs. ' . $max_len . ')', undef);
+    }
+    my @frames = Google::gRPC::Framing::unpack_frame(\$buf);
+    if (length $buf) {
+        return (13, 'Truncated request message', undef);
+    }
+    if (@frames != 1) {
+        return (12, 'Unary request must carry exactly one message', undef);
+    }
+    if ($max_len && length($frames[0]->{payload}) > $max_len) {
+        return (8, 'Received message larger than max (' . length($frames[0]->{payload}) . ' vs. ' . $max_len . ')', undef);
+    }
+    if ($frames[0]->{compressed}) {
+        if (!defined $encoding || $encoding eq '' || $encoding eq 'identity') {
+            return (13, 'Compressed flag set without grpc-encoding', undef);
+        }
+        return (12, 'Unsupported grpc-encoding ' . $encoding, undef);
+    }
+    return (0, '', $frames[0]->{payload});
 }
 
 sub _extract_metadata {
@@ -142,44 +195,33 @@ sub _extract_metadata {
 
 sub new_session {
     my ($self) = @_;
-    my $server;
-    $server = Protocol::HTTP2::Server->new(
+    my $session;
+    my $weak_session;
+    $session = Google::gRPC::Server::Session->new(
         on_request => sub {
             my ($stream_id, $headers_ref, $data) = @_;
             my $meta = _extract_metadata($headers_ref);
             my $path = $meta->{':path'} // '';
 
-            my $buf     = defined $data ? $data : '';
-            my @frames  = Google::gRPC::Framing::unpack_frame(\$buf);
-            my $payload = @frames ? $frames[0]->{payload} : '';
-
-            my ($code, $message, $resp_bytes)
-                = $self->handle_unary($path, $payload, $meta);
-
-            my $body = defined $resp_bytes
-                ? Google::gRPC::Framing::pack_frame($resp_bytes)
-                : '';
-
-            my @resp_headers = (
-                'content-type' => 'application/grpc',
-                'grpc-status'  => $code,
-            );
-            if (defined $message && length $message) {
-                push @resp_headers, 'grpc-message' => $message;
+            # Unknown methods get UNIMPLEMENTED from handle_unary without the framing check
+            my ($code, $message, $resp_bytes) = (0, '', undef);
+            if ($self->dispatch_path($path)) {
+                ($code, $message, $resp_bytes)
+                    = _read_unary_request($data, $meta->{'grpc-encoding'}, $self->max_receive_message_length);
             }
-
-            $server->response(
-                ':status' => 200,
-                stream_id => $stream_id,
-                headers   => \@resp_headers,
-                data      => $body,
-            );
+            if ($code == 0) {
+                ($code, $message, $resp_bytes)
+                    = $self->handle_unary($path, $resp_bytes, $meta);
+            }
+            $weak_session->send_unary_response($stream_id, $code, $message, $resp_bytes);
         },
         on_error => sub {
             my ($err) = @_;
         },
     );
-    return $server;
+    $weak_session = $session;
+    weaken($weak_session);
+    return $session;
 }
 
 sub listen {
@@ -255,6 +297,60 @@ sub run {
     return $self;
 }
 
+package Google::gRPC::Server::Session;
+
+use strict;
+use warnings;
+use parent -norequire, 'Protocol::HTTP2::Server';
+use Protocol::HTTP2::Constants qw(:states);
+
+# Headers, the message, then grpc-status in trailers; Trailers-Only when there is no message
+sub send_unary_response {
+    my ($self, $stream_id, $code, $message, $resp_bytes) = @_;
+    my $con    = $self->{con};
+    my @status = ('grpc-status' => $code);
+    if (defined $message && length $message) {
+        push @status, 'grpc-message' => Google::gRPC::Server::_percent_encode($message);
+    }
+
+    if (!defined $resp_bytes) {
+        $con->send_headers($stream_id, [':status' => 200, 'content-type' => $GRPC_CONTENT_TYPE, @status], 1);
+        return;
+    }
+
+    $con->send_headers($stream_id,
+        [':status' => 200, 'content-type' => $GRPC_CONTENT_TYPE, 'trailer' => $TRAILER_NAMES], 0);
+    $con->send_data($stream_id, Google::gRPC::Framing::pack_frame($resp_bytes), 0);
+    $self->{_grpc_trailers}->{$stream_id} = \@status;
+    $self->_flush_trailers;
+    return;
+}
+
+# Trailers wait until flow control has released all of the stream's DATA
+sub _flush_trailers {
+    my ($self) = @_;
+    my $con     = $self->{con};
+    my $pending = $self->{_grpc_trailers} or return;
+    for my $stream_id (sort { $a <=> $b } keys %{$pending}) {
+        my $state = $con->stream_state($stream_id);
+        if (!defined $state || $state == CLOSED) {
+            delete $pending->{$stream_id};
+            next;
+        }
+        my $blocked = $con->stream_blocked_data($stream_id);
+        next if defined $blocked && length $blocked;
+        $con->send_headers($stream_id, delete $pending->{$stream_id}, 1);
+    }
+    return;
+}
+
+sub feed {
+    my ($self, @args) = @_;
+    my $res = $self->SUPER::feed(@args);
+    $self->_flush_trailers;
+    return $res;
+}
+
 1;
 
 __END__
@@ -301,6 +397,12 @@ Bind address for L</listen> (default: C<127.0.0.1>).
 
 TCP port for L</listen> (default: C<0>, which binds an ephemeral port and
 updates C<port> to the assigned port number).
+
+=head2 max_receive_message_length
+
+Maximum unary request payload size in bytes (default: C<4194304>, i.e. 4 MiB,
+matching C<grpc-go>). Set to C<0> to disable the limit. Requests exceeding this
+limit are rejected with C<RESOURCE_EXHAUSTED> (status code C<8>).
 
 =head1 METHODS
 

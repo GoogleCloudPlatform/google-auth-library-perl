@@ -82,7 +82,7 @@ is($server->dispatch_path('/example.Echo/Missing'), undef, 'dispatch_path return
 
 {
     my ($code, $msg, $bytes) = $server->handle_unary('/example.Proto/Boom', '', {});
-    is($code, 13, 'plain die maps to INTERNAL (13)');
+    is($code, 2, 'plain die maps to UNKNOWN (2)');
     like($msg, qr/unexpected crash/, 'die message propagated');
 }
 
@@ -96,6 +96,7 @@ is($server->dispatch_path('/example.Echo/Missing'), undef, 'dispatch_path return
     my $srv_session = $server->new_session();
     my $resp_buf    = '';
     my $resp_hdrs;
+    my $resp_trailers;
     my $closed      = 0;
 
     my $client_engine = Google::gRPC::Engine::PP->new(
@@ -106,6 +107,10 @@ is($server->dispatch_path('/example.Echo/Missing'), undef, 'dispatch_path return
         on_data => sub {
             my ($sid, $chunk) = @_;
             $resp_buf .= $chunk;
+        },
+        on_trailers => sub {
+            my ($sid, $trailers) = @_;
+            $resp_trailers = $trailers;
         },
         on_stream_close => sub {
             $closed = 1;
@@ -139,7 +144,8 @@ is($server->dispatch_path('/example.Echo/Missing'), undef, 'dispatch_path return
     }
 
     ok($closed, 'HTTP/2 in-memory stream closed cleanly');
-    my $trailers = Google::gRPC::Framing::parse_trailers($resp_hdrs);
+    my $trailers = Google::gRPC::Framing::parse_trailers($resp_trailers);
+    ok($trailers->{has_status}, 'HTTP/2 response carries grpc-status in trailers');
     is($trailers->{status}, 0, 'HTTP/2 response grpc-status is 0');
 
     my @frames = Google::gRPC::Framing::unpack_frame(\$resp_buf);
